@@ -1,0 +1,38 @@
+spring:
+  profiles:
+    active:
+      - local
+      - common
+    group:
+      local:
+        - db-local
+        - security-local
+      prod:
+        - db-prod
+        - security-prod
+    include:
+      - db
+      - security
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+
+logging:
+  level:
+    com: debug
+    org.hibernate.SQL: debug
+    org.hibernate.type: trace
+    org.springframework.security: debug
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+logging:
+  level:
+    com: info
