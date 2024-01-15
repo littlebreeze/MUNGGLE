@@ -9,5 +9,4 @@ public class MunggleApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MunggleApplication.class, args);
 	}
-
 }
