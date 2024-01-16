@@ -2,7 +2,7 @@ package com.munggle.user.controller;
 
 import com.munggle.domain.model.entity.User;
 import com.munggle.user.dto.*;
-import com.munggle.user.service.UserService;
+import com.munggle.user.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,19 +14,19 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final UserService userService;
+    private final MemberService memberService;
 
     @GetMapping("/info")
     @ResponseStatus(HttpStatus.OK)
     public UserInfoDto getMemberInfo(@AuthenticationPrincipal User principal) {
         Long id = principal.getId();
-        return userService.getMemberInfo(id);
+        return memberService.getMemberInfo(id);
     }
 
     @PostMapping("/join")
     @ResponseStatus(HttpStatus.OK)
     public void joinMember(@Valid @RequestBody UserCreateDto userCreateDto) {
-        userService.joinMember(userCreateDto);
+        memberService.joinMember(userCreateDto);
     }
 
     @PutMapping("/nickname")
@@ -34,7 +34,7 @@ public class UserController {
     public void updateNickname(@AuthenticationPrincipal User principal,
                                @RequestBody @Valid UpdateNicknameDto updateNicknameDto) {
         Long id = principal.getId();
-        userService.updateNickname(id, updateNicknameDto.getNewNickname());
+        memberService.updateNickname(id, updateNicknameDto.getNewNickname());
     }
 
     @PutMapping("/password")
@@ -42,7 +42,7 @@ public class UserController {
     public void updatePassword(@AuthenticationPrincipal User principal,
                                @RequestBody @Valid UpdatePwdDto updatePwdDto) {
         Long id = principal.getId();
-        userService.updatePassword(id, updatePwdDto.getNewPassword());
+        memberService.updatePassword(id, updatePwdDto.getNewPassword());
     }
 
     @PutMapping("/desc")
@@ -50,13 +50,13 @@ public class UserController {
     public void writeDescription(@AuthenticationPrincipal User principal,
                                  @RequestBody @Valid UserDescriptionDto userDescriptionDto) {
         Long id = principal.getId();
-        userService.writeDescription(id, userDescriptionDto.getDescription());
+        memberService.writeDescription(id, userDescriptionDto.getDescription());
     }
 
     @DeleteMapping("delete")
     @ResponseStatus(HttpStatus.OK)
     public void deleteMember(@AuthenticationPrincipal User principal) {
         Long id = principal.getId();
-        userService.deleteMember(id);
+        memberService.deleteMember(id);
     }
 }
