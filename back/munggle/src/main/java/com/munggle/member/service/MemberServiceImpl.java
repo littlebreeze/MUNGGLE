@@ -21,9 +21,8 @@ public class MemberServiceImpl implements MemberService{
     private final MemberRepository memberRepository;
 
     private Member findMemberById(Long id) {
-        Member member = memberRepository.findByIdAndIsDeletedFalse(id)
+        return memberRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
-        return member;
     }
 
     @Override
