@@ -58,6 +58,10 @@ public class Member implements UserDetails {
     @Column(name = "is_deleted")
     private boolean isDeleted;
 
+    public void changeNickname(String newNickname) {
+        this.nickname = newNickname;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

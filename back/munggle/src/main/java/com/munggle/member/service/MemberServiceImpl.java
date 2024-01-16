@@ -38,4 +38,12 @@ public class MemberServiceImpl implements MemberService{
         Member newMember = MemberMapper.toEntity(memberCreateDto);
         memberRepository.save(newMember);
     }
+
+    @Override
+    @Transactional
+    public void updateNickname(Long id, String newNickname) {
+        Member member = memberRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+        member.changeNickname(newNickname);
+    }
 }
