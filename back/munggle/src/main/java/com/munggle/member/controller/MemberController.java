@@ -1,10 +1,7 @@
 package com.munggle.member.controller;
 
 import com.munggle.domain.model.entity.Member;
-import com.munggle.member.dto.MemberCreateDto;
-import com.munggle.member.dto.MemberInfoDto;
-import com.munggle.member.dto.UpdateNicknameDto;
-import com.munggle.member.dto.UpdatePwdDto;
+import com.munggle.member.dto.*;
 import com.munggle.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -46,5 +43,13 @@ public class MemberController {
                                @RequestBody @Valid UpdatePwdDto updatePwdDto) {
         Long id = principal.getId();
         memberService.updatePassword(id, updatePwdDto.getNewPassword());
+    }
+
+    @PutMapping("/desc")
+    @ResponseStatus(HttpStatus.OK)
+    public void writeDescription(@AuthenticationPrincipal Member principal,
+                                 @RequestBody @Valid MemberDescriptionDto memberDescriptionDto) {
+        Long id = principal.getId();
+        memberService.writeDescription(id, memberDescriptionDto.getDescription());
     }
 }

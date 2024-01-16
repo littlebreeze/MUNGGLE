@@ -54,4 +54,12 @@ public class MemberServiceImpl implements MemberService{
                 .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
         member.changePassword(newPassword);
     }
+
+    @Override
+    @Transactional
+    public void writeDescription(Long id, String description) {
+        Member member = memberRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+        member.writeDescription(description);
+    }
 }
