@@ -20,7 +20,7 @@ public class MemberController {
     @ResponseStatus(HttpStatus.OK)
     public MemberInfoDto getMemberInfo(@AuthenticationPrincipal Member principal) {
         Long id = principal.getId();
-        return memberService.findMemberById(id);
+        return memberService.getMemberInfo(id);
     }
 
     @PostMapping("/join")

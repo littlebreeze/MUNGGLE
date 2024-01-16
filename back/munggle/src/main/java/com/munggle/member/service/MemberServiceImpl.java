@@ -26,7 +26,7 @@ public class MemberServiceImpl implements MemberService{
                 .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
     }
 
-    public MemberInfoDto findMemberById(Long id) {
+    public MemberInfoDto getMemberInfo(Long id) {
         Member member = memberRepository.findByIdAndIsDeletedFalse(id)
                 .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
         return MemberMapper.toMemberInfoDto(member);

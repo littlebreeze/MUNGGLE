@@ -7,7 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface MemberService extends UserDetailsService {
 
-    MemberInfoDto findMemberById(Long id);
+    MemberInfoDto getMemberInfo(Long id);
 
     void joinMember(MemberCreateDto memberCreateDto);
 
