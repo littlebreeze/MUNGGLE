@@ -74,7 +74,7 @@ public class User implements UserDetails {
         this.description = description;
     }
 
-    public void markAsEnabled() {
+    public void markAsDeleted() {
         this.isEnabled = true;
     }
 
