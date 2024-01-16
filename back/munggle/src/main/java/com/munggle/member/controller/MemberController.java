@@ -5,7 +5,6 @@ import com.munggle.member.dto.MemberCreateDto;
 import com.munggle.member.dto.MemberInfoDto;
 import com.munggle.member.dto.UpdateNicknameDto;
 import com.munggle.member.dto.UpdatePwdDto;
-import com.munggle.member.mapper.MemberMapper;
 import com.munggle.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
