@@ -52,4 +52,11 @@ public class MemberController {
         Long id = principal.getId();
         memberService.writeDescription(id, memberDescriptionDto.getDescription());
     }
+
+    @DeleteMapping("delete")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteMember(@AuthenticationPrincipal Member principal) {
+        Long id = principal.getId();
+        memberService.deleteMember(id);
+    }
 }

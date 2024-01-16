@@ -16,4 +16,6 @@ public interface MemberService extends UserDetailsService {
     void updatePassword(Long id, String newPassword);
 
     void writeDescription(Long id, String description);
+
+    void deleteMember(Long id);
 }

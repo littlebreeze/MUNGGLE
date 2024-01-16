@@ -63,4 +63,11 @@ public class MemberServiceImpl implements MemberService{
         Member member = findMemberById(id);
         member.writeDescription(description);
     }
+
+    @Override
+    @Transactional
+    public void deleteMember(Long id) {
+        Member member = findMemberById(id);
+        member.markAsDeleted();
+    }
 }

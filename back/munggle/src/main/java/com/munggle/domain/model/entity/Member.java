@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -17,6 +18,7 @@ import java.util.Collection;
 
 @Entity
 @Table(name = "members")
+@DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -68,6 +70,10 @@ public class Member implements UserDetails {
 
     public void writeDescription(String description) {
         this.description = description;
+    }
+
+    public void markAsDeleted() {
+        this.isDeleted = true;
     }
 
     @Override
