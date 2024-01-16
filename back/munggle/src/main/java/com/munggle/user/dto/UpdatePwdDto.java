@@ -1,4 +1,4 @@
-package com.munggle.member.dto;
+package com.munggle.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

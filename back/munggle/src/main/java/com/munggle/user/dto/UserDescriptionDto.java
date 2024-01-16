@@ -1,4 +1,4 @@
-package com.munggle.member.dto;
+package com.munggle.user.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateNicknameDto {
+public class UserDescriptionDto {
 
     @NotBlank
-    @Size(min = 2, max = 10)
-    private String newNickname;
+    @Size(max = 100)
+    private String description;
 }

@@ -19,13 +19,13 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Entity
-@Table(name = "members")
+@Table(name = "users")
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Builder
-public class Member implements UserDetails {
+public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

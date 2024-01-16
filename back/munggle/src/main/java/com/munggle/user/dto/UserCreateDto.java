@@ -1,4 +1,4 @@
-package com.munggle.member.dto;
+package com.munggle.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class MemberCreateDto {
+public class UserCreateDto {
 
     @Size(max = 50)
     @NotBlank
