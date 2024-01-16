@@ -22,15 +22,23 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
-        httpSecurity
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+//        http
+//                .csrf().disable()
+//                .authorizeRequests()
+//                .requestMatchers(
+//                        request -> request.getServletPath()
+//                                .startsWith("/member/join")).permitAll()
+//                .anyRequest().authenticated();
+//
+//        return http.build();
+        http
                 .csrf().disable()
                 .authorizeRequests()
-                .requestMatchers(
-                        request -> request.getServletPath()
-                                .startsWith("/member/join")).permitAll()
-                .anyRequest().authenticated();
+                .anyRequest()
+                .permitAll()
+                .and().formLogin();
 
-        return httpSecurity.build();
+        return http.build();
     }
 }
