@@ -31,4 +31,10 @@ public class MemberServiceImpl implements MemberService{
         Member newMember = MemberMapper.toEntity(memberCreateDto);
         memberRepository.save(newMember);
     }
+
+    @Override
+    public Member findMemberById(Long id) {
+        return memberRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+    }
 }

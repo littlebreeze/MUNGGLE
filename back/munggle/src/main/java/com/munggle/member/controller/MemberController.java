@@ -1,10 +1,14 @@
 package com.munggle.member.controller;
 
+import com.munggle.domain.model.entity.Member;
 import com.munggle.member.dto.MemberCreateDto;
+import com.munggle.member.dto.MemberInfoDto;
+import com.munggle.member.mapper.MemberMapper;
 import com.munggle.member.service.MemberService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,6 +17,14 @@ import org.springframework.web.bind.annotation.*;
 public class MemberController {
 
     private final MemberService memberService;
+
+    @GetMapping("/info")
+    @ResponseStatus(HttpStatus.OK)
+    public MemberInfoDto getMemberInfo(@AuthenticationPrincipal Member principal) {
+        Long id = principal.getId();
+        Member member = memberService.findMemberById(id);
+        return MemberMapper.toMemberInfoDto(member);
+    }
 
     @PostMapping("/join")
     @ResponseStatus(HttpStatus.OK)
