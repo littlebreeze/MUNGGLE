@@ -62,6 +62,10 @@ public class Member implements UserDetails {
         this.nickname = newNickname;
     }
 
+    public void changePassword(String newPassword) {
+        this.password = newPassword;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

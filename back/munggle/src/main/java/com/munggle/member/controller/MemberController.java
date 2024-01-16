@@ -4,6 +4,7 @@ import com.munggle.domain.model.entity.Member;
 import com.munggle.member.dto.MemberCreateDto;
 import com.munggle.member.dto.MemberInfoDto;
 import com.munggle.member.dto.UpdateNicknameDto;
+import com.munggle.member.dto.UpdatePwdDto;
 import com.munggle.member.mapper.MemberMapper;
 import com.munggle.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -38,5 +39,13 @@ public class MemberController {
                                @RequestBody @Valid UpdateNicknameDto updateNicknameDto) {
         Long id = principal.getId();
         memberService.updateNickname(id, updateNicknameDto.getNewNickname());
+    }
+
+    @PutMapping("/password")
+    @ResponseStatus(HttpStatus.OK)
+    public void updatePassword(@AuthenticationPrincipal Member principal,
+                               @RequestBody @Valid UpdatePwdDto updatePwdDto) {
+        Long id = principal.getId();
+        memberService.updatePassword(id, updatePwdDto.getNewPassword());
     }
 }
