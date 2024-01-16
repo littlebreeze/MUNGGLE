@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class MemberServiceImpl implements MemberService{
+public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
 

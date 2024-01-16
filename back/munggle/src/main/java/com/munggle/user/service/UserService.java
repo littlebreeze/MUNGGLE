@@ -4,7 +4,7 @@ import com.munggle.user.dto.UserCreateDto;
 import com.munggle.user.dto.UserInfoDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
-public interface MemberService extends UserDetailsService {
+public interface UserService extends UserDetailsService {
 
     UserInfoDto getMemberInfo(Long id);
 
