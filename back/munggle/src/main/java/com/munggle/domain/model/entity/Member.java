@@ -30,7 +30,7 @@ public class Member {
     @Column(unique = true)
     private String email;
 
-    @Size(min = 8, max = 15)
+    @Size(min = 8)
     @NotNull
     @NotBlank
 //    @Convert(converter = PasswordConverter.class)
