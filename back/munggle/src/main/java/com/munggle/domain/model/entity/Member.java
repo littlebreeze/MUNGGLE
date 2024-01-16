@@ -1,5 +1,6 @@
 package com.munggle.domain.model.entity;
 
+import com.munggle.domain.model.entity.converter.PasswordConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -33,7 +34,7 @@ public class Member {
     @Size(min = 8)
     @NotNull
     @NotBlank
-//    @Convert(converter = PasswordConverter.class)
+    @Convert(converter = PasswordConverter.class)
     private String password;
 
     @Size(min = 2, max = 10)
