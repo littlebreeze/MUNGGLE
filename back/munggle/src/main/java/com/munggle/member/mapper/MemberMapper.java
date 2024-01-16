@@ -11,11 +11,11 @@ public class MemberMapper {
 
     public static Member toEntity(MemberCreateDto memberCreateDto) {
         return Member.builder()
-                .email(memberCreateDto.getUsername())
+                .username(memberCreateDto.getUsername())
                 .password(memberCreateDto.getPassword())
                 .nickname(memberCreateDto.getNickname())
                 .role(Role.USER)
-                .is_deleted(false)
+                .isDeleted(false)
                 .build();
     }
 }
