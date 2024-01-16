@@ -42,8 +42,6 @@ public class Member {
     @Column(unique = true)
     private String nickname;
 
-    @NotNull
-    @NotBlank
     @Size(max = 100)
     private String description;
 
