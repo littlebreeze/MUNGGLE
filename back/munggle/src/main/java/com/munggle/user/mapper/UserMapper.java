@@ -16,7 +16,7 @@ public class UserMapper {
                 .password(userCreateDto.getPassword())
                 .nickname(userCreateDto.getNickname())
                 .role(Role.USER)
-                .isDeleted(false)
+                .isEnabled(false)
                 .build();
     }
 

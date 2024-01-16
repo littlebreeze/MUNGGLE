@@ -68,6 +68,6 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteMember(Long id) {
         User user = findMemberById(id);
-        user.markAsDeleted();
+        user.markAsEnabled();
     }
 }

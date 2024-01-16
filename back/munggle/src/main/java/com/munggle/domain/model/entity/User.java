@@ -59,8 +59,8 @@ public class User implements UserDetails {
     private Role role;
 
     @NotNull
-    @Column(name = "is_deleted")
-    private boolean isDeleted;
+    @Column(name = "is_enabled")
+    private boolean isEnabled;
 
     public void changeNickname(String newNickname) {
         this.nickname = newNickname;
@@ -74,8 +74,8 @@ public class User implements UserDetails {
         this.description = description;
     }
 
-    public void markAsDeleted() {
-        this.isDeleted = true;
+    public void markAsEnabled() {
+        this.isEnabled = true;
     }
 
     @Override
@@ -95,11 +95,6 @@ public class User implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
         return true;
     }
 }
