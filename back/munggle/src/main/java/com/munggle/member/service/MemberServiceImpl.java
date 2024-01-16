@@ -20,6 +20,12 @@ public class MemberServiceImpl implements MemberService{
 
     private final MemberRepository memberRepository;
 
+    private Member findMemberById(Long id) {
+        Member member = memberRepository.findByIdAndIsDeletedFalse(id)
+                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+        return member;
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return memberRepository.findByUsernameAndIsDeletedFalse(username)
@@ -27,8 +33,7 @@ public class MemberServiceImpl implements MemberService{
     }
 
     public MemberInfoDto getMemberInfo(Long id) {
-        Member member = memberRepository.findByIdAndIsDeletedFalse(id)
-                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+        Member member = findMemberById(id);
         return MemberMapper.toMemberInfoDto(member);
     }
 
@@ -42,24 +47,21 @@ public class MemberServiceImpl implements MemberService{
     @Override
     @Transactional
     public void updateNickname(Long id, String newNickname) {
-        Member member = memberRepository.findByIdAndIsDeletedFalse(id)
-                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+        Member member = findMemberById(id);
         member.changeNickname(newNickname);
     }
 
     @Override
     @Transactional
     public void updatePassword(Long id, String newPassword) {
-        Member member = memberRepository.findByIdAndIsDeletedFalse(id)
-                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+        Member member = findMemberById(id);
         member.changePassword(newPassword);
     }
 
     @Override
     @Transactional
     public void writeDescription(Long id, String description) {
-        Member member = memberRepository.findByIdAndIsDeletedFalse(id)
-                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+        Member member = findMemberById(id);
         member.writeDescription(description);
     }
 }
