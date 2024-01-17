@@ -15,4 +15,10 @@ public class ExceptionAdvice {
     public String handleNotFound(RuntimeException e) {
         return e.getMessage();
     }
+
+    @ExceptionHandler({IllegalNicknameException.class, IllegalPasswordException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public String handleBadRequest(RuntimeException e) {
+        return e.getMessage();
+    }
 }
