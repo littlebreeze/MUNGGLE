@@ -37,7 +37,10 @@ public class SecurityConfig {
                 .authorizeRequests()
                 .anyRequest()
                 .permitAll()
-                .and().formLogin();
+                .and()
+                .formLogin(
+                        cofigure -> cofigure.successHandler(new FormLoginAuthenticationSuccessHandler())
+                                .failureHandler(new FormLoginAuthenticationFailureHandler()));
 
         return http.build();
     }
