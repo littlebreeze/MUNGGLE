@@ -1,10 +1,10 @@
 package com.munggle.user.service;
 
-import com.munggle.domain.exception.ExceptionMessage;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.User;
 import com.munggle.user.dto.UserCreateDto;
 import com.munggle.user.dto.UserInfoDto;
+import com.munggle.user.dto.UserSearchListDto;
 import com.munggle.user.mapper.UserMapper;
 import com.munggle.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static com.munggle.domain.exception.ExceptionMessage.*;
 
@@ -35,7 +37,13 @@ public class UserServiceImpl implements UserService{
 
     public UserInfoDto getMemberInfo(Long id) {
         User user = findMemberById(id);
-        return UserMapper.toMemberInfoDto(user);
+        return UserMapper.toUserInfoDto(user);
+    }
+
+    @Override
+    public List<UserSearchListDto> getSearchPage(String keyword) {
+        List<User> userList = userRepository.findByNicknameContainingAndIsEnabledTrue(keyword);
+        return UserMapper.fromUsers(userList);
     }
 
     @Override

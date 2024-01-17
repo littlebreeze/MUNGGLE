@@ -5,9 +5,12 @@ import com.munggle.user.dto.*;
 import com.munggle.user.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/user")
@@ -21,6 +24,12 @@ public class UserController {
     public UserInfoDto getMemberInfo(@AuthenticationPrincipal User principal) {
         Long id = principal.getId();
         return userService.getMemberInfo(id);
+    }
+
+    @GetMapping("/search/{keyword}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserSearchListDto> searchUserByNickname(@PathVariable String keyword) {
+        return userService.getSearchPage(keyword);
     }
 
     @PostMapping("/join")
