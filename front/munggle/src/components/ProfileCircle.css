@@ -1,20 +1,25 @@
 .profile-circle-container-div {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
   width: 80px;
-  height: 100px;
+  height: 75px;
 }
 
 .profile-circle-img-div {
-  width: 70px;
-  height: 70px;
+  width: 55px;
+  height: 55px;
   border: 1px solid lightgray;
   border-radius: 100%;
 }
 
 .profile-circle-name-div{
-  width: 80px;
-  height: 30px;
+  width: 60px;
+  height: 20px;
   text-align: center;
+}
+
+.profile-circle-name-span {
+  font-size: 12px;
+  font-weight: bold;
 }

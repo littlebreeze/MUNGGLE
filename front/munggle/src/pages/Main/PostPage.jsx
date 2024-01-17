@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from "react";
-import "../../styles/css/pages/PostPage.css";
+import "./PostPage.css";
 import ProfileCircle from "../../components/ProfileCircle";
 import axios from "axios";
 import imgProfile from "../../assets/example/profile.png";
+import imgPost from "../../assets/example/dog1.jpg"
+import iconRecommend from "../../assets/icons/recommend.png";
+import iconFollow from "../../assets/icons/follow.png";
+import ToggleButton from "../../components/button/ToggleButton";
+import PostComponent from "../../components/Post/PostComponent";
 
 export default function Post() {
   // const [posts, setPosts] = useState([]);
@@ -40,29 +45,73 @@ export default function Post() {
     },
   ]
 
+  const toggleButton = {
+    img1: iconRecommend,
+    text1: "추천",
+    img2: iconFollow,
+    text2: "팔로잉",
+  };
+
   const profileList = profiles.
-    map((profile) => {
+    map((profile, index) => {
       return (
         <ProfileCircle
-        img={profile.img}
-        name={profile.name}
+          key={index}
+          img={profile.img}
+          name={profile.name}
         />
       );
   })
+
+  const postList = [
+    {
+      user : {
+        imgProfile: imgProfile,
+        name: 'megar0829',
+        isFollow: false,
+      },
+      imgPost: imgPost,
+      title: "산책하는 댕댕이",
+      createdAt: "2024-01-17",
+      tagList: [
+        "산책", "댕댕이", "신났네",
+      ],
+    },
+    {
+      user : {
+        imgProfile: imgProfile,
+        name: 'megar0829',
+        isFollow: false,
+      },
+      imgPost: imgPost,
+      title: "산책하는 댕댕이",
+      createdAt: "2024-01-17",
+      tagList: [
+        "산책", "댕댕이", "신났네",
+      ],
+    },
+  ]
 
 
   return (
     <div className="post-container-div">
       <div className="post-top-div">
         <div className="post-top-div-top-div">
-        1
+          <ToggleButton 
+            img1={iconRecommend}
+            text1="추천"
+            img2={iconFollow}
+            text2="팔로잉"
+          />
         </div>
         <div className="post-top-div-bottom-div">
           {profileList}
         </div>
       </div>
       <div className="post-bottom-div">
-        1 
+        <PostComponent 
+          postList={postList}
+        />
       </div>
     </div>
   );

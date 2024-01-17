@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/css/layout/Body.css";
+import "./Body.css";
 import { Route, Routes } from "react-router-dom";
 import Post from "../pages/Main/PostPage";
 import Profile from "../pages/Main/ProfilePage";
@@ -18,7 +18,7 @@ export default function Body() {
         <Route path="/" element={<Post />} />
         <Route path="/story" element={<Story />} />
         <Route path="/walk" element={<Walk />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/profile/*" element={<Profile />} />
         <Route path="/directmessage" element={<DirectMessage />} />
         <Route path="/notification" element={<Notification />} />
         <Route path="/search" element={<Search />} />

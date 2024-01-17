@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/css/layout/Footer.css";
+import "./Footer.css";
 import iconHome from "../assets/icons/home.png";
 import iconStory from "../assets/icons/story.png";
 import iconWalk from "../assets/icons/walk.png";

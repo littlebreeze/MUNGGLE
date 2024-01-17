@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/css/pages/DirectMessagePage.css";
+import "./DirectMessagePage.css";
 
 export default function DirectMessage() {
   return (

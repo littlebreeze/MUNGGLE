@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/css/layout/Nav.css";
+import "./Nav.css";
 import imgLogo from "../assets/logo.png";
 import imgSearch from "../assets/icons/search.png";
 import imgNotification from "../assets/icons/notification.png";

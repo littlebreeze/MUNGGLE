@@ -1,5 +1,5 @@
 import React from "react";
-import "../../styles/css/pages/SearchPage.css";
+import "./SearchPage.css";
 
 export default function Search() {
   return (

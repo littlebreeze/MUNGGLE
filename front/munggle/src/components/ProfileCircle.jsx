@@ -1,5 +1,5 @@
 import React from "react";
-import "../styles/css/components/ProfileCircle.css";
+import "./ProfileCircle.css";
 
 export default function ProfileCircle(props) {
   return (
@@ -8,7 +8,7 @@ export default function ProfileCircle(props) {
         <img src={props.img} className="profile-circle-img-div"/>
       </div>
       <div className="profile-circle-name-div">
-        <span className="fs-5">{props.name}</span>
+        <span className="profile-circle-name-span">{props.name}</span>
       </div>
     </div>
   );
