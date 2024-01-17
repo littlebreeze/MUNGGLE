@@ -7,7 +7,6 @@ public class PasswordValidator {
     private static final int MAX_LENGTH = 15;
 
     public static boolean isValidPassword(String password) {
-        return MIN_LENGTH <= password.length() && password.length() <= MAX_LENGTH
-                && !password.contains(BLANK);
+        return !password.contains(BLANK);
     }
 }
