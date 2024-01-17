@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./Record.css"
 import { useNavigate } from "react-router-dom";
 const { kakao } = window;
@@ -13,20 +13,29 @@ export default function Record() {
         setRecord(!record);
     };
 
+    const latRef = useRef(lat);
+    const lngRef = useRef(lng);
+
     const latUp = () => {
-        setLat(lat+0.0002);
+      setLat((prevLat) => {
+        latRef.current = prevLat + 0.0002;
+        return prevLat + 0.0002;
+      });
     };
 
     const latDown = () => {
         setLat(lat-0.0002);
+   
     };
 
     const lngUp = () => {
         setLng(lng+0.0002);
+
     };
 
     const lngDown = () => {
         setLng(lng-0.0002);
+
     };
     
     //랜더링 될때 한번
@@ -40,6 +49,15 @@ export default function Record() {
       level: 3
       };
       const map = new kakao.maps.Map(container, options);
+      const panTo = setInterval( () => {
+        console.log(lat);
+        const moveLatLon = new kakao.maps.LatLng(latRef.current,lngRef.current);
+        map.panTo(moveLatLon);
+      },3000);
+      return () => {
+        clearInterval(panTo);
+        console.log(444);
+      }
     }, []);
 
     
