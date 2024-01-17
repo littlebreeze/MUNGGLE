@@ -12,7 +12,7 @@ public class Kind {
     @Column(nullable = false)
     private Long kind_no;   // 품종 코드
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 50, nullable = false)
     private String kind_nm; // 품종 명
 
     @Builder
