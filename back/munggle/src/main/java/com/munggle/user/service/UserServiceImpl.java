@@ -1,5 +1,7 @@
 package com.munggle.user.service;
 
+import com.munggle.domain.exception.ExceptionMessage;
+import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.User;
 import com.munggle.user.dto.UserCreateDto;
 import com.munggle.user.dto.UserInfoDto;
@@ -11,7 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.NoSuchElementException;
+import static com.munggle.domain.exception.ExceptionMessage.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,13 +24,13 @@ public class UserServiceImpl implements UserService{
 
     private User findMemberById(Long id) {
         return userRepository.findByIdAndIsEnabledTrue(id)
-                        .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+                        .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsernameAndIsEnabledTrue(username)
-                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     }
 
     public UserInfoDto getMemberInfo(Long id) {
