@@ -21,13 +21,13 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
 
     private User findMemberById(Long id) {
-        return userRepository.findByIdAndIsEnabledFalse(id)
-                .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
+        return userRepository.findByIdAndIsEnabledTrue(id)
+                        .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsernameAndIsEnabledFalse(username)
+        return userRepository.findByUsernameAndIsEnabledTrue(username)
                 .orElseThrow(() -> new NoSuchElementException("회원을 찾을 수 없습니다."));
     }
 

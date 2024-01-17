@@ -75,7 +75,7 @@ public class User implements UserDetails {
     }
 
     public void markAsDeleted() {
-        this.isEnabled = true;
+        this.isEnabled = false;
     }
 
     @Override
