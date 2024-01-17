@@ -3,7 +3,7 @@ package com.munggle.user.mapper;
 import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.type.Role;
 import com.munggle.user.dto.UserCreateDto;
-import com.munggle.user.dto.UserInfoDto;
+import com.munggle.user.dto.UserProfileDto;
 import com.munggle.user.dto.UserSearchListDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -24,8 +24,8 @@ public class UserMapper {
                 .build();
     }
 
-    public static UserInfoDto toUserInfoDto(User user) {
-        return UserInfoDto.builder()
+    public static UserProfileDto toUserProfileDto(User user) {
+        return UserProfileDto.builder()
                 .nickname(user.getNickname())
                 .desc(user.getDescription())
                 .build();
