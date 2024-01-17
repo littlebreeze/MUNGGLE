@@ -3,6 +3,7 @@ package com.munggle.user.service;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.User;
 import com.munggle.user.dto.UserCreateDto;
+import com.munggle.user.dto.UserMyPageDto;
 import com.munggle.user.dto.UserProfileDto;
 import com.munggle.user.dto.UserSearchListDto;
 import com.munggle.user.mapper.UserMapper;
@@ -33,6 +34,12 @@ public class UserServiceImpl implements UserService{
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsernameAndIsEnabledTrue(username)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+    }
+
+    @Override
+    public UserMyPageDto getUserMypage(Long id) {
+        User user = findMemberById(id);
+        return UserMapper.toUserMyPageDto(user);
     }
 
     public UserProfileDto getUserProfile(Long id) {

@@ -18,11 +18,17 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/profile")
+    @GetMapping("/mypage")
     @ResponseStatus(HttpStatus.OK)
-    public UserProfileDto getMemberInfo(@AuthenticationPrincipal User principal) {
+    public UserMyPageDto getMyPage(@AuthenticationPrincipal User principal) {
         Long id = principal.getId();
-        return userService.getUserProfile(id);
+        return userService.getUserMypage(id);
+    }
+
+    @GetMapping("/profile/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserProfileDto getMemberInfo(@PathVariable Long userId) {
+        return userService.getUserProfile(userId);
     }
 
     @GetMapping("/search/{keyword}")
