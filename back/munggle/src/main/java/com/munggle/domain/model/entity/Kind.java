@@ -10,14 +10,14 @@ public class Kind {
 
     @Id
     @Column(nullable = false)
-    private Long kind_no;   // 품종 코드
+    private Long kindNo;   // 품종 코드
 
     @Column(length = 50, nullable = false)
-    private String kind_nm; // 품종 명
+    private String kindNm; // 품종 명
 
     @Builder
     public Kind(Long kind_no, String kind_nm) {
-        this.kind_no = kind_no;
-        this.kind_nm = kind_nm;
+        this.kindNo = kind_no;
+        this.kindNm = kind_nm;
     }
 }

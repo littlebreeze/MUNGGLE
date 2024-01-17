@@ -1,10 +1,13 @@
 package com.munggle.openAPI.controller;
 
+import com.munggle.domain.model.entity.Kind;
+import com.munggle.domain.model.entity.LostDog;
 import com.munggle.openAPI.service.OpenAPIService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +17,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/openapi")
@@ -33,9 +38,11 @@ public class OpenAPIController {
     @Value("${api.kind}")
     private String kindUri;
 
-    // 품종 정보 요청
-    @GetMapping("/kind")
-    public void kind() throws IOException, ParseException {
+    // 상태 변경 시 update 부분 고민
+
+    // 품종 정보 요청 - 관리자만 가능하도록 설정
+    @GetMapping("/requestKind")
+    public void requestKind() throws IOException, ParseException {
 
         StringBuilder urlBuilder = new StringBuilder(abandonedUrl); /*URL*/
         urlBuilder.append(kindUri);
@@ -66,9 +73,9 @@ public class OpenAPIController {
         openAPIService.insertKind(sb.toString());
     }
 
-    // 유기 동물 정보 요청
-    @GetMapping("/lostdog")
-    public void lostDog() throws IOException, ParseException {
+    // 유기 동물 정보 요청 - 관리자만 가능하도록 설정
+    @GetMapping("/requestLostdog")
+    public void requestLostdog() throws IOException, ParseException {
 
         Long totalCnt = -1L;
         Long pageNo = 0L;
@@ -117,4 +124,24 @@ public class OpenAPIController {
         System.out.println("시간차이(m) : "+secDiffTime);
     }
 
+    // DB Select
+    // 입력한 값에 따라 품종 리스트
+    @GetMapping(value = {"/kind/{input}", "/kind"})
+    public List<Kind> kind(@PathVariable(required = false) String input){
+
+        return openAPIService.selectKind("%"+input+"%");
+    }
+
+    // 보여줄 유기동물 정보
+    // 지역, 품종
+    // 로그인 사용자 정보 받는 방법 결정 후 mapping 수정 예정
+    @GetMapping("/lostdog")
+    public List<LostDog> listOfLostDog(Optional<String> region, Optional<String> kind){
+
+        // null 값 처리를 위한 Optional 사용
+        String careAddr = region.orElse("");
+        String inputKind = kind.orElse("");
+
+        return openAPIService.selectListDog("%"+careAddr+"%","%"+inputKind);
+    }
 }

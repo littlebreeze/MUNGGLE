@@ -11,6 +11,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 
@@ -31,9 +33,7 @@ public class OpenAPIServiceImpl implements OpenAPIService {
 
         for(int idx=0; idx<item.size(); idx++){
             JSONObject tmp = (JSONObject) item.get(idx);
-            //System.out.println(tmp.toString());
-            // tmp.get("knm")
-            // tmp.get("kindCd")
+
             Long code = Long.parseLong(String.valueOf(tmp.get("kindCd")));
             String name = String.valueOf(tmp.get("knm"));
             Kind kind = Kind.builder()
@@ -59,7 +59,7 @@ public class OpenAPIServiceImpl implements OpenAPIService {
 
         for(int idx=0; idx<item.size(); idx++){
             JSONObject tmp = (JSONObject) item.get(idx);
-            // String.valueOf(tmp.get(""));
+
             LostDog lostDog = LostDog.builder()
                     .lost_dog_no(Long.parseLong(String.valueOf(tmp.get("desertionNo"))))
                     .thumbImage(String.valueOf(tmp.get("filename")))
@@ -89,4 +89,17 @@ public class OpenAPIServiceImpl implements OpenAPIService {
         }
         return totalCount;
     }
+
+    @Override
+    public List<Kind> selectKind(String input) {
+
+        return kindRepository.findByKindNmLike(input);
+    }
+
+    @Override
+    public List<LostDog> selectListDog(String region, String kind) {
+        return lostDogRepository.findByCareAddrLikeAndKindLike(region, kind);
+    }
+
+
 }
