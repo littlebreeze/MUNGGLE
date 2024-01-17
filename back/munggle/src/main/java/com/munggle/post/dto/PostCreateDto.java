@@ -2,19 +2,20 @@ package com.munggle.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@Data
 @AllArgsConstructor
 public class PostCreateDto {
 
     @JsonIgnore
-    private Long user_id;
+    private Long userId;
 
     @Size(max = 100)
     @NotBlank
@@ -31,8 +32,6 @@ public class PostCreateDto {
 //    해시태그
 //    @Builder.Default
 //    private List<String> hashtags = new ArrayList<>();
-
-    private LocalDateTime createdAt;
 
     private Boolean isPrivate;
 }

@@ -24,7 +24,6 @@ public class Post extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_no")
     private Long id;
 
     @Size(max = 100)
@@ -40,7 +39,7 @@ public class Post extends BaseTimeEntity {
     @NotNull
     @NotBlank
     @Column(name = "user_id")
-    private Long user_id;
+    private Long userId;
 
     @NotNull
     @Column(name = "like_cnt")

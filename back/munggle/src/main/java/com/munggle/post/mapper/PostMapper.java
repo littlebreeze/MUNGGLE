@@ -14,7 +14,7 @@ public class PostMapper {
         return Post.builder()
                 .postTitle(postCreateDto.getPostTitle())
                 .postContent(postCreateDto.getPostContent())
-                .user_id(postCreateDto.getUser_id())
+                .userId(postCreateDto.getUserId())
                 .isPrivate(postCreateDto.getIsPrivate())
                 .build();
     }
