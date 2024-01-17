@@ -1,7 +1,7 @@
 package com.munggle.user.mapper;
 
 import com.munggle.domain.model.entity.User;
-import com.munggle.domain.model.entity.Role;
+import com.munggle.domain.model.entity.type.Role;
 import com.munggle.user.dto.UserCreateDto;
 import com.munggle.user.dto.UserInfoDto;
 import com.munggle.user.dto.UserSearchListDto;

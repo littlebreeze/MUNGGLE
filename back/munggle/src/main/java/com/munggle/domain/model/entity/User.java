@@ -1,6 +1,11 @@
 package com.munggle.domain.model.entity;
 
+import com.munggle.domain.exception.IllegalNicknameException;
+import com.munggle.domain.exception.IllegalPasswordException;
 import com.munggle.domain.model.entity.converter.PasswordConverter;
+import com.munggle.domain.model.entity.type.Role;
+import com.munggle.util.NicknameValidator;
+import com.munggle.util.PasswordValidator;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -17,6 +22,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
+
+import static com.munggle.domain.exception.ExceptionMessage.NICKNAME_ILLEGAL;
+import static com.munggle.domain.exception.ExceptionMessage.PASSWORD_ILLEGAL;
 
 @Entity
 @Table(name = "users")
@@ -63,11 +71,27 @@ public class User implements UserDetails {
     @Column(name = "is_enabled")
     private boolean isEnabled;
 
+    @PrePersist
+    public void prePersist() {
+        if (!NicknameValidator.isValidNickname(this.nickname)) {
+            throw new IllegalNicknameException(NICKNAME_ILLEGAL);
+        }
+        if (!PasswordValidator.isValidPassword(this.password)) {
+            throw new IllegalPasswordException(PASSWORD_ILLEGAL);
+        }
+    }
+
     public void changeNickname(String newNickname) {
+        if (!NicknameValidator.isValidNickname(newNickname)) {
+            throw new IllegalNicknameException(NICKNAME_ILLEGAL);
+        }
         this.nickname = newNickname;
     }
 
     public void changePassword(String newPassword) {
+        if (!PasswordValidator.isValidPassword(newPassword)) {
+            throw new IllegalPasswordException(PASSWORD_ILLEGAL);
+        }
         this.password = newPassword;
     }
 
