@@ -26,9 +26,8 @@ public class UserMapper {
 
     public static UserInfoDto toUserInfoDto(User user) {
         return UserInfoDto.builder()
-                .username(user.getUsername())
                 .nickname(user.getNickname())
-                .role(user.getRole().name())
+                .desc(user.getDescription())
                 .build();
     }
 

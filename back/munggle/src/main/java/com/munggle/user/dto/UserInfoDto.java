@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UserInfoDto {
 
-    private final String username;
+    // 프로필 dto임으로 배경 이미지랑 프로필 이미지 추후 추가
     private final String nickname;
-    private final String role;
+    private final String desc;
 }
