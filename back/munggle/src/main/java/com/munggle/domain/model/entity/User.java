@@ -25,6 +25,7 @@ import java.util.Collections;
 @AllArgsConstructor
 @Getter
 @Builder
+// 배경화면, 프로필 이미지 필드 필요
 public class User implements UserDetails {
 
     @Id
