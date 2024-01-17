@@ -4,8 +4,12 @@ import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.Role;
 import com.munggle.user.dto.UserCreateDto;
 import com.munggle.user.dto.UserInfoDto;
+import com.munggle.user.dto.UserSearchListDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserMapper {
@@ -20,11 +24,17 @@ public class UserMapper {
                 .build();
     }
 
-    public static UserInfoDto toMemberInfoDto(User user) {
+    public static UserInfoDto toUserInfoDto(User user) {
         return UserInfoDto.builder()
                 .username(user.getUsername())
                 .nickname(user.getNickname())
                 .role(user.getRole().name())
                 .build();
+    }
+
+    public static List<UserSearchListDto> fromUsers(List<User> users) {
+        return users.stream()
+                .map(UserSearchListDto::toUserSearchListDto)
+                .collect(Collectors.toList());
     }
 }
