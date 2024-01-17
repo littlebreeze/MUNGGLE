@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Builder;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Builder
-public class Post {
+public class Post extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,20 +39,13 @@ public class Post {
 
     @NotNull
     @NotBlank
-    @Column(name = "user_name")
-    private Long userName;
+    @Column(name = "user_id")
+    private Long user_id;
 
     @NotNull
     @Column(name = "like_cnt")
+    @ColumnDefault("0")
     private Integer likeCnt;
-
-    @NotNull
-    @NotBlank
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
 
     @Column(name = "is_deleted")
     private Boolean isDeleted;
