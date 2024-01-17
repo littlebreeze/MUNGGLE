@@ -54,9 +54,9 @@ public class UserController {
     @PutMapping("/password")
     @ResponseStatus(HttpStatus.OK)
     public void updatePassword(@AuthenticationPrincipal User principal,
-                               @RequestBody @Valid UpdatePwdDto updatePwdDto) {
+                               @RequestBody @Valid UpdatePasswordDto updatePasswordDto) {
         Long id = principal.getId();
-        userService.updatePassword(id, updatePwdDto.getNewPassword());
+        userService.updatePassword(id, updatePasswordDto.getNewPassword());
     }
 
     @PutMapping("/desc")

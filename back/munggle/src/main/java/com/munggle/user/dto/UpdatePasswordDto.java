@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdatePwdDto {
+public class UpdatePasswordDto {
 
     /// 현재 비밀번호 확인은 나중에 구현
 //    @NotBlank
