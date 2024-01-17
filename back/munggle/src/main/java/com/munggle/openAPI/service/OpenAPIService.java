@@ -8,5 +8,5 @@ public interface OpenAPIService {
     void insertKind(String kindJSON) throws ParseException;
 
     // 유기 동물 정보 저장
-    void insertLostDog(String lostJSON);
+    Long insertLostDog(String lostJSON) throws ParseException ;
 }
