@@ -1,20 +1,20 @@
 package com.munggle.post.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
-@Data
-@NoArgsConstructor
+@Getter
+@AllArgsConstructor
 public class PostCreateDto {
 
-    private long postNo;
-
-    private long userId;
+    @JsonIgnore
+    private Long user_id;
 
     @Size(max = 100)
     @NotBlank
@@ -23,26 +23,16 @@ public class PostCreateDto {
     @Size(max = 500)
     private String postContent;
 
-    private int likeCnt;
+//    포스트 이미지
+//    @NotEmpty
+//    @Builder.Default
+//    private List<MultipartFile> images = new ArrayList<>();
+
+//    해시태그
+//    @Builder.Default
+//    private List<String> hashtags = new ArrayList<>();
 
     private LocalDateTime createdAt;
 
-    private LocalDateTime updatedAt;
-
-    private boolean isDeleted;
-
-    private boolean isPrivate;
-
-    public PostCreateDto(long postNo, long userId, String postTitle,
-                   String postContent, int likeCnt, LocalDateTime createdAt,
-                   boolean isDeleted, boolean isPrivate) {
-        this.postNo = postNo;
-        this.userId = userId;
-        this.postTitle = postTitle;
-        this.postContent = postContent;
-        this.likeCnt = likeCnt;
-        this.createdAt = createdAt;
-        this.isDeleted = isDeleted;
-        this.isPrivate = isPrivate;
-    }
+    private Boolean isPrivate;
 }
