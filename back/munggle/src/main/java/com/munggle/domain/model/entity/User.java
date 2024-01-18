@@ -15,11 +15,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -67,6 +70,13 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @CreationTimestamp
+    @Column(name = "create_at")
+    private LocalDateTime create_at;
+
+    @Column(name = "last_modified")
+    private LocalDateTime lastModified;
+
     @NotNull
     @Column(name = "is_enabled")
     private boolean isEnabled;
@@ -79,6 +89,12 @@ public class User implements UserDetails {
         if (!PasswordValidator.isValidPassword(this.password)) {
             throw new IllegalPasswordException(PASSWORD_ILLEGAL);
         }
+        this.lastModified = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.lastModified = LocalDateTime.now();
     }
 
     public void changeNickname(String newNickname) {
