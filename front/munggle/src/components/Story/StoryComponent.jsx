@@ -7,9 +7,9 @@ export default function StoryComponent(props) {
   const storyList = props.storyList
 
   const Stories = storyList
-    .map((story) => {
+    .map((story, index) => {
       return (
-        <div className="story-list-detail-container-div">
+        <div key={index} className="story-list-detail-container-div">
           <div className="story-list-left-div">
             <UserProfileComponent 
               imgProfile={story.user.imgProfile}
