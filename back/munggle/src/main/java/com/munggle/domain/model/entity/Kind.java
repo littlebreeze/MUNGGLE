@@ -1,23 +1,26 @@
 package com.munggle.domain.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 @Entity
+@Table(name = "kinds")
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Kind {
 
     @Id
-    @Column(nullable = false)
+    @NotNull
     private Long kindNo;   // 품종 코드
 
-    @Column(length = 50, nullable = false)
+    @Size(max = 50)
+    @NotNull
+    @NotBlank
     private String kindNm; // 품종 명
 
-    @Builder
-    public Kind(Long kind_no, String kind_nm) {
-        this.kindNo = kind_no;
-        this.kindNm = kind_nm;
-    }
 }

@@ -37,8 +37,8 @@ public class OpenAPIServiceImpl implements OpenAPIService {
             Long code = Long.parseLong(String.valueOf(tmp.get("kindCd")));
             String name = String.valueOf(tmp.get("knm"));
             Kind kind = Kind.builder()
-                    .kind_nm(name)
-                    .kind_no(code)
+                    .kindNm(name)
+                    .kindNo(code)
                     .build();
 
             // Repository로 DB에 저장 코드 작성하기
@@ -61,7 +61,7 @@ public class OpenAPIServiceImpl implements OpenAPIService {
             JSONObject tmp = (JSONObject) item.get(idx);
 
             LostDog lostDog = LostDog.builder()
-                    .lost_dog_no(Long.parseLong(String.valueOf(tmp.get("desertionNo"))))
+                    .lostDogNo(Long.parseLong(String.valueOf(tmp.get("desertionNo"))))
                     .thumbImage(String.valueOf(tmp.get("filename")))
                     .image(String.valueOf(tmp.get("popfile")))
                     .happenDate(String.valueOf(tmp.get("happenDt")))
