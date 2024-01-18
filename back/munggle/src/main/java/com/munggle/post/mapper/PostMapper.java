@@ -2,6 +2,7 @@ package com.munggle.post.mapper;
 
 import com.munggle.domain.model.entity.Post;
 import com.munggle.post.dto.PostCreateDto;
+import com.munggle.post.dto.PostDetailResponseDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,5 +18,9 @@ public class PostMapper {
                 .userId(postCreateDto.getUserId())
                 .isPrivate(postCreateDto.getIsPrivate())
                 .build();
+    }
+
+    public static PostDetailResponseDto toPostDetailResponseDto(PostDetailResponseDto postDetailResponseDto) {
+        return null;
     }
 }

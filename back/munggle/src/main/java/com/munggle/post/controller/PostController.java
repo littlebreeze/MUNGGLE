@@ -5,12 +5,14 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.munggle.post.dto.PostCreateDto;
 import com.munggle.post.dto.PostUpdateDto;
 import com.munggle.post.dto.PostListResponseDto;
 import com.munggle.post.dto.PostListRequestDto;
+import com.munggle.post.dto.PostDetailResponseDto;
 
 @Slf4j
 @RestController
@@ -36,6 +38,7 @@ public class PostController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public void savePost(@RequestBody PostCreateDto postCreateDto) {
+        // 유저 넣어줘야 됌!!!!!
         postService.insertPost(postCreateDto);
     }
 
@@ -43,7 +46,7 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     public void updatePost(@PathVariable Long postId,
                            @RequestBody @Valid PostUpdateDto postUpdateDto) {
-
+        // 유저 넣어줘야 됌!!!!!
         postUpdateDto.setPostId(postId);
         postService.updatePost(postUpdateDto);
     }
@@ -51,6 +54,15 @@ public class PostController {
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public void deletePost(@PathVariable Long postId) {
+        // 유저 넣어줘야 됌!!!!!
         postService.deletePost(postId);
+    }
+
+    @GetMapping("/postId")
+    @ResponseStatus(HttpStatus.OK)
+    public PostDetailResponseDto getPost(@PathVariable Long postId) {
+        // 유저 정보 넣어줘야 됌!!!!
+
+        return postService.getDetailPost(postId);
     }
 }

@@ -2,6 +2,7 @@ package com.munggle.post.service;
 
 import com.munggle.domain.model.entity.Post;
 import com.munggle.post.dto.PostCreateDto;
+import com.munggle.post.dto.PostDetailResponseDto;
 import com.munggle.post.dto.PostUpdateDto;
 import com.munggle.post.mapper.PostMapper;
 import com.munggle.post.repository.PostRepository;
@@ -47,5 +48,12 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findByIdAnAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new NoSuchElementException());
         post.markAsDeletd();
+    }
+
+    @Override
+    public PostDetailResponseDto getDetailPost(Long postId) {
+
+
+        return null;
     }
 }
