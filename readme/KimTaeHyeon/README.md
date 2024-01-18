@@ -40,3 +40,18 @@
   - 7강 Container
   - 8강 Ducks Pattern
 - 내일까지 실습까지 마치고 최소한 1/19(금)에는 다른 팀원에게 알려주면서 코드에 적용해보기
+
+### 9일차[2024. 01. 18(목)]
+
+#### Redux 학습(9 ~ 16강) -> TIL에 적용
+- Redux 강의 학습
+  - 9강 redux-actions
+  - 10강 Redux와 Async Logic
+  - 11강 redux-thunk
+  - 12강 redux-saga
+  - 13강 redux-persist
+  - 14강 Redux Toolkit(RTK)
+  - 15강 Redux Hooks
+- Redux 실습
+  - 16강 미니 프로젝트
+- 내일은 Redux를 프론트 팀원들에게 설명하고 현재의 프론트 설계구조를 리팩토링할 수 있도록 고안
