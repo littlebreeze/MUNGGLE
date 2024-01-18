@@ -1,0 +1,28 @@
+.post-container-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.post-list-detail-container-div {
+  display: flex;
+  flex-direction: row;
+  width: 390px;
+  height: 250px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.post-list-left-div {
+  width: 85px;
+  height: 250px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+}
+
+.post-list-right-div {
+  width: 300px;
+  height: 250px;
+}

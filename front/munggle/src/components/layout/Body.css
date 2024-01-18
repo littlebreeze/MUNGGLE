@@ -1,0 +1,6 @@
+.body-container-div {
+  width: 400px;
+  height: 630px;
+  border: 1px solid black;
+  overflow-y: scroll;
+}

@@ -1,0 +1,13 @@
+.profile-post-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: scroll;
+  width: 400px;
+}
+
+.profile-post-list-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
