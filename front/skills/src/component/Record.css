@@ -18,11 +18,11 @@
 }
 .time-page{
     width:300px;
-    height: 200px;
-    background-color: red;
-    font-size: 100px;
+    height: 80px;
+    background-color: white;
+    font-size: 30px;
     position: absolute;
-    bottom: 10%;
+    bottom: -10%;
     left: 15%;
     z-index: 1;
 }

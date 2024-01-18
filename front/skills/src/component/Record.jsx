@@ -8,7 +8,7 @@ export default function Record() {
     const [record, setRecord] = useState(false);
     const [lat, setLat] = useState(37.54699);
     const [lng, setLng] = useState(127.09598);
-    const [num, setNum] = useState(0);
+
     const changeRecord = () => {
         setRecord(!record);
     };
@@ -24,18 +24,24 @@ export default function Record() {
     };
 
     const latDown = () => {
-        setLat(lat-0.0002);
-   
+        setLat((prevLat) => {
+        latRef.current = prevLat - 0.0002;
+        return prevLat - 0.0002;
+      });
     };
 
     const lngUp = () => {
-        setLng(lng+0.0002);
-
+      setLng((prevLng) => {
+        lngRef.current = prevLng + 0.0002;
+        return prevLng + 0.0002;
+      });
     };
 
     const lngDown = () => {
-        setLng(lng-0.0002);
-
+      setLng((prevLng) => {
+        lngRef.current = prevLng - 0.0002;
+        return prevLng - 0.0002;
+      });
     };
     
     //랜더링 될때 한번
@@ -53,7 +59,7 @@ export default function Record() {
         console.log(lat);
         const moveLatLon = new kakao.maps.LatLng(latRef.current,lngRef.current);
         map.panTo(moveLatLon);
-      },3000);
+      },300000);//테스트할때 3000으로 바꾸기
       return () => {
         clearInterval(panTo);
         console.log(444);
@@ -73,8 +79,8 @@ export default function Record() {
         }}></div>
 
         <div className="time-page">
-            <div>0:00:00</div>
-            <div style={{fontSize:"30px"}}>산책 거리: </div>
+          {!record && <h4>산책 시간 0:00:00</h4>}
+          {record && <Timer></Timer>}
         </div>
 
         <div onClick={changeRecord}>
@@ -95,4 +101,17 @@ export default function Record() {
         </div>
       </div>
     )
+  }
+
+  function Timer() {
+    const [time, setTime] = useState(0);
+
+    useEffect(() => {
+      const clock = setInterval(() => {
+        setTime(prev => prev+1);
+    }, 1000);
+    return () => clearInterval(clock);
+    },[time]);
+
+    return <h4>{`산책 시간 ${parseInt(time/3600)}:${parseInt(time/60).toString().padStart(2, '0')}:${(time%60).toString().padStart(2, '0')}`}</h4>;
   }

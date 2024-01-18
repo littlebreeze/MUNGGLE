@@ -3,6 +3,7 @@ import './Map.css';
 import walks from "./walks";
 import {Link, BrowserRouter, Routes, Route } from "react-router-dom";
 import Record from "./Record.jsx"
+import RecordTest from "./RecordTest.jsx";
 import Save from "./Save.jsx"
 import Calender from "./Calender.jsx"
 import Detail from "./Detail.jsx"
@@ -24,7 +25,7 @@ export default function Map() {
             <div className="content">
             <Routes>
               <Route path="/" element={<Space/>}></Route>
-              <Route path="/record" element={<Record/>}></Route>
+              <Route path="/record" element={<RecordTest/>}></Route>
               <Route path="/save" element={<Save/>}></Route>
               <Route path="/calender" element={<Calender/>}></Route>
               <Route path="/detail" element={<Detail/>}></Route>
