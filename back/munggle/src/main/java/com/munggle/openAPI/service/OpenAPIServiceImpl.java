@@ -15,7 +15,6 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-
 public class OpenAPIServiceImpl implements OpenAPIService {
 
     private final KindRepository kindRepository;
@@ -38,7 +37,7 @@ public class OpenAPIServiceImpl implements OpenAPIService {
             String name = String.valueOf(tmp.get("knm"));
             Kind kind = Kind.builder()
                     .kindNm(name)
-                    .kindNo(code)
+                    .kindId(code)
                     .build();
 
             // Repository로 DB에 저장 코드 작성하기
@@ -61,7 +60,7 @@ public class OpenAPIServiceImpl implements OpenAPIService {
             JSONObject tmp = (JSONObject) item.get(idx);
 
             LostDog lostDog = LostDog.builder()
-                    .lostDogNo(Long.parseLong(String.valueOf(tmp.get("desertionNo"))))
+                    .lostDogId(Long.parseLong(String.valueOf(tmp.get("desertionNo"))))
                     .thumbImage(String.valueOf(tmp.get("filename")))
                     .image(String.valueOf(tmp.get("popfile")))
                     .happenDate(String.valueOf(tmp.get("happenDt")))

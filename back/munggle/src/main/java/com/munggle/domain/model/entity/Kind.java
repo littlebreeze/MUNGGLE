@@ -16,7 +16,7 @@ public class Kind {
 
     @Id
     @NotNull
-    private Long kindNo;   // 품종 코드
+    private Long kindId;   // 품종 코드
 
     @Size(max = 50)
     @NotNull

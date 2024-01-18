@@ -16,7 +16,7 @@ public class LostDog {
 
     @Id
     @Column(nullable = false)
-    private Long lostDogNo;  // 유기 번호
+    private Long lostDogId;  // 유기 번호
 
     @Size(max = 100)
     @NotNull
