@@ -21,7 +21,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
@@ -62,6 +61,14 @@ public class User implements UserDetails {
     @NotBlank
     @Column(unique = true)
     private String nickname;
+
+    @Size(max = 255)
+    @Column(name = "background_image")
+    private String backgroundImage;
+
+    @Size(max = 255)
+    @Column(name = "profile_image")
+    private String profileImage;
 
     @Size(max = 100)
     private String description;
@@ -109,6 +116,14 @@ public class User implements UserDetails {
             throw new IllegalPasswordException(PASSWORD_ILLEGAL);
         }
         this.password = newPassword;
+    }
+
+    public void backgroundImage(String backgroundImage) {
+        this.backgroundImage = backgroundImage;
+    }
+
+    public void changeProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 
     public void writeDescription(String description) {
