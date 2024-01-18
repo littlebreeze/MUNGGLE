@@ -2,6 +2,7 @@ package com.munggle.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +14,8 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 public class PostUpdateDto {
+
+    private Long postId;
 
     @Size(max = 100)
     @NotBlank

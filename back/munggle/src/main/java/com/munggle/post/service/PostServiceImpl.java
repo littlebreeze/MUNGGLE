@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
@@ -18,12 +21,31 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void insertPost(PostCreateDto postCreateDto) {
+        String title = postCreateDto.getPostTitle();
+        
         Post newPost = PostMapper.toEntity(postCreateDto);
         postRepository.save(newPost);
     }
 
     @Override
+    @Transactional
     public void updatePost(PostUpdateDto postUpdateDto) {
 
+        String newTitle = postUpdateDto.getPostTitle();
+        String newContent = postUpdateDto.getPostContent();
+        Boolean newIsPrivate = postUpdateDto.getIsPrivate();
+
+        Post updatePost = postRepository.findById(postUpdateDto.getPostId())
+                .orElseThrow();
+
+        updatePost.updatePost(newTitle, newContent, newIsPrivate);
+    }
+
+    @Override
+    @Transactional
+    public void deletePost(Long postId) {
+        Post post = postRepository.findByIdAnAndIsDeletedFalse(postId)
+                .orElseThrow(() -> new NoSuchElementException());
+        post.markAsDeletd();
     }
 }

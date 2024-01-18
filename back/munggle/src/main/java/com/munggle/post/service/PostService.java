@@ -9,4 +9,6 @@ public interface PostService {
     void insertPost(PostCreateDto postCreateDto);
 
     void updatePost(PostUpdateDto postUpdateDto);
+
+    void deletePost(Long postId);
 }

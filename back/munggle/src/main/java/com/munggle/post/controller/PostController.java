@@ -1,6 +1,7 @@
 package com.munggle.post.controller;
 
 import com.munggle.post.service.PostService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class PostController {
         return null;
     }
 
-    @GetMapping("/{post_no}")
+    @GetMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public void viewPost() {}
 
@@ -38,9 +39,18 @@ public class PostController {
         postService.insertPost(postCreateDto);
     }
 
-    @PutMapping("/{post_no}")
+    @PutMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updatePost(@RequestBody PostUpdateDto postUpdateDto) {
+    public void updatePost(@PathVariable Long postId,
+                           @RequestBody @Valid PostUpdateDto postUpdateDto) {
+
+        postUpdateDto.setPostId(postId);
         postService.updatePost(postUpdateDto);
+    }
+
+    @DeleteMapping("/{postId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deletePost(@PathVariable Long postId) {
+        postService.deletePost(postId);
     }
 }
