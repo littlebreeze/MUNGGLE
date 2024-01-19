@@ -1,9 +1,9 @@
 import React from "react";
 import "./Nav.css";
-import imgLogo from "../assets/logo.png";
-import imgSearch from "../assets/icons/search.png";
-import imgNotification from "../assets/icons/notification.png";
-import imgDm from "../assets/icons/dm.png";
+import imgLogo from "../../assets/logo.png";
+import imgSearch from "../../assets/icons/search.png";
+import imgNotification from "../../assets/icons/notification.png";
+import imgDm from "../../assets/icons/dm.png";
 import { Link } from "react-router-dom";
 
 export default function Nav() {

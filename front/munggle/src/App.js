@@ -1,7 +1,7 @@
 import "./App.css";
-import Nav from "./layout/Nav.jsx";
-import Body from "./layout/Body.jsx";
-import Footer from "./layout/Footer.jsx";
+import Nav from "./components/layout/Nav.jsx";
+import Body from "./components/layout/Body.jsx";
+import Footer from "./components/layout/Footer.jsx";
 
 export default function App() {
   return (

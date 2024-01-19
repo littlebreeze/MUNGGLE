@@ -1,9 +1,9 @@
 import React from "react";
 import "./Footer.css";
-import iconHome from "../assets/icons/home.png";
-import iconStory from "../assets/icons/story.png";
-import iconWalk from "../assets/icons/walk.png";
-import iconProfile from "../assets/icons/profile.png";
+import iconHome from "../../assets/icons/home.png";
+import iconStory from "../../assets/icons/story.png";
+import iconWalk from "../../assets/icons/walk.png";
+import iconProfile from "../../assets/icons/profile.png";
 import { Link } from "react-router-dom";
 
 export default function Footer() {
