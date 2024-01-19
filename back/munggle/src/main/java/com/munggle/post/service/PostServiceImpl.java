@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,9 +50,13 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDetailResponseDto getDetailPost(Long postId) {
+    public PostDetailResponseDto getDetailPost(Long postId, Long userId) {
+        Post post = postRepository.findByIdAnAndIsDeletedFalse(postId)
+                .orElseThrow(() -> new NoSuchElementException());
+        String nickname = "nickname"; // 닉네임 추후 수정
+        Boolean isMine = true;
+        PostDetailResponseDto detailPost = PostMapper.toPostDetailResponseDto(post, nickname, isMine);
 
-
-        return null;
+        return detailPost;
     }
 }

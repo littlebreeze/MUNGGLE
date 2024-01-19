@@ -20,7 +20,16 @@ public class PostMapper {
                 .build();
     }
 
-    public static PostDetailResponseDto toPostDetailResponseDto(PostDetailResponseDto postDetailResponseDto) {
-        return null;
+    public static PostDetailResponseDto toPostDetailResponseDto(Post detailPost, String nickname, Boolean isMine) {
+        return PostDetailResponseDto.builder()
+                .postTitle(detailPost.getPostTitle())
+                .postContent(detailPost.getPostContent())
+                .nickname(nickname)
+                .likeCnt(detailPost.getLikeCnt())
+                .isMine(isMine)
+                .createdAt(detailPost.getCreatedAt())
+                .updatedAt(detailPost.getUpdatedAt())
+                .isUpdated(detailPost.getCreatedAt().equals(detailPost.getUpdatedAt()))
+                .build();
     }
 }

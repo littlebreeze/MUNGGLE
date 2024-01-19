@@ -62,7 +62,7 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     public PostDetailResponseDto getPost(@PathVariable Long postId) {
         // 유저 정보 넣어줘야 됌!!!!
-
-        return postService.getDetailPost(postId);
+        Long userId = 1L; //임의로 넣어준것 나중에 처리 해줘야함!!!!
+        return postService.getDetailPost(postId, userId);
     }
 }
