@@ -44,14 +44,14 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void deletePost(Long postId) {
-        Post post = postRepository.findByIdAnAndIsDeletedFalse(postId)
+        Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new NoSuchElementException());
         post.markAsDeletd();
     }
 
     @Override
     public PostDetailResponseDto getDetailPost(Long postId, Long userId) {
-        Post post = postRepository.findByIdAnAndIsDeletedFalse(postId)
+        Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new NoSuchElementException());
         String nickname = "nickname"; // 닉네임 추후 수정
         Boolean isMine = true;

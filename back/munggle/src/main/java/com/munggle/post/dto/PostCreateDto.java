@@ -6,15 +6,16 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class PostCreateDto {
 
-    @JsonIgnore
     private Long userId;
 
     @Size(max = 100)
