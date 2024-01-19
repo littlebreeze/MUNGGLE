@@ -1,0 +1,5 @@
+api:
+  serviceKey:
+  abandoned: http://apis.data.go.kr/1543061/abandonmentPublicSrvc
+  lostDog: /abandonmentPublic
+  kind: /kind
