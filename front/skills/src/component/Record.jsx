@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
-import "./Record.css"
 import { useNavigate } from "react-router-dom";
+import "./Map2.css";
 const { kakao } = window;
-
 export default function Record() {
     const navigate = useNavigate();
     const [record, setRecord] = useState(false);
