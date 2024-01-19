@@ -23,17 +23,12 @@ public class Walk {
     // 처음에는 유저번호, 산책 반려견만 채워진 채로 객체 생성
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long walk_id;    // walkId로 지정하면 location에 자동 생성되는 외래키 컬럼명이 walk_walk_id가 된다
+    private Long walkId;    // walkId로 지정하면 location에 자동 생성되는 외래키 컬럼명이 walk_walk_id가 된다
                             // 또는 location에서 ManyToOne 변수에 JoinColumn의 name 속성 지정
     private String walkName;
 
-    @NotNull
-    @NotBlank
-    @Size(max = 50)
     private Long userId;
 
-    @NotNull
-    @NotBlank
     private Long dogId;
 
     @Size(max = 50)
@@ -47,6 +42,6 @@ public class Walk {
     private boolean isDeleted;
 
     @OneToMany(mappedBy = "walk", cascade = CascadeType.REMOVE)
-    private List<Location> locationList;
+    private List<Location> location;
 
 }

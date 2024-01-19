@@ -1,8 +1,7 @@
 package com.munggle.walk.service;
 
+import com.munggle.domain.model.entity.Location;
 import com.munggle.domain.model.entity.Walk;
-import com.munggle.walk.dto.WalkCreateDto;
-import com.munggle.walk.dto.WalkUpdateDto;
 import com.munggle.walk.repository.LocationRepository;
 import com.munggle.walk.repository.WalkRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,16 +13,19 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WalkServiceImpl implements WalkService{
 
-    private WalkRepository walkRepository;
-    private LocationRepository locationRepository;
+    private final WalkRepository walkRepository;
+    private final LocationRepository locationRepository;
 
     @Override
-    public void createWalk(WalkCreateDto walkCreateDto) {
-        
+    public void createWalk(Walk walkCreateDto) {
+        walkRepository.save(walkCreateDto);
+        for(Location location : walkCreateDto.getLocation()){
+            locationRepository.save(location);
+        }
     }
 
     @Override
-    public void updateWalk(WalkUpdateDto walkUpdateDto) {
+    public void updateWalk(Walk walkUpdateDto) {
 
     }
 

@@ -24,14 +24,14 @@ public class Location {
     private Long locationId;
 
     @NotNull
-    private Float latitude;
+    private Float lat;
 
     @NotNull
-    private Float longitude;
+    private Float lng;
 
     @NotNull
-    @CreationTimestamp
-    private Date createdAt;
+    //@CreationTimestamp
+    private String createdAt;
 
     // 외래키 컬럼이 자동 생성되므로 따로 적어주지 않아도 된다.
     @ManyToOne
