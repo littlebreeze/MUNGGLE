@@ -13,6 +13,7 @@ spring:
     include:
       - db
       - security
+      - api
 
 ---
 spring:
