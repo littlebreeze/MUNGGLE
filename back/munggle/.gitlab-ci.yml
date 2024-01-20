@@ -1,0 +1,45 @@
+stages:
+  - build
+  - deploy
+
+build: #JOB 이름
+  image: gradle-8.5.0-jdk17
+  stage: build
+  script:
+    - echo [INFO] YML Settings
+    - cd ./src/main/resources
+    - echo "$APPLICATION_YML" > "application.yml"
+    - cd ../../.. # 프로젝트 폴더로 경로 이동
+    - chmod +x gradlew
+    - ./gradlew clean
+    - ./gradlew bootjar
+  artifacts:
+    paths:
+      - build/libs/*jar
+    expire_in: 1 days
+  only:
+    - develop/back
+
+deploy: #JOB 이름
+  image: docker:latest
+  stage: deploy
+  services:
+    - docker:dind
+  before_script:
+    - echo [INFO] docker deploy start!
+    - docker login $CI_REGISTRY -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWORD
+  script:
+    - docker volume prune -f # 사용되지 않는 컨테이너, 이미지 삭제 및 볼륨 정리
+    - docker stop $(docker ps -a -q) # 모든 컨테이너 중지
+    - docker rm $(docker ps -a -q) # 모든 컨테이너 삭제
+    - docker rmi $(docker images -q) # 모든 이미지 삭제
+    - docker pull munggle:v1.0 # 도커 이미지 Pull
+    - docker build -t munggle:v1.0 . # 도커 이미지 빌드
+    - docker tag munggle:v1.0 $CI_REGISTRY:v1.0 # 이미지에 레지스트리 태그 추가
+    - docker push $CI_REGISTRY:v1.0 # 이미지를 레지스트리로 푸시
+    - docker run -d $CI_REGISTRYv1.0 # 도커 컨테이너 실행
+  after_script:
+    - docker logout # GitLab Container Registry 로그아웃
+    - echo [INFO] docker deploy end!
+  only:
+    - develop/back
