@@ -12,7 +12,7 @@ build: #JOB 이름
     - cd ../../../.. # 프로젝트 폴더로 경로 이동
     - chmod +x gradlew
     - ./gradlew clean
-    - ./gradlew bootjar
+    - ./gradlew bootJar
   artifacts:
     paths:
       - build/libs/*jar
@@ -24,7 +24,7 @@ deploy: #JOB 이름
   image: docker:latest
   stage: deploy
   services:
-    - docker:dind
+    - docker:bind
   before_script:
     - echo [INFO] docker deploy start!
     - docker login $CI_REGISTRY -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWORD
@@ -37,7 +37,7 @@ deploy: #JOB 이름
     - docker build -t munggle:v1.0 . # 도커 이미지 빌드
     - docker tag munggle:v1.0 $CI_REGISTRY:v1.0 # 이미지에 레지스트리 태그 추가
     - docker push $CI_REGISTRY:v1.0 # 이미지를 레지스트리로 푸시
-    - docker run -d $CI_REGISTRYv1.0 # 도커 컨테이너 실행
+    - docker run -d $CI_REGISTRY:v1.0 # 도커 컨테이너 실행
   after_script:
     - docker logout # GitLab Container Registry 로그아웃
     - echo [INFO] docker deploy end!
