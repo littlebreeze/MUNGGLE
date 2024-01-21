@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class WalkMapper {
 
     public static Walk toEntity(WalkDto walkDto){
+
         return Walk.builder()
                 .walkName(walkDto.getWalkName())
                 .userId(walkDto.getUserId())

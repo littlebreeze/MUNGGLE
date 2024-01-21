@@ -1,13 +1,14 @@
 package com.munggle.walk.service;
 
 import com.munggle.domain.model.entity.Walk;
+import com.munggle.walk.dto.WalkDto;
 
 import java.util.List;
 
 public interface WalkService {
 
     // 산책 생성
-    void createWalk(Walk walkCreateDto);
+    void createWalk(WalkDto walkDto);
 
     // 산책 종료 후 후기 등록
     void updateWalk(Walk walkUpdateDto);

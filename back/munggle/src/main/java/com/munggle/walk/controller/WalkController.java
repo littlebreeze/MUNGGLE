@@ -1,6 +1,7 @@
 package com.munggle.walk.controller;
 
 import com.munggle.domain.model.entity.Walk;
+import com.munggle.walk.dto.WalkDto;
 import com.munggle.walk.service.WalkService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,8 +20,8 @@ public class WalkController {
         return "테스트인디유";
     }
     @PostMapping("/create")
-    public void createWalk(@RequestBody @Valid Walk walk){
+    public void createWalk(@RequestBody @Valid WalkDto walkDto){
         //System.out.println(walk.getWalkName()+walk.getWalkId()+walk.getDogId()+walk.getDescription());
-        walkService.createWalk(walk);
+        walkService.createWalk(walkDto);
     }
 }

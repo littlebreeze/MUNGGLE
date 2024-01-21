@@ -1,5 +1,6 @@
 package com.munggle.domain.model.entity;
 
+import com.munggle.walk.dto.LocationDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

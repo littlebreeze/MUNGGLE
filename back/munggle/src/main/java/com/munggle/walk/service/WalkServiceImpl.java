@@ -2,12 +2,16 @@ package com.munggle.walk.service;
 
 import com.munggle.domain.model.entity.Location;
 import com.munggle.domain.model.entity.Walk;
+import com.munggle.walk.dto.LocationDto;
+import com.munggle.walk.dto.WalkDto;
+import com.munggle.walk.mapper.WalkMapper;
 import com.munggle.walk.repository.LocationRepository;
 import com.munggle.walk.repository.WalkRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -17,11 +21,12 @@ public class WalkServiceImpl implements WalkService{
     private final LocationRepository locationRepository;
 
     @Override
-    public void createWalk(Walk walkCreateDto) {
-        walkRepository.save(walkCreateDto);
-        for(Location location : walkCreateDto.getLocation()){
-            locationRepository.save(location);
-        }
+    public void createWalk(WalkDto walkDto) {
+
+        Walk walk = WalkMapper.toEntity(walkDto);
+        Long insertID = walkRepository.save(walk).getWalkId();
+        locationRepository.saveAll(walk.getLocation().stream()
+                .map(location -> location.setInsertId(insertID)).collect(Collectors.toList()));
     }
 
     @Override
