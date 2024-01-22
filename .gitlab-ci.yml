@@ -7,7 +7,7 @@ build: #JOB 이름
   stage: build
   script:
     - echo [INFO] YML Settings
-    - cd ./back/src/main/resources
+    - cd ./back/munggle/src/main/resources
     - echo "$APPLICATION_YML" > "application.yml"
     - cd ../../../.. # 프로젝트 폴더로 경로 이동
     - chmod +x gradlew
