@@ -24,6 +24,8 @@ public class WalkMapper {
                 .description(walkDto.getDescription())
                 .duration(walkDto.getDuration())
                 .distance(walkDto.getDistance())
+                .rating(walkDto.getRating())
+                // LocationDto 리스트를 Location 리스트로 변환
                 .location(walkDto.getLocation().stream()
                         .map(LocationDto::toEntity)
                         .collect(Collectors.toList())

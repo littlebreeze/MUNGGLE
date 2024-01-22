@@ -21,7 +21,8 @@ public class WalkController {
     }
     @PostMapping("/create")
     public void createWalk(@RequestBody @Valid WalkDto walkDto){
-        //System.out.println(walk.getWalkName()+walk.getWalkId()+walk.getDogId()+walk.getDescription());
+
+        System.out.println(walkDto.getLocation().get(0).getCreatedAt());
         walkService.createWalk(walkDto);
     }
 }

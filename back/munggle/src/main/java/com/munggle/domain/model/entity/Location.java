@@ -40,6 +40,8 @@ public class Location {
     private Walk walk;
 
     public Location setInsertId(Long walkId){
+
+        // 외래키 설정을 위해 Walk에 Id값 세팅
         Walk walk = Walk.builder().walkId(walkId).build();
         return Location.builder()
                 .walk(walk)
