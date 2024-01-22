@@ -38,14 +38,11 @@
 .calender-button{
     position: relative;
     bottom: 90%;
-    left: 10%;
+    left: 20%;
     z-index: 1;
 }
 
-/*Record페이지의 뒤로가기 버튼*/
-.back-button{
 
-}
 
 /*가상 위도 경도 컨트롤*/
 .control{

@@ -4,6 +4,7 @@ import Main2 from "./Main2.jsx";
 import Calender from "./Calender.jsx"
 import Detail from "./Detail.jsx"
 import Record from "./RecordTest.jsx"
+import Review from "./Review.jsx"
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 export default function Map2() {
@@ -25,6 +26,7 @@ export default function Map2() {
                         <Route path="/calender" element={<Calender/>}></Route>
                         <Route path="/detail" element={<Detail/>}></Route>
                         <Route path="/record" element={<Record/>}></Route>
+                        <Route path="/review" element={<Review/>}></Route>
                     </Routes>      
                 </BrowserRouter>
             </div>

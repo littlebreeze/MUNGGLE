@@ -7,74 +7,69 @@ export default function Record() {
     const [record, setRecord] = useState(false);
     const [lat, setLat] = useState(37.54699);
     const [lng, setLng] = useState(127.09598);
+    const latRef = useRef(37.54699);
+    const lngRef = useRef(127.09598);
 
     const changeRecord = () => {
         setRecord(!record);
     };
 
-    const latRef = useRef(lat);
-    const lngRef = useRef(lng);
-
+    //임의로 만든 컨트롤러(좌표 이동)
     const latUp = () => {
-      setLat((prevLat) => {
-        latRef.current = prevLat + 0.0002;
-        return prevLat + 0.0002;
-      });
-    };
+        setLat((prevLat) => {
+            latRef.current = prevLat + 0.0002;
+            return prevLat + 0.0002;
+              });
+        };
 
     const latDown = () => {
         setLat((prevLat) => {
-        latRef.current = prevLat - 0.0002;
-        return prevLat - 0.0002;
-      });
-    };
+            latRef.current = prevLat - 0.0002;
+            return prevLat - 0.0002;
+            });
+        };
 
     const lngUp = () => {
-      setLng((prevLng) => {
-        lngRef.current = prevLng + 0.0002;
-        return prevLng + 0.0002;
-      });
-    };
+        setLng((prevLng) => {
+            lngRef.current = prevLng + 0.0002;
+            return prevLng + 0.0002;
+            });
+        };
 
     const lngDown = () => {
-      setLng((prevLng) => {
-        lngRef.current = prevLng - 0.0002;
-        return prevLng - 0.0002;
-      });
-    };
+        setLng((prevLng) => {
+            lngRef.current = prevLng - 0.0002;
+            return prevLng - 0.0002;
+            });
+        };
     
     //랜더링 될때 한번
     useEffect(() => {
-      const container = document.getElementById("space");
-      const options = {
-      
-      //이용자 현재 위치
-      center: new kakao.maps.LatLng(lat, lng),
-  
-      level: 3
-      };
-      const map = new kakao.maps.Map(container, options);
-      const panTo = setInterval( () => {
-        console.log(lat);
+        const container = document.getElementById("map");
+        const options = {
+            //이용자 현재 위치
+            center: new kakao.maps.LatLng(lat, lng), 
+            level: 3
+            };
+        const map = new kakao.maps.Map(container, options);
+        const moveMap = setInterval( () => {
+        //Main2와 동일한 의문점
         const moveLatLon = new kakao.maps.LatLng(latRef.current,lngRef.current);
         map.panTo(moveLatLon);
-      },300000);//테스트할때 3000으로 바꾸기
-      return () => {
-        clearInterval(panTo);
-        console.log(444);
-      }
-    }, []);
-
-    
+        },3000);//테스트할때 3000으로 바꾸기
+        return () => {
+            clearInterval(moveMap);
+            }
+        }, []);
   
     return (
       <div>
         <button className="back-button" onClick={()=>{navigate(-1)}}>뒤로가기</button>
         <br/>
         기록페이지
-        <div id="space" style={{
-          width: "300px",
-          height: "600px"
+        <div id="map" style={{
+          width: "100%",
+          height: "80%"
         }}></div>
 
         <div className="time-page">
