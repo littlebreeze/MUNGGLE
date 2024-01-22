@@ -19,7 +19,7 @@ public interface WalkService {
     // 해당일 기록 목록
 
     // 위치 기반 기록 목록 - 출발점 기준으로 (반경)
-    List<Walk> readLocationWalks(Float latitude, Float Longitude);
+    List<WalkDto> readLocationWalks(Float latitude, Float Longitude);
 
     // 산책 삭제
     void deleteWalk(Long walkId);
