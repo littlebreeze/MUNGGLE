@@ -3,7 +3,7 @@ stages:
   - deploy
 
 build: #JOB 이름
-  image: gradle:8.5.0-jdk17
+  image: gradle-8.5.0-jdk17
   stage: build
   script:
     - echo [INFO] YML Settings
