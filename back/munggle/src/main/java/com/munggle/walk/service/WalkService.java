@@ -14,7 +14,7 @@ public interface WalkService {
     void updateWalk(Walk walkUpdateDto);
 
     // 내 기록 목록
-    List<Walk> readMyWalks(String userId);
+    List<WalkDto> readMyWalks(Long userId);
 
     // 해당일 기록 목록
 

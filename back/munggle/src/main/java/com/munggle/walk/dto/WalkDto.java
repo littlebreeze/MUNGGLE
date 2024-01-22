@@ -13,6 +13,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import java.util.List;
 
 @Getter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class WalkDto {
@@ -30,9 +31,9 @@ public class WalkDto {
     private Integer duration;
     private Integer distance;
     private Float rating;
-
     private boolean isDeleted;
 
     private List<LocationDto> location;
+
 
 }

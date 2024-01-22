@@ -1,14 +1,13 @@
 package com.munggle.walk.mapper;
 
-import com.munggle.domain.model.entity.Location;
 import com.munggle.domain.model.entity.Walk;
 import com.munggle.walk.dto.LocationDto;
-import com.munggle.walk.dto.WalkCreateDto;
 import com.munggle.walk.dto.WalkDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
@@ -35,4 +34,18 @@ public class WalkMapper {
     }
 
     // Entity -> Dto
+    // Location은 이미 DTO로 변환된 결과를 넘겨받아 담아준다
+    public static WalkDto toDto(Walk walk, List<LocationDto> logs){
+        return WalkDto.builder()
+                .walkId(walk.getWalkId())
+                .walkName(walk.getWalkName())
+                .userId(walk.getUserId())
+                .dogId(walk.getDogId())
+                .description(walk.getDescription())
+                .duration(walk.getDuration())
+                .distance(walk.getDistance())
+                .rating(walk.getRating())
+                .location(logs)
+                .build();
+    }
 }

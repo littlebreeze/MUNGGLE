@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -36,12 +37,19 @@ public class WalkServiceImpl implements WalkService{
     }
 
     @Override
-    public List<Walk> readMyWalks(String userId) {
-        return null;
+    public List<WalkDto> readMyWalks(Long userId) {
+
+        List<WalkDto> list = walkRepository.findAllByUserId(userId).stream()
+                .map(item -> WalkMapper.toDto(item.get(),
+                        locationRepository.findAllByWalkWalkId(item.get().getWalkId())
+                                .stream().map(log -> Location.toDto(log.get())).collect(Collectors.toList()))
+                )
+                .collect(Collectors.toList());
+        return list;
     }
 
     @Override
-    public List<Walk> readLocationWalks(Float latitude, Float Longitude) {
+    public List<Walk> readLocationWalks(Float lat, Float lng) {
         return null;
     }
 

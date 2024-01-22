@@ -1,6 +1,7 @@
 package com.munggle.domain.model.entity;
 
 import com.munggle.walk.dto.LocationDto;
+import com.munggle.walk.dto.WalkDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -49,5 +50,16 @@ public class Location {
                 .lng(this.lng)
                 .createdAt(this.createdAt)
                 .build();
+    }
+
+    public static LocationDto toDto(Location location){
+
+        return LocationDto.builder()
+                .walkId(location.getWalk().getWalkId())
+                .lat(location.getLat())
+                .lng(location.getLng())
+                .createdAt(location.getCreatedAt())
+                .build();
+
     }
 }
