@@ -27,7 +27,7 @@ deploy: #JOB 이름
     - docker:dind
   before_script:
     - echo [INFO] docker deploy start!
-    - docker login $CI_REGISTRY -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWORD
+    - echo "$DOCKER_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
   script:
     - docker volume prune -f # 사용되지 않는 컨테이너, 이미지 삭제 및 볼륨 정리
     - docker stop $(docker ps -a -q) # 모든 컨테이너 중지
