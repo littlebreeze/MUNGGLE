@@ -10,6 +10,7 @@ build: #JOB 이름
     - cd ./back/munggle/src/main/resources
     - echo "$APPLICATION_YML" > "application.yml"
     - cd ../../.. # 프로젝트 폴더로 경로 이동
+    - cd ./deploy
     - chmod +x gradlew
     - ./gradlew clean
     - ./gradlew bootJar
