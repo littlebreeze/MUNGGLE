@@ -24,7 +24,7 @@ deploy: #JOB 이름
   image: docker:latest
   stage: deploy
   services:
-    - docker:bind
+    - docker:dind
   before_script:
     - echo [INFO] docker deploy start!
     - docker login $CI_REGISTRY -u $DOCKER_REGISTRY_USER -p $DOCKER_REGISTRY_PASSWORD
