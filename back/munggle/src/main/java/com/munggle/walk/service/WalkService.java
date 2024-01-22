@@ -25,5 +25,5 @@ public interface WalkService {
     void deleteWalk(Long walkId);
 
     // 산책 상세
-    void detailWalk(Long walkId);
+    WalkDto detailWalk(Long walkId);
 }

@@ -49,7 +49,7 @@ public class WalkServiceImpl implements WalkService{
     }
 
     @Override
-    public List<Walk> readLocationWalks(Float lat, Float lng) {
+    public List<WalkDto> readLocationWalks(Float lat, Float lng) {
         return null;
     }
 
@@ -59,7 +59,10 @@ public class WalkServiceImpl implements WalkService{
     }
 
     @Override
-    public void detailWalk(Long walkId) {
-
+    public WalkDto detailWalk(Long walkId) {
+        Walk walk = walkRepository.findByWalkId(walkId).get();
+        return WalkMapper.toDto(walk,
+                locationRepository.findAllByWalkWalkId(walk.getWalkId())
+                        .stream().map(log -> Location.toDto(log.get())).collect(Collectors.toList()));
     }
 }

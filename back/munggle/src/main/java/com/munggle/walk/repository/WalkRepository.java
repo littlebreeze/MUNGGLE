@@ -9,5 +9,9 @@ import java.util.Optional;
 
 public interface WalkRepository extends JpaRepository<Walk, Long> {
 
+    // 회원의 전체 산책 목록
     List<Optional<Walk>> findAllByUserId(Long userId);
+
+    // 산책 상세 정보
+    Optional<Walk> findByWalkId(Long walkId);
 }
