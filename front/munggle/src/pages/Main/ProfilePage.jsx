@@ -15,24 +15,33 @@ import iconDog from "../../assets/icons/profileDog.png";
 import iconPost from "../../assets/icons/profilePost.png";
 import iconStory from "../../assets/icons/profileStory.png";
 import iconScrap from "../../assets/icons/profileScrap.png";
+import iconLine1 from "../../assets/icons/line1.png";
 
-import imgBackGround from "../../assets/example/dog1.jpg";
 import imgProfile from "../../assets/example/profile.png";
 
-import imgDog1 from "../../assets/example/dog2.jpg";
-import imgDog2 from "../../assets/example/dog3.jpg";
-import imgDog3 from "../../assets/example/dog4.jpg";
-import imgDog4 from "../../assets/example/dog5.jpg";
-import imgDog5 from "../../assets/example/dog6.jpg";
-import imgDog6 from "../../assets/example/dog7.jpg";
-import imgDog7 from "../../assets/example/dog8.jpg";
-import imgDog8 from "../../assets/example/dog9.jpg";
-import imgDog9 from "../../assets/example/dog10.jpg";
+import imgProfile1 from "../../assets/example/profile1.jpg";
+import imgProfile2 from "../../assets/example/profile2.jpg";
+import imgProfile3 from "../../assets/example/profile3.jpg";
+import imgProfile4 from "../../assets/example/profile4.jpg";
+import imgProfile5 from "../../assets/example/profile5.jpg";
+import imgProfile6 from "../../assets/example/profile6.jpg";
+import imgProfile7 from "../../assets/example/profile.png";
+
+import imgPost1 from "../../assets/example/dog1.jpg";
+import imgPost2 from "../../assets/example/dog2.jpg";
+import imgPost3 from "../../assets/example/dog3.jpg";
+import imgPost4 from "../../assets/example/dog4.jpg";
+import imgPost5 from "../../assets/example/dog5.jpg";
+import imgPost6 from "../../assets/example/dog6.jpg";
+import imgPost7 from "../../assets/example/dog7.jpg";
+import imgPost8 from "../../assets/example/dog8.jpg";
+import imgPost9 from "../../assets/example/dog9.jpg";
+import imgPost10 from "../../assets/example/dog10.jpg";
 
 export default function Profile() {
   const userProfile = {
-    backGroundImg: imgBackGround,
-    profileImg: imgProfile,
+    backGroundImg: imgPost1,
+    profileImg: imgProfile1,
     name: "megar0829",
     isFollow: false,
     description: "소소하게 자주 즐겁게 행복하기. 행복이 행복이 행복이 행복이 행복이 행복이 행복이 행복이",
@@ -40,7 +49,7 @@ export default function Profile() {
     following: 3,
     dogs: [
       {
-        img: imgBackGround,
+        img: imgPost1,
         name: "김행복",
         kind: "웰시코기",
         weight: 2.8,
@@ -48,7 +57,7 @@ export default function Profile() {
         gender: "남자",
       },
       {
-        img: imgDog2,
+        img: imgPost2,
         name: "댕댕이",
         kind: "리트리버",
         weight: 12.3,
@@ -60,127 +69,202 @@ export default function Profile() {
 
   const postList = [
     {
-      img: imgDog1,
-      title: "제목 1",
+      id: 1,
+      user : {
+        imgProfile: imgProfile1,
+        name: 'megar0829',
+        isFollow: false,
+      },
+      imgPost: imgPost1,
+      title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+      createdAt: "2024-01-17",
+      tagList: [
+        "산책", "코기", "신났네",
+      ],
     },
     {
-      img: imgDog2,
-      title: "제목 2",
+      id: 2,
+      user : {
+        imgProfile: imgProfile2,
+        name: 'megar0829',
+        isFollow: false,
+      },
+      imgPost: imgPost2,
+      title: "애기랑 오랜만에 공원",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+      createdAt: "2024-01-17",
+      tagList: [
+        "산책", "아구", "힘들어?",
+      ],
     },
     {
-      img: imgDog3,
-      title: "제목 3",
+      id: 3,
+      user : {
+        imgProfile: imgProfile3,
+        name: 'megar0829',
+        isFollow: false,
+      },
+      imgPost: imgPost3,
+      title: "귀여워라",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+      createdAt: "2024-01-17",
+      tagList: [
+        "신남", "댕글댕글",
+      ],
     },
     {
-      img: imgDog4,
-      title: "제목 4",
+      id: 4,
+      user : {
+        imgProfile: imgProfile4,
+        name: 'megar0829',
+        isFollow: false,
+      },
+      imgPost: imgPost4,
+      title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+      createdAt: "2024-01-17",
+      tagList: [
+        "산책", "댕댕이", "신났네",
+      ],
     },
     {
-      img: imgDog5,
-      title: "제목 5",
+      id: 5,
+      user : {
+        imgProfile: imgProfile5,
+        name: 'megar0829',
+        isFollow: false,
+      },
+      imgPost: imgPost5,
+      title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+      createdAt: "2024-01-17",
+      tagList: [
+        "산책", "댕댕이", "신났네",
+      ],
     },
     {
-      img: imgDog6,
-      title: "제목 6",
+      id: 6,
+      user : {
+        imgProfile: imgProfile6,
+        name: 'megar0829',
+        isFollow: false,
+      },
+      imgPost: imgPost6,
+      title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+      createdAt: "2024-01-17",
+      tagList: [
+        "산책", "댕댕이", "신났네",
+      ],
     },
     {
-      img: imgDog7,
-      title: "제목 7",
+      id: 7,
+      user : {
+        imgProfile: imgProfile1,
+        name: 'megar0829',
+        isFollow: false,
+      },
+      imgPost: imgPost7,
+      title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+      createdAt: "2024-01-17",
+      tagList: [
+        "산책", "댕댕이", "신났네",
+      ],
     },
     {
-      img: imgDog8,
-      title: "제목 8",
+      id: 8,
+      user : {
+        imgProfile: imgProfile2,
+        name: 'megar0829',
+        isFollow: false,
+      },
+      imgPost: imgPost8,
+      title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+      createdAt: "2024-01-17",
+      tagList: [
+        "산책", "댕댕이", "신났네",
+      ],
     },
     {
-      img: imgDog9,
-      title: "제목 9",
+      id: 9,
+      user : {
+        imgProfile: imgProfile3,
+        name: 'megar0829',
+        isFollow: false,
+      },
+      imgPost: imgPost9,
+      title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+      createdAt: "2024-01-17",
+      tagList: [
+        "산책", "댕댕이", "신났네",
+      ],
+    },
+    {
+      id: 10,
+      user : {
+        imgProfile: imgProfile4,
+        name: 'megar0829',
+        isFollow: false,
+      },
+      imgPost: imgPost10,
+      title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+      createdAt: "2024-01-17",
+      tagList: [
+        "산책", "댕댕이", "신났네",
+      ],
     },
   ]
 
   const storyList = [
     {
-      img: imgDog1,
+      img: imgPost1,
       startDate: "24.01.01",
       endDate: "24.01.18",
     },
     {
-      img: imgDog2,
+      img: imgPost2,
       startDate: "24.01.02",
       endDate: "24.01.18",
     },
     {
-      img: imgDog3,
+      img: imgPost3,
       startDate: "24.01.03",
       endDate: "24.01.18",
     },
     {
-      img: imgDog4,
+      img: imgPost4,
       startDate: "24.01.04",
       endDate: "24.01.18",
     },
     {
-      img: imgDog5,
+      img: imgPost5,
       startDate: "24.01.05",
       endDate: "24.01.18",
     },
     {
-      img: imgDog6,
+      img: imgPost6,
       startDate: "24.01.06",
       endDate: "24.01.18",
     },
     {
-      img: imgDog7,
+      img: imgPost7,
       startDate: "24.01.07",
       endDate: "24.01.18",
     },
     {
-      img: imgDog8,
+      img: imgPost8,
       startDate: "24.01.08",
       endDate: "24.01.18",
     },
     {
-      img: imgDog9,
+      img: imgPost9,
       startDate: "24.01.09",
       endDate: "24.01.18",
-    },
-  ]
-
-  const scrapList = [
-    {
-      img: imgDog1,
-      title: "제목 1",
-    },
-    {
-      img: imgDog2,
-      title: "제목 2",
-    },
-    {
-      img: imgDog3,
-      title: "제목 3",
-    },
-    {
-      img: imgDog4,
-      title: "제목 4",
-    },
-    {
-      img: imgDog5,
-      title: "제목 5",
-    },
-    {
-      img: imgDog6,
-      title: "제목 6",
-    },
-    {
-      img: imgDog7,
-      title: "제목 7",
-    },
-    {
-      img: imgDog8,
-      title: "제목 8",
-    },
-    {
-      img: imgDog9,
-      title: "제목 9",
     },
   ]
 
@@ -221,16 +305,21 @@ export default function Profile() {
             <img className="profile-nav-div-img" src={iconDog} />
           </div>
         </Link>
+
+        <div className="profile-nav-div-line-div">
+          <img className="profile-nav-div-line" src={iconLine1} />
+        </div>
+
         <Link to="/profile/post">
           <div className="profile-nav-div-img-div">
             <img className="profile-nav-div-img" src={iconPost} />
           </div>
         </Link>
-        <Link to="/profile/story">
-          <div className="profile-nav-div-img-div">
-            <img className="profile-nav-div-img" src={iconStory} />
-          </div>
-        </Link>
+
+        <div className="profile-nav-div-line-div">
+          <img className="profile-nav-div-line" src={iconLine1} />
+        </div>
+
         <Link to="/profile/scrap">
           <div className="profile-nav-div-img-div">
             <img className="profile-nav-div-img" src={iconScrap} />
@@ -243,7 +332,7 @@ export default function Profile() {
           <Route path="/" element={<ProfileDog dogs={userProfile.dogs} />} />
           <Route path="/post" element={<ProfilePost postList={postList} />} />
           <Route path="/story" element={<ProfileStory storyList={storyList} />} />
-          <Route path="/scrap" element={<ProfileScrap scrapList={scrapList} />} />
+          <Route path="/scrap" element={<ProfileScrap scrapList={postList} />} />
         </Routes>
       </div>
     </div>

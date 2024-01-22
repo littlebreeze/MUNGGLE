@@ -27,6 +27,7 @@ import iconFollow from "../../assets/icons/follow.png";
 import ToggleButton from "../../components/button/ToggleButton";
 import PostComponent from "../../components/Post/PostComponent";
 import CreateButton from "../../components/button/CreateButton";
+import CreateModal from "../../components/modal/CreateModal";
 
 export default function Post() {
   // const [posts, setPosts] = useState([]);
@@ -84,6 +85,7 @@ export default function Post() {
 
   const postList = [
     {
+      id: 1,
       user : {
         imgProfile: imgProfile1,
         name: 'megar0829',
@@ -91,12 +93,14 @@ export default function Post() {
       },
       imgPost: imgPost1,
       title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
       createdAt: "2024-01-17",
       tagList: [
         "산책", "코기", "신났네",
       ],
     },
     {
+      id: 2,
       user : {
         imgProfile: imgProfile2,
         name: 'megar0829',
@@ -104,12 +108,14 @@ export default function Post() {
       },
       imgPost: imgPost2,
       title: "애기랑 오랜만에 공원",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
       createdAt: "2024-01-17",
       tagList: [
         "산책", "아구", "힘들어?",
       ],
     },
     {
+      id: 3,
       user : {
         imgProfile: imgProfile3,
         name: 'megar0829',
@@ -117,12 +123,14 @@ export default function Post() {
       },
       imgPost: imgPost3,
       title: "귀여워라",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
       createdAt: "2024-01-17",
       tagList: [
         "신남", "댕글댕글",
       ],
     },
     {
+      id: 4,
       user : {
         imgProfile: imgProfile4,
         name: 'megar0829',
@@ -130,12 +138,14 @@ export default function Post() {
       },
       imgPost: imgPost4,
       title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
       createdAt: "2024-01-17",
       tagList: [
         "산책", "댕댕이", "신났네",
       ],
     },
     {
+      id: 5,
       user : {
         imgProfile: imgProfile5,
         name: 'megar0829',
@@ -143,12 +153,14 @@ export default function Post() {
       },
       imgPost: imgPost5,
       title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
       createdAt: "2024-01-17",
       tagList: [
         "산책", "댕댕이", "신났네",
       ],
     },
     {
+      id: 6,
       user : {
         imgProfile: imgProfile6,
         name: 'megar0829',
@@ -156,12 +168,14 @@ export default function Post() {
       },
       imgPost: imgPost6,
       title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
       createdAt: "2024-01-17",
       tagList: [
         "산책", "댕댕이", "신났네",
       ],
     },
     {
+      id: 7,
       user : {
         imgProfile: imgProfile1,
         name: 'megar0829',
@@ -169,12 +183,14 @@ export default function Post() {
       },
       imgPost: imgPost7,
       title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
       createdAt: "2024-01-17",
       tagList: [
         "산책", "댕댕이", "신났네",
       ],
     },
     {
+      id: 8,
       user : {
         imgProfile: imgProfile2,
         name: 'megar0829',
@@ -182,12 +198,14 @@ export default function Post() {
       },
       imgPost: imgPost8,
       title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
       createdAt: "2024-01-17",
       tagList: [
         "산책", "댕댕이", "신났네",
       ],
     },
     {
+      id: 9,
       user : {
         imgProfile: imgProfile3,
         name: 'megar0829',
@@ -195,12 +213,14 @@ export default function Post() {
       },
       imgPost: imgPost9,
       title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
       createdAt: "2024-01-17",
       tagList: [
         "산책", "댕댕이", "신났네",
       ],
     },
     {
+      id: 10,
       user : {
         imgProfile: imgProfile4,
         name: 'megar0829',
@@ -208,6 +228,7 @@ export default function Post() {
       },
       imgPost: imgPost10,
       title: "산책하는 댕댕이",
+      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
       createdAt: "2024-01-17",
       tagList: [
         "산책", "댕댕이", "신났네",
@@ -215,6 +236,15 @@ export default function Post() {
     },
   ]
 
+  const [CreateModalIsOpen, setCreateModalIsOpen] = useState(false);
+
+  function openCreateModal() {
+    setCreateModalIsOpen(true);
+  }
+
+  function closeCreateModal() {
+    setCreateModalIsOpen(false);
+  }
 
   return (
     <div className="post-container-div">
@@ -236,7 +266,13 @@ export default function Post() {
           postList={postList}
         />
       </div>
-      <CreateButton />
+      <div className="post-create-button-div" onClick={openCreateModal}>
+        <CreateButton />
+      </div>
+      <CreateModal 
+        isOpen={CreateModalIsOpen}
+        closeModal={closeCreateModal}
+      />
     </div>
   );
 }

@@ -200,7 +200,6 @@ export default function Story() {
           storyList={storyList}
         />
       </div>
-      <CreateButton />
     </div>
   );
 }

@@ -1,16 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import "./PostComponent.css";
 import UserProfileComponent from "../UserProfileComponent";
 import PostList from "./PostList";
 import PostDetailContent from "./PostDetailContent";
+import PostDetailModal from "../modal/PostDetailModal";
 
 export default function PostComponent(props) {
   const postList = props.postList
+  
+  const [postDetailModalIsOpen, setPostDetailModalIsOpen] = useState(false);
+
+  const [postData, setPost] = useState({})
+
+  function openPostDetailModal(postData) {
+    setPost(postData)
+    setPostDetailModalIsOpen(true);
+  }
+
+  function closePostDetailModal() {
+    setPostDetailModalIsOpen(false);
+  }
 
   const posts = postList
-    .map((post, index) => {
+    .map((post) => {
       return (
-        <div key={index} className="post-list-detail-container-div">
+        <div key={post.id}  onClick={(e) => openPostDetailModal(post)} className="post-list-detail-container-div">
           <div className="post-list-left-div">
             <UserProfileComponent 
               imgProfile={post.user.imgProfile}
@@ -33,6 +47,11 @@ export default function PostComponent(props) {
   return (
     <div className="post-container-div">
       {posts}
+      <PostDetailModal 
+        postData={postData}
+        isOpen={postDetailModalIsOpen}
+        closeModal={closePostDetailModal}
+      />
     </div>
   );
 }
