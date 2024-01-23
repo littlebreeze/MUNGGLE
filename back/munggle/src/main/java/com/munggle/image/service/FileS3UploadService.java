@@ -6,5 +6,5 @@ import org.springframework.web.multipart.MultipartFile;
 public interface FileS3UploadService {
     String uploadFile(String uploadPath, MultipartFile multipartFile);
 
-    void imageRemove(String fileName);
+    void removeFile(String fileName);
 }

@@ -29,7 +29,7 @@ public class FileS3UploadServiceImpl implements FileS3UploadService {
     }
 
     /**
-     * s3저장소에 파일 업로드
+     * S3저장소에 파일 업로드
      * 
      * @param uploadPath : 저장 폴더 명
      * @param multipartFile
@@ -58,12 +58,12 @@ public class FileS3UploadServiceImpl implements FileS3UploadService {
 
 
     /**
-     * s3저장소에서 파일 삭제
+     * S3저장소에서 파일 삭제
      * 
      * @param fileName : db에 저장할 imageName에 해당
      */
     @Override
-    public void imageRemove(String fileName) {
+    public void removeFile(String fileName) {
         DeleteObjectRequest deleteRequest = new DeleteObjectRequest(bucketName, fileName);
         amazonS3Client.deleteObject(deleteRequest);
     }
