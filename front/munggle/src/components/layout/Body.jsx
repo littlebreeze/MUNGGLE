@@ -3,7 +3,7 @@ import "./Body.css";
 import { Route, Routes } from "react-router-dom";
 import Post from "../../pages/Main/PostPage";
 import Profile from "../../pages/Main/ProfilePage";
-import Story from "../../pages/Main/StoryPage";
+import Matching from "../../pages/Main/MatchingPage";
 import Walk from "../../pages/Main/WalkPage";
 import DirectMessage from "../../pages/Sub/DirectMessagePage";
 import Notification from "../../pages/Sub/NotificationPage";
@@ -16,7 +16,7 @@ export default function Body() {
     <div className="body-container-div">
       <Routes>
         <Route path="/" element={<Post />} />
-        <Route path="/story" element={<Story />} />
+        <Route path="/story" element={<Matching />} />
         <Route path="/walk" element={<Walk />} />
         <Route path="/profile/*" element={<Profile />} />
         <Route path="/directmessage" element={<DirectMessage />} />

@@ -22,11 +22,10 @@ export default function ProfilePost(props) {
   const posts = postList.
         map((post) => {
           return (
-            <div onClick={(e) => openPostDetailModal(post)}>
+            <div className="profile-post-frame-container-div col" key={post.id} onClick={(e) => openPostDetailModal(post)}>
               <ProfilePostFrame 
                 img={post.imgPost}
                 title={post.title}
-                key={post.id}
               />
             </div>
           );
@@ -34,7 +33,7 @@ export default function ProfilePost(props) {
 
   return (
     <div className="profile-post-container">
-      <div className="profile-post-list-container">
+      <div className="row row-cols-3 g-1">
         {posts}
         <PostDetailModal 
           postData={postData}

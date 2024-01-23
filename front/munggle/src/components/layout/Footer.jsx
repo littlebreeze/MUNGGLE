@@ -1,7 +1,7 @@
 import React from "react";
 import "./Footer.css";
 import iconHome from "../../assets/icons/home.png";
-import iconStory from "../../assets/icons/story.png";
+import iconMatching from "../../assets/icons/matching.png";
 import iconWalk from "../../assets/icons/walk.png";
 import iconProfile from "../../assets/icons/profile.png";
 import { Link } from "react-router-dom";
@@ -16,7 +16,7 @@ export default function Footer() {
       </div>
       <div className="footer-div-2">
         <Link to="/story">
-          <img src={iconStory} width={55} height={55} />
+          <img src={iconMatching} width={55} height={55} />
         </Link>
       </div>
       <div className="footer-div-3">

@@ -4,7 +4,7 @@ import { ImageList, ImageListItem } from '@mui/material';
 import PostDetailModal from "../modal/PostDetailModal";
 
 export default function ProfileScrap(props) {
-  const scrapList = props.scrapList
+  const scrapList = props.scrapList.filter((scrap) => scrap.id != 1)
 
   const [postDetailModalIsOpen, setPostDetailModalIsOpen] = useState(false);
 
@@ -20,8 +20,8 @@ export default function ProfileScrap(props) {
   }
 
   return (
-    <div>
-      <ImageList variant="masonry" cols={3} gap={8}>
+    <div className="mt-2">
+      <ImageList variant="masonry" cols={3} gap={12}>
         {scrapList.map((scrap) => (
           <ImageListItem key={scrap.id}>
             <div onClick={(e) => openPostDetailModal(scrap)}>
