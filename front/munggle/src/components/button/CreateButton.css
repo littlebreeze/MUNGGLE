@@ -1,7 +1,7 @@
 .create-button-div {
   position: fixed;
-  bottom: 14%;
-  right: 17%;
+  bottom: 115px;
+  left: 310px;
   width: 73px;
   height: 73px;
   background-color: #ebf6ff;
@@ -14,4 +14,5 @@
 .create-button {
   width: 80px;
   height: 80px;
+  border-radius: 100%;
 }

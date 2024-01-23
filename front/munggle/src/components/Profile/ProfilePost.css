@@ -6,8 +6,8 @@
   width: 400px;
 }
 
-.profile-post-list-container {
+.profile-post-frame-container-div {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: center;
+  align-items: center;
 }

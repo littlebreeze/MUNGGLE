@@ -36,3 +36,9 @@
   justify-content: space-around;
   align-items: center;
 }
+
+.post-create-button-div {
+  width: 73px;
+  height: 73px;
+  border-radius: 100%;
+}
