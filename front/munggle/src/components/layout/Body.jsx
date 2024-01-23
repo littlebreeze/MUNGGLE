@@ -15,13 +15,12 @@ export default function Body() {
   return (
     <div className="body-container-div">
       <Routes>
-        <Route path="/" element={<Post />} />
+        <Route path="/*" element={<Post />} />
         <Route path="/matching/*" element={<Matching />} />
         <Route path="/walk" element={<Walk />} />
         <Route path="/profile/*" element={<Profile />} />
         <Route path="/directmessage" element={<DirectMessage />} />
         <Route path="/notification" element={<Notification />} />
-        <Route path="/search" element={<Search />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
       </Routes>
