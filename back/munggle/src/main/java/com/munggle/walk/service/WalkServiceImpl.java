@@ -1,5 +1,8 @@
 package com.munggle.walk.service;
 
+import com.munggle.domain.exception.ExceptionMessage;
+import com.munggle.domain.exception.LocationsNotFoundException;
+import com.munggle.domain.exception.WalkNotFoundException;
 import com.munggle.domain.model.entity.Location;
 import com.munggle.domain.model.entity.Walk;
 import com.munggle.walk.dto.LocationDto;
@@ -41,12 +44,13 @@ public class WalkServiceImpl implements WalkService{
     @Override
     public List<WalkDto> readMyWalks(Long userId) {
 
-        List<WalkDto> list = walkRepository.findAllByUserIdAndIsDeletedFalse(userId).stream()
-                .map(item -> WalkMapper.toDto(item.get(),
-                        locationRepository.findAllByWalkWalkId(item.get().getWalkId())
-                                .stream().map(log -> Location.toDto(log.get())).collect(Collectors.toList()))
+        List<WalkDto> list = walkRepository.findAllByUserIdAndIsDeletedFalse(userId).orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND)).stream()
+                .map(item -> WalkMapper.toDto(item,
+                        locationRepository.findAllByWalkWalkId(item.getWalkId()).orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND))
+                                .stream().map(log -> Location.toDto(log)).collect(Collectors.toList()))
                 )
                 .collect(Collectors.toList());
+
         return list;
     }
 
@@ -57,17 +61,17 @@ public class WalkServiceImpl implements WalkService{
 
     @Override
     public WalkDto detailWalk(Long walkId) {
-        Walk walk = walkRepository.findByWalkIdAndIsDeletedFalse(walkId).orElseThrow();
+        Walk walk = walkRepository.findByWalkIdAndIsDeletedFalse(walkId).orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
         return WalkMapper.toDto(walk,
-                locationRepository.findAllByWalkWalkId(walk.getWalkId())
-                        .stream().map(log -> Location.toDto(log.get())).collect(Collectors.toList()));
+                locationRepository.findAllByWalkWalkId(walk.getWalkId()).orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND))
+                        .stream().map(log -> Location.toDto(log)).collect(Collectors.toList()));
     }
 
     @Override
     @Transactional
     public WalkDto updateWalk(WalkUpdateDto walkUpdateDto) {
 
-        Walk walk = walkRepository.findById(walkUpdateDto.getWalkId()).orElseThrow();
+        Walk walk = walkRepository.findById(walkUpdateDto.getWalkId()).orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
         walk.updateWalk(walkUpdateDto);
 
         return null;

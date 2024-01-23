@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class ExceptionAdvice {
 
-    @ExceptionHandler(UserNotFoundException.class)
+    @ExceptionHandler({UserNotFoundException.class, WalkNotFoundException.class, LocationsNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNotFound(RuntimeException e) {
         return e.getMessage();

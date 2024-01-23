@@ -44,12 +44,9 @@ public class Location {
 
         // 외래키 설정을 위해 Walk에 Id값 세팅
         Walk walk = Walk.builder().walkId(walkId).build();
-        return Location.builder()
-                .walk(walk)
-                .lat(this.lat)
-                .lng(this.lng)
-                .createdAt(this.createdAt)
-                .build();
+        this.walk = walk;
+
+        return this;
     }
 
     public static LocationDto toDto(Location location){
