@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,12 +45,12 @@ public class WalkServiceImpl implements WalkService{
     @Override
     public List<WalkDto> readMyWalks(Long userId) {
 
-        List<WalkDto> list = walkRepository.findAllByUserIdAndIsDeletedFalse(userId).orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND)).stream()
-                .map(item -> WalkMapper.toDto(item,
-                        locationRepository.findAllByWalkWalkId(item.getWalkId()).orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND))
-                                .stream().map(log -> Location.toDto(log)).collect(Collectors.toList()))
-                )
-                .collect(Collectors.toList());
+        List<Walk> result = walkRepository.findAllByUserIdAndIsDeletedFalse(userId).orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
+        List<WalkDto> list = new ArrayList<>();
+        for(Walk walk : result){
+            walk.setLocations(locationRepository.findAllByWalkWalkId(walk.getWalkId()).orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND)));
+            list.add(WalkMapper.toDto(walk));
+        }
 
         return list;
     }
@@ -62,9 +63,8 @@ public class WalkServiceImpl implements WalkService{
     @Override
     public WalkDto detailWalk(Long walkId) {
         Walk walk = walkRepository.findByWalkIdAndIsDeletedFalse(walkId).orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
-        return WalkMapper.toDto(walk,
-                locationRepository.findAllByWalkWalkId(walk.getWalkId()).orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND))
-                        .stream().map(log -> Location.toDto(log)).collect(Collectors.toList()));
+        walk.setLocations(locationRepository.findAllByWalkWalkId(walk.getWalkId()).orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND)));
+        return WalkMapper.toDto(walk);
     }
 
     @Override

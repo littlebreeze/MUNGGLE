@@ -56,4 +56,8 @@ public class Walk {
         this.isDeleted = true;
     }
 
+    public void setLocations(List<Location> locations){
+        this.location = locations;
+    }
+
 }
