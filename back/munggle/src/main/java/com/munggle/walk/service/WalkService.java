@@ -2,6 +2,7 @@ package com.munggle.walk.service;
 
 import com.munggle.domain.model.entity.Walk;
 import com.munggle.walk.dto.WalkDto;
+import com.munggle.walk.dto.WalkUpdateDto;
 
 import java.util.List;
 
@@ -26,4 +27,7 @@ public interface WalkService {
 
     // 산책 상세
     WalkDto detailWalk(Long walkId);
+
+    // 산책 수정
+    WalkDto updateWalk(WalkUpdateDto walkUpdateDto);
 }

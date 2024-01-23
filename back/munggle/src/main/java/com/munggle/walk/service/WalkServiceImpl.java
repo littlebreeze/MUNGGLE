@@ -4,9 +4,11 @@ import com.munggle.domain.model.entity.Location;
 import com.munggle.domain.model.entity.Walk;
 import com.munggle.walk.dto.LocationDto;
 import com.munggle.walk.dto.WalkDto;
+import com.munggle.walk.dto.WalkUpdateDto;
 import com.munggle.walk.mapper.WalkMapper;
 import com.munggle.walk.repository.LocationRepository;
 import com.munggle.walk.repository.WalkRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -64,5 +66,15 @@ public class WalkServiceImpl implements WalkService{
         return WalkMapper.toDto(walk,
                 locationRepository.findAllByWalkWalkId(walk.getWalkId())
                         .stream().map(log -> Location.toDto(log.get())).collect(Collectors.toList()));
+    }
+
+    @Override
+    @Transactional
+    public WalkDto updateWalk(WalkUpdateDto walkUpdateDto) {
+
+        Walk walk = walkRepository.findById(walkUpdateDto.getWalkId()).orElseThrow();
+        walk.updateWalk(walkUpdateDto);
+
+        return null;
     }
 }

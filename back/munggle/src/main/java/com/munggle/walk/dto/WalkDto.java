@@ -19,15 +19,10 @@ import java.util.List;
 public class WalkDto {
 
     private Long walkId;
-
     private String walkName;
-
     private Long userId;
-
     private Long dogId;
-
     private String description;
-
     private Integer duration;
     private Integer distance;
     private Float rating;

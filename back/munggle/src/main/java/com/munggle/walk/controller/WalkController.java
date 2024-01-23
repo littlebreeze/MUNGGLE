@@ -2,6 +2,7 @@ package com.munggle.walk.controller;
 
 import com.munggle.domain.model.entity.Walk;
 import com.munggle.walk.dto.WalkDto;
+import com.munggle.walk.dto.WalkUpdateDto;
 import com.munggle.walk.service.WalkService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,5 +40,10 @@ public class WalkController {
     @GetMapping("/{walkId}")
     public WalkDto walkDetail(@PathVariable Long walkId){
         return walkService.detailWalk(walkId);
+    }
+
+    @PutMapping("/{walkId}")
+    public void walkUpdate(@PathVariable Long walkId, @RequestBody WalkUpdateDto walkUpdateDto){
+        walkService.updateWalk(walkUpdateDto);
     }
 }

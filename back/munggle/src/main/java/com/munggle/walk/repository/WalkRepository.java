@@ -13,5 +13,7 @@ public interface WalkRepository extends JpaRepository<Walk, Long> {
     List<Optional<Walk>> findAllByUserId(Long userId);
 
     // 산책 상세 정보
-    Optional<Walk> findByWalkId(Long walkId);
+   Optional<Walk> findByWalkId(Long walkId);
+
+
 }
