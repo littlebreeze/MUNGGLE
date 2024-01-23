@@ -33,7 +33,7 @@ deploy: #JOB 이름
 #    - docker stop $(docker ps -a -q) # 모든 컨테이너 중지
 #    - docker rm $(docker ps -a -q) # 모든 컨테이너 삭제
 #    - docker rmi $(docker images -q) # 모든 이미지 삭제
-    - docker pull munggle:v1.0 # 도커 이미지 Pull
+#    - docker pull munggle:v1.0 # 도커 이미지 Pull
     - docker build -t munggle:v1.0 . # 도커 이미지 빌드
 #    - docker tag munggle:v1.0 $CI_REGISTRY:v1.0 # 이미지에 레지스트리 태그 추가
     - docker push $CI_REGISTRY:v1.0 # 이미지를 레지스트리로 푸시
