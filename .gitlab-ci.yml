@@ -15,7 +15,7 @@ build: #JOB 이름
     - ./gradlew bootJar
   artifacts:
     paths:
-      - build/libs/*.jar
+      - back/mungle/build/libs/*.jar
     expire_in: 1 days
   only:
     - develop/back
