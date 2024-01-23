@@ -15,7 +15,7 @@ export default function Footer() {
         </Link>
       </div>
       <div className="footer-div-2">
-        <Link to="/story">
+        <Link to="/matching">
           <img src={iconMatching} width={55} height={55} />
         </Link>
       </div>

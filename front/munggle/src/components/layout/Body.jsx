@@ -16,7 +16,7 @@ export default function Body() {
     <div className="body-container-div">
       <Routes>
         <Route path="/" element={<Post />} />
-        <Route path="/story" element={<Matching />} />
+        <Route path="/matching/*" element={<Matching />} />
         <Route path="/walk" element={<Walk />} />
         <Route path="/profile/*" element={<Profile />} />
         <Route path="/directmessage" element={<DirectMessage />} />
