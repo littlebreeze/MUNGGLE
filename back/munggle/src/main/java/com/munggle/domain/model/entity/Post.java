@@ -36,13 +36,9 @@ public class Post extends BaseTimeEntity {
     @Column(name = "post_content")
     private String postContent;
 
-    @NotNull
-    @Column(name = "user_id")
-    private Long userId;
-
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "like_cnt")
     @ColumnDefault("0")

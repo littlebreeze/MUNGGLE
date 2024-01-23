@@ -1,9 +1,6 @@
 package com.munggle.domain.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "user_images")
@@ -12,9 +9,13 @@ public class UserImage {
     @Column(name = "user_image_id")
     private Long id;
 
+    private String imageName;
+
     private String imagePath;
 
-    private Long userId;
+    @JoinColumn(name = "user_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
 
     private String imageType;
 }
