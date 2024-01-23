@@ -52,4 +52,8 @@ public class Walk {
         this.rating = walkUpdateDto.getRating();
     }
 
+    public void setDeleted(){
+        this.isDeleted = true;
+    }
+
 }

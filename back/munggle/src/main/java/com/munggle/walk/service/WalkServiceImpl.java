@@ -41,7 +41,7 @@ public class WalkServiceImpl implements WalkService{
     @Override
     public List<WalkDto> readMyWalks(Long userId) {
 
-        List<WalkDto> list = walkRepository.findAllByUserId(userId).stream()
+        List<WalkDto> list = walkRepository.findAllByUserIdAndIsDeletedFalse(userId).stream()
                 .map(item -> WalkMapper.toDto(item.get(),
                         locationRepository.findAllByWalkWalkId(item.get().getWalkId())
                                 .stream().map(log -> Location.toDto(log.get())).collect(Collectors.toList()))
@@ -56,13 +56,8 @@ public class WalkServiceImpl implements WalkService{
     }
 
     @Override
-    public void deleteWalk(Long walkId) {
-
-    }
-
-    @Override
     public WalkDto detailWalk(Long walkId) {
-        Walk walk = walkRepository.findByWalkId(walkId).get();
+        Walk walk = walkRepository.findByWalkIdAndIsDeletedFalse(walkId).orElseThrow();
         return WalkMapper.toDto(walk,
                 locationRepository.findAllByWalkWalkId(walk.getWalkId())
                         .stream().map(log -> Location.toDto(log.get())).collect(Collectors.toList()));
@@ -76,5 +71,12 @@ public class WalkServiceImpl implements WalkService{
         walk.updateWalk(walkUpdateDto);
 
         return null;
+    }
+
+    @Override
+    @Transactional
+    public void deleteWalk(Long walkId) {
+        Walk walk = walkRepository.findById(walkId).orElseThrow();
+        walk.setDeleted();
     }
 }

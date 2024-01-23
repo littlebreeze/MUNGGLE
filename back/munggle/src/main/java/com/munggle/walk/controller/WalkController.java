@@ -46,4 +46,9 @@ public class WalkController {
     public void walkUpdate(@PathVariable Long walkId, @RequestBody WalkUpdateDto walkUpdateDto){
         walkService.updateWalk(walkUpdateDto);
     }
+
+    @DeleteMapping("/{walkId}")
+    public void walkDelete(@PathVariable Long walkId){
+        walkService.deleteWalk(walkId);
+    }
 }
