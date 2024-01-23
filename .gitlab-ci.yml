@@ -30,9 +30,9 @@ deploy: #JOB 이름
     - echo "$DOCKER_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
   script:
     - docker volume prune -f # 사용되지 않는 컨테이너, 이미지 삭제 및 볼륨 정리
-    - docker stop $(docker ps -a -q) # 모든 컨테이너 중지
-    - docker rm $(docker ps -a -q) # 모든 컨테이너 삭제
-    - docker rmi $(docker images -q) # 모든 이미지 삭제
+#    - docker stop $(docker ps -a -q) # 모든 컨테이너 중지
+#    - docker rm $(docker ps -a -q) # 모든 컨테이너 삭제
+#    - docker rmi $(docker images -q) # 모든 이미지 삭제
     - docker pull munggle:v1.0 # 도커 이미지 Pull
     - docker build -t munggle:v1.0 . # 도커 이미지 빌드
     - docker tag munggle:v1.0 $CI_REGISTRY:v1.0 # 이미지에 레지스트리 태그 추가
