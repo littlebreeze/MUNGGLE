@@ -11,7 +11,7 @@ ENV TZ="Asia/Seoul"
 
 WORKDIR /work
 COPY --from=builder build/libs/*.jar /work/app.jar
-COPY ./deploy/start-app.sh /work/start-app.sh
+COPY ./start-app.sh /work/start-app.sh
 
 RUN chmod +x start-app.sh
 ENTRYPOINT ["./start-app.sh"]
