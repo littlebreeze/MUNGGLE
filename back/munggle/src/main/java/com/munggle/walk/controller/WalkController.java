@@ -33,8 +33,8 @@ public class WalkController {
     @GetMapping("/list")
     public List<WalkDto> locationWalkList(@RequestParam Float lat, @RequestParam Float lng){
 
-        // 시작 지점 기준으로... 반경...
-        return null;
+        System.out.println(lat + " // "+lng);
+        return walkService.readLocationWalks(lat, lng);
     }
 
     @GetMapping("/{walkId}")

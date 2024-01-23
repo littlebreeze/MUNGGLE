@@ -57,7 +57,16 @@ public class WalkServiceImpl implements WalkService{
 
     @Override
     public List<WalkDto> readLocationWalks(Float lat, Float lng) {
-        return null;
+
+        // 공개 범위 설정한 사용자의 산책 기록만 보내주자~
+        // 마커 찍는건 로그 첫번째로!
+        List<Walk> result = walkRepository.findAllByIsDeletedFalse().orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
+        List<WalkDto> list = new ArrayList<>();
+        for(Walk walk : result){
+            walk.setLocations(locationRepository.findAllByWalkWalkId(walk.getWalkId()).orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND)));
+            list.add(WalkMapper.toDto(walk));
+        }
+        return list;
     }
 
     @Override
