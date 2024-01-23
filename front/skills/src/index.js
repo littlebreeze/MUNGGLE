@@ -2,15 +2,15 @@ import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import Map from './component/Map.jsx';
-import Map2 from './component/Map2.jsx';
-import Test from './Test.jsx';
+import Geo from './component/UseGeoLocation.jsx';
+import RecordOnly from './component/RecordOnly.jsx';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Map2 />
+    <RecordOnly />
+ 
   </React.StrictMode>
 );
 
