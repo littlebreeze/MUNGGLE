@@ -2,10 +2,13 @@ package com.munggle.follow.controller;
 
 import com.munggle.domain.model.entity.User;
 import com.munggle.follow.service.FollowService;
+import com.munggle.user.dto.UserListDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("follows")
@@ -13,6 +16,11 @@ import org.springframework.web.bind.annotation.*;
 public class FollowController {
 
     private final FollowService followService;
+
+    @GetMapping("follower/{userId}")
+    public List<UserListDto> getFollowerList(@PathVariable Long userId) {
+        return followService.getFollowerList(userId);
+    }
 
     @PostMapping("{targetUserId}")
     @ResponseStatus(HttpStatus.OK)

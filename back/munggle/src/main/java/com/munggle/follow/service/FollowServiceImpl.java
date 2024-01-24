@@ -8,12 +8,16 @@ import com.munggle.domain.model.entity.FollowId;
 import com.munggle.domain.model.entity.User;
 import com.munggle.follow.Mapper.FollowMapper;
 import com.munggle.follow.retpository.FollowRepository;
+import com.munggle.user.dto.UserListDto;
+import com.munggle.user.mapper.UserMapper;
 import com.munggle.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.munggle.domain.exception.ExceptionMessage.*;
 
@@ -26,12 +30,22 @@ public class FollowServiceImpl implements FollowService {
     private final FollowRepository followRepository;
 
     @Override
+    public List<UserListDto> getFollowerList(Long userId) {
+        List<User> users = followRepository.findByTargetUserIdAndIsFollowedTrue(userId)
+                .stream()
+                .map(Follow::getFollowUser)
+                .collect(Collectors.toList());
+
+        return UserMapper.fromUsers(users);
+    }
+
+    @Override
     @Transactional
     public void followUser(Long fromUserId, Long targetUserId) {
         // 자기 자신을 팔로우하는지 검증
         Optional.of(fromUserId)
                 .filter(id -> !id.equals(targetUserId))
-                .orElseThrow(()-> new SelfFollowException(SELF_FOLLOW));
+                .orElseThrow(() -> new SelfFollowException(SELF_FOLLOW));
         // 받아온 userId 검증
         User fromUser = userRepository.findByIdAndIsEnabledTrue(fromUserId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
