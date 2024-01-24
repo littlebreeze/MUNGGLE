@@ -42,6 +42,16 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
+    public List<UserListDto> getFollowingList(Long userId) {
+        List<User> users = followRepository.findByTargetUserIdAndIsFollowedTrue(userId)
+                .stream()
+                .map(Follow::getFollowUser)
+                .collect(Collectors.toList());
+
+        return UserMapper.fromUsers(users);
+    }
+
+    @Override
     @Transactional
     public void followUser(Long fromUserId, Long targetUserId) {
         // 자기 자신을 팔로우하는지 검증

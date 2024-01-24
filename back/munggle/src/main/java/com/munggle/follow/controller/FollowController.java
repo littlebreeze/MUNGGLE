@@ -22,6 +22,11 @@ public class FollowController {
         return followService.getFollowerList(userId);
     }
 
+    @GetMapping("following/{userId}")
+    public List<UserListDto> getFollowingList(@PathVariable Long userId) {
+        return followService.getFollowingList(userId);
+    }
+
     @PostMapping("{targetUserId}")
     @ResponseStatus(HttpStatus.OK)
     public void followUser(@PathVariable Long targetUserId, @AuthenticationPrincipal User principal) {
