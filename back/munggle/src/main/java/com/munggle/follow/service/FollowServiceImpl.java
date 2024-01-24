@@ -52,6 +52,16 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
+    public Long getFollowerCount(Long userId) {
+        return followRepository.countByTargetUserIdAndIsFollowedTrue(userId);
+    }
+
+    @Override
+    public Long getFollowingCount(Long userId) {
+        return followRepository.countByFollowUserIdAndIsFollowedTrue(userId);
+    }
+
+    @Override
     @Transactional
     public void followUser(Long fromUserId, Long targetUserId) {
         // 자기 자신을 팔로우하는지 검증

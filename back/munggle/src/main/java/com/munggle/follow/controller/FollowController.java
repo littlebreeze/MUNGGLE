@@ -27,6 +27,16 @@ public class FollowController {
         return followService.getFollowingList(userId);
     }
 
+    @GetMapping("follower/{userId}/count")
+    public Long getFollowerCount(@PathVariable Long userId) {
+        return followService.getFollowerCount(userId);
+    }
+
+    @GetMapping("following/{userId}/count")
+    public Long getFollowingCount(@PathVariable Long userId) {
+        return followService.getFollowingCount(userId);
+    }
+
     @PostMapping("{targetUserId}")
     @ResponseStatus(HttpStatus.OK)
     public void followUser(@PathVariable Long targetUserId, @AuthenticationPrincipal User principal) {
