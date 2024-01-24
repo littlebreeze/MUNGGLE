@@ -1,6 +1,8 @@
 package com.munggle.post.mapper;
 
 import com.munggle.domain.model.entity.Post;
+import com.munggle.domain.model.entity.PostImage;
+import com.munggle.image.dto.FileInfoDto;
 import com.munggle.post.dto.PostCreateDto;
 import com.munggle.post.dto.PostDetailResponseDto;
 import lombok.AccessLevel;
@@ -15,7 +17,6 @@ public class PostMapper {
         return Post.builder()
                 .postTitle(postCreateDto.getPostTitle())
                 .postContent(postCreateDto.getPostContent())
-                .user(postCreateDto.getUser())
                 .isPrivate(postCreateDto.getIsPrivate())
                 .build();
     }
@@ -30,6 +31,14 @@ public class PostMapper {
                 .createdAt(detailPost.getCreatedAt())
                 .updatedAt(detailPost.getUpdatedAt())
                 .isUpdated(detailPost.getCreatedAt().equals(detailPost.getUpdatedAt()))
+                .build();
+    }
+
+    public static PostImage toPostImageEntity(FileInfoDto file, Post post) {
+        return PostImage.builder()
+                .imageName(file.getFileName())
+                .imageURL(file.getFileURL())
+                .post(post)
                 .build();
     }
 }
