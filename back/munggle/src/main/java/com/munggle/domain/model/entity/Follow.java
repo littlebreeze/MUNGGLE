@@ -30,4 +30,8 @@ public class Follow {
 
     @Column(name = "is_followed")
     private boolean isFollowed;
+
+    public void follow() {
+        isFollowed = true;
+    }
 }
