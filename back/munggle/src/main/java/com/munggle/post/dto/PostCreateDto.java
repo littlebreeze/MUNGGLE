@@ -1,6 +1,7 @@
 package com.munggle.post.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.munggle.domain.model.entity.User;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -16,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class PostCreateDto {
 
-    private Long userId;
+    private User user;
 
     @Size(max = 100)
     @NotBlank
