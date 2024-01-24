@@ -60,4 +60,14 @@ public class FollowServiceImpl implements FollowService {
 
         follow.unfollow();
     }
+
+    @Override
+    @Transactional
+    public void deleteFollower(Long myId, Long followerId) {
+        FollowId followId = FollowMapper.toFollowId(followerId, myId);
+        Follow follow = followRepository.findById(followId)
+                .orElseThrow(() -> new FollowNotFoundException(FOLLOW_NOT_FOUND));
+
+        follow.unfollow();
+    }
 }

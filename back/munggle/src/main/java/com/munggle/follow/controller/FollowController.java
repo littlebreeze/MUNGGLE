@@ -27,4 +27,11 @@ public class FollowController {
         Long fromUserId = principal.getId();
         followService.unfollow(fromUserId, targetUserId);
     }
+
+    @DeleteMapping("follower/{followerId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteFollower(@PathVariable Long followerId, @AuthenticationPrincipal User principal) {
+        Long myId = principal.getId();
+        followService.deleteFollower(myId, followerId);
+    }
 }
