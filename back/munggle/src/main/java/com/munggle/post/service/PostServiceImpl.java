@@ -18,6 +18,11 @@ public class PostServiceImpl implements PostService {
 
     private final PostRepository postRepository;
 
+    /**
+     * 게시글 생성 메소드
+     * 추후 해시태그 생성 구현 예정
+     * @param postCreateDto
+     */
     @Override
     @Transactional
     public void insertPost(PostCreateDto postCreateDto) {
@@ -27,6 +32,13 @@ public class PostServiceImpl implements PostService {
         postRepository.save(newPost);
     }
 
+    /**
+     * 게시글 수정 메소드
+     * 수정 가능 필드: title / content / isPrivate
+     * 추후 해시태그 수정 구현 예정
+     * 이미지 수정 구현 예정
+     * @param postUpdateDto
+     */
     @Override
     @Transactional
     public void updatePost(PostUpdateDto postUpdateDto) {
@@ -41,6 +53,11 @@ public class PostServiceImpl implements PostService {
         updatePost.updatePost(newTitle, newContent, newIsPrivate);
     }
 
+    /**
+     * 게시글 삭제 메소드
+     * 추후 해시태그 삭제 / 파일 삭제 구현 예정
+     * @param postId
+     */
     @Override
     @Transactional
     public void deletePost(Long postId) {
@@ -49,6 +66,13 @@ public class PostServiceImpl implements PostService {
         post.markAsDeletd();
     }
 
+    /**
+     * 게시글 상세보기 메소드
+     *
+     * @param postId
+     * @param userId
+     * @return
+     */
     @Override
     public PostDetailResponseDto getDetailPost(Long postId, Long userId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
