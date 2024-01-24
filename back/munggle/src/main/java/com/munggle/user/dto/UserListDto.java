@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class UserSearchListDto {
+public class UserListDto {
 
     @NotBlank
     private final String nickname;
@@ -17,8 +17,8 @@ public class UserSearchListDto {
     // 추후 추가
 //    private final String profileImgUrl;
 
-    public static UserSearchListDto toUserSearchListDto(User user) {
-        return UserSearchListDto.builder()
+    public static UserListDto toUserListDto(User user) {
+        return UserListDto.builder()
                 .nickname(user.getNickname())
                 .build();
     }

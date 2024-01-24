@@ -33,7 +33,7 @@ public class UserController {
 
     @GetMapping("/search/{keyword}")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserSearchListDto> searchUserByNickname(@PathVariable String keyword) {
+    public List<UserListDto> searchUserByNickname(@PathVariable String keyword) {
         return userService.getSearchPage(keyword);
     }
 
