@@ -1,10 +1,11 @@
 .nav-container-div{
-  background-color: rgb(187, 185, 182);
+  /* background-color: rgb(187, 185, 182); */
+  background-color: rgb(255, 255, 255);
   width: 400px;
   height: 70px;
-  border: 1px solid black;
-  border-top-left-radius: 40px;
-  border-top-right-radius: 40px;
+  /* border: 1px solid black; */
+  /* border-top-left-radius: 40px;
+  border-top-right-radius: 40px; */
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -30,7 +31,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 5px;
+  /* margin-right: 5px; */
+  margin-right: 7px;
 }
 
 .nav-right-div-middle {
@@ -39,7 +41,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 5px;
+  /* margin-right: 5px; */
+  margin-right: 10px;
 }
 
 .nav-right-div-right {
@@ -48,5 +51,5 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 5px;
+  /* margin-right: 5px; */
 }

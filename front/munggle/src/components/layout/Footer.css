@@ -1,11 +1,13 @@
 .footer-container-div {
-  background-color: rgb(239, 239, 239);
+  /* background-color: rgb(239, 239, 239); */
+  background-color: rgb(255, 255, 255);
   width: 400px;
-  height: 100px;
-  border: 1px solid black;
-  border-top: 2px double black;
-  border-bottom-left-radius: 40px;
-  border-bottom-right-radius: 40px;
+  /* height: 70px; */
+  height: 70px;
+  /* border: 1px black; */
+  /* border-top: 2px double black; */
+  /* border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px; */
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -15,7 +17,8 @@
 .footer-div-1{
   margin-left: 10px;
   width: 80px;
-  height: 80px;
+  /* height: 80px; */
+  height: 50px;
   opacity: 0.6;
   display: flex;
   justify-content: center;
@@ -24,7 +27,8 @@
 
 .footer-div-2{
   width: 80px;
-  height: 80px;
+  /* height: 80px; */
+  height: 50px;
   opacity: 0.6;
   display: flex;
   justify-content: center;
@@ -33,7 +37,8 @@
 
 .footer-div-3{
   width: 80px;
-  height: 80px;
+  /* height: 80px; */
+  height: 50px;
   opacity: 0.6;
   display: flex;
   justify-content: center;
@@ -43,7 +48,8 @@
 .footer-div-4{
   margin-right: 10px;
   width: 80px;
-  height: 80px;
+  /* height: 80px; */
+  height: 50px;
   opacity: 0.6;
   display: flex;
   justify-content: center;
