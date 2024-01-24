@@ -1,4 +1,4 @@
-package com.munggle.image;
+package com.munggle.image.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
