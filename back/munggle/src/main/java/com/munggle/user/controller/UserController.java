@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -25,7 +25,7 @@ public class UserController {
         return userService.getUserMypage(id);
     }
 
-    @GetMapping("/profile/{userId}")
+    @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public UserProfileDto getMemberInfo(@PathVariable Long userId) {
         return userService.getUserProfile(userId);
@@ -37,7 +37,7 @@ public class UserController {
         return userService.getSearchPage(keyword);
     }
 
-    @PostMapping("/join")
+    @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public void joinMember(@RequestBody @Valid UserCreateDto userCreateDto) {
         userService.joinMember(userCreateDto);
@@ -59,7 +59,7 @@ public class UserController {
         userService.updatePassword(id, updatePasswordDto.getNewPassword());
     }
 
-    @PutMapping("/desc")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public void writeDescription(@AuthenticationPrincipal User principal,
                                  @RequestBody @Valid UserDescriptionDto userDescriptionDto) {
@@ -67,7 +67,7 @@ public class UserController {
         userService.writeDescription(id, userDescriptionDto.getDescription());
     }
 
-    @DeleteMapping("delete")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.OK)
     public void deleteMember(@AuthenticationPrincipal User principal) {
         Long id = principal.getId();
