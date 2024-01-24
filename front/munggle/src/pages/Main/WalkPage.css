@@ -1,0 +1,22 @@
+.walk-container-div {
+  width: 400px;
+  height: 630px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-div {
+  width: 200px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.text-span {
+  margin-top: 10px;
+  font-size: 20px;
+}

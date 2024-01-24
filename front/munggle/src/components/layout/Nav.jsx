@@ -15,8 +15,8 @@ export default function Nav(props) {
           <img src={imgLogo} width={100} />
         </Link>
       </div>
-      <div onClick={props.openSearchModal} className="nav-right-div">
-        <div className="nav-right-div-left">
+      <div className="nav-right-div">
+        <div onClick={props.openSearchModal} className="nav-right-div-left">
           <img src={imgSearch} width={30} height={30} />
         </div>
         <div className="nav-right-div-middle">
