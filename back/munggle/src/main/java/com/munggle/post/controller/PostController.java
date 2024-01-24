@@ -1,11 +1,12 @@
 package com.munggle.post.controller;
 
+import com.munggle.domain.model.entity.User;
 import com.munggle.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.munggle.post.dto.PostCreateDto;
@@ -37,8 +38,10 @@ public class PostController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public void savePost(@RequestBody PostCreateDto postCreateDto) {
-        // 유저 넣어줘야 됌!!!!!
+    public void savePost(@AuthenticationPrincipal User principal,
+                         @RequestBody PostCreateDto postCreateDto) {
+
+        postCreateDto.setUserId(principal.getId());
         postService.insertPost(postCreateDto);
     }
 
@@ -46,7 +49,7 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     public void updatePost(@PathVariable Long postId,
                            @RequestBody @Valid PostUpdateDto postUpdateDto) {
-        // 유저 넣어줘야 됌!!!!!
+
         postUpdateDto.setPostId(postId);
         postService.updatePost(postUpdateDto);
     }
@@ -54,15 +57,15 @@ public class PostController {
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public void deletePost(@PathVariable Long postId) {
-        // 유저 넣어줘야 됌!!!!!
         postService.deletePost(postId);
     }
 
-    @GetMapping("/postId")
+    @GetMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public PostDetailResponseDto getPost(@PathVariable Long postId) {
-        // 유저 정보 넣어줘야 됌!!!!
-        Long userId = 1L; //임의로 넣어준것 나중에 처리 해줘야함!!!!
+    public PostDetailResponseDto getPost(@AuthenticationPrincipal User principal,
+                                         @PathVariable Long postId) {
+
+        Long userId = principal.getId();
         return postService.getDetailPost(postId, userId);
     }
 }
