@@ -4,14 +4,14 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import Geo from './component/UseGeoLocation.jsx';
 import RecordOnly from './component/RecordOnly.jsx';
+import RecordOnly2 from './component/RecordOnly2.jsx';
+import RecordOnly3 from './component/RecordOnly3.jsx';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+
     <RecordOnly />
- 
-  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

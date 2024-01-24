@@ -90,14 +90,14 @@ export default function RecordOnly() {
             };
         const map = new kakao.maps.Map(container, options);
 
-        //이동 위치에 따라서 맵 이동
+        // 이동 위치에 따라서 맵 이동
         const moveMap = setInterval(()=>{
             console.log(location.latitude)
             const moveLatLon = new kakao.maps.LatLng(location.latitude===undefined?latRef.current:location.latitude,location.longitude===undefined?latRef.current:location.longitude);
 
             // const moveLatLon2 = new kakao.maps.LatLng(lat,lng);
             map.panTo(moveLatLon);
-        },3000);//3초
+        },1000);//3초
 
         const drawLine = setInterval( () => {
             console.log("drawLine");
@@ -146,7 +146,7 @@ export default function RecordOnly() {
   
     }, [location]);
 
-
+    
 
   return (
     <>
