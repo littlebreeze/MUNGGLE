@@ -55,6 +55,11 @@ public class Post extends BaseTimeEntity {
         this.postContent = newContent;
         this.isPrivate = newIsPrivate;
     }
+
+    public void addUserToPost(User user) {
+        this.user = user;
+    }
+
     public void markAsDeletd() {
         this.isDeleted = false;
     }
