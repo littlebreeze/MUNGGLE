@@ -31,11 +31,13 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public List<UserListDto> getFollowerList(Long userId) {
+        // 팔로우를 타겟멤버를 기준으로 받아와서 팔로우한 유저를 담는 리스트로 변환
         List<User> users = followRepository.findByTargetUserIdAndIsFollowedTrue(userId)
                 .stream()
                 .map(Follow::getFollowUser)
                 .collect(Collectors.toList());
 
+        // 유저리스트 dto로 변환
         return UserMapper.fromUsers(users);
     }
 
