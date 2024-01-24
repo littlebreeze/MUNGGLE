@@ -277,18 +277,22 @@ export default function Profile() {
 
         <div className="profile-top-div-bottom-div">
           <div className="profile-top-div-bottom-div-top-div">
-            <img className="mx-2" src={iconDm} width={30} height={30} />
-            <button className="me-3 btn btn-secondary">팔로우</button>
+            {/* <img className="mx-2" src={iconDm} width={30} height={30} /> */}
+            {/* <button className="me-3 btn btn-secondary">팔로잉</button> */}
+            <span className="ms-3 profile-top-div-bottom-div-bottom-span fw-bold">팔로워 {userProfile.follower}</span>
+            <span className="mx-3 profile-top-div-bottom-div-bottom-span fw-bold">팔로잉 {userProfile.following}</span>
+            <button className="profile-top-div-bottom-div-top-div-button">팔로우</button>
+            <img className="me-4 mt-1" src={iconDm} width={35} height={35} />
           </div>
 
           <div className="profile-top-div-bottom-div-middle-div">
             <span className="profile-top-div-bottom-div-middle-span">{userProfile.description}</span>
           </div>
 
-          <div className="profile-top-div-bottom-div-bottom-div">
+          {/* <div className="profile-top-div-bottom-div-bottom-div">
             <span className="ms-3 profile-top-div-bottom-div-bottom-span">팔로워 {userProfile.follower}</span>
-            <span className="mx-3 profile-top-div-bottom-div-bottom-span">팔로우 {userProfile.following}</span>
-          </div>
+            <span className="mx-3 profile-top-div-bottom-div-bottom-span">팔로잉 {userProfile.following}</span>
+          </div> */}
         </div>
 
         <div className="profile-top-div-middle-div">
