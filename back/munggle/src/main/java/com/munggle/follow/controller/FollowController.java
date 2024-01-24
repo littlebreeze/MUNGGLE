@@ -20,4 +20,11 @@ public class FollowController {
         Long fromUserId = principal.getId();
         followService.followUser(fromUserId, targetUserId);
     }
+
+    @DeleteMapping("{targetUserId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void unfollowUser(@PathVariable Long targetUserId, @AuthenticationPrincipal User principal) {
+        Long fromUserId = principal.getId();
+        followService.unfollow(fromUserId, targetUserId);
+    }
 }

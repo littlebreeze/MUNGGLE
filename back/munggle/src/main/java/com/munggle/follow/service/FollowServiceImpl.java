@@ -1,5 +1,6 @@
 package com.munggle.follow.service;
 
+import com.munggle.domain.exception.FollowNotFoundException;
 import com.munggle.domain.exception.SelfFollowException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.Follow;
@@ -14,8 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
-import static com.munggle.domain.exception.ExceptionMessage.SELF_FOLLOW;
-import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
+import static com.munggle.domain.exception.ExceptionMessage.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -49,5 +49,15 @@ public class FollowServiceImpl implements FollowService {
                 ));
 
         follow.follow();
+    }
+
+    @Override
+    @Transactional
+    public void unfollow(Long fromUserId, Long targetUserId) {
+        FollowId followId = FollowMapper.toFollowId(fromUserId, targetUserId);
+        Follow follow = followRepository.findById(followId)
+                .orElseThrow(() -> new FollowNotFoundException(FOLLOW_NOT_FOUND));
+
+        follow.unfollow();
     }
 }

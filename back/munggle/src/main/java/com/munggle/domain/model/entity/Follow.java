@@ -34,4 +34,8 @@ public class Follow {
     public void follow() {
         isFollowed = true;
     }
+
+    public void unfollow() {
+        isFollowed = false;
+    }
 }
