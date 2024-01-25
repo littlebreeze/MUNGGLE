@@ -1,12 +1,12 @@
 package com.munggle.image.service;
 
-//import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.*;
+
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.*;
 import com.munggle.image.dto.FileInfoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -17,11 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+
 @Service
 @Component
 @RequiredArgsConstructor
 public class FileS3UploadServiceImpl implements FileS3UploadService {
-    private final AmazonS3Client amazonS3Client;
+    private final S3Client s3Client;
 
     @Value("cloud.aws.s3.bucket")
     private String bucketName;
@@ -58,8 +59,9 @@ public class FileS3UploadServiceImpl implements FileS3UploadService {
 
     /**
      * S3저장소에 파일 업로드
-     * 
+     *
      * @param uploadPath : 저장 폴더 명
+     *                   : 게시글은 post/postId/ 이런식으로 만들어서 관리
      * @param multipartFile
      * @return : 이미지가 저장된 주소 (URL)
      */
@@ -70,19 +72,19 @@ public class FileS3UploadServiceImpl implements FileS3UploadService {
 
         String generatedName = uploadPath + "/" + generateRandomName(ext); //새로 생성된 이미지 이름
 
-        ObjectMetadata metadata = new ObjectMetadata(); //메타데이터
-        metadata.setContentType(getContentType(ext)); //메타데이터 컨텐츠 타입 설정
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(generatedName)
+                .contentType(getContentType(ext))
+                .build();
 
-        try { //S3 버킷에 파일 업로드
-            amazonS3Client.putObject(new PutObjectRequest(
-                    bucketName, generatedName, multipartFile.getInputStream(), metadata
-            ).withCannedAcl(CannedAccessControlList.PublicRead));
+        try {
+            s3Client.putObject(putObjectRequest, RequestBody.fromBytes(multipartFile.getBytes()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        String fileURL = amazonS3Client.getUrl(bucketName, generatedName).toString(); //데이터베이스에 저장할 이미지가 저장된 주소
-
+        String fileURL = s3Client.utilities().getUrl(GetUrlRequest.builder().bucket(bucketName).key(generatedName).build()).toExternalForm();
         return FileInfoDto.builder()
                 .fileName(generatedName)
                 .fileURL(fileURL)
@@ -98,24 +100,25 @@ public class FileS3UploadServiceImpl implements FileS3UploadService {
      */
     @Override
     public List<FileInfoDto> uploadFlieList(String uploadPath, List<MultipartFile> multipartFiles) {
-
         List<FileInfoDto> fileInfoDtos = new ArrayList<>();
         for (MultipartFile file : multipartFiles) {
             fileInfoDtos.add(uploadFile(uploadPath, file));
         }
-
         return fileInfoDtos;
     }
 
-
     /**
      * S3저장소에서 파일 삭제
-     * 
+     *
      * @param fileName : db에 저장할 imageName에 해당
      */
     @Override
     public void removeFile(String fileName) {
-        DeleteObjectRequest deleteRequest = new DeleteObjectRequest(bucketName, fileName);
-        amazonS3Client.deleteObject(deleteRequest);
+        DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(fileName)
+                .build();
+        s3Client.deleteObject(deleteRequest);
     }
+
 }
