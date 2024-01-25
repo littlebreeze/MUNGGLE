@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from "react";
 import "./WalkPage.css";
 
-export default function Walk() {
-  const [x, setX] = useState(0)
-  const [y, setY] = useState(0)
+import iconCalender from "../../assets/icons/calender.png";
 
-  const success = (pos) => {
-    setX(pos.coords.latitude)
-    setY(pos.coords.longitude)
-    console.log(`More or less ${pos.coords.accuracy} meters.`);
-  }
+const { kakao } = window;
+
+export default function Walk() {
+  const [location, setLocation] = useState({});
+
+  const success = (position) => {
+    setLocation({
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+    });
+    console.log(`More or less ${position.coords.accuracy} meters.`);
+  };
   
   const error = (err) => {
     console.warn(`ERROR(${err.code}): ${err.message}`);
@@ -21,20 +26,49 @@ export default function Walk() {
     maximumAge: 30000,
   };
 
-  const changePosition = () => {
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(success, error, options);
+    console.log(location)
+  }, []);
+
+  useEffect(() => {
+    // 지도 그리기
+    const container = document.getElementById("map");
+    const options = {
+      center: new kakao.maps.LatLng(location.latitude, location.longitude),
+      level: 3
+    };
+    const map = new kakao.maps.Map(container, options);
+
+    const moveMap = setInterval(() => {
+      const moveLatLon = new kakao.maps.LatLng(location.latitude, location.longitude);
+
+      map.panTo(moveLatLon);
+    }, 3000)
+
+    return () => {clearInterval(moveMap);
+      clearInterval(getLocation);}
+
+  }, [location]);
+
+  setInterval(() => {
+    navigator.geolocation.getCurrentPosition(success, error, options);
+  }, 5000);
+
+  const getLocation = () => {
     navigator.geolocation.getCurrentPosition(success, error, options);
   }
 
-  // navigator.geolocation.getCurrentPosition(success, error, options);
-  // navigator.geolocation.watchPosition(success, error, options);
-
   return (
     <div className="walk-container-div">
-    
-      <div className="text-div">
-        <button className="btn btn-secondary" onClick={changePosition} >위치 측정</button>
-        <span className="text-span">위도 : {x}</span>
-        <span className="text-span">경도 : {y}</span>
+      <div className="walk-page-map-div" id="map"></div>
+
+      <div className="walk-calender-img-div">
+        <img className="walk-calender-img" src={iconCalender} />
+      </div>
+
+      <div onClick={(e) => getLocation()} className="walk-start-button-div">
+        <button className="walk-start-button">산책 갈까?</button>
       </div>
     </div>
   );

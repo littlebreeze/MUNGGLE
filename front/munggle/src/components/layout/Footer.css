@@ -4,10 +4,10 @@
   width: 400px;
   /* height: 70px; */
   height: 70px;
-  /* border: 1px black; */
-  /* border-top: 2px double black; */
-  /* border-bottom-left-radius: 40px;
-  border-bottom-right-radius: 40px; */
+  border: 1px black solid;
+  border-top: 2px double black;
+  border-bottom-left-radius: 40px;
+  border-bottom-right-radius: 40px;
   display: flex;
   flex-direction: row;
   justify-content: space-around;

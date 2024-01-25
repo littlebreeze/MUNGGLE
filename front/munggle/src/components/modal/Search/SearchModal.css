@@ -7,8 +7,10 @@
 
 .search-modal-search-div {
   width: 320px;
-  height: 60px;
+  height: 50px;
   display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .search-modal-search-left-div {
@@ -29,25 +31,34 @@
 
 .search-modal-search-middle-div {
   width: 210px;
-  height: 40px;
-}
-
-.search-modal-search-middle-input {
-  width: 210px;
-  height: 40px;
-}
-
-.search-modal-search-right-div {
-  width: 70px;
-  height: 40px;
+  height: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+.search-modal-search-middle-input {
+  border: 1px solid black;
+  width: 210px;
+  height: 40px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.search-modal-search-right-div {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 25px;
+  border: 1px black solid;
+  border-radius: 10px;
+}
+
 .search-modal-search-right-img {
-  width: 35px;
-  height: 35px;
+  width: 30px;
+  height: 30px;
 
 }
 
