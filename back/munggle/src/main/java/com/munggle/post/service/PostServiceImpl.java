@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -83,7 +84,7 @@ public class PostServiceImpl implements PostService {
         // 기존 post image 삭제
         Long userId = updatePost.getUser().getId();
         String uploadPath = userId + "/" + updatePost.getId() + "/";
-        fileS3UploadService.removeFolderFiles(uploadPath); // s3 저장소에서 파일 삭제
+        fileS3UploadService.removeFolderFiles(uploadPath); // s3 저장소에 올라간 기존 파일 삭제
 
         postImageRepository.deleteByPostId(updatePost.getId()); // db에서 데이터 삭제
 
@@ -110,11 +111,12 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new NoSuchElementException());
         post.markAsDeletd();
 
+        // post image 삭제
         Long userId = post.getUser().getId();
         String uploadPath = userId + "/" + post.getId() + "/";
-        fileS3UploadService.removeFolderFiles(uploadPath);
-
-        postImageRepository.deleteByPostId(post.getId());
+        fileS3UploadService.removeFolderFiles(uploadPath); // s3 저장소에 올라간 파일 삭제
+        
+        postImageRepository.deleteByPostId(post.getId());  // db에서 데이터 삭제
     }
 
     /**
@@ -128,10 +130,16 @@ public class PostServiceImpl implements PostService {
     public PostDetailResponseDto getDetailPost(Long postId, Long userId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new NoSuchElementException());
-        String nickname = "nickname"; // 닉네임 추후 수정
-        Boolean isMine = true;
-        PostDetailResponseDto detailPost = PostMapper.toPostDetailResponseDto(post, nickname, isMine);
+        String nickname = post.getUser().getNickname();
+        Boolean isMine = post.getUser().getId().equals(userId) ? true : false;
 
-        return detailPost;
+        // 해당 post의 이미지 url만 list로 가져오기
+        List<String> imageUrls = new ArrayList<>();
+        List<PostImage> postImages = postImageRepository.findAllByPost(post);
+        for (PostImage postImage : postImages) {
+            imageUrls.add(postImage.getImageURL());
+        }
+
+        return PostMapper.toPostDetailResponseDto(post, nickname, isMine, imageUrls);
     }
 }

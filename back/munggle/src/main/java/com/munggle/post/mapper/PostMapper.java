@@ -9,6 +9,8 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostMapper {
@@ -21,10 +23,11 @@ public class PostMapper {
                 .build();
     }
 
-    public static PostDetailResponseDto toPostDetailResponseDto(Post detailPost, String nickname, Boolean isMine) {
+    public static PostDetailResponseDto toPostDetailResponseDto(Post detailPost, String nickname, Boolean isMine, List<String> imageUrls) {
         return PostDetailResponseDto.builder()
                 .postTitle(detailPost.getPostTitle())
                 .postContent(detailPost.getPostContent())
+                .images(imageUrls)
                 .nickname(nickname)
                 .likeCnt(detailPost.getLikeCnt())
                 .isMine(isMine)
