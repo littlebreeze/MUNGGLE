@@ -1,5 +1,6 @@
 package com.munggle.domain.model.entity;
 
+import com.munggle.dog.dto.DogUpdateDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -70,4 +71,18 @@ public class Dog {
     @Column(columnDefinition = "boolean default false")
     //@ColumnDefault("false")
     private boolean isDeleted;
+
+    public void updateDog(DogUpdateDto dogUpdateDto){
+        this.birthDate = dogUpdateDto.getBirthDate();
+        this.size = dogUpdateDto.getSize();
+        this.weight = dogUpdateDto.getWeight();
+        this.isNeutering = dogUpdateDto.isNeutering();
+        this.name = dogUpdateDto.getName();
+        this.image = dogUpdateDto.getImage();
+        this.description = dogUpdateDto.getDescription();
+    }
+
+    public void deleteDog(){
+        this.isDeleted = true;
+    }
 }
