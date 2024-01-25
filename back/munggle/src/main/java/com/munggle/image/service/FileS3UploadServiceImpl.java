@@ -61,7 +61,7 @@ public class FileS3UploadServiceImpl implements FileS3UploadService {
      * S3저장소에 파일 업로드
      *
      * @param uploadPath : 저장 폴더 명
-     *                   : 게시글은 post/postId/ 이런식으로 만들어서 관리
+     *                   : 게시글은 userId/postId/ 이런식으로 만들어서 관리
      * @param multipartFile
      * @return : 이미지가 저장된 주소 (URL)
      */
@@ -100,11 +100,11 @@ public class FileS3UploadServiceImpl implements FileS3UploadService {
      */
     @Override
     public List<FileInfoDto> uploadFlieList(String uploadPath, List<MultipartFile> multipartFiles) {
-        List<FileInfoDto> fileInfoDtos = new ArrayList<>();
+        List<FileInfoDto> fileInfos = new ArrayList<>();
         for (MultipartFile file : multipartFiles) {
-            fileInfoDtos.add(uploadFile(uploadPath, file));
+            fileInfos.add(uploadFile(uploadPath, file));
         }
-        return fileInfoDtos;
+        return fileInfos;
     }
 
     /**
@@ -121,4 +121,46 @@ public class FileS3UploadServiceImpl implements FileS3UploadService {
         s3Client.deleteObject(deleteRequest);
     }
 
+    /**
+     * 업로드 된 폴더를 전체 삭제하고 싶을 때
+     * s3 버킷에서 uploadPath안의 객체 전체 삭제
+     *
+     * @param uploadPath
+     */
+    @Override
+    public void removeFolderFiles(String uploadPath) {
+        try {
+            // 버킷에 들어있는 객체 조회
+            ListObjectsV2Response listObjectsResponse = getObjectsFromS3Bucket(uploadPath);
+
+            // Object Key 값을 params에 넣어 delete 실행
+            for (S3Object s3Object : listObjectsResponse.contents()) {
+                String key = s3Object.key();
+                removeFile(key);
+            }
+
+            // 남은 객체 체크
+            listObjectsResponse = getObjectsFromS3Bucket(uploadPath);
+
+            // 남은 객체가 없다면 종료, 있다면 함수 재실행
+            if (listObjectsResponse.contents().isEmpty()) {
+                System.out.println(uploadPath + " 폴더 삭제를 종료합니다");
+            } else {
+                System.out.println(uploadPath + " 폴더 삭제를 재실행합니다");
+                removeFolderFiles(uploadPath);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // 버킷에 들어있는 Object 조회하는 함수
+    private ListObjectsV2Response getObjectsFromS3Bucket(String uploadPath) {
+        ListObjectsV2Request listObjectsRequest = ListObjectsV2Request.builder()
+                .bucket(bucketName)
+                .prefix(uploadPath + "/")
+                .build();
+
+        return s3Client.listObjectsV2(listObjectsRequest);
+    }
 }

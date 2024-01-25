@@ -14,4 +14,6 @@ public interface FileS3UploadService {
     List<FileInfoDto> uploadFlieList(String uploadPath, List<MultipartFile> multipartFiles);
 
     void removeFile(String fileName);
+
+    public void removeFolderFiles(String uploadPath);
 }
