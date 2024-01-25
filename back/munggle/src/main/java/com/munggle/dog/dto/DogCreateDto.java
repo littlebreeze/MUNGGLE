@@ -1,5 +1,6 @@
 package com.munggle.dog.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +24,7 @@ public class DogCreateDto {
     private String size;
     private Float weight;
     private String gender;
+    @JsonProperty("isNeutering")
     private boolean isNeutering;    // 중성화 여부
     private String name;
     private String image;
