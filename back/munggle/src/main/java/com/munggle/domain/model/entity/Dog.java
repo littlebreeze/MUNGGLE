@@ -1,5 +1,6 @@
 package com.munggle.domain.model.entity;
 
+import com.munggle.dog.dto.DogCharDto;
 import com.munggle.dog.dto.DogUpdateDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -31,7 +32,7 @@ public class Dog {
     private Long id;
 
     @NotNull
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "kind_id")
     private Kind kind;
     //private Long kindId;
@@ -84,5 +85,18 @@ public class Dog {
 
     public void deleteDog(){
         this.isDeleted = true;
+    }
+
+    public void onMatching(){
+        this.isMatching = true;
+    }
+
+    public void offMatching(){
+        this.isMatching = false;
+    }
+
+    public void updateCharacterId(DogCharDto dogCharDto){
+        this.characterId = dogCharDto.toCharacterString();
+        this.isNeutering = dogCharDto.isNeutering();
     }
 }
