@@ -34,7 +34,6 @@ public class PostServiceImpl implements PostService {
     /**
      * 게시글 생성 메소드
      *
-     * 이미지 생성 구현 예정
      * 추후 해시태그 생성 구현 예정
      * @param postCreateDto
      */
@@ -47,15 +46,17 @@ public class PostServiceImpl implements PostService {
         newPost.addUserToPost(userRepository.findByIdAndIsEnabledTrue(userId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND)));
 
+        // 게시글 영속화
+        Long postId = postRepository.save(newPost).getId();
+
         List<MultipartFile> files = postCreateDto.getImages();
-        String uploadPath = "/post";
-        List<FileInfoDto> fileInfoDtos = fileS3UploadService.uploadFlieList(uploadPath, files);
-        for (FileInfoDto fileInfo : fileInfoDtos) {
+        String uploadPath = userId + "/" + postId + "/";
+        List<FileInfoDto> fileInfoDtos = fileS3UploadService.uploadFlieList(uploadPath, files); //s3 저장소에 업로드
+
+        for (FileInfoDto fileInfo : fileInfoDtos) { // db에 이미지 파일 정보 저장
             PostImage newImage = PostMapper.toPostImageEntity(fileInfo, newPost);
             postImageRepository.save(newImage);
         }
-
-        postRepository.save(newPost);
     }
 
     /**
@@ -78,11 +79,28 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow();
 
         updatePost.updatePost(newTitle, newContent, newIsPrivate);
+
+        // 기존 post image 삭제
+        Long userId = updatePost.getUser().getId();
+        String uploadPath = userId + "/" + updatePost.getId() + "/";
+        fileS3UploadService.removeFolderFiles(uploadPath); // s3 저장소에서 파일 삭제
+
+        postImageRepository.deleteByPostId(updatePost.getId()); // db에서 데이터 삭제
+
+        // 업데이트 된 post image 등록
+        List<MultipartFile> files = postUpdateDto.getImages();
+        List<FileInfoDto> fileInfoDtos = fileS3UploadService.uploadFlieList(uploadPath, files); //s3 저장소에 업로드
+
+        for (FileInfoDto fileInfo : fileInfoDtos) { // db에 이미지 파일 정보 저장
+            PostImage newImage = PostMapper.toPostImageEntity(fileInfo, updatePost);
+            postImageRepository.save(newImage);
+        }
     }
 
     /**
      * 게시글 삭제 메소드
-     * 추후 해시태그 삭제 / 파일 삭제 구현 예정
+     *
+     * 추후 해시태그 삭제
      * @param postId
      */
     @Override
@@ -91,6 +109,12 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new NoSuchElementException());
         post.markAsDeletd();
+
+        Long userId = post.getUser().getId();
+        String uploadPath = userId + "/" + post.getId() + "/";
+        fileS3UploadService.removeFolderFiles(uploadPath);
+
+        postImageRepository.deleteByPostId(post.getId());
     }
 
     /**
