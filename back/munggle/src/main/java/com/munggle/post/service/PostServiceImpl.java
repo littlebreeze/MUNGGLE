@@ -33,6 +33,30 @@ public class PostServiceImpl implements PostService {
     private final PostImageRepository postImageRepository;
 
     /**
+     * 게시글 상세보기 메소드
+     *
+     * @param postId
+     * @param userId
+     * @return
+     */
+    @Override
+    public PostDetailResponseDto getDetailPost(Long postId, Long userId) {
+        Post post = postRepository.findByIdAndIsDeletedFalse(postId)
+                .orElseThrow(() -> new NoSuchElementException());
+        String nickname = post.getUser().getNickname();
+        Boolean isMine = post.getUser().getId().equals(userId) ? true : false;
+
+        // 해당 post의 이미지 url만 list로 가져오기
+        List<String> imageUrls = new ArrayList<>();
+        List<PostImage> postImages = postImageRepository.findAllByPost(post);
+        for (PostImage postImage : postImages) {
+            imageUrls.add(postImage.getImageURL());
+        }
+
+        return PostMapper.toPostDetailResponseDto(post, nickname, isMine, imageUrls);
+    }
+
+    /**
      * 게시글 생성 메소드
      *
      * 추후 해시태그 생성 구현 예정
@@ -65,7 +89,6 @@ public class PostServiceImpl implements PostService {
      *
      * 수정 가능 필드: title / content / isPrivate
      * 추후 해시태그 수정 구현 예정
-     * 이미지 수정 구현 예정
      * @param postUpdateDto
      */
     @Override
@@ -101,7 +124,7 @@ public class PostServiceImpl implements PostService {
     /**
      * 게시글 삭제 메소드
      *
-     * 추후 해시태그 삭제
+     * 추후 해시태그 삭제 구현 예정
      * @param postId
      */
     @Override
@@ -119,27 +142,4 @@ public class PostServiceImpl implements PostService {
         postImageRepository.deleteByPostId(post.getId());  // db에서 데이터 삭제
     }
 
-    /**
-     * 게시글 상세보기 메소드
-     *
-     * @param postId
-     * @param userId
-     * @return
-     */
-    @Override
-    public PostDetailResponseDto getDetailPost(Long postId, Long userId) {
-        Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-                .orElseThrow(() -> new NoSuchElementException());
-        String nickname = post.getUser().getNickname();
-        Boolean isMine = post.getUser().getId().equals(userId) ? true : false;
-
-        // 해당 post의 이미지 url만 list로 가져오기
-        List<String> imageUrls = new ArrayList<>();
-        List<PostImage> postImages = postImageRepository.findAllByPost(post);
-        for (PostImage postImage : postImages) {
-            imageUrls.add(postImage.getImageURL());
-        }
-
-        return PostMapper.toPostDetailResponseDto(post, nickname, isMine, imageUrls);
-    }
 }
