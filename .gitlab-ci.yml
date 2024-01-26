@@ -27,6 +27,7 @@ deploy: #JOB 이름
     - docker:24.0.7-dind
   before_script:
     - echo [INFO] docker deploy start!
+    - apt-get install gettext-base
     - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u $DOCKER_REGISTRY_USER --password-stdin
   script:
     - cd ./back/munggle
