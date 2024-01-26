@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Builder
@@ -14,14 +14,23 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class PostDetailResponseDto {
 
-    String postTitle;
-    String postContent;
-    String nickname;
-    Integer likeCnt;
-    Boolean isMine;
-    LocalDateTime createdAt;
-    LocalDateTime updatedAt;
-    Boolean isUpdated;
+    private String postTitle;
+
+    private String postContent;
+
+    private List<String> images;
+
+    private String nickname;
+
+    private Integer likeCnt;
+
+    private Boolean isMine;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    private Boolean isUpdated;
 
 
 }
