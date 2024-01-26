@@ -37,7 +37,7 @@ public class PostController {
     @GetMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public PostDetailResponseDto viewPost(@AuthenticationPrincipal User principal,
-                                          @PathVariable Long postId) {
+                                          @PathVariable(value = "postId") Long postId) {
 
         Long userId = principal.getId();
         return postService.getDetailPost(postId, userId);
@@ -57,7 +57,7 @@ public class PostController {
 
     @PutMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updatePost(@PathVariable Long postId,
+    public void updatePost(@PathVariable(value = "postId") Long postId,
                            @RequestPart(value = "dto") @Valid PostUpdateDto postUpdateDto,
                            @RequestPart(value = "file") List<MultipartFile> files) {
         log.info("제목: {}, 이미지: {}", postUpdateDto.getPostTitle(), files.get(0));
@@ -69,7 +69,7 @@ public class PostController {
 
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deletePost(@PathVariable Long postId) {
+    public void deletePost(@PathVariable(value = "postId") Long postId) {
         postService.deletePost(postId);
     }
 
