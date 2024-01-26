@@ -7,6 +7,6 @@ profiles="${ENV}, common"
 #configs="$base_config, $mounted_configs"
 
 java -jar ./app.jar \
-#  --spring.config.location="$configs" \
   --spring.profiles.active="$profiles"
+#  --spring.config.location="$configs"
 
