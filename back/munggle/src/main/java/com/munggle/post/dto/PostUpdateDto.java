@@ -29,7 +29,6 @@ public class PostUpdateDto {
     private String postContent;
 
     // 포스트 이미지
-    @NotEmpty
     @Builder.Default
     private List<MultipartFile> images = new ArrayList<>();
 
