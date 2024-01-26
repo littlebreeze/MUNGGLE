@@ -158,7 +158,7 @@ public class FileS3UploadServiceImpl implements FileS3UploadService {
     private ListObjectsV2Response getObjectsFromS3Bucket(String uploadPath) {
         ListObjectsV2Request listObjectsRequest = ListObjectsV2Request.builder()
                 .bucket(bucketName)
-                .prefix(uploadPath + "/")
+                .prefix(uploadPath)
                 .build();
 
         return s3Client.listObjectsV2(listObjectsRequest);
