@@ -28,6 +28,7 @@ deploy: #JOB 이름
   before_script:
     - echo [INFO] docker deploy start!
     - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u $DOCKER_REGISTRY_USER --password-stdin
+    - docker rm -f munggle-api
   script:
     - cd ./back/munggle
     - echo "$APPLICATION_DB_YAML" > ./src/main/resources/application-db.yaml
