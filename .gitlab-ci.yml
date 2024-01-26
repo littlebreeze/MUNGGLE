@@ -1,42 +1,55 @@
+#stages:
+#  - build
+#  - deploy
+#
+#build: #JOB 이름
+#  image: gradle:8.5.0-jdk17
+#  stage: build
+#  script:
+#    - echo [INFO] YML Settings
+#    - cd ./back/munggle/src/main/resources
+#    - echo "$APPLICATION_YML" > "application.yml"
+#    - cd ../../..
+#    - chmod +x gradlew
+#    - ./gradlew clean
+#    - ./gradlew bootJar
+#  artifacts:
+#    paths:
+#      - back/munggle/build/libs/*.jar
+#    expire_in: 1 days
+#  only:
+#    - develop/back
+#
+#deploy: #JOB 이름
+#  image: docker:latest
+#  stage: deploy
+#  services:
+#    - docker:24.0.7-dind
+#  before_script:
+#    - echo [INFO] docker deploy start!
+#    - echo "$DOCKER_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
+#  script:
+#    - cd ./back/munggle
+#    - echo "$APPLICATION_YAML" > ./src/main/resources/application-db.yaml
+#    - cat ./src/main/resources/application-db.yaml
+#    - chmod +x ./deploy/build-image.sh
+#    - ./deploy/build-image.sh
+#    - docker push $CI_REGISTRY/munggle:latest
+#  after_script:
+#    - docker logout
+#    - echo [INFO] docker deploy end!
+#  only:
+#    - develop/back
 stages:
-  - build
-  - deploy
+  - test
 
-build: #JOB 이름
-  image: gradle:8.5.0-jdk17
-  stage: build
+job-test:
+  stage: test
   script:
-    - echo [INFO] YML Settings
-    - cd ./back/munggle/src/main/resources
-    - echo "$APPLICATION_YML" > "application.yml"
-    - cd ../../..
-    - chmod +x gradlew
-    - ./gradlew clean
-    - ./gradlew bootJar
-  artifacts:
-    paths:
-      - back/munggle/build/libs/*.jar
-    expire_in: 1 days
-  only:
-    - develop/back
-
-deploy: #JOB 이름
-  image: docker:latest
-  stage: deploy
-  services:
-    - docker:24.0.7-dind
-  before_script:
-    - echo [INFO] docker deploy start!
-    - echo "$DOCKER_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
-  script:
-    - cd ./back/munggle
-    - echo "$APPLICATION_YAML" > ./src/main/resources/application-db.yaml
-    - cat ./src/main/resources/application-db.yaml
-    - chmod +x ./deploy/build-image.sh
-    - ./deploy/build-image.sh
-    - docker push $CI_REGISTRY/munggle:latest
-  after_script:
-    - docker logout
-    - echo [INFO] docker deploy end!
+    - echo "Sorry"
+    - id
+    - docker ps
+    - docker run --name test-nginx -p 80:80 nginx
+    - docker ps
   only:
     - develop/back
