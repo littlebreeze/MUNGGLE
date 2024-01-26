@@ -17,6 +17,7 @@ import com.munggle.post.dto.PostDetailResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/posts")
