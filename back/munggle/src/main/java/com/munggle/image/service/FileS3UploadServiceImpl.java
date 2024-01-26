@@ -24,7 +24,7 @@ import java.util.UUID;
 public class FileS3UploadServiceImpl implements FileS3UploadService {
     private final S3Client s3Client;
 
-    @Value("cloud.aws.s3.bucket")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
     /**
@@ -70,7 +70,7 @@ public class FileS3UploadServiceImpl implements FileS3UploadService {
         String originName = multipartFile.getOriginalFilename(); //원본 이미지 이름
         String ext = StringUtils.getFilenameExtension(originName); //확장자
 
-        String generatedName = uploadPath + "/" + generateRandomName(ext); //새로 생성된 이미지 이름
+        String generatedName = uploadPath + generateRandomName(ext); //새로 생성된 이미지 이름
 
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                 .bucket(bucketName)
