@@ -29,12 +29,10 @@ deploy: #JOB 이름
     - echo [INFO] docker deploy start!
     - echo "$DOCKER_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
   script:
-    - pwd
-    - ls
-    - chmod +x ./back/munggle/deploy/build-image.sh
-    - ./back/munggle/deploy/build-image.sh
+    - cd ./back/munggle
+    - chmod +x ./deploy/build-image.sh
+    - ./deploy/build-image.sh
     - docker push $CI_REGISTRY/munggle:latest
-    - docker run --name nginx-container nginx:latest
   after_script:
     - docker logout
     - echo [INFO] docker deploy end!
