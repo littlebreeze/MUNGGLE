@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk As builder
+FROM openjdk:17-jdk-alpine As builder
 
 WORKDIR /work
 COPY . /work
