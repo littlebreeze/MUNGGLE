@@ -29,7 +29,7 @@ public class Dog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long dogId;
 
     @NotNull
     @ManyToOne
@@ -66,12 +66,14 @@ public class Dog {
     private String description;
 
     @Column(columnDefinition = "boolean default false")
-    //@ColumnDefault("false")
     private Boolean isMatching; // 매칭 온오프
 
     @Column(columnDefinition = "boolean default false")
-    //@ColumnDefault("false")
     private Boolean isDeleted;
+
+//    public void setDogId(Long dogId){
+//        this.dogId = dogId;
+//    }
 
     public void updateDog(DogUpdateDto dogUpdateDto){
         this.birthDate = dogUpdateDto.getBirthDate();

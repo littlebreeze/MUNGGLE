@@ -1,5 +1,6 @@
 package com.munggle.domain.model.entity;
 
+import com.munggle.dog.dto.DogCharDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,9 +20,15 @@ public class Matching {
     private Long id;
 
     @OneToOne
+    @JoinColumn(name = "dog_id")
     private Dog dog;
 
     private String characterId;
 
-    private boolean isNeutering;
+    private Boolean isNeutering;
+
+    public void updateMatcing(DogCharDto dogCharDto){
+        this.characterId = dogCharDto.toCharacterString();
+        this.isNeutering = dogCharDto.getIsNeutering();
+    }
 }

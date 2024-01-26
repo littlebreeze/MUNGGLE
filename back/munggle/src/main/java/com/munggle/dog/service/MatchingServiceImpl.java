@@ -5,6 +5,7 @@ import com.munggle.dog.dto.DogDetailDto;
 import com.munggle.dog.repository.DogRepository;
 import com.munggle.dog.repository.MatchingRepository;
 import com.munggle.domain.model.entity.Dog;
+import com.munggle.domain.model.entity.Matching;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,19 +23,26 @@ public class MatchingServiceImpl implements MatchingService {
     @Override
     @Transactional
     public void updateMyDogCharacter(Long dogId, DogCharDto dogCharDto) {
-        Dog dog = dogRepository.findByIdAndIsDeletedIsFalse(dogId)
+        Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
                 .orElseThrow(()->new NoSuchElementException());
         dog.updateCharacterId(dogCharDto);
     }
 
     @Override
     public void insertMatchingCharacter(Long dogId, DogCharDto dogCharDto) {
-
+        Matching matching = Matching.builder()
+                .dog(Dog.builder().dogId(dogId).build())
+                .isNeutering(dogCharDto.getIsNeutering())
+                .characterId(dogCharDto.toCharacterString())
+                .build();
+        matchingRepository.save(matching);
     }
 
     @Override
+    @Transactional
     public void updateMatchingCharacter(Long dogId, DogCharDto dogCharDto) {
-
+        Matching matching = matchingRepository.findByDogDogId(dogId).orElseThrow(()->new NoSuchElementException());
+        matching.updateMatcing(dogCharDto);
     }
 
     @Override

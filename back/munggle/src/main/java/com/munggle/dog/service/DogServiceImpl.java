@@ -28,7 +28,7 @@ public class DogServiceImpl implements DogService {
     @Override
     @Transactional
     public void updateDog(Long dogId, DogUpdateDto dogUpdateDto) {
-        Dog dog = dogRepository.findByIdAndIsDeletedIsFalse(dogId)
+        Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
                 .orElseThrow(()->new NoSuchElementException());
         dog.updateDog(dogUpdateDto);
     }
@@ -36,14 +36,14 @@ public class DogServiceImpl implements DogService {
     @Override
     @Transactional
     public void deleteDog(Long dogId) {
-        Dog dog = dogRepository.findByIdAndIsDeletedIsFalse(dogId)
+        Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
                 .orElseThrow(()->new NoSuchElementException());
         dog.deleteDog();
     }
 
     @Override
     public DogDetailDto getDetailDog(Long dogId) {
-        Dog dog = dogRepository.findByIdAndIsDeletedIsFalse(dogId)
+        Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
                 .orElseThrow(()->new NoSuchElementException());
         return DogMapper.toDetailDto(dog);
     }

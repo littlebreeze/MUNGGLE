@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface DogRepository extends JpaRepository<Dog, Long> {
 
-    Optional<Dog> findByIdAndIsDeletedIsFalse(Long dogId);
+    Optional<Dog> findByDogIdAndIsDeletedIsFalse(Long dogId);
 
     Optional<List<Dog>> findAllByUserIdAndIsDeletedIsFalse(Long userId);
 }
