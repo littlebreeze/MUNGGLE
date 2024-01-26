@@ -1,7 +1,7 @@
-#stages:
+stages:
 #  - build
-#  - deploy
-#
+  - deploy
+
 #build: #JOB 이름
 #  image: gradle:8.5.0-jdk17
 #  stage: build
@@ -19,37 +19,27 @@
 #    expire_in: 1 days
 #  only:
 #    - develop/back
-#
-#deploy: #JOB 이름
-#  image: docker:latest
-#  stage: deploy
-#  services:
-#    - docker:24.0.7-dind
-#  before_script:
-#    - echo [INFO] docker deploy start!
-#    - echo "$DOCKER_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
-#  script:
-#    - cd ./back/munggle
-#    - echo "$APPLICATION_YAML" > ./src/main/resources/application-db.yaml
-#    - cat ./src/main/resources/application-db.yaml
-#    - chmod +x ./deploy/build-image.sh
-#    - ./deploy/build-image.sh
-#    - docker push $CI_REGISTRY/munggle:latest
-#  after_script:
-#    - docker logout
-#    - echo [INFO] docker deploy end!
-#  only:
-#    - develop/back
-stages:
-  - test
 
-job-test:
-  stage: test
+deploy: #JOB 이름
+  image: docker:latest
+  stage: deploy
+  services:
+    - docker:24.0.7-dind
+  before_script:
+    - echo [INFO] docker deploy start!
+    - echo "$DOCKER_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
   script:
-    - echo "Sorry"
-    - id
-    - docker ps
-    - docker run -d --name test-nginx -p 90:80 nginx
-    - docker ps
+    - cd ./back/munggle
+    - echo "$APPLICATION_DB_YAML" > ./src/main/resources/application-db.yaml
+    - echo "$APPLICATION_SECURITY_YAML" > ./src/main/resources/application-security.yaml
+    - echo "$APPLICATION_CLOUD_YAML" > ./src/main/resources/application-cloud.yaml
+    - echo "$APPLICATION_API_YAML" > ./src/main/resources/application-api.yaml
+    - chmod +x ./deploy/build-image.sh
+    - ./deploy/build-image.sh
+    - docker push $CI_REGISTRY
+    - docker run -d --name test-spring --network backend -p 8080:8080 -e ENV=prod $CI_REGISTRY
+  after_script:
+    - docker logout
+    - echo [INFO] docker deploy end!
   only:
     - develop/back
