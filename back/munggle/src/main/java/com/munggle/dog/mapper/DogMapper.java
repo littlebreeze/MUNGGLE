@@ -35,7 +35,7 @@ public class DogMapper {
                 .size(dog.getSize())
                 .weight(dog.getWeight())
                 .gender(dog.getGender())
-                .isNeutering(dog.isNeutering())
+                .isNeutering(dog.getIsNeutering())
                 .name(dog.getName())
                 .image(dog.getImage())
                 .description(dog.getDescription())

@@ -49,7 +49,7 @@ public class Dog {
 
     private String gender;
 
-    private boolean isNeutering;    // 중성화 여부
+    private Boolean isNeutering;    // 중성화 여부
 
     // ,로 구분된 특징 (파싱해서 사용)
     // 수정 시 update 방식으로
@@ -67,11 +67,11 @@ public class Dog {
 
     @Column(columnDefinition = "boolean default false")
     //@ColumnDefault("false")
-    private boolean isMatching; // 매칭 온오프
+    private Boolean isMatching; // 매칭 온오프
 
     @Column(columnDefinition = "boolean default false")
     //@ColumnDefault("false")
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     public void updateDog(DogUpdateDto dogUpdateDto){
         this.birthDate = dogUpdateDto.getBirthDate();
