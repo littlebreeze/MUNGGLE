@@ -14,7 +14,9 @@ import com.munggle.post.dto.PostUpdateDto;
 import com.munggle.post.dto.PostListResponseDto;
 import com.munggle.post.dto.PostListRequestDto;
 import com.munggle.post.dto.PostDetailResponseDto;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/posts")
@@ -34,13 +36,21 @@ public class PostController {
 
     @GetMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public void viewPost() {}
+    public PostDetailResponseDto viewPost(@AuthenticationPrincipal User principal,
+                                          @PathVariable Long postId) {
+
+        Long userId = principal.getId();
+        return postService.getDetailPost(postId, userId);
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public void savePost(@AuthenticationPrincipal User principal,
-                         @RequestBody PostCreateDto postCreateDto) {
+                         @RequestPart(value = "dto") @Valid PostCreateDto postCreateDto,
+                         @RequestPart(value = "file") List<MultipartFile> files) {
+        log.info("제목: {}, 이미지: {}", postCreateDto.getPostTitle(), files.get(0));
 
+        postCreateDto.setImages(files);
         postCreateDto.setUserId(principal.getId());
         postService.insertPost(postCreateDto);
     }
@@ -48,8 +58,11 @@ public class PostController {
     @PutMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public void updatePost(@PathVariable Long postId,
-                           @RequestBody @Valid PostUpdateDto postUpdateDto) {
+                           @RequestPart(value = "dto") @Valid PostUpdateDto postUpdateDto,
+                           @RequestPart(value = "file") List<MultipartFile> files) {
+        log.info("제목: {}, 이미지: {}", postUpdateDto.getPostTitle(), files.get(0));
 
+        postUpdateDto.setImages(files);
         postUpdateDto.setPostId(postId);
         postService.updatePost(postUpdateDto);
     }
@@ -60,12 +73,4 @@ public class PostController {
         postService.deletePost(postId);
     }
 
-    @GetMapping("/{postId}")
-    @ResponseStatus(HttpStatus.OK)
-    public PostDetailResponseDto getPost(@AuthenticationPrincipal User principal,
-                                         @PathVariable Long postId) {
-
-        Long userId = principal.getId();
-        return postService.getDetailPost(postId, userId);
-    }
 }
