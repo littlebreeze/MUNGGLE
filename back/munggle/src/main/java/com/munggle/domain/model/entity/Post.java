@@ -9,8 +9,6 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table(name = "posts")
 @DynamicUpdate
@@ -36,19 +34,16 @@ public class Post extends BaseTimeEntity {
     @Column(name = "post_content")
     private String postContent;
 
-    @NotNull
-    @Column(name = "user_id")
-    private Long userId;
-
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Column(name = "like_cnt")
     @ColumnDefault("0")
     private Integer likeCnt;
 
     @Column(name = "is_deleted")
+    @NotNull
     private Boolean isDeleted;
 
     @Column(name = "is_private")
@@ -59,7 +54,12 @@ public class Post extends BaseTimeEntity {
         this.postContent = newContent;
         this.isPrivate = newIsPrivate;
     }
+
+    public void addUserToPost(User user) {
+        this.user = user;
+    }
+
     public void markAsDeletd() {
-        this.isDeleted = false;
+        this.isDeleted = true;
     }
 }

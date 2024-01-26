@@ -1,11 +1,12 @@
 package com.munggle.post.controller;
 
+import com.munggle.domain.model.entity.User;
 import com.munggle.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import com.munggle.post.dto.PostCreateDto;
@@ -13,7 +14,9 @@ import com.munggle.post.dto.PostUpdateDto;
 import com.munggle.post.dto.PostListResponseDto;
 import com.munggle.post.dto.PostListRequestDto;
 import com.munggle.post.dto.PostDetailResponseDto;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/posts")
@@ -33,36 +36,41 @@ public class PostController {
 
     @GetMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public void viewPost() {}
+    public PostDetailResponseDto viewPost(@AuthenticationPrincipal User principal,
+                                          @PathVariable(value = "postId") Long postId) {
+
+        Long userId = principal.getId();
+        return postService.getDetailPost(postId, userId);
+    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public void savePost(@RequestBody PostCreateDto postCreateDto) {
-        // 유저 넣어줘야 됌!!!!!
+    public void savePost(@AuthenticationPrincipal User principal,
+                         @RequestPart(value = "dto") @Valid PostCreateDto postCreateDto,
+                         @RequestPart(value = "file") List<MultipartFile> files) {
+        log.info("제목: {}, 이미지: {}", postCreateDto.getPostTitle(), files.get(0));
+
+        postCreateDto.setImages(files);
+        postCreateDto.setUserId(principal.getId());
         postService.insertPost(postCreateDto);
     }
 
     @PutMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updatePost(@PathVariable Long postId,
-                           @RequestBody @Valid PostUpdateDto postUpdateDto) {
-        // 유저 넣어줘야 됌!!!!!
+    public void updatePost(@PathVariable(value = "postId") Long postId,
+                           @RequestPart(value = "dto") @Valid PostUpdateDto postUpdateDto,
+                           @RequestPart(value = "file") List<MultipartFile> files) {
+        log.info("제목: {}, 이미지: {}", postUpdateDto.getPostTitle(), files.get(0));
+
+        postUpdateDto.setImages(files);
         postUpdateDto.setPostId(postId);
         postService.updatePost(postUpdateDto);
     }
 
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deletePost(@PathVariable Long postId) {
-        // 유저 넣어줘야 됌!!!!!
+    public void deletePost(@PathVariable(value = "postId") Long postId) {
         postService.deletePost(postId);
     }
 
-    @GetMapping("/postId")
-    @ResponseStatus(HttpStatus.OK)
-    public PostDetailResponseDto getPost(@PathVariable Long postId) {
-        // 유저 정보 넣어줘야 됌!!!!
-        Long userId = 1L; //임의로 넣어준것 나중에 처리 해줘야함!!!!
-        return postService.getDetailPost(postId, userId);
-    }
 }
