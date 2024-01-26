@@ -19,6 +19,7 @@ public class PostMapper {
         return Post.builder()
                 .postTitle(postCreateDto.getPostTitle())
                 .postContent(postCreateDto.getPostContent())
+                .isDeleted(false)
                 .isPrivate(postCreateDto.getIsPrivate())
                 .build();
     }
