@@ -1,1 +1,1 @@
-docker build -t munggle -f Dockerfile ..
+docker build -t munggle -f deploy/Dockerfile .
