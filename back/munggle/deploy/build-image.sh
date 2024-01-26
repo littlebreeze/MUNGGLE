@@ -1,1 +1,1 @@
-docker build -t $CI_REGISTRY -f deploy/Dockerfile .
+docker build -t $1 -f deploy/Dockerfile .
