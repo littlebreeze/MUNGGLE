@@ -3,7 +3,6 @@ FROM openjdk:17-jdk As builder
 WORKDIR /work
 COPY . /work
 
-#파이프라인 재생성이 안되서 넣는 주석
 RUN chmod +x ./gradlew
 RUN ./gradlew clean build
 

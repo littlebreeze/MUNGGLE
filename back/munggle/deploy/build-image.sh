@@ -1,1 +1,1 @@
-docker build --tag munggle --file ./Dockerfile .
+docker build -t munggle -f Dockerfile ..
