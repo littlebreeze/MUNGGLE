@@ -7,11 +7,12 @@ import RecordOnly from './component/RecordOnly.jsx';
 import RecordOnly2 from './component/RecordOnly2.jsx';
 import RecordOnly3 from './component/RecordOnly3.jsx';
 import reportWebVitals from './reportWebVitals';
+import Map2 from './component/Map2.jsx';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
 
-    <RecordOnly />
+    <RecordOnly3 />
 );
 
 // If you want to start measuring performance in your app, pass a function

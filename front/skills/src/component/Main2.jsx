@@ -106,6 +106,7 @@ export default function Main2() {
             <button onClick={lngUp}>경도+0.0002</button>
             <button onClick={lngDown}>경도-0.0002</button>
         </div>
+  
       </>
     )
   }

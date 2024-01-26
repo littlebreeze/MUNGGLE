@@ -3,39 +3,72 @@ import React, { useEffect, useState, useRef } from "react";
 
 export default function RecordOnly3(){
 
-  const [x, setX] = useState(0)
-  const [y, setY] = useState(0)
+  const [lat, setLat] = useState(0);
+  const [lng, setLng] = useState(0);
+  const [acc, setAcc] = useState(0);
+  const [num, setNum] = useState(0);
 
-  const success = (pos) => {
-    setX(pos.coords.latitude)
-    setY(pos.coords.longitude)
-    console.log(`More or less ${pos.coords.accuracy} meters.`);
-  }
-  
-  const error = (err) => {
-    console.warn(`ERROR(${err.code}): ${err.message}`);
-  }
+  const plus = (() => {
+    setNum(num+1);
+  })
 
   const options = {
     enableHighAccuracy: true,
-    timeout: 27000,
-    maximumAge: 30000,
+    timeout: 5000,
+    maximumAge: 0,
   };
 
-  const changePosition = () => {
-    navigator.geolocation.getCurrentPosition(success, error, options);
+  function success(pos) {
+    const crd = pos.coords;
+    setLat(crd.latitude);
+    setLng(crd.longitude)
+    setAcc(crd.accuracy);
+  
+    console.log("Your current position is:");
+    console.log(`Latitude : ${crd.latitude}`);
+    console.log(`Longitude: ${crd.longitude}`);
+    console.log(`More or less ${crd.accuracy} meters.`);
   }
 
-  // navigator.geolocation.getCurrentPosition(success, error, options);
-  // navigator.geolocation.watchPosition(success, error, options);
+  function error(err) {
+    console.warn(`ERROR(${err.code}): ${err.message}`);
+  }
 
-
-  return(<>
--    <button onClick={changePosition} >click</button>
+  useEffect(() => {
+    const requestLocationPermission = async () => {
+      try {
+        const permissionStatus = await navigator.permissions.query({
+          name: 'geolocation',
+        });
   
-    <div>
-      위도 : {x}
-      경도 : {y}
-    </div>
-  </>);
+        if (permissionStatus.state === 'granted') {
+          navigator.geolocation.getCurrentPosition(success, error, options);
+        } else if (permissionStatus.state === 'prompt') {
+          // You can show a prompt to the user here
+        } else {
+          console.warn('Geolocation permission denied');
+        }
+      } catch (error) {
+        console.error('Error checking geolocation permission:', error);
+      }
+    };
+  
+    requestLocationPermission();
+  }, []);
+  
+  return(<>
+    <div>{`위도 : ${lat}`}</div>
+    <div>{`경도 : ${lng}`}</div>
+    <div>{`유효거리 : ${acc}`}</div>
+    <div>{num}</div>
+    <button onClick={plus}>123</button>
+  </>)
 }
+
+
+
+
+
+
+
+
