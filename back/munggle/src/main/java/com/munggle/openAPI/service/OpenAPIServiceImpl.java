@@ -2,6 +2,8 @@ package com.munggle.openAPI.service;
 
 import com.munggle.domain.model.entity.Kind;
 import com.munggle.domain.model.entity.LostDog;
+import com.munggle.openAPI.dto.KindDto;
+import com.munggle.openAPI.dto.LostDogDto;
 import com.munggle.openAPI.repository.KindRepository;
 import com.munggle.openAPI.repository.LostDogRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -89,15 +92,16 @@ public class OpenAPIServiceImpl implements OpenAPIService {
         return totalCount;
     }
 
-    @Override
-    public List<Kind> selectKind(String input) {
 
-        return kindRepository.findByKindNmLike(input);
+    @Override
+    public List<KindDto> selectKind(String input) {
+
+        return kindRepository.findByKindNmLike(input).orElseThrow().stream().map(Kind::toDto).collect(Collectors.toList());
     }
 
     @Override
-    public List<LostDog> selectListDog(String region, String kind) {
-        return lostDogRepository.findByCareAddrLikeAndKindLike(region, kind);
+    public List<LostDogDto> selectListDog(String region, String kind) {
+        return lostDogRepository.findByCareAddrLikeAndKindLike(region, kind).orElseThrow().stream().map(LostDog::toDto).collect(Collectors.toList());
     }
 
 

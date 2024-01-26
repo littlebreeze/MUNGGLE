@@ -2,6 +2,8 @@ package com.munggle.openAPI.controller;
 
 import com.munggle.domain.model.entity.Kind;
 import com.munggle.domain.model.entity.LostDog;
+import com.munggle.openAPI.dto.KindDto;
+import com.munggle.openAPI.dto.LostDogDto;
 import com.munggle.openAPI.service.OpenAPIService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
@@ -115,6 +117,7 @@ public class OpenAPIController {
 
             // 중간에 totalCnt가 바뀔수도 있으니까 그때마다 갱신되어도 ok
             totalCnt = openAPIService.insertLostDog(sb.toString());
+            System.out.println("totalCnt : " + totalCnt);
 
             // totalCount에 따라서 요청을 반복
         } while (numOfRows * pageNo < totalCnt);
@@ -127,7 +130,7 @@ public class OpenAPIController {
     // DB Select
     // 입력한 값에 따라 품종 리스트
     @GetMapping(value = {"/kinds/{input}", "/kind"})
-    public List<Kind> kind(@PathVariable(required = false) String input){
+    public List<KindDto> kind(@PathVariable(required = false) String input){
 
         return openAPIService.selectKind("%"+input+"%");
     }
@@ -136,7 +139,7 @@ public class OpenAPIController {
     // 지역, 품종
     // 로그인 사용자 정보 받는 방법 결정 후 mapping 수정 예정
     @GetMapping("/lostdogs")
-    public List<LostDog> listOfLostDog(Optional<String> region, Optional<String> kind){
+    public List<LostDogDto> listOfLostDog(Optional<String> region, Optional<String> kind){
 
         // null 값 처리를 위한 Optional 사용
         String careAddr = region.orElse("");

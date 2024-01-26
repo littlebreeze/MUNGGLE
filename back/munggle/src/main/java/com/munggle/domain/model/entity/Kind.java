@@ -1,5 +1,6 @@
 package com.munggle.domain.model.entity;
 
+import com.munggle.openAPI.dto.KindDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -22,5 +23,12 @@ public class Kind {
     @NotNull
     @NotBlank
     private String kindNm; // 품종 명
+
+    public static KindDto toDto(Kind kind){
+        return KindDto.builder()
+                .kindId(kind.getKindId())
+                .kindNm(kind.getKindNm())
+                .build();
+    }
 
 }
