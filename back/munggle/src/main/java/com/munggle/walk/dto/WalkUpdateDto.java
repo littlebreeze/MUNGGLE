@@ -7,8 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public class WalkUpdateDto {
     private Long walkId;
-    private Integer duration;
-    private Integer distance;
+    private String walkName;
     private Float rating;
     private String description;
 }

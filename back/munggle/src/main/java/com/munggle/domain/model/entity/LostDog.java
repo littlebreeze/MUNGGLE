@@ -1,5 +1,6 @@
 package com.munggle.domain.model.entity;
 
+import com.munggle.openAPI.dto.LostDogDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -124,5 +125,33 @@ public class LostDog {
 
     @Size(max = 200)
     private String noticeComment;   // 특이사항
+
+    public static LostDogDto toDto(LostDog lostDog){
+        return LostDogDto.builder()
+                .lostDogId(lostDog.getLostDogId())
+                .thumbImage(lostDog.getThumbImage())
+                .image(lostDog.getImage())
+                .happenDate(lostDog.getHappenDate())
+                .happenPlace(lostDog.getHappenPlace())
+                .kind(lostDog.getKind())
+                .color(lostDog.getColor())
+                .age(lostDog.getAge())
+                .weight(lostDog.getWeight())
+                .noticeNo(lostDog.getNoticeNo())
+                .noticeStartDate(lostDog.getNoticeStartDate())
+                .noticeEndDate(lostDog.getNoticeEndDate())
+                .sex(lostDog.getSex())
+                .neuterYn(lostDog.getNeuterYn())
+                .specialMark(lostDog.getSpecialMark())
+                .careName(lostDog.getCareName())
+                .careTel(lostDog.getCareTel())
+                .careAddr(lostDog.getCareAddr())
+                .orgName(lostDog.getOrgName())
+                .chargeName(lostDog.getChargeName())
+                .officeTel(lostDog.getOfficeTel())
+                .noticeComment(lostDog.getNoticeComment())
+                .build();
+
+    }
 
 }
