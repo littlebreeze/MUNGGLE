@@ -1,1 +1,1 @@
-docker build -t munggle -f deploy/Dockerfile .
+docker build -t $CI_REGISTRY -f deploy/Dockerfile .

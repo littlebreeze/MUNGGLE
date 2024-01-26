@@ -35,6 +35,10 @@ deploy: #JOB 이름
     - echo "$APPLICATION_CLOUD_YAML" > ./src/main/resources/application-cloud.yaml
     - echo "$APPLICATION_API_YAML" > ./src/main/resources/application-api.yaml
     - chmod +x ./deploy/build-image.sh
+#    - export CI_REGISTRY=$CI_REGISTRY
+    - cat ./deploy/build-image.sh
+    - envsubst < ./deploy/build-image.sh
+    - cat ./deploy/build-image.sh
     - ./deploy/build-image.sh
     - docker push $CI_REGISTRY
     - docker run -d --name munggle-api --network backend -p 8080:8080 -e ENV=prod $CI_REGISTRY
