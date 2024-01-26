@@ -43,6 +43,7 @@ public class Post extends BaseTimeEntity {
     private Integer likeCnt;
 
     @Column(name = "is_deleted")
+    @NotNull
     private Boolean isDeleted;
 
     @Column(name = "is_private")
@@ -59,6 +60,6 @@ public class Post extends BaseTimeEntity {
     }
 
     public void markAsDeletd() {
-        this.isDeleted = false;
+        this.isDeleted = true;
     }
 }
