@@ -3,7 +3,7 @@ spring:
     activate:
       on-profile: common
   jpa:
-    database-platform: org.hibernate.dialect.MariaDB103Dialect
+    database-platform: org.hibernate.dialect.MariaDBDialect
     show-sql: true
     hibernate:
       ddl-auto: update
