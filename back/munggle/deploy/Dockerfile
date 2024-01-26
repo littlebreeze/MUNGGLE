@@ -3,8 +3,8 @@ FROM openjdk:17-jdk As builder
 WORKDIR /work
 COPY . /work
 
-RUN chmod +x gradlew
-RUN ./gradlew clean build
+RUN chmod +x ../gradlew
+RUN ../gradlew clean build
 
 FROM openjdk:17-jdk
 ENV TZ="Asia/Seoul"

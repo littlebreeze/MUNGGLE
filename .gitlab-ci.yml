@@ -9,7 +9,7 @@ build: #JOB 이름
     - echo [INFO] YML Settings
     - cd ./back/munggle/src/main/resources
     - echo "$APPLICATION_YML" > "application.yml"
-    - cd ../../.. # 프로젝트 폴더로 경로 이동
+    - cd ../../..
     - chmod +x gradlew
     - ./gradlew clean
     - ./gradlew bootJar
@@ -29,18 +29,11 @@ deploy: #JOB 이름
     - echo [INFO] docker deploy start!
     - echo "$DOCKER_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
   script:
-#    - docker volume prune -f # 사용되지 않는 컨테이너, 이미지 삭제 및 볼륨 정리
-#    - docker stop $(docker ps -a -q) # 모든 컨테이너 중지
-#    - docker rm $(docker ps -a -q) # 모든 컨테이너 삭제
-#    - docker rmi $(docker images -q) # 모든 이미지 삭제
-#    - docker pull munggle:v1.0 # 도커 이미지 Pull
-    - docker build -t munggle:v1.0 -f back/munggle/deploy/Dockerfile back/munggle/deploy
-    #    - docker tag munggle:v1.0 $CI_REGISTRY:v1.0 # 이미지에 레지스트리 태그 추가
-    - docker push $CI_REGISTRY:v1.0 # 이미지를 레지스트리로 푸시
-#    - docker run -d $CI_REGISTRY:v1.0 # 도커 컨테이너 실행
-    - docker run --name test-container nginx:latest
+    - chmod +x back/munggle/deploy/build-image.sh
+    - docker push $CI_REGISTRY:v1.0
+    - docker run --name nginx-container nginx:latest
   after_script:
-#    - docker logout
-#    - echo [INFO] docker deploy end!
+    - docker logout
+    - echo [INFO] docker deploy end!
   only:
     - develop/back
