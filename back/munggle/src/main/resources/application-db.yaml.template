@@ -18,7 +18,7 @@ spring:
       on-profile: db-local
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: jdbc:mariadb://localhost:3306/vacationStudy?serverTimezone=UTC&characterEncoding=UTF-8
+    url: jdbc:mariadb://localhost:3306/munggle?serverTimezone=UTC&characterEncoding=UTF-8
     username:
     password:
 
