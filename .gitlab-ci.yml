@@ -27,7 +27,7 @@ deploy: #JOB 이름
     - docker:24.0.7-dind
   before_script:
     - echo [INFO] docker deploy start!
-    - echo "$DOCKER_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $DOCKER_REGISTRY_USER --password-stdin
+    - echo "$DOCKER_REGISTRY_PASSWORD" | docker login -u $DOCKER_REGISTRY_USER --password-stdin
   script:
     - cd ./back/munggle
     - echo "$APPLICATION_DB_YAML" > ./src/main/resources/application-db.yaml
@@ -37,7 +37,7 @@ deploy: #JOB 이름
     - chmod +x ./deploy/build-image.sh
     - ./deploy/build-image.sh
     - docker push $CI_REGISTRY
-    - docker run -d --name test-spring --network backend -p 8080:8080 -e ENV=prod $CI_REGISTRY
+    - docker run -d --name munggle-api --network backend -p 8080:8080 -e ENV=prod $CI_REGISTRY
   after_script:
     - docker logout
     - echo [INFO] docker deploy end!
