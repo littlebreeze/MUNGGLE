@@ -14,7 +14,7 @@ import java.util.List;
 public class DogCharDto {
 
     private List<String> characterId;
-    private boolean isNeutering;
+    private Boolean isNeutering;
 
     public String toCharacterString(){
         StringBuilder sb = new StringBuilder();

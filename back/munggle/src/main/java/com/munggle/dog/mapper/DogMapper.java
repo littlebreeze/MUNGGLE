@@ -18,7 +18,7 @@ public class DogMapper {
                 .size(dogCreateDto.getSize())
                 .weight(dogCreateDto.getWeight())
                 .gender(dogCreateDto.getGender())
-                .isNeutering(dogCreateDto.isNeutering())
+                .isNeutering(dogCreateDto.getIsNeutering())
                 .name(dogCreateDto.getName())
                 .image(dogCreateDto.getImage())
                 .description(dogCreateDto.getDescription())

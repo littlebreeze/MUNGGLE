@@ -21,8 +21,7 @@ public class DogDetailDto {
     private String size;
     private Float weight;
     private String gender;
-    @JsonProperty("isNeutering")
-    private boolean isNeutering;    // 중성화 여부
+    private Boolean isNeutering;    // 중성화 여부
     private String name;
     private String image;
     private String description;

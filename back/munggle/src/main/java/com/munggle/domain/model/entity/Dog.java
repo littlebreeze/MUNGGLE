@@ -77,7 +77,7 @@ public class Dog {
         this.birthDate = dogUpdateDto.getBirthDate();
         this.size = dogUpdateDto.getSize();
         this.weight = dogUpdateDto.getWeight();
-        this.isNeutering = dogUpdateDto.isNeutering();
+        this.isNeutering = dogUpdateDto.getIsNeutering();
         this.name = dogUpdateDto.getName();
         this.image = dogUpdateDto.getImage();
         this.description = dogUpdateDto.getDescription();
@@ -97,6 +97,6 @@ public class Dog {
 
     public void updateCharacterId(DogCharDto dogCharDto){
         this.characterId = dogCharDto.toCharacterString();
-        this.isNeutering = dogCharDto.isNeutering();
+        this.isNeutering = dogCharDto.getIsNeutering();
     }
 }
