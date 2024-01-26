@@ -3,7 +3,7 @@ package com.munggle.user.service;
 import com.munggle.user.dto.UserCreateDto;
 import com.munggle.user.dto.UserMyPageDto;
 import com.munggle.user.dto.UserProfileDto;
-import com.munggle.user.dto.UserSearchListDto;
+import com.munggle.user.dto.UserListDto;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -14,7 +14,7 @@ public interface UserService extends UserDetailsService {
 
     UserProfileDto getUserProfile(Long id);
 
-    List<UserSearchListDto> getSearchPage(String keyword);
+    List<UserListDto> getSearchPage(String keyword);
 
     void joinMember(UserCreateDto userCreateDto);
 

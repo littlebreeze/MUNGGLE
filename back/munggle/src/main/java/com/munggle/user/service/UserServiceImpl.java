@@ -5,7 +5,7 @@ import com.munggle.domain.model.entity.User;
 import com.munggle.user.dto.UserCreateDto;
 import com.munggle.user.dto.UserMyPageDto;
 import com.munggle.user.dto.UserProfileDto;
-import com.munggle.user.dto.UserSearchListDto;
+import com.munggle.user.dto.UserListDto;
 import com.munggle.user.mapper.UserMapper;
 import com.munggle.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<UserSearchListDto> getSearchPage(String keyword) {
+    public List<UserListDto> getSearchPage(String keyword) {
         List<User> userList = userRepository.findByNicknameContainingAndIsEnabledTrue(keyword);
         return UserMapper.fromUsers(userList);
     }

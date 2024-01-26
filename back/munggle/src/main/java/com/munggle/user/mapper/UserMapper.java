@@ -5,7 +5,7 @@ import com.munggle.domain.model.entity.type.Role;
 import com.munggle.user.dto.UserCreateDto;
 import com.munggle.user.dto.UserMyPageDto;
 import com.munggle.user.dto.UserProfileDto;
-import com.munggle.user.dto.UserSearchListDto;
+import com.munggle.user.dto.UserListDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -41,9 +41,9 @@ public class UserMapper {
                 .build();
     }
 
-    public static List<UserSearchListDto> fromUsers(List<User> users) {
+    public static List<UserListDto> fromUsers(List<User> users) {
         return users.stream()
-                .map(UserSearchListDto::toUserSearchListDto)
+                .map(UserListDto::toUserListDto)
                 .collect(Collectors.toList());
     }
 }
