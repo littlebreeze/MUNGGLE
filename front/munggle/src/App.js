@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { useState } from "react";
+import Nav from "./components/layout/Nav.jsx";
+import Body from "./components/layout/Body.jsx";
+import Footer from "./components/layout/Footer.jsx";
+import SearchModal from "./components/modal/Search/SearchModal.jsx";
 
-function App() {
+export default function App() {
+  const [searchModalIsOpen, setSearchModalIsOpen] = useState(false);
+
+  function openSearchModal() {
+    setSearchModalIsOpen(true);
+  }
+
+  function closeSearchModal() {
+    setSearchModalIsOpen(false);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app-container-div">
+      <Nav 
+        openSearchModal={openSearchModal}
+      />
+      <Body />
+      <Footer />
+      <SearchModal 
+        isOpen={searchModalIsOpen}
+        closeModal={closeSearchModal}
+      />
     </div>
   );
 }
 
-export default App;

@@ -1,0 +1,97 @@
+.post-detail-container-div {
+  width: 310px;
+  height: 500px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  background-color: rgb(238, 238, 238);
+  border-radius: 20px;
+}
+
+.post-detail-menu-icon {
+  width: 20px;
+  height: 30px;
+  position: absolute;
+  right: 5px;
+  top: 0;
+}
+
+.post-detail-top-div {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 260px;
+  height: 230px;
+  border-radius: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.post-detail-top-img {
+  width: 260px;
+  height: 230px;
+  border-radius: 20px;
+}
+
+.post-detail-content-container-div {
+  width: 260px;
+  height: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #d4d3d3;
+  border: 1px solid #e8e8e8;
+  border-radius: 20px;
+}
+
+.post-detail-content-top-div {
+  width: 260px;
+  height: 50px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 5px;
+}
+
+.post-detail-content-middle-div {
+  width: 260px;
+  height: 130px;
+  padding-left: 15px;
+  padding-right: 15px;
+  overflow-y: scroll;
+}
+
+.post-detail-content-bottom-div {
+  width: 260px;
+  height: 30px;
+  display: flex;
+  padding-left: 5px;
+  margin-bottom: 5px;
+}
+
+.post-detail-content-top-div-left-div {
+  width: 180px;
+  height: 50px;
+  margin-top: 6px;
+}
+
+.post-detail-content-top-div-left-span {
+  font-size: 17px;
+  margin-left: 14px;
+  font-weight: bold;
+  word-break: keep-all;
+}
+
+.post-detail-content-top-div-right-div {
+  width: 70px;
+  height: 50px;
+}
+
+.post-detail-content-top-div-right-span {
+  text-align: right;
+  color: gray;
+  opacity: 0.7;
+  font-size: 11px;
+  margin-right: 10px;
+}
