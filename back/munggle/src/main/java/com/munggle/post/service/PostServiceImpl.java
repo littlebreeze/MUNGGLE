@@ -56,7 +56,14 @@ public class PostServiceImpl implements PostService {
             imageUrls.add(postImage.getImageURL());
         }
 
-        return PostMapper.toPostDetailResponseDto(post, nickname, isMine, imageUrls);
+        // 해당 post의 해시태그 명만 list로 가져오기
+        List<String> hashtags = new ArrayList<>();
+        List<PostTag> postTags = post.getPostTagList();
+        for (PostTag postTag : postTags) {
+            hashtags.add(postTag.getTag().getTagNm());
+        }
+
+        return PostMapper.toPostDetailResponseDto(post, nickname, isMine, imageUrls, hashtags);
     }
 
     /**
@@ -89,7 +96,7 @@ public class PostServiceImpl implements PostService {
 
         // 해시태그 저장
         List<String> hashtags = postCreateDto.getHashtags();
-        List<PostTag> postTagList = new ArrayList<>();
+        List<PostTag> postTags = new ArrayList<>();
         for (String hashtag : hashtags) {
             Tag newTag = tagRepository.findByTagNm(hashtag)
                     .orElse(tagRepository.save(PostMapper.toTagEntity(hashtag)));
@@ -97,10 +104,10 @@ public class PostServiceImpl implements PostService {
             PostTagId newPostTagId = PostMapper.toPostTagIdEntity(postId, newTag.getId());
             PostTag newPostTag = PostMapper.toPostTagEntity(newPostTagId, newPost, newTag);
             newPostTag.markAsDeletdFalse();
-            postTagList.add(newPostTag);
+            postTags.add(newPostTag);
         }
 
-        postTagRepository.saveAll(postTagList); // 영속화
+        postTagRepository.saveAll(postTags); // 영속화
     }
 
     /**
@@ -146,7 +153,7 @@ public class PostServiceImpl implements PostService {
 
         // 업데이트 된 해시태그 저장
         List<String> hashtags = postUpdateDto.getHashtags();
-        List<PostTag> postTagList = new ArrayList<>();
+        List<PostTag> postTags = new ArrayList<>();
         for (String hashtag : hashtags) {
             Tag tag = tagRepository.findByTagNm(hashtag)
                     .orElse(tagRepository.save(PostMapper.toTagEntity(hashtag)));
@@ -155,10 +162,10 @@ public class PostServiceImpl implements PostService {
             PostTag updatePostTag = postTagRepository.findById(findId)
                     .orElse(PostMapper.toPostTagEntity(findId, updatePost, tag));
             updatePostTag.markAsDeletdFalse(); // isDeleted false로 변경
-            postTagList.add(updatePostTag);
+            postTags.add(updatePostTag);
         }
 
-        postTagRepository.saveAll(postTagList); // 영속화
+        postTagRepository.saveAll(postTags); // 영속화
 
     }
 

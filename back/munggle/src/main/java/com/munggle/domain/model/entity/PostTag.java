@@ -4,9 +4,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity @Builder
+@Getter
 @IdClass(PostTagId.class)
 @Table(name = "post_tags")
 @NoArgsConstructor

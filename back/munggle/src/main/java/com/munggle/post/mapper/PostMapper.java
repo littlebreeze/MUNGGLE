@@ -23,11 +23,12 @@ public class PostMapper {
                 .build();
     }
 
-    public static PostDetailResponseDto toPostDetailResponseDto(Post detailPost, String nickname, Boolean isMine, List<String> imageUrls) {
+    public static PostDetailResponseDto toPostDetailResponseDto(Post detailPost, String nickname, Boolean isMine, List<String> imageUrls, List<String> hashtags) {
         return PostDetailResponseDto.builder()
                 .postTitle(detailPost.getPostTitle())
                 .postContent(detailPost.getPostContent())
                 .images(imageUrls)
+                .hashtags(hashtags)
                 .nickname(nickname)
                 .likeCnt(detailPost.getLikeCnt())
                 .isMine(isMine)
