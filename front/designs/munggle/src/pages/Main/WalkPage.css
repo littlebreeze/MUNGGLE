@@ -1,0 +1,107 @@
+.walk-container-div {
+  width: 400px;
+  height: 700px;
+  position: relative;
+}
+
+.walk-page-map-div {
+  width: 400px;
+  height: 679px;
+  z-index: 1;
+  background-image: url("../../assets/example/testMap.PNG");
+}
+
+.walk-calender-img-div {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: 15%;
+  right: 1%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background-color: #f7f6f6;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.walk-calender-img {
+  width: 50px;
+  height: 50px;
+}
+
+.walk-start-button-div {
+  position: absolute;
+  left: 50%;
+  bottom: 5%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 100px;
+  height: 50px;
+}
+
+.walk-start-button {
+  width: 100px;
+  height: 50px;
+  border-radius: 10px;
+  font-weight: bold;
+  background-color: #f4f4f4c9;
+}
+
+.walk-nav-container-div{
+  /* background-color: rgb(187, 185, 182); */
+  background-color: rgb(255, 255, 255);
+  width: 400px;
+  /* height: 70px; */
+  height: 50px;
+  border: 1px solid black;
+  border-top-left-radius: 40px;
+  border-top-right-radius: 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.walk-nav-left-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.walk-nav-right-div {
+  display: flex;
+}
+
+.walk-nav-right-div-left {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* margin-right: 5px; */
+  margin-right: 7px;
+}
+
+.walk-nav-right-div-middle {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* margin-right: 5px; */
+  margin-right: 10px;
+}
+
+.walk-nav-right-div-right {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* margin-right: 5px; */
+}
