@@ -116,7 +116,7 @@ public class PostServiceImpl implements PostService {
     /**
      * 게시글 수정 메소드
      *
-     * 수정 가능 필드: title / content / isPrivate
+     * 수정 가능 필드: title / content / isPrivate / image / hashtag
      * @param postUpdateDto
      */
     @Override
