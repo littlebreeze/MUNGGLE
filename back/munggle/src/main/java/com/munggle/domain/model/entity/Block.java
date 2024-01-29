@@ -33,4 +33,8 @@ public class Block {
     public void block() {
         this.isBlocked = true;
     }
+
+    public void unBlock() {
+        this.isBlocked = false;
+    }
 }

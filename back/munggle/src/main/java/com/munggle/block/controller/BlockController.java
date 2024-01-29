@@ -28,4 +28,11 @@ public class BlockController {
         Long fromUserId = principal.getId();
         blockSerivce.blockUser(fromUserId, toUserId);
     }
+
+    @DeleteMapping("/{toUserId}")
+    public void unBlockUser(@PathVariable Long toUserId,
+                        @AuthenticationPrincipal User principal) {
+        Long fromUserId = principal.getId();
+        blockSerivce.unblockUser(fromUserId, toUserId);
+    }
 }

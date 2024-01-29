@@ -2,6 +2,7 @@ package com.munggle.block.service;
 
 import com.munggle.block.mapper.BlockMapper;
 import com.munggle.block.repository.BlockRepository;
+import com.munggle.domain.exception.BlockNotFoundException;
 import com.munggle.domain.exception.SelfInteractionException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.Block;
@@ -17,8 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static com.munggle.domain.exception.ExceptionMessage.SELF_BLOCK;
-import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
+import static com.munggle.domain.exception.ExceptionMessage.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -52,7 +52,7 @@ public class BlockServiceImpl implements BlockSerivce{
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         //차단과정
         BlockId blockId = BlockMapper.toBlockId(fromUserId, toUserId);
-        Block block = blockRepository.findById(blockId)
+        Block block = blockRepository.findByIdAndIsBlockedTrue(blockId)
                 .orElseGet(() -> blockRepository.save(
                         Block.builder()
                                 .id(blockId)
@@ -62,5 +62,15 @@ public class BlockServiceImpl implements BlockSerivce{
                 ));
 
         block.block();
+    }
+
+    @Override
+    @Transactional
+    public void unblockUser(Long fromUserId, Long toUserId) {
+        BlockId blockId = BlockMapper.toBlockId(fromUserId, toUserId);
+        Block block = blockRepository.findByIdAndIsBlockedTrue(blockId)
+                .orElseThrow(() -> new BlockNotFoundException(BLOCK_NOT_FOUND));
+
+        block.unBlock();
     }
 }

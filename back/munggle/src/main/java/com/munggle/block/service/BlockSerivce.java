@@ -8,4 +8,6 @@ public interface BlockSerivce {
     List<UserListDto> getBlockUserLsit(Long fromUserId);
 
     void blockUser(Long fromBlockId, Long toUserId);
+
+    void unblockUser(Long fromUserId, Long toUserId);
 }
