@@ -1,4 +1,4 @@
-package com.munggle.follow.Mapper;
+package com.munggle.follow.mapper;
 
 import com.munggle.domain.model.entity.FollowId;
 

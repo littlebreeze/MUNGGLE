@@ -6,7 +6,7 @@ import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.Follow;
 import com.munggle.domain.model.entity.FollowId;
 import com.munggle.domain.model.entity.User;
-import com.munggle.follow.Mapper.FollowMapper;
+import com.munggle.follow.mapper.FollowMapper;
 import com.munggle.follow.retpository.FollowRepository;
 import com.munggle.user.dto.UserListDto;
 import com.munggle.user.mapper.UserMapper;
