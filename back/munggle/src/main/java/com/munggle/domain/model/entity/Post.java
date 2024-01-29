@@ -65,7 +65,7 @@ public class Post extends BaseTimeEntity {
         this.user = user;
     }
 
-    public void markAsDeletd() {
+    public void markAsDeleted() {
         this.isDeleted = true;
     }
 }

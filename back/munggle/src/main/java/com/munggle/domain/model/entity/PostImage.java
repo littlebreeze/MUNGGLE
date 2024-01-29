@@ -33,7 +33,7 @@ public class PostImage {
 
     private Boolean isDeleted;
 
-    public void markAsDeletd() {
+    public void markAsDeleted() {
         this.isDeleted = true;
     }
 }
