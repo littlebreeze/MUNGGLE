@@ -14,9 +14,9 @@ import java.io.Serializable;
 public class PostTagId implements Serializable {
 
     @Column(name = "post_id")
-    private Long post;
+    private Long postId;
 
     @Column(name = "tag_id")
-    private Long tag;
+    private Long tagId;
 
 }
