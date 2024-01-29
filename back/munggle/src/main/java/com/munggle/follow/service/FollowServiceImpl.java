@@ -35,7 +35,7 @@ public class FollowServiceImpl implements FollowService {
         List<User> users = followRepository.findByTargetUserIdAndIsFollowedTrue(userId)
                 .stream()
                 .map(Follow::getFollowUser)
-                .collect(Collectors.toList());
+                .toList();
 
         // 유저리스트 dto로 변환
         return UserMapper.fromUsers(users);
