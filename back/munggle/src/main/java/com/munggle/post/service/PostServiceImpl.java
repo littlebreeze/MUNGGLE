@@ -1,8 +1,7 @@
 package com.munggle.post.service;
 
 import com.munggle.domain.exception.UserNotFoundException;
-import com.munggle.domain.model.entity.Post;
-import com.munggle.domain.model.entity.PostImage;
+import com.munggle.domain.model.entity.*;
 import com.munggle.image.dto.FileInfoDto;
 import com.munggle.image.service.FileS3UploadService;
 import com.munggle.post.dto.PostCreateDto;
@@ -11,6 +10,8 @@ import com.munggle.post.dto.PostUpdateDto;
 import com.munggle.post.mapper.PostMapper;
 import com.munggle.post.repository.PostImageRepository;
 import com.munggle.post.repository.PostRepository;
+import com.munggle.post.repository.PostTagRepository;
+import com.munggle.post.repository.TagRepository;
 import com.munggle.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,6 +32,8 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
     private final PostImageRepository postImageRepository;
+    private final TagRepository tagRepository;
+    private final PostTagRepository postTagRepository;
 
     /**
      * 게시글 상세보기 메소드
@@ -44,7 +47,7 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new NoSuchElementException());
         String nickname = post.getUser().getNickname();
-        Boolean isMine = post.getUser().getId().equals(userId) ? true : false;
+        Boolean isMine = post.getUser().getId().equals(userId);
 
         // 해당 post의 이미지 url만 list로 가져오기
         List<String> imageUrls = new ArrayList<>();
@@ -74,6 +77,7 @@ public class PostServiceImpl implements PostService {
         // 게시글 영속화
         Long postId = postRepository.save(newPost).getId();
 
+        // 이미지 저장
         List<MultipartFile> files = postCreateDto.getImages();
         String uploadPath = userId + "/" + postId + "/";
         List<FileInfoDto> fileInfoDtos = fileS3UploadService.uploadFlieList(uploadPath, files); //s3 저장소에 업로드
@@ -82,13 +86,27 @@ public class PostServiceImpl implements PostService {
             PostImage newImage = PostMapper.toPostImageEntity(fileInfo, newPost);
             postImageRepository.save(newImage);
         }
+
+        // 해시태그 저장
+        List<String> hashtags = postCreateDto.getHashtags();
+        List<PostTag> postTagList = new ArrayList<>();
+        for (String hashtag : hashtags) {
+            Tag newTag = tagRepository.findByTagNm(hashtag)
+                    .orElse(tagRepository.save(PostMapper.toTagEntity(hashtag)));
+
+            PostTagId newPostTagId = PostMapper.toPostTagIdEntity(postId, newTag.getId());
+            PostTag newPostTag = PostMapper.toPostTagEntity(newPostTagId, newPost, newTag);
+            newPostTag.markAsDeletdFalse();
+            postTagList.add(newPostTag);
+        }
+
+        postTagRepository.saveAll(postTagList); // 영속화
     }
 
     /**
      * 게시글 수정 메소드
      *
      * 수정 가능 필드: title / content / isPrivate
-     * 추후 해시태그 수정 구현 예정
      * @param postUpdateDto
      */
     @Override
@@ -119,12 +137,34 @@ public class PostServiceImpl implements PostService {
             PostImage newImage = PostMapper.toPostImageEntity(fileInfo, updatePost);
             postImageRepository.save(newImage);
         }
+
+        // 기존 해시태그 삭제
+        List<PostTag> deleteTags = postTagRepository.findAllByPost(updatePost);  // db에서 isDeleted true로 변경
+        for (PostTag deleteTag : deleteTags) {
+            deleteTag.markAsDeletd();
+        }
+
+        // 업데이트 된 해시태그 저장
+        List<String> hashtags = postUpdateDto.getHashtags();
+        List<PostTag> postTagList = new ArrayList<>();
+        for (String hashtag : hashtags) {
+            Tag tag = tagRepository.findByTagNm(hashtag)
+                    .orElse(tagRepository.save(PostMapper.toTagEntity(hashtag)));
+
+            PostTagId findId = PostMapper.toPostTagIdEntity(updatePost.getId(), tag.getId());
+            PostTag updatePostTag = postTagRepository.findById(findId)
+                    .orElse(PostMapper.toPostTagEntity(findId, updatePost, tag));
+            updatePostTag.markAsDeletdFalse(); // isDeleted false로 변경
+            postTagList.add(updatePostTag);
+        }
+
+        postTagRepository.saveAll(postTagList); // 영속화
+
     }
 
     /**
      * 게시글 삭제 메소드
      *
-     * 추후 해시태그 삭제 구현 예정
      * @param postId
      */
     @Override
@@ -135,11 +175,16 @@ public class PostServiceImpl implements PostService {
         post.markAsDeletd();
 
         // post image 삭제
-        Long userId = post.getUser().getId();
-        String uploadPath = userId + "/" + post.getId() + "/";
-        fileS3UploadService.removeFolderFiles(uploadPath); // s3 저장소에 올라간 파일 삭제
-        
-        postImageRepository.deleteByPostId(post.getId());  // db에서 데이터 삭제
+        List<PostImage> deleteImages = postImageRepository.findAllByPost(post);  // db에서 isDeleted true로 변경
+        for (PostImage deleteImage : deleteImages) {
+            deleteImage.markAsDeletd();
+        }
+
+        // post tag 삭제
+        List<PostTag> deleteTags = postTagRepository.findAllByPost(post);  // db에서 isDeleted true로 변경
+        for (PostTag deleteTag : deleteTags) {
+            deleteTag.markAsDeletd();
+        }
     }
 
 }

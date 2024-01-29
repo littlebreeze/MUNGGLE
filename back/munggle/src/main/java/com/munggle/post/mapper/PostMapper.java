@@ -1,7 +1,6 @@
 package com.munggle.post.mapper;
 
-import com.munggle.domain.model.entity.Post;
-import com.munggle.domain.model.entity.PostImage;
+import com.munggle.domain.model.entity.*;
 import com.munggle.image.dto.FileInfoDto;
 import com.munggle.post.dto.PostCreateDto;
 import com.munggle.post.dto.PostDetailResponseDto;
@@ -43,6 +42,27 @@ public class PostMapper {
                 .imageName(file.getFileName())
                 .imageURL(file.getFileURL())
                 .post(post)
+                .build();
+    }
+
+    public static Tag toTagEntity(String tagNm) {
+        return Tag.builder()
+                .tagNm(tagNm)
+                .build();
+    }
+
+    public static PostTagId toPostTagIdEntity(Long postId, Long tagId) {
+        return PostTagId.builder()
+                .postId(postId)
+                .tagId(tagId)
+                .build();
+    }
+
+    public static PostTag toPostTagEntity(PostTagId postTagId, Post post, Tag tag) {
+        return PostTag.builder()
+                .postTagId(postTagId)
+                .post(post)
+                .tag(tag)
                 .build();
     }
 }

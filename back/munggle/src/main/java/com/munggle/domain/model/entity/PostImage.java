@@ -32,4 +32,8 @@ public class PostImage {
     private Post post;
 
     private Boolean isDeleted;
+
+    public void markAsDeletd() {
+        this.isDeleted = true;
+    }
 }
