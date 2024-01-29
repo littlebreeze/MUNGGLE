@@ -39,7 +39,10 @@ public class Dog {
     //private Long kindId;
 
     @NotNull
-    private Long userId;
+    //private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @NotNull
     private LocalDateTime birthDate;
@@ -77,6 +80,10 @@ public class Dog {
 //    public void setDogId(Long dogId){
 //        this.dogId = dogId;
 //    }
+
+    public void setUser(User user){
+        this.user = user;
+    }
 
     // 반려견 정보 수정
     public void updateDog(DogUpdateDto dogUpdateDto){
