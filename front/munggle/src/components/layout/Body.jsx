@@ -2,6 +2,7 @@ import React from "react";
 import "./Body.css";
 import { Route, Routes } from "react-router-dom";
 import Post from "../../pages/Main/PostPage";
+import PostTest from "../../pages/Main/PostPageTest";
 import Profile from "../../pages/Main/ProfilePage";
 import Matching from "../../pages/Main/MatchingPage";
 import Walk from "../../pages/Main/WalkPage";
@@ -15,7 +16,7 @@ export default function Body() {
   return (
     <div className="body-container-div">
       <Routes>
-        <Route path="/*" element={<Post />} />
+        <Route path="/*" element={<PostTest />} />
         <Route path="/matching/*" element={<Matching />} />
         <Route path="/walk" element={<Walk />} />
         <Route path="/profile/*" element={<Profile />} />

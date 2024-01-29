@@ -28,6 +28,14 @@ import ToggleButton from "../../components/button/ToggleButton";
 import PostComponent from "../../components/Post/PostComponent";
 import CreateButton from "../../components/button/CreateButton";
 import CreateModal from "../../components/modal/CreateModal";
+import CreateModalTest from "../../components/modal/CreateModalTest";
+
+import Slide from '@mui/material/Slide';
+import Dialog from '@mui/material/Dialog';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="left" ref={ref} {...props} />;
+});
 
 export default function Post() {
   // const [posts, setPosts] = useState([]);
@@ -271,10 +279,17 @@ export default function Post() {
       <div className="post-create-button-div" onClick={openCreateModal}>
         <CreateButton />
       </div>
-      <CreateModal 
-        isOpen={CreateModalIsOpen}
-        closeModal={closeCreateModal}
-      />
+      <Dialog
+        fullScreen
+        open={CreateModalIsOpen}
+        onClose={closeCreateModal}
+        TransitionComponent={Transition}
+      >
+        <CreateModalTest
+          onClose={closeCreateModal}
+        />
+
+      </Dialog>
     </div>
   );
 }
