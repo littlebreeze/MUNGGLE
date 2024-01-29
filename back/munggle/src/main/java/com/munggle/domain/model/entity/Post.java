@@ -9,6 +9,9 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "posts")
 @DynamicUpdate
@@ -37,6 +40,10 @@ public class Post extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(mappedBy = "posts")
+    @JoinColumn(name = "post_tag_id")
+    private List<PostTag> postTagList = new ArrayList<>();
 
     @Column(name = "like_cnt")
     @ColumnDefault("0")

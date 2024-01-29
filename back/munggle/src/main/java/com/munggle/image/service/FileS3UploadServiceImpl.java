@@ -7,7 +7,6 @@ import software.amazon.awssdk.services.s3.model.*;
 import com.munggle.image.dto.FileInfoDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,7 +18,6 @@ import java.util.UUID;
 
 
 @Service
-@Component
 @RequiredArgsConstructor
 public class FileS3UploadServiceImpl implements FileS3UploadService {
     private final S3Client s3Client;
