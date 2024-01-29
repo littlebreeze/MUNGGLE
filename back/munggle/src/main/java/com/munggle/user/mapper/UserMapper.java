@@ -1,7 +1,9 @@
 package com.munggle.user.mapper;
 
 import com.munggle.domain.model.entity.User;
+import com.munggle.domain.model.entity.UserImage;
 import com.munggle.domain.model.entity.type.Role;
+import com.munggle.image.dto.FileInfoDto;
 import com.munggle.user.dto.UserCreateDto;
 import com.munggle.user.dto.UserMyPageDto;
 import com.munggle.user.dto.UserProfileDto;
@@ -45,5 +47,14 @@ public class UserMapper {
         return users.stream()
                 .map(UserListDto::toUserListDto)
                 .collect(Collectors.toList());
+    }
+
+    public static UserImage toUserImage(FileInfoDto file, User user, String type) {
+        return UserImage.builder()
+                .imageName(file.getFileName())
+                .imageURL(file.getFileURL())
+                .user(user)
+                .imageType(type)
+                .build();
     }
 }

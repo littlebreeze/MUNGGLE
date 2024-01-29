@@ -4,6 +4,7 @@ import com.munggle.domain.exception.IllegalNicknameException;
 import com.munggle.domain.exception.IllegalPasswordException;
 import com.munggle.domain.model.entity.converter.PasswordConverter;
 import com.munggle.domain.model.entity.type.Role;
+import com.munggle.user.dto.UpdateProfileDto;
 import com.munggle.util.NicknameValidator;
 import com.munggle.util.PasswordValidator;
 import jakarta.persistence.*;
@@ -62,13 +63,13 @@ public class User implements UserDetails {
     @Column(unique = true)
     private String nickname;
 
-    @Size(max = 255)
-    @Column(name = "background_image")
-    private String backgroundImage;
+    @JoinColumn(name = "background_image")
+    @OneToOne
+    private UserImage backgroundImage;
 
-    @Size(max = 255)
-    @Column(name = "profile_image")
-    private String profileImage;
+    @JoinColumn(name = "profile_image")
+    @OneToOne
+    private UserImage profileImage;
 
     @Size(max = 100)
     private String description;
@@ -104,11 +105,16 @@ public class User implements UserDetails {
         this.lastModified = LocalDateTime.now();
     }
 
-    public void changeNickname(String newNickname) {
-        if (!NicknameValidator.isValidNickname(newNickname)) {
+    public void changeProfile(UpdateProfileDto updateProfileDto,
+                              UserImage profileImage,
+                              UserImage backgroundImage) {
+        if (!NicknameValidator.isValidNickname(updateProfileDto.getNewNickname())) {
             throw new IllegalNicknameException(NICKNAME_ILLEGAL);
         }
-        this.nickname = newNickname;
+        this.nickname = updateProfileDto.getNewNickname();
+        this.description = updateProfileDto.getDescription();
+        this.profileImage = profileImage;
+        this.backgroundImage = backgroundImage;
     }
 
     public void changePassword(String newPassword) {
@@ -116,18 +122,6 @@ public class User implements UserDetails {
             throw new IllegalPasswordException(PASSWORD_ILLEGAL);
         }
         this.password = newPassword;
-    }
-
-    public void backgroundImage(String backgroundImage) {
-        this.backgroundImage = backgroundImage;
-    }
-
-    public void changeProfileImage(String profileImage) {
-        this.profileImage = profileImage;
-    }
-
-    public void writeDescription(String description) {
-        this.description = description;
     }
 
     public void markAsDeleted() {

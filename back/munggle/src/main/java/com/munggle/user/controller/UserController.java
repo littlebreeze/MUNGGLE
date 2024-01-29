@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -43,12 +44,21 @@ public class UserController {
         userService.joinMember(userCreateDto);
     }
 
-    @PutMapping("/nickname")
+    @PutMapping()
     @ResponseStatus(HttpStatus.OK)
-    public void updateNickname(@AuthenticationPrincipal User principal,
-                               @RequestBody @Valid UpdateNicknameDto updateNicknameDto) {
+    public void updateProfile(@AuthenticationPrincipal User principal,
+                              @RequestPart("newNickname") String newNickname,
+                              @RequestPart("description") String description,
+                              @RequestPart("profileImg") MultipartFile profileImg,
+                              @RequestPart("backgroundImg") MultipartFile backgroundImg) {
         Long id = principal.getId();
-        userService.updateNickname(id, updateNicknameDto.getNewNickname());
+        UpdateProfileDto updateProfileDto = UpdateProfileDto.builder()
+                .newNickname(newNickname)
+                .description(description)
+                .profileImg(profileImg)
+                .backgroundImg(backgroundImg)
+                .build();
+        userService.updateProfile(id, updateProfileDto);
     }
 
     @PutMapping("/password")
@@ -57,14 +67,6 @@ public class UserController {
                                @RequestBody @Valid UpdatePasswordDto updatePasswordDto) {
         Long id = principal.getId();
         userService.updatePassword(id, updatePasswordDto.getNewPassword());
-    }
-
-    @PutMapping
-    @ResponseStatus(HttpStatus.OK)
-    public void writeDescription(@AuthenticationPrincipal User principal,
-                                 @RequestBody @Valid UserDescriptionDto userDescriptionDto) {
-        Long id = principal.getId();
-        userService.writeDescription(id, userDescriptionDto.getDescription());
     }
 
     @DeleteMapping

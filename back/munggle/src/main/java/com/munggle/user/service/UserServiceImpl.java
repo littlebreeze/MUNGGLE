@@ -2,19 +2,22 @@ package com.munggle.user.service;
 
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.User;
-import com.munggle.user.dto.UserCreateDto;
-import com.munggle.user.dto.UserMyPageDto;
-import com.munggle.user.dto.UserProfileDto;
-import com.munggle.user.dto.UserListDto;
+import com.munggle.domain.model.entity.UserImage;
+import com.munggle.image.dto.FileInfoDto;
+import com.munggle.image.service.FileS3UploadService;
+import com.munggle.user.dto.*;
 import com.munggle.user.mapper.UserMapper;
+import com.munggle.user.repository.UserImageRepository;
 import com.munggle.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.munggle.domain.exception.ExceptionMessage.*;
 
@@ -24,6 +27,8 @@ import static com.munggle.domain.exception.ExceptionMessage.*;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+    private final UserImageRepository userImageRepository;
+    private final FileS3UploadService fileS3UploadService;
 
     private User findMemberById(Long id) {
         return userRepository.findByIdAndIsEnabledTrue(id)
@@ -62,9 +67,33 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public void updateNickname(Long id, String newNickname) {
+    public void updateProfile(Long id, UpdateProfileDto updateProfileDto) {
         User user = findMemberById(id);
-        user.changeNickname(newNickname);
+
+        // 1. 기존 이미지 파일 정보 조회
+        Optional<UserImage> existingProfileImageOpt = Optional.ofNullable(user.getProfileImage());
+        Optional<UserImage> existingBackgroundImageOpt = Optional.ofNullable(user.getBackgroundImage());
+
+        // 2. S3에서 기존 이미지 파일 삭제
+        existingProfileImageOpt.ifPresent(image -> fileS3UploadService.removeFile(image.getImageName()));
+        existingBackgroundImageOpt.ifPresent(image -> fileS3UploadService.removeFile(image.getImageName()));
+
+        // 3. 새 이미지 파일 업로드
+        MultipartFile profileImg = updateProfileDto.getProfileImg();
+        MultipartFile backgroundImg = updateProfileDto.getBackgroundImg();
+        String uploadProfilePath = user.getId() + "/" + "profile" + "/";
+        String uploadBackPath = user.getId() + "/" + "back" + "/";
+        FileInfoDto profileFileInfoDto = fileS3UploadService.uploadFile(uploadProfilePath, profileImg);
+        FileInfoDto backFileInfoDto = fileS3UploadService.uploadFile(uploadBackPath, backgroundImg);
+
+        UserImage profile = UserMapper.toUserImage(profileFileInfoDto, user, "profile");
+        UserImage background = UserMapper.toUserImage(backFileInfoDto, user, "background");
+
+        userImageRepository.save(profile);
+        userImageRepository.save(background);
+
+        // 4. 사용자 정보 업데이트
+        user.changeProfile(updateProfileDto, profile, background);
     }
 
     @Override
@@ -72,13 +101,6 @@ public class UserServiceImpl implements UserService{
     public void updatePassword(Long id, String newPassword) {
         User user = findMemberById(id);
         user.changePassword(newPassword);
-    }
-
-    @Override
-    @Transactional
-    public void writeDescription(Long id, String description) {
-        User user = findMemberById(id);
-        user.writeDescription(description);
     }
 
     @Override

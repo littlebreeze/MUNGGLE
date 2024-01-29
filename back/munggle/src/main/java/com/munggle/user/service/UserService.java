@@ -1,9 +1,6 @@
 package com.munggle.user.service;
 
-import com.munggle.user.dto.UserCreateDto;
-import com.munggle.user.dto.UserMyPageDto;
-import com.munggle.user.dto.UserProfileDto;
-import com.munggle.user.dto.UserListDto;
+import com.munggle.user.dto.*;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -18,11 +15,9 @@ public interface UserService extends UserDetailsService {
 
     void joinMember(UserCreateDto userCreateDto);
 
-    void updateNickname(Long id, String newNickname);
+    void updateProfile(Long id, UpdateProfileDto updateProfileDto);
 
     void updatePassword(Long id, String newPassword);
-
-    void writeDescription(Long id, String description);
 
     void deleteMember(Long id);
 }
