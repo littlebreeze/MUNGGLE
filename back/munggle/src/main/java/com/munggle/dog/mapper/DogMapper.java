@@ -20,7 +20,7 @@ public class DogMapper {
                 .gender(dogCreateDto.getGender())
                 .isNeutering(dogCreateDto.getIsNeutering())
                 .name(dogCreateDto.getName())
-                .image(dogCreateDto.getImage())
+                //.image(dogCreateDto.getImage())
                 .description(dogCreateDto.getDescription())
                 .build();
     }
@@ -37,7 +37,7 @@ public class DogMapper {
                 .gender(dog.getGender())
                 .isNeutering(dog.getIsNeutering())
                 .name(dog.getName())
-                .image(dog.getImage())
+                .image(dog.getImageUrl())
                 .description(dog.getDescription())
                 .build();
     }

@@ -23,6 +23,6 @@ public class DogDetailDto {
     private String gender;
     private Boolean isNeutering;    // 중성화 여부
     private String name;
-    private String image;
+    private String image;   // Url
     private String description;
 }

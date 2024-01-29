@@ -29,7 +29,11 @@ public class MatchingServiceImpl implements MatchingService {
     }
 
     @Override
+    @Transactional
     public void insertMatchingCharacter(Long dogId, DogCharDto dogCharDto) {
+        // 내 반려견 찾아와서 매칭 켜기
+        Dog dog = dogRepository.findById(dogId).orElseThrow(()-> new NoSuchElementException());
+        dog.onMatching();
         Matching matching = Matching.builder()
                 .dog(Dog.builder().dogId(dogId).build())
                 .isNeutering(dogCharDto.getIsNeutering())
@@ -48,5 +52,39 @@ public class MatchingServiceImpl implements MatchingService {
     @Override
     public List<DogDetailDto> matchingList(Long dogId) {
         return null;
+    }
+
+    @Override
+    @Transactional
+    public void toggleMatching(Long dogId) {
+        Dog dog = dogRepository.findById(dogId).orElseThrow(()-> new NoSuchElementException());
+        if(dog.getIsMatching()){
+            dog.offMatching();
+        }else{
+            dog.onMatching();
+        }
+    }
+
+    @Override
+    public DogCharDto myCharacterList(Long dogId) {
+
+        Dog dog = dogRepository.findById(dogId).orElseThrow(()-> new NoSuchElementException());
+        Matching matching = Matching.builder()
+                .isNeutering(dog.getIsNeutering())
+                .characterId(dog.getCharacterId())
+                .build();
+        return DogCharDto.builder()
+                .isNeutering(matching.getIsNeutering())
+                .characterId(matching.returnCharacterList())
+                .build();
+    }
+
+    @Override
+    public DogCharDto matchingCharaterList(Long dogId) {
+        Matching matching = matchingRepository.findByDogDogId(dogId).orElseThrow(()-> new NoSuchElementException());
+        return DogCharDto.builder()
+                .isNeutering(matching.getIsNeutering())
+                .characterId(matching.returnCharacterList())
+                .build();
     }
 }
