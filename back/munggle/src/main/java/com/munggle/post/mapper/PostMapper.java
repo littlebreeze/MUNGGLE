@@ -43,6 +43,7 @@ public class PostMapper {
                 .imageName(file.getFileName())
                 .imageURL(file.getFileURL())
                 .post(post)
+                .isDeleted(false)
                 .build();
     }
 
