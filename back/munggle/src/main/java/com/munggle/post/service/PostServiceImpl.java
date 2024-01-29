@@ -60,7 +60,9 @@ public class PostServiceImpl implements PostService {
         List<String> hashtags = new ArrayList<>();
         List<PostTag> postTags = post.getPostTagList();
         for (PostTag postTag : postTags) {
-            hashtags.add(postTag.getTag().getTagNm());
+            if (postTag.getIsDeleted() == false) {
+                hashtags.add(postTag.getTag().getTagNm());
+            }
         }
 
         return PostMapper.toPostDetailResponseDto(post, nickname, isMine, imageUrls, hashtags);
@@ -69,7 +71,6 @@ public class PostServiceImpl implements PostService {
     /**
      * 게시글 생성 메소드
      *
-     * 추후 해시태그 생성 구현 예정
      * @param postCreateDto
      */
     @Override
@@ -85,13 +86,15 @@ public class PostServiceImpl implements PostService {
         Long postId = postRepository.save(newPost).getId();
 
         // 이미지 저장
-        List<MultipartFile> files = postCreateDto.getImages();
-        String uploadPath = userId + "/" + postId + "/";
-        List<FileInfoDto> fileInfoDtos = fileS3UploadService.uploadFlieList(uploadPath, files); //s3 저장소에 업로드
+        if (postCreateDto.getImages() != null) {
+            List<MultipartFile> files = postCreateDto.getImages();
+            String uploadPath = userId + "/" + postId + "/";
+            List<FileInfoDto> fileInfoDtos = fileS3UploadService.uploadFlieList(uploadPath, files); //s3 저장소에 업로드
 
-        for (FileInfoDto fileInfo : fileInfoDtos) { // db에 이미지 파일 정보 저장
-            PostImage newImage = PostMapper.toPostImageEntity(fileInfo, newPost);
-            postImageRepository.save(newImage);
+            for (FileInfoDto fileInfo : fileInfoDtos) { // db에 이미지 파일 정보 저장
+                PostImage newImage = PostMapper.toPostImageEntity(fileInfo, newPost);
+                postImageRepository.save(newImage);
+            }
         }
 
         // 해시태그 저장
@@ -99,11 +102,11 @@ public class PostServiceImpl implements PostService {
         List<PostTag> postTags = new ArrayList<>();
         for (String hashtag : hashtags) {
             Tag newTag = tagRepository.findByTagNm(hashtag)
-                    .orElse(tagRepository.save(PostMapper.toTagEntity(hashtag)));
+                    .orElseGet(() -> tagRepository.save(PostMapper.toTagEntity(hashtag)));
 
             PostTagId newPostTagId = PostMapper.toPostTagIdEntity(postId, newTag.getId());
             PostTag newPostTag = PostMapper.toPostTagEntity(newPostTagId, newPost, newTag);
-            newPostTag.markAsDeletdFalse();
+            newPostTag.markAsDeletedFalse();
             postTags.add(newPostTag);
         }
 
@@ -137,18 +140,20 @@ public class PostServiceImpl implements PostService {
         postImageRepository.deleteByPostId(updatePost.getId()); // db에서 데이터 삭제
 
         // 업데이트 된 post image 등록
-        List<MultipartFile> files = postUpdateDto.getImages();
-        List<FileInfoDto> fileInfoDtos = fileS3UploadService.uploadFlieList(uploadPath, files); //s3 저장소에 업로드
+        if (postUpdateDto.getImages() != null) {
+            List<MultipartFile> files = postUpdateDto.getImages();
+            List<FileInfoDto> fileInfoDtos = fileS3UploadService.uploadFlieList(uploadPath, files); //s3 저장소에 업로드
 
-        for (FileInfoDto fileInfo : fileInfoDtos) { // db에 이미지 파일 정보 저장
-            PostImage newImage = PostMapper.toPostImageEntity(fileInfo, updatePost);
-            postImageRepository.save(newImage);
+            for (FileInfoDto fileInfo : fileInfoDtos) { // db에 이미지 파일 정보 저장
+                PostImage newImage = PostMapper.toPostImageEntity(fileInfo, updatePost);
+                postImageRepository.save(newImage);
+            }
         }
 
         // 기존 해시태그 삭제
         List<PostTag> deleteTags = postTagRepository.findAllByPost(updatePost);  // db에서 isDeleted true로 변경
         for (PostTag deleteTag : deleteTags) {
-            deleteTag.markAsDeletd();
+            deleteTag.markAsDeleted();
         }
 
         // 업데이트 된 해시태그 저장
@@ -156,12 +161,12 @@ public class PostServiceImpl implements PostService {
         List<PostTag> postTags = new ArrayList<>();
         for (String hashtag : hashtags) {
             Tag tag = tagRepository.findByTagNm(hashtag)
-                    .orElse(tagRepository.save(PostMapper.toTagEntity(hashtag)));
+                    .orElseGet(() -> tagRepository.save(PostMapper.toTagEntity(hashtag)));
 
             PostTagId findId = PostMapper.toPostTagIdEntity(updatePost.getId(), tag.getId());
             PostTag updatePostTag = postTagRepository.findById(findId)
                     .orElse(PostMapper.toPostTagEntity(findId, updatePost, tag));
-            updatePostTag.markAsDeletdFalse(); // isDeleted false로 변경
+            updatePostTag.markAsDeletedFalse(); // isDeleted false로 변경
             postTags.add(updatePostTag);
         }
 
@@ -179,18 +184,18 @@ public class PostServiceImpl implements PostService {
     public void deletePost(Long postId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new NoSuchElementException());
-        post.markAsDeletd();
+        post.markAsDeleted();
 
         // post image 삭제
         List<PostImage> deleteImages = postImageRepository.findAllByPost(post);  // db에서 isDeleted true로 변경
         for (PostImage deleteImage : deleteImages) {
-            deleteImage.markAsDeletd();
+            deleteImage.markAsDeleted();
         }
 
         // post tag 삭제
         List<PostTag> deleteTags = postTagRepository.findAllByPost(post);  // db에서 isDeleted true로 변경
         for (PostTag deleteTag : deleteTags) {
-            deleteTag.markAsDeletd();
+            deleteTag.markAsDeleted();
         }
     }
 
