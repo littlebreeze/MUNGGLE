@@ -8,9 +8,8 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
 @Builder
-@Data
+@Getter
 @AllArgsConstructor
 public class PostDetailResponseDto {
 
@@ -19,6 +18,8 @@ public class PostDetailResponseDto {
     private String postContent;
 
     private List<String> images;
+
+    private List<String> hashtags;
 
     private String nickname;
 

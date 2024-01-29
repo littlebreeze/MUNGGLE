@@ -2,8 +2,7 @@ package com.munggle.image.dto;
 
 import lombok.*;
 
-@Getter
-@Data @Builder
+@Getter @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class FileInfoDto {

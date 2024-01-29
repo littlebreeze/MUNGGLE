@@ -10,7 +10,6 @@ import java.util.List;
 
 @Builder
 @Getter
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostCreateDto {
