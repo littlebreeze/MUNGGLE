@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -24,6 +25,11 @@ public class DogUpdateDto {
     //private String gender;
     private Boolean isNeutering;    // 중성화 여부
     private String name;
-    private String image;
     private String description;
+
+    private MultipartFile image;
+
+    public void setImage(MultipartFile image){
+        this.image = image;
+    }
 }

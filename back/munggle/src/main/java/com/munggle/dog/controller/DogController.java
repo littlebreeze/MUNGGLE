@@ -39,9 +39,11 @@ public class DogController {
 
     @PutMapping("/{dogId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateDog(@PathVariable Long dogId, @RequestBody DogUpdateDto dogUpdateDto,
+    public void updateDog(@PathVariable Long dogId,
+                          @RequestPart(value = "dto") @Valid DogUpdateDto dogUpdateDto,
                           @RequestPart(value = "file", required = false) MultipartFile file){
 
+        dogUpdateDto.setImage(file);
         dogService.updateDog(dogId, dogUpdateDto);
     }
 

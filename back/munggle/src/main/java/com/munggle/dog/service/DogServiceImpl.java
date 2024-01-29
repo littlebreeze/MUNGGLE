@@ -11,6 +11,7 @@ import com.munggle.image.service.FileS3UploadService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -24,6 +25,16 @@ public class DogServiceImpl implements DogService {
 
     private final DogRepository dogRepository;
 
+    // 전달된 MultipartFile 이미지 업로드
+    String dogFilePath = "dog/";
+
+    public FileInfoDto dogImageUpload(Long dogId, MultipartFile file){
+        // 이미지 정보 저장
+        String uploadPath = dogFilePath + dogId + "/";
+        FileInfoDto fileInfoDto = fileS3UploadService.uploadFile(uploadPath, file);
+
+        return fileInfoDto;
+    }
     @Override
     @Transactional
     public void insertDog(DogCreateDto dogCreateDto) {
@@ -36,11 +47,8 @@ public class DogServiceImpl implements DogService {
 
         // 전달된 이미지가 있는 경우에만 수정
         if(dogCreateDto.getImage() != null) {
-            // 이미지 정보 저장
-            String uploadPath = "dog" + "/" + dogId + "/";
-            FileInfoDto fileInfoDto = fileS3UploadService.uploadFile(uploadPath, dogCreateDto.getImage());
 
-            dog.updateImage(fileInfoDto);
+            dog.updateImage(dogImageUpload(dogId, dogCreateDto.getImage()));
         }
     }
 
@@ -50,6 +58,16 @@ public class DogServiceImpl implements DogService {
         Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
                 .orElseThrow(()->new NoSuchElementException());
         dog.updateDog(dogUpdateDto);
+
+        // 전달된 파일이 있는 경우에 기존 이미지 삭제 후 변경
+        if(dogUpdateDto.getImage() != null){
+
+            // 기존 파일 S3에서 삭제
+            String uploadPath = dogFilePath + dogId + "/";
+            fileS3UploadService.removeFolderFiles(uploadPath);
+
+            dog.updateImage(dogImageUpload(dogId, dogUpdateDto.getImage()));
+        }
     }
 
     @Override
