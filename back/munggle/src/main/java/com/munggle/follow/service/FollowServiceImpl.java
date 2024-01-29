@@ -1,7 +1,7 @@
 package com.munggle.follow.service;
 
 import com.munggle.domain.exception.FollowNotFoundException;
-import com.munggle.domain.exception.SelfFollowException;
+import com.munggle.domain.exception.SelfInteractionException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.Follow;
 import com.munggle.domain.model.entity.FollowId;
@@ -67,7 +67,7 @@ public class FollowServiceImpl implements FollowService {
         // 자기 자신을 팔로우하는지 검증
         Optional.of(fromUserId)
                 .filter(id -> !id.equals(targetUserId))
-                .orElseThrow(() -> new SelfFollowException(SELF_FOLLOW));
+                .orElseThrow(() -> new SelfInteractionException(SELF_FOLLOW));
         // 받아온 userId 검증
         User fromUser = userRepository.findByIdAndIsEnabledTrue(fromUserId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
