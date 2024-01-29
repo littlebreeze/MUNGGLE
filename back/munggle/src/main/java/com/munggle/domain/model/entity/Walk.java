@@ -29,7 +29,11 @@ public class Walk {
 
     private String walkName;
 
-    private Long userId;
+    @NotNull
+    //private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     private Long dogId;
 
@@ -45,6 +49,10 @@ public class Walk {
 
     @OneToMany(mappedBy = "walk", cascade = CascadeType.REMOVE)
     private List<Location> location;
+
+    public void setUser(User user){
+        this.user = user;
+    }
 
     public void updateWalk(WalkUpdateDto walkUpdateDto){
         this.walkName = walkUpdateDto.getWalkName();

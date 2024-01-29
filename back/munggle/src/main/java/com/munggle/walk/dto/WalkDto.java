@@ -30,5 +30,7 @@ public class WalkDto {
 
     private List<LocationDto> location;
 
-
+    public void setUserId(Long userId){
+        this.userId = userId;
+    }
 }
