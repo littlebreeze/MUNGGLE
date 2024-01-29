@@ -24,5 +24,6 @@ public class Tag {
 
     @NotNull
     @NotBlank
+    @Column(name = "tag_nm", unique = true)
     private String tagNm;
 }
