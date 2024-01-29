@@ -2,7 +2,6 @@ package com.munggle.block.service;
 
 import com.munggle.block.mapper.BlockMapper;
 import com.munggle.block.repository.BlockRepository;
-import com.munggle.domain.exception.ExceptionMessage;
 import com.munggle.domain.exception.SelfInteractionException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.Block;
