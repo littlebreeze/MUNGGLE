@@ -1,8 +1,16 @@
 package com.munggle.domain.model.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "blocks")
 public class Block {
 
@@ -21,4 +29,8 @@ public class Block {
 
     @Column(name = "is_blocked")
     private Boolean is_blocked;
+
+    public void block() {
+        this.is_blocked = true;
+    }
 }
