@@ -21,7 +21,7 @@ public class WalkMapper {
 
         return Walk.builder()
                 .walkName(walkDto.getWalkName())
-                .userId(walkDto.getUserId())
+                //.userId(walkDto.getUserId())
                 .dogId(walkDto.getDogId())
                 .description(walkDto.getDescription())
                 .duration(walkDto.getDuration())
@@ -42,7 +42,7 @@ public class WalkMapper {
         return WalkDto.builder()
                 .walkId(walk.getWalkId())
                 .walkName(walk.getWalkName())
-                .userId(walk.getUserId())
+                .userId(walk.getUser().getId())
                 .dogId(walk.getDogId())
                 .description(walk.getDescription())
                 .duration(walk.getDuration())

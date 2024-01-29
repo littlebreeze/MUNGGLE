@@ -30,7 +30,7 @@ public class DogController {
                           @RequestPart(value = "dto") @Valid DogCreateDto dogCreateDto,
                           @RequestPart(value = "file", required = false) MultipartFile file){
 
-        dogCreateDto.setUserId(11L);//(principal.getId());
+        dogCreateDto.setUserId(principal.getId());
         dogCreateDto.setImage(file);
 
         // 없는 kindId를 넣으면 InvalidDataAccessApiUsageException

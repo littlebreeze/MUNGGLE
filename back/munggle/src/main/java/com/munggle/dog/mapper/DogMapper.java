@@ -13,7 +13,7 @@ public class DogMapper {
     public static Dog toEntity(DogCreateDto dogCreateDto){
         return Dog.builder()
                 .kind(Kind.builder().kindId(dogCreateDto.getKindId()).kindNm("").build())
-                .userId(dogCreateDto.getUserId())
+                //.userId(dogCreateDto.getUserId())
                 .birthDate(dogCreateDto.getBirthDate())
                 .size(dogCreateDto.getSize())
                 .weight(dogCreateDto.getWeight())

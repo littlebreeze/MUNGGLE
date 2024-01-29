@@ -5,9 +5,12 @@ import com.munggle.dog.dto.DogDetailDto;
 import com.munggle.dog.dto.DogUpdateDto;
 import com.munggle.dog.mapper.DogMapper;
 import com.munggle.dog.repository.DogRepository;
+import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.Dog;
+import com.munggle.domain.model.entity.User;
 import com.munggle.image.dto.FileInfoDto;
 import com.munggle.image.service.FileS3UploadService;
+import com.munggle.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,8 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 public class DogServiceImpl implements DogService {
@@ -24,6 +29,7 @@ public class DogServiceImpl implements DogService {
     private final FileS3UploadService fileS3UploadService;
 
     private final DogRepository dogRepository;
+    private final UserRepository userRepository;
 
     // 전달된 MultipartFile 이미지 업로드
     String dogFilePath = "dog/";
@@ -41,6 +47,9 @@ public class DogServiceImpl implements DogService {
         Dog dog = DogMapper.toEntity(dogCreateDto);
 
         // Dto로 넘어온 userId로 user 세팅
+        User user = userRepository.findByIdAndIsEnabledTrue(dogCreateDto.getUserId())
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        dog.setUser(user);
 
         // 나머지 반려견 정보 저장 후
         Long dogId = dogRepository.save(dog).getDogId();
