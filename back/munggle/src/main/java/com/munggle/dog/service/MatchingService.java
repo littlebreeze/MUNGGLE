@@ -2,6 +2,7 @@ package com.munggle.dog.service;
 
 import com.munggle.dog.dto.DogCharDto;
 import com.munggle.dog.dto.DogDetailDto;
+import com.munggle.domain.model.entity.Matching;
 
 import java.util.List;
 
@@ -21,4 +22,10 @@ public interface MatchingService {
 
     // 매칭 온오프
     void toggleMatching(Long dogId);
+
+    // 내 반려견 특징
+    DogCharDto myCharacterList(Long dogId);
+
+    // 상대 반려견 특징
+    DogCharDto matchingCharaterList(Long dogId);
 }

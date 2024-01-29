@@ -52,17 +52,17 @@ public class MatchingController {
     // 내 특성 - 수정 시 필요
     @GetMapping ("/my/{dogId}")
     @ResponseStatus(HttpStatus.OK)
-    public Matching myCharacter(@PathVariable Long dogId){
+    public DogCharDto myCharacter(@PathVariable Long dogId){
 
-        return null;
+        return matchingService.myCharacterList(dogId);
     }
 
     // 상대 특성 - 수정 시 필요
     @GetMapping ("/{dogId}")
     @ResponseStatus(HttpStatus.OK)
-    public Matching matchingCharacter(@PathVariable Long dogId){
+    public DogCharDto matchingCharacter(@PathVariable Long dogId){
 
-        return null;
+        return matchingService.matchingCharaterList(dogId);
     }
 
     // 매칭 온오프
