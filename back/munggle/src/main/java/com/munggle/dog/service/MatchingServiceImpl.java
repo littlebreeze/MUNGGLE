@@ -29,7 +29,11 @@ public class MatchingServiceImpl implements MatchingService {
     }
 
     @Override
+    @Transactional
     public void insertMatchingCharacter(Long dogId, DogCharDto dogCharDto) {
+        // 내 반려견 찾아와서 매칭 켜기
+        Dog dog = dogRepository.findById(dogId).orElseThrow(()-> new NoSuchElementException());
+        dog.onMatching();
         Matching matching = Matching.builder()
                 .dog(Dog.builder().dogId(dogId).build())
                 .isNeutering(dogCharDto.getIsNeutering())
@@ -48,5 +52,16 @@ public class MatchingServiceImpl implements MatchingService {
     @Override
     public List<DogDetailDto> matchingList(Long dogId) {
         return null;
+    }
+
+    @Override
+    @Transactional
+    public void toggleMatching(Long dogId) {
+        Dog dog = dogRepository.findById(dogId).orElseThrow(()-> new NoSuchElementException());
+        if(dog.getIsMatching()){
+            dog.offMatching();
+        }else{
+            dog.onMatching();
+        }
     }
 }

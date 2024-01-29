@@ -18,4 +18,7 @@ public interface MatchingService {
 
     // 매칭된 반려견 리스트
     List<DogDetailDto> matchingList(Long dogId);
+
+    // 매칭 온오프
+    void toggleMatching(Long dogId);
 }

@@ -6,6 +6,7 @@ import com.munggle.dog.dto.DogUpdateDto;
 import com.munggle.dog.service.DogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class DogController {
 
     // 반려견 등록
     @PostMapping
+    @ResponseStatus(HttpStatus.OK)
     public void createDog(@RequestBody DogCreateDto dogCreateDto){
 
         // 없는 kindId를 넣으면 InvalidDataAccessApiUsageException
@@ -27,12 +29,14 @@ public class DogController {
     }
 
     @PutMapping("/{dogId}")
+    @ResponseStatus(HttpStatus.OK)
     public void updateDog(@PathVariable Long dogId, @RequestBody DogUpdateDto dogUpdateDto){
 
         dogService.updateDog(dogId, dogUpdateDto);
     }
 
     @DeleteMapping("/{dogId}")
+    @ResponseStatus(HttpStatus.OK)
     public void deleteDog(@PathVariable Long dogId){
         dogService.deleteDog(dogId);
     }
@@ -45,6 +49,7 @@ public class DogController {
 
     // 사용자 반려견 리스트
     @GetMapping("/{userId}")
+    @ResponseStatus(HttpStatus.OK)
     public List<DogDetailDto> getUserDogs(@PathVariable Long userId){
         return dogService.getDogList(userId);
     }
