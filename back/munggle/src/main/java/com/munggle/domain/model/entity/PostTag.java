@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 
 @Entity @Builder
 @Getter
-@IdClass(PostTagId.class)
 @Table(name = "post_tags")
 @NoArgsConstructor
 @AllArgsConstructor
