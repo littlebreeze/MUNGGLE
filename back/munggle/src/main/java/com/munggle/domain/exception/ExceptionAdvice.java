@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 public class ExceptionAdvice {
 
-    @ExceptionHandler({UserNotFoundException.class, FollowNotFoundException.class, WalkNotFoundException.class, LocationsNotFoundException.class})
+    @ExceptionHandler({UserNotFoundException.class, FollowNotFoundException.class, WalkNotFoundException.class, LocationsNotFoundException.class, BlockNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNotFound(RuntimeException e) {
         return e.getMessage();
     }
 
-    @ExceptionHandler({IllegalNicknameException.class, IllegalPasswordException.class, SelfFollowException.class})
+    @ExceptionHandler({IllegalNicknameException.class, IllegalPasswordException.class, SelfInteractionException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleBadRequest(RuntimeException e) {
         return e.getMessage();

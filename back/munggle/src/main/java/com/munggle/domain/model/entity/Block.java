@@ -1,21 +1,40 @@
 package com.munggle.domain.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Getter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "blocks")
 public class Block {
 
-    @Id
-    @Column(name = "block_id")
-    private Long id;
+    @EmbeddedId
+    private BlockId id;
 
-    private Long blockFrom;
+    @ManyToOne
+    @MapsId("blockFromId")
+    @JoinColumn(name = "blocK_from_id")
+    private User blockFrom;
 
-    private Long blockTo;
+    @ManyToOne
+    @MapsId("blockToId")
+    @JoinColumn(name = "block_to_id")
+    private User blockTo;
 
-    private Boolean isClear;
+    @Column(name = "is_blocked")
+    private Boolean isBlocked;
+
+    public void block() {
+        this.isBlocked = true;
+    }
+
+    public void unBlock() {
+        this.isBlocked = false;
+    }
 }
