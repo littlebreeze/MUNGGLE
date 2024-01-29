@@ -28,9 +28,9 @@ public class Block {
     private User blockTo;
 
     @Column(name = "is_blocked")
-    private Boolean is_blocked;
+    private Boolean isBlocked;
 
     public void block() {
-        this.is_blocked = true;
+        this.isBlocked = true;
     }
 }
