@@ -7,12 +7,16 @@ import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.Block;
 import com.munggle.domain.model.entity.BlockId;
 import com.munggle.domain.model.entity.User;
+import com.munggle.user.dto.UserListDto;
+import com.munggle.user.mapper.UserMapper;
 import com.munggle.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.munggle.domain.exception.ExceptionMessage.SELF_BLOCK;
 import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
@@ -24,6 +28,16 @@ public class BlockServiceImpl implements BlockSerivce{
 
     private final BlockRepository blockRepository;
     private final UserRepository userRepository;
+
+    @Override
+    public List<UserListDto> getBlockUserLsit(Long fromUserId) {
+        List<User> users = blockRepository.findByBlockFromIdAndIsBlockedTrue(fromUserId)
+                .stream()
+                .map(Block::getBlockTo)
+                .toList();
+
+        return UserMapper.fromUsers(users);
+    }
 
     @Override
     @Transactional
