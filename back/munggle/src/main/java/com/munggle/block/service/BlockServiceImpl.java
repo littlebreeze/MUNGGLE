@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.munggle.domain.exception.ExceptionMessage.SELF_BLOCK;
 import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
