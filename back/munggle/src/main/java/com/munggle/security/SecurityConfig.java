@@ -34,7 +34,8 @@ public class SecurityConfig {
 //
 //        return http.build();
         http
-                .cors(Customizer.withDefaults())
+                .cors()
+                .and()
                 .csrf().disable()
                 .authorizeRequests()
                 .anyRequest()
