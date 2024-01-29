@@ -2,6 +2,7 @@ package com.munggle.domain.model.entity;
 
 import com.munggle.dog.dto.DogCharDto;
 import com.munggle.dog.dto.DogUpdateDto;
+import com.munggle.image.dto.FileInfoDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -59,8 +60,10 @@ public class Dog {
     @Size(max=15)
     private String name;
 
-    @Size(max=100)
-    private String image;
+//    @Size(max=100)
+//    private String image;
+    private String imageName;
+    private String imageUrl;
 
     @Size(max=100)
     private String description;
@@ -75,14 +78,27 @@ public class Dog {
 //        this.dogId = dogId;
 //    }
 
+    // 반려견 정보 수정
     public void updateDog(DogUpdateDto dogUpdateDto){
         this.birthDate = dogUpdateDto.getBirthDate();
         this.size = dogUpdateDto.getSize();
         this.weight = dogUpdateDto.getWeight();
         this.isNeutering = dogUpdateDto.getIsNeutering();
         this.name = dogUpdateDto.getName();
-        this.image = dogUpdateDto.getImage();
+        // this.image = dogUpdateDto.getImage();
         this.description = dogUpdateDto.getDescription();
+    }
+
+    // 반려견 특성 변경
+    public void updateCharacterId(DogCharDto dogCharDto){
+        this.characterId = dogCharDto.toCharacterString();
+        this.isNeutering = dogCharDto.getIsNeutering();
+    }
+
+    // 반려견 이미지 정보 업데이트
+    public void updateImage(FileInfoDto fileInfoDto){
+        this.imageName = fileInfoDto.getFileName();
+        this.imageUrl = fileInfoDto.getFileURL();
     }
 
     public void deleteDog(){
@@ -95,10 +111,5 @@ public class Dog {
 
     public void offMatching(){
         this.isMatching = false;
-    }
-
-    public void updateCharacterId(DogCharDto dogCharDto){
-        this.characterId = dogCharDto.toCharacterString();
-        this.isNeutering = dogCharDto.getIsNeutering();
     }
 }
