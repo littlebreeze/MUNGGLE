@@ -15,9 +15,9 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class FollowId implements Serializable {
 
-    @Column(name = "following_user_id")
-    private Long followingUserId;
+    @Column(name = "follow_from_id")
+    private Long followFromId;
 
-    @Column(name = "target_user_id")
-    private Long targetUserId;
+    @Column(name = "follow_to_id")
+    private Long followToId;
 }
