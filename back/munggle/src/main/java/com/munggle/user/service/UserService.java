@@ -17,7 +17,7 @@ public interface UserService extends UserDetailsService {
 
     void updateProfile(Long id, UpdateProfileDto updateProfileDto);
 
-    void updatePassword(Long id, String newPassword);
+    void updatePassword(Long id, UpdatePasswordDto updatePasswordDto);
 
     void deleteMember(Long id);
 }

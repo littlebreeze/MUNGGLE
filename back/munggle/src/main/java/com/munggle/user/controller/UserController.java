@@ -66,7 +66,7 @@ public class UserController {
     public void updatePassword(@AuthenticationPrincipal User principal,
                                @RequestBody @Valid UpdatePasswordDto updatePasswordDto) {
         Long id = principal.getId();
-        userService.updatePassword(id, updatePasswordDto.getNewPassword());
+        userService.updatePassword(id, updatePasswordDto);
     }
 
     @DeleteMapping

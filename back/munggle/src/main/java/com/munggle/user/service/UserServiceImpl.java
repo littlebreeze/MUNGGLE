@@ -1,5 +1,6 @@
 package com.munggle.user.service;
 
+import com.munggle.domain.exception.PasswordNotConfirmException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.UserImage;
@@ -98,8 +99,15 @@ public class UserServiceImpl implements UserService{
 
     @Override
     @Transactional
-    public void updatePassword(Long id, String newPassword) {
+    public void updatePassword(Long id, UpdatePasswordDto updatePasswordDto) {
         User user = findMemberById(id);
+        String newPassword = updatePasswordDto.getNewPassword();
+        String passwordConfirm = updatePasswordDto.getNewPasswordConfirmation();
+        // 비밀번호 확인과 일치하는지 확인
+        if(!newPassword.equals(passwordConfirm)) {
+            throw new PasswordNotConfirmException(PASSWORD_NOT_CONFIRM);
+        }
+
         user.changePassword(newPassword);
     }
 
