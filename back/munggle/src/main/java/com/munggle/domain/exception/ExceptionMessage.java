@@ -13,6 +13,7 @@ public enum ExceptionMessage {
     BLOCK_NOT_FOUND("차단된 회원을 찾을 수 없습니다"),
     FOLLOW_NOT_FOUND("팔로우한 회원을 찾을 수 없습니다."),
     WALK_NOT_FOUND("산책 기록을 찾을 수 없습니다."),
+    MAIL_NOT_VALID("이메일이 유효하지 않습니다."),
     WALK_LOG_NOT_FOUND("산책 로그를 찾을 수 없습니다.");
 
 
