@@ -32,9 +32,9 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public List<UserListDto> getFollowerList(Long userId) {
         // 팔로우를 타겟멤버를 기준으로 받아와서 팔로우한 유저를 담는 리스트로 변환
-        List<User> users = followRepository.findByTargetUserIdAndIsFollowedTrue(userId)
+        List<User> users = followRepository.findByFollowToIdAndIsFollowedTrue(userId)
                 .stream()
-                .map(Follow::getFollowUser)
+                .map(Follow::getFollowFrom)
                 .toList();
 
         // 유저리스트 dto로 변환
@@ -43,9 +43,9 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public List<UserListDto> getFollowingList(Long userId) {
-        List<User> users = followRepository.findByTargetUserIdAndIsFollowedTrue(userId)
+        List<User> users = followRepository.findByFollowFromIdAndIsFollowedTrue(userId)
                 .stream()
-                .map(Follow::getFollowUser)
+                .map(Follow::getFollowTo)
                 .collect(Collectors.toList());
 
         return UserMapper.fromUsers(users);
@@ -53,12 +53,12 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public Long getFollowerCount(Long userId) {
-        return followRepository.countByTargetUserIdAndIsFollowedTrue(userId);
+        return followRepository.countByFollowToIdAndIsFollowedTrue(userId);
     }
 
     @Override
     public Long getFollowingCount(Long userId) {
-        return followRepository.countByFollowUserIdAndIsFollowedTrue(userId);
+        return followRepository.countByFollowFromIdAndIsFollowedTrue(userId);
     }
 
     @Override
@@ -79,8 +79,9 @@ public class FollowServiceImpl implements FollowService {
                 .orElseGet(() -> followRepository.save(
                         Follow.builder()
                                 .followId(followId)
-                                .followUser(fromUser)
-                                .targetUser(targetUser)
+                                .followFrom(fromUser)
+                                .followTo(targetUser)
+                                .isFollowed(true)
                                 .build()
                 ));
 
