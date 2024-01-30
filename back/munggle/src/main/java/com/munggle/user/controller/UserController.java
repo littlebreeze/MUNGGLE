@@ -37,6 +37,12 @@ public class UserController {
         return userService.getSearchPage(keyword);
     }
 
+    @PostMapping("/emails/verification-requests")
+    @ResponseStatus(HttpStatus.OK)
+    public void sendVerificationMessage(@RequestParam("email") String email) {
+        userService.sendCodeToEmail(email);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public void joinMember(@RequestBody @Valid UserCreateDto userCreateDto) {

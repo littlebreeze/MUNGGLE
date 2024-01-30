@@ -16,6 +16,8 @@ public interface UserService extends UserDetailsService {
 
     List<UserListDto> getSearchPage(String keyword);
 
+    void sendCodeToEmail(String email);
+
     void joinMember(UserCreateDto userCreateDto);
 
     void updateNickname(Long id, String newNickname);
