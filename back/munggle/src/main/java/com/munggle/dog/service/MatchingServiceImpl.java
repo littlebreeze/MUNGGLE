@@ -2,6 +2,7 @@ package com.munggle.dog.service;
 
 import com.munggle.dog.dto.DogCharDto;
 import com.munggle.dog.dto.DogDetailDto;
+import com.munggle.dog.mapper.DogMapper;
 import com.munggle.dog.repository.DogRepository;
 import com.munggle.dog.repository.MatchingRepository;
 import com.munggle.domain.model.entity.Dog;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -49,9 +51,31 @@ public class MatchingServiceImpl implements MatchingService {
         matching.updateMatcing(dogCharDto);
     }
 
+    /*
+    * 내 반려견 제외하고 : o
+    * 매칭이 온 되어있고 : o
+    * 원하는 속성이 하나라도 포함 된다면 목록에 포함
+    * 여기까지 했을 때 정렬...은?
+    * 상위 20개
+    * 선택/넘긴 멍멍이들도 관리가 되어야함.
+     */
     @Override
     public List<DogDetailDto> matchingList(Long dogId) {
-        return null;
+
+        // 매칭에 사용할 특성 리스트
+        Matching matching =  matchingRepository.findByDogDogId(dogId).orElseThrow(()->new NoSuchElementException());
+        DogCharDto dogCharDto = DogCharDto.builder()
+                .isNeutering(matching.getIsNeutering())
+                .characterId(matching.returnCharacterList())
+                .build();
+
+        // 내 반려견 (특성)
+        Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId).orElseThrow();
+
+        List<DogDetailDto> list = dogRepository.findAllByUserIdIsNotAndIsMatchingIsTrueAndCharacterIdLike(dog.getUser().getId(),"%모험%").orElseThrow()
+                .stream().map(item -> DogMapper.toDetailDto(item)).collect(Collectors.toList());
+
+        return list;
     }
 
     @Override

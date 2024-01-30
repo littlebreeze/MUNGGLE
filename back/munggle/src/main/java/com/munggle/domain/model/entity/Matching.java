@@ -44,7 +44,7 @@ public class Matching {
     public List<String> returnCharacterList(){
         List<String> list = new ArrayList<>();
         for(String str : this.characterId.split(",")){
-            list.add(str);
+            list.add(str.trim());
         }
 
         return list;
