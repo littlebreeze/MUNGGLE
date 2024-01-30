@@ -13,8 +13,9 @@ public enum ExceptionMessage {
     BLOCK_NOT_FOUND("차단된 회원을 찾을 수 없습니다"),
     FOLLOW_NOT_FOUND("팔로우한 회원을 찾을 수 없습니다."),
     WALK_NOT_FOUND("산책 기록을 찾을 수 없습니다."),
-    WALK_LOG_NOT_FOUND("산책 로그를 찾을 수 없습니다.");
-
+    WALK_LOG_NOT_FOUND("산책 로그를 찾을 수 없습니다."),
+    POST_NOT_FOUND("게시글을 찾을 수 없습니다."),
+    EXTENSION_ILLEGAL("지원하지 않는 파일 확장자입니다.");
 
     private final String message;
 

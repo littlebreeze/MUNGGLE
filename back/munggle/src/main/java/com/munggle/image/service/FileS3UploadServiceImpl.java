@@ -1,6 +1,8 @@
 package com.munggle.image.service;
 
 
+import com.munggle.domain.exception.ExceptionMessage;
+import com.munggle.domain.exception.IllegalExtensionException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.*;
@@ -15,6 +17,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import static com.munggle.domain.exception.ExceptionMessage.EXTENSION_ILLEGAL;
 
 
 @Service
@@ -51,7 +55,7 @@ public class FileS3UploadServiceImpl implements FileS3UploadService {
             case "mp4":
                 return "video/" + extension;
             default:
-                throw new IllegalArgumentException("Unsupported file extension: " + extension);
+                throw new IllegalExtensionException(EXTENSION_ILLEGAL);
         }
     }
 
@@ -75,6 +79,7 @@ public class FileS3UploadServiceImpl implements FileS3UploadService {
                 .key(generatedName)
                 .contentType(getContentType(ext))
                 .build();
+
 
         try {
             s3Client.putObject(putObjectRequest, RequestBody.fromBytes(multipartFile.getBytes()));
@@ -127,28 +132,24 @@ public class FileS3UploadServiceImpl implements FileS3UploadService {
      */
     @Override
     public void removeFolderFiles(String uploadPath) {
-        try {
-            // 버킷에 들어있는 객체 조회
-            ListObjectsV2Response listObjectsResponse = getObjectsFromS3Bucket(uploadPath);
+        // 버킷에 들어있는 객체 조회
+        ListObjectsV2Response listObjectsResponse = getObjectsFromS3Bucket(uploadPath);
 
-            // Object Key 값을 params에 넣어 delete 실행
-            for (S3Object s3Object : listObjectsResponse.contents()) {
-                String key = s3Object.key();
-                removeFile(key);
-            }
+        // Object Key 값을 params에 넣어 delete 실행
+        for (S3Object s3Object : listObjectsResponse.contents()) {
+            String key = s3Object.key();
+            removeFile(key);
+        }
 
-            // 남은 객체 체크
-            listObjectsResponse = getObjectsFromS3Bucket(uploadPath);
+        // 남은 객체 체크
+        listObjectsResponse = getObjectsFromS3Bucket(uploadPath);
 
-            // 남은 객체가 없다면 종료, 있다면 함수 재실행
-            if (listObjectsResponse.contents().isEmpty()) {
-                System.out.println(uploadPath + " 폴더 삭제를 종료합니다");
-            } else {
-                System.out.println(uploadPath + " 폴더 삭제를 재실행합니다");
-                removeFolderFiles(uploadPath);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        // 남은 객체가 없다면 종료, 있다면 함수 재실행
+        if (listObjectsResponse.contents().isEmpty()) {
+            System.out.println(uploadPath + " 폴더 삭제를 종료합니다");
+        } else {
+            System.out.println(uploadPath + " 폴더 삭제를 재실행합니다");
+            removeFolderFiles(uploadPath);
         }
     }
 

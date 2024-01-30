@@ -1,5 +1,6 @@
 package com.munggle.post.service;
 
+import com.munggle.domain.exception.PostNotFoundException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.*;
 import com.munggle.image.dto.FileInfoDto;
@@ -20,8 +21,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
+import static com.munggle.domain.exception.ExceptionMessage.POST_NOT_FOUND;
 import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
 
 @Service
@@ -45,7 +46,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDetailResponseDto getDetailPost(Long postId, Long userId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-                .orElseThrow(() -> new NoSuchElementException());
+                .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
         String nickname = post.getUser().getNickname();
         Boolean isMine = post.getUser().getId().equals(userId);
 
@@ -127,8 +128,8 @@ public class PostServiceImpl implements PostService {
         String newContent = postUpdateDto.getPostContent();
         Boolean newIsPrivate = postUpdateDto.getIsPrivate();
 
-        Post updatePost = postRepository.findById(postUpdateDto.getPostId())
-                .orElseThrow();
+        Post updatePost = postRepository.findByIdAndIsDeletedFalse(postUpdateDto.getPostId())
+                .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
 
         updatePost.updatePost(newTitle, newContent, newIsPrivate);
 
@@ -183,7 +184,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void deletePost(Long postId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-                .orElseThrow(() -> new NoSuchElementException());
+                .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
         post.markAsDeleted();
 
         // post image 삭제
