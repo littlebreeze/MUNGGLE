@@ -88,6 +88,8 @@ public class User implements UserDetails {
     @Column(name = "is_enabled")
     private boolean isEnabled;
 
+    private Integer followIncreaseCount = 0;
+
     @PrePersist
     public void prePersist() {
         if (!NicknameValidator.isValidNickname(this.nickname)) {
@@ -132,6 +134,10 @@ public class User implements UserDetails {
 
     public void markAsDeleted() {
         this.isEnabled = false;
+    }
+
+    public void resetFollowIncreaseCount() {
+        this.followIncreaseCount = 0;
     }
 
     @Override
