@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Builder
-@Getter
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,6 +30,10 @@ public class PostUpdateDto {
     // 포스트 이미지
     @Builder.Default
     private List<MultipartFile> images = new ArrayList<>();
+
+    // 해시태그
+    @Builder.Default
+    private List<String> hashtags = new ArrayList<>();
 
     private Boolean isPrivate;
 }

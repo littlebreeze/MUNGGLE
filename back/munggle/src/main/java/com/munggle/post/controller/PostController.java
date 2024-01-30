@@ -17,6 +17,7 @@ import com.munggle.post.dto.PostDetailResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping("/posts")
@@ -47,8 +48,8 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     public void savePost(@AuthenticationPrincipal User principal,
                          @RequestPart(value = "dto") @Valid PostCreateDto postCreateDto,
-                         @RequestPart(value = "file") List<MultipartFile> files) {
-        log.info("제목: {}, 이미지: {}", postCreateDto.getPostTitle(), files.get(0));
+                         @RequestPart(value = "file", required = false) List<MultipartFile> files) {
+//        log.info("제목: {}, 이미지: {}", postCreateDto.getPostTitle(), files.get(0));
 
         postCreateDto.setImages(files);
         postCreateDto.setUserId(principal.getId());
@@ -59,7 +60,7 @@ public class PostController {
     @ResponseStatus(HttpStatus.OK)
     public void updatePost(@PathVariable(value = "postId") Long postId,
                            @RequestPart(value = "dto") @Valid PostUpdateDto postUpdateDto,
-                           @RequestPart(value = "file") List<MultipartFile> files) {
+                           @RequestPart(value = "file", required = false) List<MultipartFile> files) {
         log.info("제목: {}, 이미지: {}", postUpdateDto.getPostTitle(), files.get(0));
 
         postUpdateDto.setImages(files);

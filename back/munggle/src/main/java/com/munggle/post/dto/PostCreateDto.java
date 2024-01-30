@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Builder
-@Getter
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,9 +27,9 @@ public class PostCreateDto {
     @Builder.Default
     private List<MultipartFile> images = new ArrayList<>();
 
-//    해시태그
-//    @Builder.Default
-//    private List<String> hashtags = new ArrayList<>();
+    // 해시태그
+    @Builder.Default
+    private List<String> hashtags = new ArrayList<>();
 
     private Boolean isPrivate;
 }
