@@ -12,14 +12,18 @@ export default function ProfileDog(props) {
               <img className="profile-dog-list-top-img" src={dog.img} />
             </div>
             <div className="profile-dog-list-bottom-div">
-              <div className="profile-dog-list-bottom-div-left-div">
-                <span>이름 : {dog.name}</span>
-                <span>생년월일 : {dog.birthDate}</span>
-                <span>성별 : {dog.gender}</span>
+              <div className="profile-dog-list-bottom-div-top-div fw-bold fs-4">
+                {dog.name}
               </div>
-              <div className="profile-dog-list-bottom-div-right-div">
-                <span>견종 : {dog.kind}</span>
-                <span>몸무게 : {dog.weight} kg</span>
+              <div className="profile-dog-list-bottom-div-bottom-div">
+                <div className="profile-dog-list-bottom-div-bottom-div-left-div">
+                    <div>생일 : {dog.birthDate}</div>
+                    <div>성별 : {dog.gender}</div>
+                </div>
+                <div className="profile-dog-list-bottom-div-bottom-div-right-div">
+                  <div>견종 : {dog.kind}</div>
+                  <div>무게 : {dog.weight} kg</div>
+                </div>
               </div>
             </div>
           </div>

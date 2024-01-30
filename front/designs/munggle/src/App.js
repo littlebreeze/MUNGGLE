@@ -18,8 +18,10 @@ export default function App() {
 
   return (
     <div className="app-container-div">
-      <Body 
+      <Nav
         openSearchModal={openSearchModal}
+      />
+      <Body 
       />
       <Footer />
       <SearchModal 

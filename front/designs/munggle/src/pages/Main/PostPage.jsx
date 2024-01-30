@@ -85,6 +85,8 @@ export default function Post(props) {
           key={index}
           img={profile.img}
           name={profile.name}
+          width={55}
+          height={55}
         />
       );
   })
@@ -254,31 +256,6 @@ export default function Post(props) {
 
   return (
     <div className="post-container-div">
-      <div className="post-nav-container-div">
-        <div className="post-nav-left-div">
-          <Link to="/">
-            <img src={imgLogo} width={100} height={50} />
-          </Link>
-        </div>
-        <div className="post-nav-right-div">
-          <div onClick={props.openSearchModal} className="post-nav-right-div-left">
-            {/* <img src={imgSearch} width={30} height={30} /> */}
-            <img src={imgSearch} width={27} height={27} />
-          </div>
-          <div className="post-nav-right-div-middle">
-            <Link to="/notification">
-              {/* <img src={imgNotification} width={30} height={30} /> */}
-              <img src={imgNotification} width={34} height={34} />
-            </Link>
-          </div>
-          <div className="post-nav-right-div-right">
-            <Link to="/directmessage">
-              {/* <img src={imgDm} width={32} height={32} /> */}
-              <img src={imgDm} width={32} height={32} />
-            </Link>
-          </div>
-        </div>
-      </div>
       <div className="post-top-div">
         <div className="post-top-div-top-div">
           <ToggleButton 

@@ -16,6 +16,8 @@ export default function UserProfileComponent(props) {
       <ProfileCircle
         img={props.imgProfile}
         name={props.name}
+        width={55}
+        height={55}
       />
       <div className="post-profile-bottom-div">
         <FollowButton 

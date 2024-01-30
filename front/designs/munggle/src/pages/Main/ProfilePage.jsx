@@ -275,31 +275,6 @@ export default function Profile(props) {
 
   return (
     <div className="profile-container-div">
-      <div className="profile-nav-container-div">
-        <div className="profile-nav-left-div">
-          <Link to="/profile">
-            <img src={imgDog} width={80} height={40} />
-          </Link>
-        </div>
-        <div className="profile-nav-right-div">
-          <div onClick={props.openSearchModal} className="profile-nav-right-div-left">
-            {/* <img src={imgSearch} width={30} height={30} /> */}
-            <img src={imgSearch} width={27} height={27} />
-          </div>
-          <div className="profile-nav-right-div-middle">
-            <Link to="/notification">
-              {/* <img src={imgNotification} width={30} height={30} /> */}
-              <img src={imgNotification} width={34} height={34} />
-            </Link>
-          </div>
-          <div className="profile-nav-right-div-right">
-            <Link to="/directmessage">
-              {/* <img src={imgDm} width={32} height={32} /> */}
-              <img src={imgDm} width={32} height={32} />
-            </Link>
-          </div>
-        </div>
-      </div>
       <div className="profile-top-div">
         <div className="profile-top-div-top-div">
            <img className="profile-top-div-top-img" src={userProfile.backGroundImg} />
@@ -309,14 +284,19 @@ export default function Profile(props) {
           <div className="profile-top-div-bottom-div-top-div">
             {/* <img className="mx-2" src={iconDm} width={30} height={30} /> */}
             {/* <button className="me-3 btn btn-secondary">팔로잉</button> */}
-            <span className="ms-3 profile-top-div-bottom-div-bottom-span fw-bold">팔로워 {userProfile.follower}</span>
-            <span className="mx-3 profile-top-div-bottom-div-bottom-span fw-bold">팔로잉 {userProfile.following}</span>
+            {/* <span className="ms-3 profile-top-div-bottom-div-bottom-span fw-bold">팔로워 {userProfile.follower}</span>
+            <span className="mx-3 profile-top-div-bottom-div-bottom-span fw-bold">팔로잉 {userProfile.following}</span> */}
+            <span className="profile-top-div-bottom-div-top-div-span fw-bold">{userProfile.name}</span>
             <button className="profile-top-div-bottom-div-top-div-button">팔로우</button>
-            <img className="me-4 mt-1" src={iconDm} width={35} height={35} />
+            <div className="profile-top-div-bottom-div-top-div-container">
+              <img className="profile-top-div-bottom-div-top-div-img" src={iconDm} width={21} height={21} />
+            </div>
           </div>
 
           <div className="profile-top-div-bottom-div-middle-div">
-            <span className="profile-top-div-bottom-div-middle-span">{userProfile.description}</span>
+          <span className="profile-top-div-bottom-div-middle-div-span fw-bold">팔로워 {userProfile.follower}</span>
+            <span className="mx-3 profile-top-div-bottom-div-middle-div-span fw-bold">팔로잉 {userProfile.following}</span>
+            <p className="profile-top-div-bottom-div-middle-span">{userProfile.description}</p>
           </div>
 
           {/* <div className="profile-top-div-bottom-div-bottom-div">
@@ -328,7 +308,9 @@ export default function Profile(props) {
         <div className="profile-top-div-middle-div">
           <ProfileCircle
             img={userProfile.profileImg}
-            name={userProfile.name}
+            // name={userProfile.name}
+            width={120}
+            height={120}
           />
         </div>
       </div>
