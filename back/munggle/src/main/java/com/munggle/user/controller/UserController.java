@@ -4,6 +4,7 @@ import com.munggle.domain.model.entity.User;
 import com.munggle.user.dto.*;
 import com.munggle.user.service.UserService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -36,6 +37,19 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public List<UserListDto> searchUserByNickname(@RequestParam("keyword") String keyword) {
         return userService.getSearchPage(keyword);
+    }
+
+    @PostMapping("/emails/verification-requests")
+    @ResponseStatus(HttpStatus.OK)
+    public void sendVerificationMessage(@RequestParam("email") String email) {
+        userService.sendCodeToEmail(email);
+    }
+
+    @GetMapping("/emails/verifications")
+    @ResponseStatus(HttpStatus.OK)
+    public void verifyByEmail(@RequestParam("email") String email,
+                              @RequestParam("code") String autoCode) {
+        userService.verify(email, autoCode);
     }
 
     @PostMapping
