@@ -4,6 +4,7 @@ import com.munggle.dog.dto.DogCharDto;
 import com.munggle.dog.dto.DogDetailDto;
 import com.munggle.dog.mapper.DogMapper;
 import com.munggle.dog.repository.DogRepository;
+import com.munggle.dog.repository.MatchingQueryRepository;
 import com.munggle.dog.repository.MatchingRepository;
 import com.munggle.domain.model.entity.Dog;
 import com.munggle.domain.model.entity.Matching;
@@ -21,6 +22,7 @@ public class MatchingServiceImpl implements MatchingService {
 
     private final DogRepository dogRepository;
     private final MatchingRepository matchingRepository;
+    private final MatchingQueryRepository matchingQueryRepository;
 
     @Override
     @Transactional
@@ -52,11 +54,8 @@ public class MatchingServiceImpl implements MatchingService {
     }
 
     /*
-    * 내 반려견 제외하고 : o
-    * 매칭이 온 되어있고 : o
-    * 원하는 속성이 하나라도 포함 된다면 목록에 포함
     * 여기까지 했을 때 정렬...은?
-    * 상위 20개
+    * 상위 20개를 하려면 정렬 기준이 필요한데,,,
     * 선택/넘긴 멍멍이들도 관리가 되어야함.
      */
     @Override
@@ -72,10 +71,7 @@ public class MatchingServiceImpl implements MatchingService {
         // 내 반려견 (특성)
         Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId).orElseThrow();
 
-        List<DogDetailDto> list = dogRepository.findAllByUserIdIsNotAndIsMatchingIsTrueAndCharacterIdLike(dog.getUser().getId(),"%모험%").orElseThrow()
-                .stream().map(item -> DogMapper.toDetailDto(item)).collect(Collectors.toList());
-
-        return list;
+        return matchingQueryRepository.findDogFriends(dog.getUser(), matching.getIsNeutering(), matching.returnCharacterList());
     }
 
     @Override

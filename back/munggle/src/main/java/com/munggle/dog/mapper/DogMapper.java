@@ -30,6 +30,7 @@ public class DogMapper {
     public static DogDetailDto toDetailDto(Dog dog) {
 
         return DogDetailDto.builder()
+                .dogId(dog.getDogId())
                 .kindId(dog.getKind().getKindId())
                 .birthDate(dog.getBirthDate())
                 .size(dog.getSize())
