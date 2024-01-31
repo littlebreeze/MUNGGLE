@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -31,9 +32,9 @@ public class UserController {
         return userService.getUserProfile(userId);
     }
 
-    @GetMapping("/search/{keyword}")
+    @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserListDto> searchUserByNickname(@PathVariable String keyword) {
+    public List<UserListDto> searchUserByNickname(@RequestParam("keyword") String keyword) {
         return userService.getSearchPage(keyword);
     }
 
@@ -43,12 +44,28 @@ public class UserController {
         userService.joinMember(userCreateDto);
     }
 
-    @PutMapping("/nickname")
+    @PutMapping("/background")
     @ResponseStatus(HttpStatus.OK)
-    public void updateNickname(@AuthenticationPrincipal User principal,
-                               @RequestBody @Valid UpdateNicknameDto updateNicknameDto) {
+    public void updateBackgroundImage(@AuthenticationPrincipal User principal,
+                                      @RequestPart(value = "backgroundImage") MultipartFile file) {
         Long id = principal.getId();
-        userService.updateNickname(id, updateNicknameDto.getNewNickname());
+        userService.changeBackgroundImage(id, file);
+    }
+
+    @PutMapping("profile-image")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateProfileImage(@AuthenticationPrincipal User principal,
+                                   @RequestPart(value = "profileImage") MultipartFile file) {
+        Long id = principal.getId();
+        userService.changeProfileImage(id, file);
+    }
+
+    @PutMapping()
+    @ResponseStatus(HttpStatus.OK)
+    public void updateProfile(@AuthenticationPrincipal User principal,
+                              @Valid @RequestBody UpdateProfileDto updateProfileDto) {
+        Long id = principal.getId();
+        userService.updateProfile(id, updateProfileDto);
     }
 
     @PutMapping("/password")
@@ -56,15 +73,7 @@ public class UserController {
     public void updatePassword(@AuthenticationPrincipal User principal,
                                @RequestBody @Valid UpdatePasswordDto updatePasswordDto) {
         Long id = principal.getId();
-        userService.updatePassword(id, updatePasswordDto.getNewPassword());
-    }
-
-    @PutMapping
-    @ResponseStatus(HttpStatus.OK)
-    public void writeDescription(@AuthenticationPrincipal User principal,
-                                 @RequestBody @Valid UserDescriptionDto userDescriptionDto) {
-        Long id = principal.getId();
-        userService.writeDescription(id, userDescriptionDto.getDescription());
+        userService.updatePassword(id, updatePasswordDto);
     }
 
     @DeleteMapping
@@ -72,5 +81,19 @@ public class UserController {
     public void deleteMember(@AuthenticationPrincipal User principal) {
         Long id = principal.getId();
         userService.deleteMember(id);
+    }
+
+    @DeleteMapping("/background")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteBackgroundImage(@AuthenticationPrincipal User principal) {
+        Long id = principal.getId();
+        userService.deleteBackgroundImage(id);
+    }
+
+    @DeleteMapping("/profile-image")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteProfileImage(@AuthenticationPrincipal User principal) {
+        Long id = principal.getId();
+        userService.deleteProfileImage(id);
     }
 }
