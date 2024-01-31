@@ -35,6 +35,7 @@ deploy: #JOB 이름
     - echo "$APPLICATION_SECURITY_YAML" > ./src/main/resources/application-security.yaml
     - echo "$APPLICATION_CLOUD_YAML" > ./src/main/resources/application-cloud.yaml
     - echo "$APPLICATION_API_YAML" > ./src/main/resources/application-api.yaml
+    - echo "$APPLICATION_EMAIL_YAML" > ./src/main/resources/application-email.yaml
     - chmod +x ./deploy/build-image.sh
     - ./deploy/build-image.sh $CI_REGISTRY
     - docker push $CI_REGISTRY
