@@ -1,0 +1,7 @@
+.profile-story-container {
+  width: 400px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  align-items: center;
+}
