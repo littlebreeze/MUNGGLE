@@ -23,9 +23,10 @@ export default function ProfileScrap(props) {
     <div className="mt-2">
       <ImageList variant="masonry" cols={3} gap={12}>
         {scrapList.map((scrap) => (
-          <ImageListItem key={scrap.id}>
+          <ImageListItem className="scrap-div" key={scrap.id}>
             <div onClick={(e) => openPostDetailModal(scrap)}>
               <img
+                className="scrap-div-img"
                 srcSet={`${scrap.imgPost}?w=248&fit=crop&auto=format&dpr=2 2x`}
                 src={`${scrap.imgPost}?w=248&fit=crop&auto=format`}
                 alt={scrap.title}

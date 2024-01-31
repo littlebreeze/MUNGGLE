@@ -121,7 +121,7 @@
   align-items: center;
   /* background-color: rgb(252, 226, 1); */
   background-image: repeating-radial-gradient(circle, 
-  rgb(251, 255, 0), rgb(255, 255, 255) 50%, rgb(255, 255, 255) 100%
+  rgb(253, 255, 117), rgb(255, 255, 255) 50%, rgb(255, 255, 255) 100%
   );
   background-size: 10px 10px;
   line-height: 1.618em;

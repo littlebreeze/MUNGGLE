@@ -1,6 +1,6 @@
 .post-list-container-div {
-  width: 300px;
-  height: 270px;
+  /* width: 300px;
+  height: 270px; */
   padding-top: 10px;
   padding-bottom: 10px;
   display: flex;
@@ -8,8 +8,13 @@
   align-items: center;
   justify-content: space-between;
   position: relative;
-  background-color: rgb(238, 238, 238);
-  border-radius: 20px;
+  /* background-color: rgb(238, 238, 238); */
+  background-color: white;
+  /* border-radius: 20px; */
+  height: 280px;
+  width: 280px;
+  margin-left: 20px;
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.2);
 }
 
 .post-list-menu-icon {
@@ -23,12 +28,13 @@
 .post-list-top-div {
   width: 250px;
   height: 160px;
-  border-radius: 20px;
-  margin-left: 20px;
+  /* border-radius: 20px;
+  margin-left: 20px; */
 }
 
 .post-list-top-img {
   width: 250px;
-  height: 160px;
-  border-radius: 20px;
+  /* height: 160px; */
+  height: 200px;
+  /* border-radius: 20px; */
 }

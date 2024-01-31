@@ -5,18 +5,30 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  margin-left: 10px;
 }
 
 .post-profile-bottom-div {
   width: 85px;
   height: 35px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
 }
 
-.post-profile-bottom-icon {
-  width: 25px;
-  height: 25px;
-  margin-top: 15px;
+.post-profile-bottom-div-right-div {
+  margin-top: 20px;
+  height: 30px;
+  background-color: rgb(253, 245, 169);
+  border-radius: 5px;
+  margin-left: 5px;
+  width: 30px;
+  margin-right: 1px;
+}
+
+.post-profile-bottom-div-right-div-icon {
+  width: 19px;
+  height: 19px;
+  margin-top: 3px;
+  margin-left: 5px;
 }

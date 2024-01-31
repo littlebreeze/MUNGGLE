@@ -20,11 +20,15 @@ export default function UserProfileComponent(props) {
         height={55}
       />
       <div className="post-profile-bottom-div">
-        <FollowButton 
-          isFollow={isFollow}
-          onClick={handleIsFollow}
-        />
-        <img className="post-profile-bottom-icon" src={iconDm} />
+        <div className="post-profile-bottom-div-left-div">
+          <FollowButton 
+            isFollow={isFollow}
+            onClick={handleIsFollow}
+          />
+        </div>
+        <div className="post-profile-bottom-div-right-div">
+          <img className="post-profile-bottom-div-right-div-icon" src={iconDm} />
+        </div>
       </div>
     </div>
   );
