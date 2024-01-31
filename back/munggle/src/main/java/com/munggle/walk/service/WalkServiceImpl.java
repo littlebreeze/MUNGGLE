@@ -50,16 +50,10 @@ public class WalkServiceImpl implements WalkService{
                 .orElseThrow();//()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
         walk.setDog(dog);
 
-
         Long insertID = walkRepository.save(walk).getWalkId();
         // DB에 넣을 때, 방금 생성된 Walk의 id가 들어가야 하므로 값 셋팅된 객체로 다시 build
         locationRepository.saveAll(walk.getLocation().stream()
                 .map(location -> location.setInsertId(insertID)).collect(Collectors.toList()));
-    }
-
-    @Override
-    public void updateWalk(Walk walkUpdateDto) {
-
     }
 
     @Override

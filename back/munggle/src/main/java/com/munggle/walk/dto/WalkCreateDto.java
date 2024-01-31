@@ -20,5 +20,5 @@ public class WalkCreateDto {
     private String description;
     private boolean isDeleted;
     private List<Location> locationDtoList;
-    
+
 }
