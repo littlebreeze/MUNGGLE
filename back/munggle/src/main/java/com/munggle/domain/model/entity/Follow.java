@@ -19,14 +19,14 @@ public class Follow {
     private FollowId followId;
 
     @ManyToOne
-    @MapsId("followingUserId")
-    @JoinColumn(name = "following_user_id")
-    private User followUser;
+    @MapsId("followFromId")
+    @JoinColumn(name = "follow_from_id")
+    private User followFrom;
 
     @ManyToOne
-    @MapsId("targetUserId")
-    @JoinColumn(name = "target_user_id")
-    private User targetUser;
+    @MapsId("followToId")
+    @JoinColumn(name = "follow_to_id")
+    private User followTo;
 
     @Column(name = "is_followed")
     private boolean isFollowed;

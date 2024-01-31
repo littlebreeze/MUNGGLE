@@ -11,11 +11,11 @@ import java.util.List;
 @Repository
 public interface FollowRepository extends JpaRepository<Follow, FollowId> {
 
-    List<Follow> findByTargetUserIdAndIsFollowedTrue(Long id);
+    List<Follow> findByFollowToIdAndIsFollowedTrue(Long id);
 
-    List<Follow> findByFollowUserIdAndIsFollowedTrue(Long id);
+    List<Follow> findByFollowFromIdAndIsFollowedTrue(Long id);
 
-    Long countByTargetUserIdAndIsFollowedTrue(Long id);
+    Long countByFollowToIdAndIsFollowedTrue(Long id);
 
-    Long countByFollowUserIdAndIsFollowedTrue(Long userId);
+    Long countByFollowFromIdAndIsFollowedTrue(Long userId);
 }
