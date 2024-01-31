@@ -10,6 +10,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UserProfileDto {
 
+    private final Long id;
+
     private final String backgroundImgUrl;
 
     private final String profileImgUrl;

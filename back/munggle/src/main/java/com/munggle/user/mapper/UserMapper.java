@@ -39,6 +39,7 @@ public class UserMapper {
 
     public static UserProfileDto toUserProfileDto(User user) {
         return UserProfileDto.builder()
+                .id(user.getId())
                 .backgroundImgUrl(Optional.ofNullable(user.getBackgroundImage())
                         .map(UserImage::getImageURL).orElse(null))
                 .profileImgUrl(Optional.ofNullable(user.getProfileImage())
