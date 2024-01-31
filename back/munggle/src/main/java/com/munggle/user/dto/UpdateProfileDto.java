@@ -18,11 +18,6 @@ public class UpdateProfileDto {
     @Size(min = 2, max = 10)
     private String newNickname;
 
-    @NotBlank
     @Size(max = 100)
     private String description;
-
-    private MultipartFile profileImg;
-
-    private MultipartFile backgroundImg;
 }
