@@ -32,9 +32,9 @@ public class UserController {
         return userService.getUserProfile(userId);
     }
 
-    @GetMapping("/search/{keyword}")
+    @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserListDto> searchUserByNickname(@PathVariable String keyword) {
+    public List<UserListDto> searchUserByNickname(@RequestParam("keyword") String keyword) {
         return userService.getSearchPage(keyword);
     }
 

@@ -1,24 +1,31 @@
 package com.munggle.user.dto;
 
 import com.munggle.domain.model.entity.User;
+import com.munggle.domain.model.entity.UserImage;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+
+import java.util.Optional;
 
 @Getter
 @Builder
 @AllArgsConstructor
 public class UserListDto {
 
+    private final Long id;
+
+    private final String profileImgUrl;
+
     @NotBlank
     private final String nickname;
 
-    // 추후 추가
-//    private final String profileImgUrl;
-
     public static UserListDto toUserListDto(User user) {
         return UserListDto.builder()
+                .id(user.getId())
+                .profileImgUrl(Optional.ofNullable(user.getProfileImage())
+                        .map(UserImage::getImageURL).orElse(null))
                 .nickname(user.getNickname())
                 .build();
     }
