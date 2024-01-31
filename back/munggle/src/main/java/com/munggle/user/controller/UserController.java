@@ -46,18 +46,8 @@ public class UserController {
 
     @PutMapping()
     @ResponseStatus(HttpStatus.OK)
-    public void updateProfile(@AuthenticationPrincipal User principal,
-                              @RequestPart("newNickname") String newNickname,
-                              @RequestPart("description") String description,
-                              @RequestPart("profileImg") MultipartFile profileImg,
-                              @RequestPart("backgroundImg") MultipartFile backgroundImg) {
+    public void updateProfile(@AuthenticationPrincipal User principal, @Valid @RequestBody UpdateProfileDto updateProfileDto) {
         Long id = principal.getId();
-        UpdateProfileDto updateProfileDto = UpdateProfileDto.builder()
-                .newNickname(newNickname)
-                .description(description)
-                .profileImg(profileImg)
-                .backgroundImg(backgroundImg)
-                .build();
         userService.updateProfile(id, updateProfileDto);
     }
 

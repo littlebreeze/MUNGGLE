@@ -69,33 +69,42 @@ public class UserServiceImpl implements UserService{
     @Override
     @Transactional
     public void updateProfile(Long id, UpdateProfileDto updateProfileDto) {
-        User user = findMemberById(id);
-
-        // 1. 기존 이미지 파일 정보 조회
-        Optional<UserImage> existingProfileImageOpt = Optional.ofNullable(user.getProfileImage());
-        Optional<UserImage> existingBackgroundImageOpt = Optional.ofNullable(user.getBackgroundImage());
-
-        // 2. S3에서 기존 이미지 파일 삭제
-        existingProfileImageOpt.ifPresent(image -> fileS3UploadService.removeFile(image.getImageName()));
-        existingBackgroundImageOpt.ifPresent(image -> fileS3UploadService.removeFile(image.getImageName()));
-
-        // 3. 새 이미지 파일 업로드
-        MultipartFile profileImg = updateProfileDto.getProfileImg();
-        MultipartFile backgroundImg = updateProfileDto.getBackgroundImg();
-        String uploadProfilePath = user.getId() + "/" + "profile" + "/";
-        String uploadBackPath = user.getId() + "/" + "back" + "/";
-        FileInfoDto profileFileInfoDto = fileS3UploadService.uploadFile(uploadProfilePath, profileImg);
-        FileInfoDto backFileInfoDto = fileS3UploadService.uploadFile(uploadBackPath, backgroundImg);
-
-        UserImage profile = UserMapper.toUserImage(profileFileInfoDto, user, "profile");
-        UserImage background = UserMapper.toUserImage(backFileInfoDto, user, "background");
-
-        userImageRepository.save(profile);
-        userImageRepository.save(background);
-
-        // 4. 사용자 정보 업데이트
-        user.changeProfile(updateProfileDto, profile, background);
+        User user = this.findMemberById(id);
+        String newNickname = updateProfileDto.getNewNickname();
+        String newDesc = updateProfileDto.getDescription();
+        user.changeProfile(newNickname, newDesc);
     }
+
+//    @Override
+//    @Transactional
+//    public void updateProfile(Long id, UpdateProfileDto updateProfileDto) {
+//        User user = findMemberById(id);
+//
+//        // 1. 기존 이미지 파일 정보 조회
+//        Optional<UserImage> existingProfileImageOpt = Optional.ofNullable(user.getProfileImage());
+//        Optional<UserImage> existingBackgroundImageOpt = Optional.ofNullable(user.getBackgroundImage());
+//
+//        // 2. S3에서 기존 이미지 파일 삭제
+//        existingProfileImageOpt.ifPresent(image -> fileS3UploadService.removeFile(image.getImageName()));
+//        existingBackgroundImageOpt.ifPresent(image -> fileS3UploadService.removeFile(image.getImageName()));
+//
+//        // 3. 새 이미지 파일 업로드
+//        MultipartFile profileImg = updateProfileDto.getProfileImg();
+//        MultipartFile backgroundImg = updateProfileDto.getBackgroundImg();
+//        String uploadProfilePath = user.getId() + "/" + "profile" + "/";
+//        String uploadBackPath = user.getId() + "/" + "back" + "/";
+//        FileInfoDto profileFileInfoDto = fileS3UploadService.uploadFile(uploadProfilePath, profileImg);
+//        FileInfoDto backFileInfoDto = fileS3UploadService.uploadFile(uploadBackPath, backgroundImg);
+//
+//        UserImage profile = UserMapper.toUserImage(profileFileInfoDto, user, "profile");
+//        UserImage background = UserMapper.toUserImage(backFileInfoDto, user, "background");
+//
+//        userImageRepository.save(profile);
+//        userImageRepository.save(background);
+//
+//        // 4. 사용자 정보 업데이트
+//        user.changeProfile(updateProfileDto, profile, background);
+//    }
 
     @Override
     @Transactional

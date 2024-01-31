@@ -105,16 +105,12 @@ public class User implements UserDetails {
         this.lastModified = LocalDateTime.now();
     }
 
-    public void changeProfile(UpdateProfileDto updateProfileDto,
-                              UserImage profileImage,
-                              UserImage backgroundImage) {
-        if (!NicknameValidator.isValidNickname(updateProfileDto.getNewNickname())) {
+    public void changeProfile(String nickname, String description) {
+        if (!NicknameValidator.isValidNickname(nickname)) {
             throw new IllegalNicknameException(NICKNAME_ILLEGAL);
         }
-        this.nickname = updateProfileDto.getNewNickname();
-        this.description = updateProfileDto.getDescription();
-        this.profileImage = profileImage;
-        this.backgroundImage = backgroundImage;
+        this.nickname = nickname;
+        this.description = description;
     }
 
     public void changePassword(String newPassword) {
