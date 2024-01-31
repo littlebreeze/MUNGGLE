@@ -9,6 +9,7 @@ import com.munggle.dog.repository.MatchingRepository;
 import com.munggle.domain.exception.DogNotFoundException;
 import com.munggle.domain.exception.ExceptionMessage;
 import com.munggle.domain.exception.MatchingCharacterNotFoundException;
+import com.munggle.domain.exception.MatchingNotOnException;
 import com.munggle.domain.model.entity.Dog;
 import com.munggle.domain.model.entity.Matching;
 import jakarta.transaction.Transactional;
@@ -69,6 +70,10 @@ public class MatchingServiceImpl implements MatchingService {
         // 내 반려견 (특성)
         Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
                 .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
+
+        if(!dog.getIsMatching()){
+            throw new MatchingNotOnException(ExceptionMessage.MATCHING_IS_NOT_ON);
+        }
 
         // 매칭에 사용할 특성 리스트
         Matching matching =  matchingRepository.findByDogDogId(dogId)

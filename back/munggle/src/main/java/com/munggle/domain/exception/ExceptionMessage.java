@@ -15,7 +15,8 @@ public enum ExceptionMessage {
     WALK_NOT_FOUND("산책 기록을 찾을 수 없습니다."),
     WALK_LOG_NOT_FOUND("산책 로그를 찾을 수 없습니다."),
     DOG_NOT_FOUND("반려견 정보를 찾을 수 없습니다."),
-    MATCHING_CHARACTER_NOT_FOUND("매칭 특성이 등록되지 않았습니다.");
+    MATCHING_CHARACTER_NOT_FOUND("매칭 특성이 등록되지 않았습니다."),
+    MATCHING_IS_NOT_ON("매칭 옵션이 켜지지 않았습니다.");
 
 
     private final String message;
