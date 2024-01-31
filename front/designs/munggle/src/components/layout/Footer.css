@@ -5,7 +5,7 @@
   /* height: 70px; */
   height: 70px;
   border: 1px black solid;
-  border-top: 2px double black;
+  /* border-top: 2px double black; */
   border-bottom-left-radius: 40px;
   border-bottom-right-radius: 40px;
   display: flex;

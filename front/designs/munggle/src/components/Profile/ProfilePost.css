@@ -2,8 +2,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  overflow-y: scroll;
+  /* overflow-y: scroll; */
   width: 400px;
+  margin-bottom: 10px;
 }
 
 .profile-post-frame-container-div {

@@ -4,7 +4,6 @@ import { Route, Routes, Link } from "react-router-dom";
 
 import ProfileDog from "../../components/Profile/ProfileDog";
 import ProfilePost from "../../components/Profile/ProfilePost";
-import ProfileStory from "../../components/Profile/ProfileStory";
 import ProfileScrap from "../../components/Profile/ProfileScrap";
 
 import FollowButton from "../../components/button/FollowButton";
@@ -13,7 +12,6 @@ import ProfileCircle from "../../components/ProfileCircle";
 import iconDm from "../../assets/icons/dm.png";
 import iconDog from "../../assets/icons/profileDog.png";
 import iconPost from "../../assets/icons/profilePost.png";
-import iconStory from "../../assets/icons/profileStory.png";
 import iconScrap from "../../assets/icons/profileScrap.png";
 import iconLine1 from "../../assets/icons/line1.png";
 
@@ -225,54 +223,6 @@ export default function Profile(props) {
     },
   ]
 
-  const storyList = [
-    {
-      img: imgPost1,
-      startDate: "24.01.01",
-      endDate: "24.01.18",
-    },
-    {
-      img: imgPost2,
-      startDate: "24.01.02",
-      endDate: "24.01.18",
-    },
-    {
-      img: imgPost3,
-      startDate: "24.01.03",
-      endDate: "24.01.18",
-    },
-    {
-      img: imgPost4,
-      startDate: "24.01.04",
-      endDate: "24.01.18",
-    },
-    {
-      img: imgPost5,
-      startDate: "24.01.05",
-      endDate: "24.01.18",
-    },
-    {
-      img: imgPost6,
-      startDate: "24.01.06",
-      endDate: "24.01.18",
-    },
-    {
-      img: imgPost7,
-      startDate: "24.01.07",
-      endDate: "24.01.18",
-    },
-    {
-      img: imgPost8,
-      startDate: "24.01.08",
-      endDate: "24.01.18",
-    },
-    {
-      img: imgPost9,
-      startDate: "24.01.09",
-      endDate: "24.01.18",
-    },
-  ]
-
   return (
     <div className="profile-container-div">
       <div className="profile-top-div">
@@ -347,7 +297,6 @@ export default function Profile(props) {
         <Routes>
           <Route path="/" element={<ProfileDog dogs={userProfile.dogs} />} />
           <Route path="/post" element={<ProfilePost postList={postList} />} />
-          <Route path="/story" element={<ProfileStory storyList={storyList} />} />
           <Route path="/scrap" element={<ProfileScrap scrapList={postList} />} />
         </Routes>
       </div>
