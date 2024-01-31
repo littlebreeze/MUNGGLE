@@ -42,7 +42,7 @@ public class OpenAPIServiceImpl implements OpenAPIService {
                     .kindNm(name)
                     .kindId(code)
                     .build();
-            
+
             kindRepository.save(kind);
         }
     }
@@ -100,7 +100,7 @@ public class OpenAPIServiceImpl implements OpenAPIService {
 
     @Override
     public List<LostDogDto> selectListDog(String region, String kind) {
-        return lostDogRepository.findByCareAddrLikeAndKindLike(region, kind).orElseThrow().stream().map(LostDog::toDto).collect(Collectors.toList());
+        return lostDogRepository.findByCareAddrContainsAndKindEndsWith(region, kind).orElseThrow().stream().map(LostDog::toDto).collect(Collectors.toList());
     }
 
 

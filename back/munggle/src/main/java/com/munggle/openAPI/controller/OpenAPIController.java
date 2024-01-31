@@ -9,11 +9,9 @@ import com.munggle.openAPI.service.OpenAPIService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,6 +44,7 @@ public class OpenAPIController {
 
     // 품종 정보 요청 - 관리자만 가능하도록 설정
     @GetMapping("/request-kinds")
+    @ResponseStatus(HttpStatus.OK)
     public void requestKind() throws IOException, ParseException {
 
         StringBuilder urlBuilder = new StringBuilder(abandonedUrl); /*URL*/
@@ -78,6 +77,7 @@ public class OpenAPIController {
 
     // 유기 동물 정보 요청 - 관리자만 가능하도록 설정
     @GetMapping("/request-lostdogs")
+    @ResponseStatus(HttpStatus.OK)
     public void requestLostdog() throws IOException, ParseException {
 
         Long totalCnt = -1L;
@@ -131,6 +131,7 @@ public class OpenAPIController {
     // DB Select
     // 입력한 값에 따라 품종 리스트
     @GetMapping(value = {"/kinds/{input}", "/kinds", "/kinds/"})
+    @ResponseStatus(HttpStatus.OK)
     public List<KindDto> kind(@PathVariable(required = false) Optional<String> input){
 
         // 입력값이 없을 때는 ""를 넘겨 전체 리스트가 반환되도록 한다.
@@ -140,11 +141,12 @@ public class OpenAPIController {
     // 보여줄 유기동물 정보
     // 지역, 품종
     @GetMapping("/lostdogs")
+    @ResponseStatus(HttpStatus.OK)
     public List<LostDogDto> listOfLostDog(@AuthenticationPrincipal User principal, Optional<String> region, Optional<String> kind){
 
         String careAddr = region.orElse("");
         String inputKind = kind.orElse("");
 
-        return openAPIService.selectListDog("%"+careAddr+"%","%"+inputKind);
+        return openAPIService.selectListDog(careAddr,inputKind);
     }
 }
