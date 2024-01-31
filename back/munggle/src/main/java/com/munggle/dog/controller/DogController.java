@@ -39,28 +39,31 @@ public class DogController {
 
     @PutMapping("/{dogId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateDog(@PathVariable Long dogId,
+    public void updateDog(@AuthenticationPrincipal User principal,
+                          @PathVariable Long dogId,
                           @RequestPart(value = "dto") @Valid DogUpdateDto dogUpdateDto,
                           @RequestPart(value = "file", required = false) MultipartFile file){
 
         dogUpdateDto.setImage(file);
-        dogService.updateDog(dogId, dogUpdateDto);
+        dogService.updateDog(principal.getId(), dogId, dogUpdateDto);
     }
 
     @DeleteMapping("/{dogId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteDog(@PathVariable Long dogId){
-        dogService.deleteDog(dogId);
+    public void deleteDog(@AuthenticationPrincipal User principal,
+                          @PathVariable Long dogId){
+        dogService.deleteDog(principal.getId(), dogId);
     }
 
-    // 반려견 상세
-//    @GetMapping("/{dogId}")
-//    public DogDetailDto getDetailDog(@PathVariable Long dogId) {
-//        return dogService.getDetailDog(dogId);
-//    }
+    // 반려견 상세 - 반려견 수정 시 필요
+    @GetMapping("/{dogId}")
+    @ResponseStatus(HttpStatus.OK)
+    public DogDetailDto getDetailDog(@PathVariable Long dogId) {
+        return dogService.getDetailDog(dogId);
+    }
 
     // 사용자 반려견 리스트
-    @GetMapping("/{userId}")
+    @GetMapping("/list/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public List<DogDetailDto> getUserDogs(@PathVariable Long userId){
         return dogService.getDogList(userId);

@@ -30,6 +30,7 @@ public class MatchingController {
     @PostMapping("/{dogId}")
     @ResponseStatus(HttpStatus.OK)
     public void createMatching(@PathVariable Long dogId, @RequestBody DogCharDto dogCharDto){
+
         matchingService.insertMatchingCharacter(dogId,dogCharDto);
     }
 
@@ -37,7 +38,7 @@ public class MatchingController {
     @PutMapping("/{dogId}")
     @ResponseStatus(HttpStatus.OK)
     public void updateMatching(@PathVariable Long dogId, @RequestBody DogCharDto dogCharDto){
-        System.out.println(dogCharDto.toCharacterString());
+
         matchingService.updateMatchingCharacter(dogId,dogCharDto);
     }
 
@@ -46,7 +47,7 @@ public class MatchingController {
     @ResponseStatus(HttpStatus.OK)
     public List<DogDetailDto> matchingList(@PathVariable Long dogId){
 
-        return null;
+        return matchingService.matchingList(dogId);
     }
 
     // 내 특성 - 수정 시 필요
@@ -69,6 +70,7 @@ public class MatchingController {
     @PostMapping("/my/{dogId}")
     @ResponseStatus(HttpStatus.OK)
     public void toggleMatching(@PathVariable Long dogId){
+
         matchingService.toggleMatching(dogId);
     }
 }

@@ -1,5 +1,6 @@
 package com.munggle.dog.repository;
 
+import com.munggle.dog.dto.DogDetailDto;
 import com.munggle.domain.model.entity.Matching;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -10,9 +10,9 @@ public interface DogService {
 
     void insertDog(DogCreateDto dogCreateDto);
 
-    void updateDog(Long dogId, DogUpdateDto dogUpdateDto);
+    void updateDog(Long userId, Long dogId, DogUpdateDto dogUpdateDto);
 
-    void deleteDog(Long dogId);
+    void deleteDog(Long userId, Long dogId);
 
     DogDetailDto getDetailDog(Long dogId);
 
