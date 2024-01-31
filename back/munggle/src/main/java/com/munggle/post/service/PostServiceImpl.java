@@ -8,10 +8,7 @@ import com.munggle.post.dto.PostCreateDto;
 import com.munggle.post.dto.PostDetailResponseDto;
 import com.munggle.post.dto.PostUpdateDto;
 import com.munggle.post.mapper.PostMapper;
-import com.munggle.post.repository.PostImageRepository;
-import com.munggle.post.repository.PostRepository;
-import com.munggle.post.repository.PostTagRepository;
-import com.munggle.post.repository.TagRepository;
+import com.munggle.post.repository.*;
 import com.munggle.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,6 +31,8 @@ public class PostServiceImpl implements PostService {
     private final PostImageRepository postImageRepository;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
+    private final UserRecentTagRepository userRecentTagRepository;
+    private final UserRecentTagCacheRepository userRecentTagCacheRepository;
 
     /**
      * 게시글 상세보기 메소드
