@@ -11,12 +11,13 @@ import Notification from "../../pages/Sub/NotificationPage";
 import Search from "../../pages/Sub/SearchPage";
 import Login from "../../pages/Auth/LoginPage";
 import SignUp from "../../pages/Auth/SignUpPage";
+import APITest from "../../pages/Main/APITest";
 
 export default function Body() {
   return (
     <div className="body-container-div">
       <Routes>
-        <Route path="/*" element={<PostTest />} />
+        <Route path="/*" element={<APITest />} />
         <Route path="/matching/*" element={<Matching />} />
         <Route path="/walk" element={<Walk />} />
         <Route path="/profile/*" element={<Profile />} />
