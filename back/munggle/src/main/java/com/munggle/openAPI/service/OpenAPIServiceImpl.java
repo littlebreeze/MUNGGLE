@@ -42,8 +42,7 @@ public class OpenAPIServiceImpl implements OpenAPIService {
                     .kindNm(name)
                     .kindId(code)
                     .build();
-
-            // Repository로 DB에 저장 코드 작성하기
+            
             kindRepository.save(kind);
         }
     }
