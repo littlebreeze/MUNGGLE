@@ -53,14 +53,15 @@ public class DogController {
         dogService.deleteDog(dogId);
     }
 
-    // 반려견 상세
-//    @GetMapping("/{dogId}")
-//    public DogDetailDto getDetailDog(@PathVariable Long dogId) {
-//        return dogService.getDetailDog(dogId);
-//    }
+    // 반려견 상세 - 반려견 수정 시 필요
+    @GetMapping("/{dogId}")
+    @ResponseStatus(HttpStatus.OK)
+    public DogDetailDto getDetailDog(@PathVariable Long dogId) {
+        return dogService.getDetailDog(dogId);
+    }
 
     // 사용자 반려견 리스트
-    @GetMapping("/{userId}")
+    @GetMapping("/list/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public List<DogDetailDto> getUserDogs(@PathVariable Long userId){
         return dogService.getDogList(userId);

@@ -6,6 +6,9 @@ import com.munggle.dog.mapper.DogMapper;
 import com.munggle.dog.repository.DogRepository;
 import com.munggle.dog.repository.MatchingQueryRepository;
 import com.munggle.dog.repository.MatchingRepository;
+import com.munggle.domain.exception.DogNotFoundException;
+import com.munggle.domain.exception.ExceptionMessage;
+import com.munggle.domain.exception.MatchingCharacterNotFoundException;
 import com.munggle.domain.model.entity.Dog;
 import com.munggle.domain.model.entity.Matching;
 import jakarta.transaction.Transactional;
@@ -28,7 +31,7 @@ public class MatchingServiceImpl implements MatchingService {
     @Transactional
     public void updateMyDogCharacter(Long dogId, DogCharDto dogCharDto) {
         Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
-                .orElseThrow(()->new NoSuchElementException());
+                .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
         dog.updateCharacterId(dogCharDto);
     }
 
@@ -36,7 +39,8 @@ public class MatchingServiceImpl implements MatchingService {
     @Transactional
     public void insertMatchingCharacter(Long dogId, DogCharDto dogCharDto) {
         // 내 반려견 찾아와서 매칭 켜기
-        Dog dog = dogRepository.findById(dogId).orElseThrow(()-> new NoSuchElementException());
+        Dog dog = dogRepository.findById(dogId)
+                .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
         dog.onMatching();
         Matching matching = Matching.builder()
                 .dog(Dog.builder().dogId(dogId).build())
@@ -49,7 +53,8 @@ public class MatchingServiceImpl implements MatchingService {
     @Override
     @Transactional
     public void updateMatchingCharacter(Long dogId, DogCharDto dogCharDto) {
-        Matching matching = matchingRepository.findByDogDogId(dogId).orElseThrow(()->new NoSuchElementException());
+        Matching matching = matchingRepository.findByDogDogId(dogId)
+                .orElseThrow(()->new MatchingCharacterNotFoundException(ExceptionMessage.MATCHING_CHARACTER_NOT_FOUND));
         matching.updateMatcing(dogCharDto);
     }
 
@@ -61,15 +66,18 @@ public class MatchingServiceImpl implements MatchingService {
     @Override
     public List<DogDetailDto> matchingList(Long dogId) {
 
+        // 내 반려견 (특성)
+        Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
+                .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
+
         // 매칭에 사용할 특성 리스트
-        Matching matching =  matchingRepository.findByDogDogId(dogId).orElseThrow(()->new NoSuchElementException());
+        Matching matching =  matchingRepository.findByDogDogId(dogId)
+                .orElseThrow(()->new MatchingCharacterNotFoundException(ExceptionMessage.MATCHING_CHARACTER_NOT_FOUND));
+
         DogCharDto dogCharDto = DogCharDto.builder()
                 .isNeutering(matching.getIsNeutering())
                 .characterId(matching.returnCharacterList())
                 .build();
-
-        // 내 반려견 (특성)
-        Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId).orElseThrow();
 
         return matchingQueryRepository.findDogFriends(dog.getUser(), matching.getIsNeutering(), matching.returnCharacterList());
     }
@@ -77,7 +85,8 @@ public class MatchingServiceImpl implements MatchingService {
     @Override
     @Transactional
     public void toggleMatching(Long dogId) {
-        Dog dog = dogRepository.findById(dogId).orElseThrow(()-> new NoSuchElementException());
+        Dog dog = dogRepository.findById(dogId)
+                .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
         if(dog.getIsMatching()){
             dog.offMatching();
         }else{
@@ -88,7 +97,8 @@ public class MatchingServiceImpl implements MatchingService {
     @Override
     public DogCharDto myCharacterList(Long dogId) {
 
-        Dog dog = dogRepository.findById(dogId).orElseThrow(()-> new NoSuchElementException());
+        Dog dog = dogRepository.findById(dogId)
+                .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
         Matching matching = Matching.builder()
                 .isNeutering(dog.getIsNeutering())
                 .characterId(dog.getCharacterId())
@@ -101,7 +111,8 @@ public class MatchingServiceImpl implements MatchingService {
 
     @Override
     public DogCharDto matchingCharaterList(Long dogId) {
-        Matching matching = matchingRepository.findByDogDogId(dogId).orElseThrow(()-> new NoSuchElementException());
+        Matching matching = matchingRepository.findByDogDogId(dogId)
+                .orElseThrow(()->new MatchingCharacterNotFoundException(ExceptionMessage.MATCHING_CHARACTER_NOT_FOUND));
         return DogCharDto.builder()
                 .isNeutering(matching.getIsNeutering())
                 .characterId(matching.returnCharacterList())

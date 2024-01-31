@@ -5,6 +5,8 @@ import com.munggle.dog.dto.DogDetailDto;
 import com.munggle.dog.dto.DogUpdateDto;
 import com.munggle.dog.mapper.DogMapper;
 import com.munggle.dog.repository.DogRepository;
+import com.munggle.domain.exception.DogNotFoundException;
+import com.munggle.domain.exception.ExceptionMessage;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.Dog;
 import com.munggle.domain.model.entity.User;
@@ -31,16 +33,18 @@ public class DogServiceImpl implements DogService {
     private final DogRepository dogRepository;
     private final UserRepository userRepository;
 
-    // 전달된 MultipartFile 이미지 업로드
+    // 전달된 MultipartFile 이미지 업로드 경로 : dog/반려견ID/
+
     String dogFilePath = "dog/";
 
-    public FileInfoDto dogImageUpload(Long dogId, MultipartFile file){
+    public FileInfoDto uploadDogImage(Long dogId, MultipartFile file){
         // 이미지 정보 저장
         String uploadPath = dogFilePath + dogId + "/";
         FileInfoDto fileInfoDto = fileS3UploadService.uploadFile(uploadPath, file);
 
         return fileInfoDto;
     }
+
     @Override
     @Transactional
     public void insertDog(DogCreateDto dogCreateDto) {
@@ -57,7 +61,7 @@ public class DogServiceImpl implements DogService {
         // 전달된 이미지가 있는 경우에만 수정
         if(dogCreateDto.getImage() != null) {
 
-            dog.updateImage(dogImageUpload(dogId, dogCreateDto.getImage()));
+            dog.updateImage(uploadDogImage(dogId, dogCreateDto.getImage()));
         }
     }
 
@@ -65,7 +69,7 @@ public class DogServiceImpl implements DogService {
     @Transactional
     public void updateDog(Long dogId, DogUpdateDto dogUpdateDto) {
         Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
-                .orElseThrow(()->new NoSuchElementException());
+                .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
         dog.updateDog(dogUpdateDto);
 
         // 전달된 파일이 있는 경우에 기존 이미지 삭제 후 변경
@@ -75,7 +79,7 @@ public class DogServiceImpl implements DogService {
             String uploadPath = dogFilePath + dogId + "/";
             fileS3UploadService.removeFolderFiles(uploadPath);
 
-            dog.updateImage(dogImageUpload(dogId, dogUpdateDto.getImage()));
+            dog.updateImage(uploadDogImage(dogId, dogUpdateDto.getImage()));
         }
     }
 
@@ -83,21 +87,26 @@ public class DogServiceImpl implements DogService {
     @Transactional
     public void deleteDog(Long dogId) {
         Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
-                .orElseThrow(()->new NoSuchElementException());
+                .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
         dog.deleteDog();
     }
 
     @Override
     public DogDetailDto getDetailDog(Long dogId) {
         Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
-                .orElseThrow(()->new NoSuchElementException());
+                .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
         return DogMapper.toDetailDto(dog);
     }
 
     @Override
     public List<DogDetailDto> getDogList(Long userId) {
+
+        // 넘겨 받은 사용자가 있는지 확인
+        User user = userRepository.findByIdAndIsEnabledTrue(userId)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        
         List<Dog> list = dogRepository.findAllByUserIdAndIsDeletedIsFalse(userId)
-                .orElseThrow(()->new NoSuchElementException());
+                .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
         return list.stream().map(dog -> DogMapper.toDetailDto(dog)).collect(Collectors.toList());
     }
 }
