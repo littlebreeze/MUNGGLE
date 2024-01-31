@@ -109,6 +109,10 @@ public class User implements UserDetails {
         this.backgroundImage = background;
     }
 
+    public void changeProfileImage(UserImage profileImage) {
+        this.profileImage = profileImage;
+    }
+
     public void changeProfile(String nickname, String description) {
         if (!NicknameValidator.isValidNickname(nickname)) {
             throw new IllegalNicknameException(NICKNAME_ILLEGAL);

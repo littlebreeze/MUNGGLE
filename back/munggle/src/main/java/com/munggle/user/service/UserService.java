@@ -18,6 +18,8 @@ public interface UserService extends UserDetailsService {
 
     void changeBackgroundImage(Long id, MultipartFile file);
 
+    void changeProfileImage(Long id, MultipartFile file);
+
     void updateProfile(Long id, UpdateProfileDto updateProfileDto);
 
     void updatePassword(Long id, UpdatePasswordDto updatePasswordDto);
@@ -25,4 +27,6 @@ public interface UserService extends UserDetailsService {
     void deleteMember(Long id);
 
     void deleteBackgroundImage(Long id);
+
+    void deleteProfileImage(Long id);
 }

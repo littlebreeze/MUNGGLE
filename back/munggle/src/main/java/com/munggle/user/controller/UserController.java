@@ -52,11 +52,12 @@ public class UserController {
         userService.changeBackgroundImage(id, file);
     }
 
-    @DeleteMapping("/background")
+    @PutMapping("profile-image")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteBackgroundImage(@AuthenticationPrincipal User principal) {
+    public void updateProfileImage(@AuthenticationPrincipal User principal,
+                                   @RequestPart(value = "profileImage") MultipartFile file) {
         Long id = principal.getId();
-        userService.deleteBackgroundImage(id);
+        userService.changeProfileImage(id, file);
     }
 
     @PutMapping()
@@ -80,5 +81,19 @@ public class UserController {
     public void deleteMember(@AuthenticationPrincipal User principal) {
         Long id = principal.getId();
         userService.deleteMember(id);
+    }
+
+    @DeleteMapping("/background")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteBackgroundImage(@AuthenticationPrincipal User principal) {
+        Long id = principal.getId();
+        userService.deleteBackgroundImage(id);
+    }
+
+    @DeleteMapping("/profile-image")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteProfileImage(@AuthenticationPrincipal User principal) {
+        Long id = principal.getId();
+        userService.deleteProfileImage(id);
     }
 }

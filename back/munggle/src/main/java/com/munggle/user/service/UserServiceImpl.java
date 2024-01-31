@@ -73,7 +73,10 @@ public class UserServiceImpl implements UserService {
         // 기존 이미지 확인
         Optional.ofNullable(user.getBackgroundImage())
                 .map(UserImage::getImageName)
-                .ifPresent(fileS3UploadService::removeFile);
+                .ifPresent(imageName -> {
+                    fileS3UploadService.removeFile(imageName);
+                    userImageRepository.deleteByImageName(imageName);
+                });
 
         // 새로운 이미지 업로드
         String uploadBackPath = user.getId() + "/" + "back" + "/";
@@ -88,43 +91,33 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
+    public void changeProfileImage(Long id, MultipartFile file) {
+        User user = this.findMemberById(id);
+
+        Optional.ofNullable(user.getProfileImage())
+                .map(UserImage::getImageName)
+                .ifPresent(imageName -> {
+                    fileS3UploadService.removeFile(imageName);
+                    userImageRepository.deleteByImageName(imageName);
+                });
+
+        String uploadProfilePath = user.getId() + "/" + "profile" + "/";
+        FileInfoDto profileFileInfoDto = fileS3UploadService.uploadFile(uploadProfilePath, file);
+
+        UserImage profileImage = UserMapper.toUserImage(profileFileInfoDto, user, "profile");
+        userImageRepository.save(profileImage);
+        user.changeProfileImage(profileImage);
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional
     public void updateProfile(Long id, UpdateProfileDto updateProfileDto) {
         User user = this.findMemberById(id);
         String newNickname = updateProfileDto.getNewNickname();
         String newDesc = updateProfileDto.getDescription();
         user.changeProfile(newNickname, newDesc);
     }
-
-//    @Override
-//    @Transactional
-//    public void updateProfile(Long id, UpdateProfileDto updateProfileDto) {
-//        User user = findMemberById(id);
-//
-//        // 1. 기존 이미지 파일 정보 조회
-//        Optional<UserImage> existingProfileImageOpt = Optional.ofNullable(user.getProfileImage());
-//        Optional<UserImage> existingBackgroundImageOpt = Optional.ofNullable(user.getBackgroundImage());
-//
-//        // 2. S3에서 기존 이미지 파일 삭제
-//        existingProfileImageOpt.ifPresent(image -> fileS3UploadService.removeFile(image.getImageName()));
-//        existingBackgroundImageOpt.ifPresent(image -> fileS3UploadService.removeFile(image.getImageName()));
-//
-//        // 3. 새 이미지 파일 업로드
-//        MultipartFile profileImg = updateProfileDto.getProfileImg();
-//        MultipartFile backgroundImg = updateProfileDto.getBackgroundImg();
-//        String uploadProfilePath = user.getId() + "/" + "profile" + "/";
-//        String uploadBackPath = user.getId() + "/" + "back" + "/";
-//        FileInfoDto profileFileInfoDto = fileS3UploadService.uploadFile(uploadProfilePath, profileImg);
-//        FileInfoDto backFileInfoDto = fileS3UploadService.uploadFile(uploadBackPath, backgroundImg);
-//
-//        UserImage profile = UserMapper.toUserImage(profileFileInfoDto, user, "profile");
-//        UserImage background = UserMapper.toUserImage(backFileInfoDto, user, "background");
-//
-//        userImageRepository.save(profile);
-//        userImageRepository.save(background);
-//
-//        // 4. 사용자 정보 업데이트
-//        user.changeProfile(updateProfileDto, profile, background);
-//    }
 
     @Override
     @Transactional
@@ -151,12 +144,28 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteBackgroundImage(Long id) {
         User user = this.findMemberById(id);
+
         Optional.ofNullable(user.getBackgroundImage())
                 .map(UserImage::getImageName)
                 .ifPresent(imageName -> {
+                    fileS3UploadService.removeFile(imageName);  // 이미지 파일 삭제
                     user.changeBackgroundImage(null);  // User 객체에서 UserImage 참조 제거
                     userRepository.save(user);  // User 객체 업데이트
+                    userImageRepository.deleteByImageName(imageName);  // UserImage 테이블의 데이터 삭제
+                });
+    }
+
+    @Override
+    @Transactional
+    public void deleteProfileImage(Long id) {
+        User user = this.findMemberById(id);
+
+        Optional.ofNullable(user.getProfileImage())
+                .map(UserImage::getImageName)
+                .ifPresent(imageName -> {
                     fileS3UploadService.removeFile(imageName);  // 이미지 파일 삭제
+                    user.changeProfileImage(null);  // User 객체에서 UserImage 참조 제거
+                    userRepository.save(user);  // User 객체 업데이트
                     userImageRepository.deleteByImageName(imageName);  // UserImage 테이블의 데이터 삭제
                 });
     }
