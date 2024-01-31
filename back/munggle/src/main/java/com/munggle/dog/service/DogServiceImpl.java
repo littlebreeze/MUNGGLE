@@ -7,6 +7,7 @@ import com.munggle.dog.mapper.DogMapper;
 import com.munggle.dog.repository.DogRepository;
 import com.munggle.domain.exception.DogNotFoundException;
 import com.munggle.domain.exception.ExceptionMessage;
+import com.munggle.domain.exception.NotYourDogException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.Dog;
 import com.munggle.domain.model.entity.User;
@@ -67,10 +68,15 @@ public class DogServiceImpl implements DogService {
 
     @Override
     @Transactional
-    public void updateDog(Long dogId, DogUpdateDto dogUpdateDto) {
+    public void updateDog(Long userId, Long dogId, DogUpdateDto dogUpdateDto) {
         Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
                 .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
         dog.updateDog(dogUpdateDto);
+
+        // 로그인 사용자의 반려견이 아닌 경우 예외처리
+        if(userId != dog.getUser().getId()){
+            throw new NotYourDogException(ExceptionMessage.NOT_YOUR_DOG);
+        }
 
         // 전달된 파일이 있는 경우에 기존 이미지 삭제 후 변경
         if(dogUpdateDto.getImage() != null){
@@ -85,9 +91,15 @@ public class DogServiceImpl implements DogService {
 
     @Override
     @Transactional
-    public void deleteDog(Long dogId) {
+    public void deleteDog(Long userId, Long dogId) {
         Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
                 .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
+
+        // 로그인 사용자의 반려견이 아닌 경우 예외처리
+        if(userId != dog.getUser().getId()){
+            throw new NotYourDogException(ExceptionMessage.NOT_YOUR_DOG);
+        }
+
         dog.deleteDog();
     }
 

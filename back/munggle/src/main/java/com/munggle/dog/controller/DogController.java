@@ -39,18 +39,20 @@ public class DogController {
 
     @PutMapping("/{dogId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateDog(@PathVariable Long dogId,
+    public void updateDog(@AuthenticationPrincipal User principal,
+                          @PathVariable Long dogId,
                           @RequestPart(value = "dto") @Valid DogUpdateDto dogUpdateDto,
                           @RequestPart(value = "file", required = false) MultipartFile file){
 
         dogUpdateDto.setImage(file);
-        dogService.updateDog(dogId, dogUpdateDto);
+        dogService.updateDog(principal.getId(), dogId, dogUpdateDto);
     }
 
     @DeleteMapping("/{dogId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteDog(@PathVariable Long dogId){
-        dogService.deleteDog(dogId);
+    public void deleteDog(@AuthenticationPrincipal User principal,
+                          @PathVariable Long dogId){
+        dogService.deleteDog(principal.getId(), dogId);
     }
 
     // 반려견 상세 - 반려견 수정 시 필요

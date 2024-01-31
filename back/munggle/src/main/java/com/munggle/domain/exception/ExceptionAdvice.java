@@ -18,7 +18,7 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler({IllegalNicknameException.class, IllegalPasswordException.class, SelfInteractionException.class,
-            MatchingNotOnException.class})
+            MatchingNotOnException.class, NotYourDogException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleBadRequest(RuntimeException e) {
         return e.getMessage();
