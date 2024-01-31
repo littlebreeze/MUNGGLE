@@ -2,6 +2,7 @@ package com.munggle.user.service;
 
 import com.munggle.user.dto.*;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

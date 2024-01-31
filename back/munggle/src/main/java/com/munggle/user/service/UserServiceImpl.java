@@ -1,5 +1,6 @@
 package com.munggle.user.service;
 
+import com.munggle.domain.exception.EmailVerificationFailException;
 import com.munggle.domain.exception.PasswordNotConfirmException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.User;
