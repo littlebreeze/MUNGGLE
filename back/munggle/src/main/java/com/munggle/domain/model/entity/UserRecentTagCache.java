@@ -17,6 +17,6 @@ public class UserRecentTagCache {
 
     private Long userId;
 
-    private Long postId;
+    private Long tagId;
 }
 
