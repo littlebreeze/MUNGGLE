@@ -25,7 +25,7 @@ import static com.munggle.domain.exception.ExceptionMessage.*;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserImageRepository userImageRepository;
@@ -33,7 +33,7 @@ public class UserServiceImpl implements UserService{
 
     private User findMemberById(Long id) {
         return userRepository.findByIdAndIsEnabledTrue(id)
-                        .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     }
 
     @Override
@@ -64,6 +64,26 @@ public class UserServiceImpl implements UserService{
     public void joinMember(UserCreateDto userCreateDto) {
         User newUser = UserMapper.toEntity(userCreateDto);
         userRepository.save(newUser);
+    }
+
+    @Override
+    @Transactional
+    public void changeBackgroundImage(Long id, MultipartFile file) {
+        User user = this.findMemberById(id);
+        // 기존 이미지 확인
+        Optional.ofNullable(user.getBackgroundImage())
+                .map(UserImage::getImageName)
+                .ifPresent(fileS3UploadService::removeFile);
+
+        // 새로운 이미지 업로드
+        String uploadBackPath = user.getId() + "/" + "back" + "/";
+        FileInfoDto backFileInfoDto = fileS3UploadService.uploadFile(uploadBackPath, file);
+
+        // UserImage 객체 업데이트 및 새로운 배경화면 저장
+        UserImage background = UserMapper.toUserImage(backFileInfoDto, user, "background");
+        userImageRepository.save(background);
+        user.changeBackgroundImage(background);
+        userRepository.save(user);
     }
 
     @Override
@@ -113,7 +133,7 @@ public class UserServiceImpl implements UserService{
         String newPassword = updatePasswordDto.getNewPassword();
         String passwordConfirm = updatePasswordDto.getNewPasswordConfirmation();
         // 비밀번호 확인과 일치하는지 확인
-        if(!newPassword.equals(passwordConfirm)) {
+        if (!newPassword.equals(passwordConfirm)) {
             throw new PasswordNotConfirmException(PASSWORD_NOT_CONFIRM);
         }
 
@@ -125,5 +145,19 @@ public class UserServiceImpl implements UserService{
     public void deleteMember(Long id) {
         User user = findMemberById(id);
         user.markAsDeleted();
+    }
+
+    @Override
+    @Transactional
+    public void deleteBackgroundImage(Long id) {
+        User user = this.findMemberById(id);
+        Optional.ofNullable(user.getBackgroundImage())
+                .map(UserImage::getImageName)
+                .ifPresent(imageName -> {
+                    user.changeBackgroundImage(null);  // User 객체에서 UserImage 참조 제거
+                    userRepository.save(user);  // User 객체 업데이트
+                    fileS3UploadService.removeFile(imageName);  // 이미지 파일 삭제
+                    userImageRepository.deleteByImageName(imageName);  // UserImage 테이블의 데이터 삭제
+                });
     }
 }

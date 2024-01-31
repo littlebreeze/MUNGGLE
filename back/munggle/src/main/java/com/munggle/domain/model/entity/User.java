@@ -105,6 +105,10 @@ public class User implements UserDetails {
         this.lastModified = LocalDateTime.now();
     }
 
+    public void changeBackgroundImage(UserImage background) {
+        this.backgroundImage = background;
+    }
+
     public void changeProfile(String nickname, String description) {
         if (!NicknameValidator.isValidNickname(nickname)) {
             throw new IllegalNicknameException(NICKNAME_ILLEGAL);

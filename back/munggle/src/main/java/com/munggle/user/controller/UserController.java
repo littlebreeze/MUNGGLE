@@ -44,9 +44,25 @@ public class UserController {
         userService.joinMember(userCreateDto);
     }
 
+    @PutMapping("/background")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateBackgroundImage(@AuthenticationPrincipal User principal,
+                                      @RequestPart(value = "backgroundImage") MultipartFile file) {
+        Long id = principal.getId();
+        userService.changeBackgroundImage(id, file);
+    }
+
+    @DeleteMapping("/background")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteBackgroundImage(@AuthenticationPrincipal User principal) {
+        Long id = principal.getId();
+        userService.deleteBackgroundImage(id);
+    }
+
     @PutMapping()
     @ResponseStatus(HttpStatus.OK)
-    public void updateProfile(@AuthenticationPrincipal User principal, @Valid @RequestBody UpdateProfileDto updateProfileDto) {
+    public void updateProfile(@AuthenticationPrincipal User principal,
+                              @Valid @RequestBody UpdateProfileDto updateProfileDto) {
         Long id = principal.getId();
         userService.updateProfile(id, updateProfileDto);
     }
