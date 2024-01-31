@@ -1,51 +1,45 @@
 import React from "react";
-import "./ProfilePage.css";
-import { Route, Routes, Link } from "react-router-dom";
+import { View, Text, Button, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 
-import ProfileDog from "../../components/Profile/ProfileDog";
-import ProfilePost from "../../components/Profile/ProfilePost";
-import ProfileScrap from "../../components/Profile/ProfileScrap";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-import FollowButton from "../../components/button/FollowButton";
-import ProfileCircle from "../../components/ProfileCircle";
+import ProfileDog from "./profile/profileDog";
+import ProfilePost from "./profile/profilePost";
+import ProfileScrap from "./profile/profileScrap";
 
-import iconDm from "../../assets/icons/dm.png";
 import iconDog from "../../assets/icons/profileDog.png";
 import iconPost from "../../assets/icons/profilePost.png";
 import iconScrap from "../../assets/icons/profileScrap.png";
-import iconLine1 from "../../assets/icons/line1.png";
+import iconDirectMessage from "../../assets/icons/directMessage.png";
 
-import imgProfile from "../../assets/example/profile.png";
+import imgProfile1 from "../../assets/sample/profile1.jpg";
+import imgProfile2 from "../../assets/sample/profile2.jpg";
+import imgProfile3 from "../../assets/sample/profile3.jpg";
+import imgProfile4 from "../../assets/sample/profile4.jpg";
+import imgProfile5 from "../../assets/sample/profile5.jpg";
+import imgProfile6 from "../../assets/sample/profile6.jpg";
 
-import imgProfile1 from "../../assets/example/profile1.jpg";
-import imgProfile2 from "../../assets/example/profile2.jpg";
-import imgProfile3 from "../../assets/example/profile3.jpg";
-import imgProfile4 from "../../assets/example/profile4.jpg";
-import imgProfile5 from "../../assets/example/profile5.jpg";
-import imgProfile6 from "../../assets/example/profile6.jpg";
-import imgProfile7 from "../../assets/example/profile.png";
+import imgPost1 from "../../assets/sample/dog1.jpg";
+import imgPost2 from "../../assets/sample/dog2.jpg";
+import imgPost3 from "../../assets/sample/dog3.jpg";
+import imgPost4 from "../../assets/sample/dog4.jpg";
+import imgPost5 from "../../assets/sample/dog5.jpg";
+import imgPost6 from "../../assets/sample/dog6.jpg";
+import imgPost7 from "../../assets/sample/dog7.jpg";
+import imgPost8 from "../../assets/sample/dog8.jpg";
+import imgPost9 from "../../assets/sample/dog9.jpg";
+import imgPost10 from "../../assets/sample/dog10.jpg";
 
-import imgPost1 from "../../assets/example/dog1.jpg";
-import imgPost2 from "../../assets/example/dog2.jpg";
-import imgPost3 from "../../assets/example/dog3.jpg";
-import imgPost4 from "../../assets/example/dog4.jpg";
-import imgPost5 from "../../assets/example/dog5.jpg";
-import imgPost6 from "../../assets/example/dog6.jpg";
-import imgPost7 from "../../assets/example/dog7.jpg";
-import imgPost8 from "../../assets/example/dog8.jpg";
-import imgPost9 from "../../assets/example/dog9.jpg";
-import imgPost10 from "../../assets/example/dog10.jpg";
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
-import imgDog from "../../assets/dogLogo.png";
-import imgSearch from "../../assets/icons/search.png";
-import imgNotification from "../../assets/icons/notification.png";
-import imgDm from "../../assets/icons/dm.png";
+const Tab = createMaterialTopTabNavigator();
 
-export default function Profile(props) {
+export default function ProfileScreen ( {navigation} ) {
   const userProfile = {
     backGroundImg: imgPost1,
     profileImg: imgProfile1,
-    name: "megar0829",
+    name: "행복이아빠",
     isFollow: false,
     description: "소소하게 자주 즐겁게 행복하기. 행복이 행복이 행복이 행복이 행복이 행복이 행복이 행복이",
     follower: 2,
@@ -75,7 +69,7 @@ export default function Profile(props) {
       id: 1,
       user : {
         imgProfile: imgProfile1,
-        name: 'megar0829',
+        name: 'user1',
         isFollow: false,
       },
       imgPost: imgPost1,
@@ -90,7 +84,7 @@ export default function Profile(props) {
       id: 2,
       user : {
         imgProfile: imgProfile2,
-        name: 'megar0829',
+        name: 'user2',
         isFollow: false,
       },
       imgPost: imgPost2,
@@ -105,7 +99,7 @@ export default function Profile(props) {
       id: 3,
       user : {
         imgProfile: imgProfile3,
-        name: 'megar0829',
+        name: 'user3',
         isFollow: false,
       },
       imgPost: imgPost3,
@@ -120,7 +114,7 @@ export default function Profile(props) {
       id: 4,
       user : {
         imgProfile: imgProfile4,
-        name: 'megar0829',
+        name: 'user4',
         isFollow: false,
       },
       imgPost: imgPost4,
@@ -135,7 +129,7 @@ export default function Profile(props) {
       id: 5,
       user : {
         imgProfile: imgProfile5,
-        name: 'megar0829',
+        name: 'user5',
         isFollow: false,
       },
       imgPost: imgPost5,
@@ -150,7 +144,7 @@ export default function Profile(props) {
       id: 6,
       user : {
         imgProfile: imgProfile6,
-        name: 'megar0829',
+        name: 'user6',
         isFollow: false,
       },
       imgPost: imgPost6,
@@ -165,7 +159,7 @@ export default function Profile(props) {
       id: 7,
       user : {
         imgProfile: imgProfile1,
-        name: 'megar0829',
+        name: 'user7',
         isFollow: false,
       },
       imgPost: imgPost7,
@@ -180,7 +174,7 @@ export default function Profile(props) {
       id: 8,
       user : {
         imgProfile: imgProfile2,
-        name: 'megar0829',
+        name: 'user8',
         isFollow: false,
       },
       imgPost: imgPost8,
@@ -195,7 +189,7 @@ export default function Profile(props) {
       id: 9,
       user : {
         imgProfile: imgProfile3,
-        name: 'megar0829',
+        name: 'user9',
         isFollow: false,
       },
       imgPost: imgPost9,
@@ -210,7 +204,7 @@ export default function Profile(props) {
       id: 10,
       user : {
         imgProfile: imgProfile4,
-        name: 'megar0829',
+        name: 'user10',
         isFollow: false,
       },
       imgPost: imgPost10,
@@ -222,80 +216,162 @@ export default function Profile(props) {
       ],
     },
   ]
-
+  
   return (
-    <div className="profile-container-div">
-      <div className="profile-top-div">
-        <div className="profile-top-div-top-div">
-           <img className="profile-top-div-top-img" src={userProfile.backGroundImg} />
-        </div>
-
-        <div className="profile-top-div-bottom-div">
-          <div className="profile-top-div-bottom-div-top-div">
-            <span className="profile-top-div-bottom-div-top-div-span fw-bold">{userProfile.name}</span>
-            <button className="profile-top-div-bottom-div-top-div-button">팔로우</button>
-            <div className="profile-top-div-bottom-div-top-div-container">
-              <img className="profile-top-div-bottom-div-top-div-img" src={iconDm} width={21} height={21} />
-            </div>
-          </div>
-
-          <div className="profile-top-div-bottom-div-middle-div">
-          <span className="profile-top-div-bottom-div-middle-div-span fw-bold">팔로워 {userProfile.follower}</span>
-            <span className="mx-3 profile-top-div-bottom-div-middle-div-span fw-bold">팔로잉 {userProfile.following}</span>
-            <p className="profile-top-div-bottom-div-middle-span">{userProfile.description}</p>
-          </div>
-
-          {/* <div className="profile-top-div-bottom-div-bottom-div">
-            <span className="ms-3 profile-top-div-bottom-div-bottom-span">팔로워 {userProfile.follower}</span>
-            <span className="mx-3 profile-top-div-bottom-div-bottom-span">팔로잉 {userProfile.following}</span>
-          </div> */}
-        </div>
-
-        <div className="profile-top-div-middle-div">
-          <ProfileCircle
-            img={userProfile.profileImg}
-            // name={userProfile.name}
-            width={120}
-            height={120}
+    <ScrollView style={styles.profileContainer}>
+      <View style={styles.profileTopView}>
+        <View style={styles.profileTopViewTopView}>
+          <Image 
+            style={styles.profileTopViewTopView}
+            source={imgPost1}
           />
-        </div>
-      </div>
+        </View>
+        <View style={styles.profileTopViewMiddleView}>
 
-      <div className="profile-nav-div">
-        <Link to="/profile">
-          <div className="profile-nav-div-img-div">
-            <img className="profile-nav-div-img" src={iconDog} />
-          </div>
-        </Link>
-
-        <div className="profile-nav-div-line-div">
-          <img className="profile-nav-div-line" src={iconLine1} />
-        </div>
-
-        <Link to="/profile/post">
-          <div className="profile-nav-div-img-div">
-            <img className="profile-nav-div-img" src={iconPost} />
-          </div>
-        </Link>
-
-        <div className="profile-nav-div-line-div">
-          <img className="profile-nav-div-line" src={iconLine1} />
-        </div>
-
-        <Link to="/profile/scrap">
-          <div className="profile-nav-div-img-div">
-            <img className="profile-nav-div-img" src={iconScrap} />
-          </div>
-        </Link>
-      </div>
-
-      <div className="profile-bottom-div">
-        <Routes>
-          <Route path="/" element={<ProfileDog dogs={userProfile.dogs} />} />
-          <Route path="/post" element={<ProfilePost postList={postList} />} />
-          <Route path="/scrap" element={<ProfileScrap scrapList={postList} />} />
-        </Routes>
-      </div>
-    </div>
+        </View>
+        <View style={styles.profileTopViewBottomView}>
+          <View style={styles.profileTopViewBottomViewTopView}>
+            <Text>{ userProfile.name }</Text>
+            <TouchableOpacity style={styles.followButtonView}>
+              <Text style={styles.followButtonText}>팔로우</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.iconDirectMessageView}>
+              <Image 
+                style={styles.iconDirectMessage}
+                source={iconDirectMessage}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.profileTopViewBottomViewBottomView}>
+            <Text style={styles.textFollow}>팔로워 {userProfile.follower}</Text>
+            <Text style={{...styles.textFollow, marginLeft:SCREEN_HEIGHT * 0.02}}>팔로잉 {userProfile.following}</Text>
+          </View>
+          <Text style={styles.textDescription}>{userProfile.description}</Text>
+        </View>
+      </View>
+      <View style={styles.profileBottomView}>
+        <Tab.Navigator
+          screenOptions={{
+            tabBarShowLabel: false,
+            tabBarStyle: {
+              height: SCREEN_HEIGHT * 0.07,
+            },
+            tabBarItemStyle: {
+              height: SCREEN_HEIGHT * 0.06,
+            },
+          }}
+        >
+          <Tab.Screen 
+            name="Dog" 
+            component={ProfileDog} 
+            options={{
+              tabBarIcon: () => (
+                <Image
+                  style={styles.profileTabBarIcon}
+                  source={iconDog}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen 
+            name="Post" 
+            component={ProfilePost} 
+            options={{
+              tabBarIcon: () => (
+                <Image
+                  style={styles.profileTabBarIcon}
+                  source={iconPost}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen 
+            name="Scrap" 
+            component={ProfileScrap} 
+            options={{
+              tabBarIcon: () => (
+                <Image
+                  style={styles.profileTabBarIcon}
+                  source={iconScrap}
+                />
+              ),
+            }}
+          />
+        </Tab.Navigator>
+      </View>
+     </ScrollView>
   );
-}
+};
+
+const styles = StyleSheet.create({
+  profileContainer: {
+    width: SCREEN_WIDTH,
+  },
+  profileTopView: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT * 0.35,
+  },
+  profileBottomView: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT * 0.6,
+  },
+  profileTabBarIcon: {
+    width: SCREEN_HEIGHT * 0.04,
+    height: SCREEN_HEIGHT * 0.04,
+  },
+  profileTopViewTopView: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT * 0.2,
+  },
+  profileTopViewMiddleView: {
+    
+  },
+  profileTopViewBottomView: {
+    height: SCREEN_HEIGHT * 0.15,
+    paddingHorizontal: SCREEN_HEIGHT * 0.02
+  },
+  profileTopViewBottomViewTopView: {
+    width: SCREEN_WIDTH,
+    marginTop: SCREEN_HEIGHT * 0.01,
+    marginBottom: SCREEN_HEIGHT * 0.01,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  profileTopViewBottomViewBottomView: {
+    width: SCREEN_WIDTH,
+    flexDirection: "row",
+    marginTop: SCREEN_HEIGHT * 0.01,
+    marginBottom: SCREEN_HEIGHT * 0.01,
+  },
+  textFollow: {
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  textDescription: {
+
+    fontSize: 15,
+  },
+  followButtonView: {
+    width: SCREEN_HEIGHT * 0.07,
+    height: SCREEN_HEIGHT * 0.03,
+    backgroundColor: "red",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+  },
+  followButtonText: {
+    fontSize: 15,
+  },
+  iconDirectMessageView: {
+    width: SCREEN_HEIGHT * 0.03,
+    height: SCREEN_HEIGHT * 0.03,
+    borderRadius: 8,
+  },
+  iconDirectMessage: {
+    width: SCREEN_HEIGHT * 0.03,
+    height: SCREEN_HEIGHT * 0.03,
+    borderRadius: 8,
+
+  },
+});
