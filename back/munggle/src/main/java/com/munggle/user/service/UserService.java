@@ -16,6 +16,8 @@ public interface UserService extends UserDetailsService {
 
     List<UserListDto> getSearchPage(String keyword);
 
+    void verify(String email, String autoCode);
+
     void sendCodeToEmail(String email);
 
     void joinMember(UserCreateDto userCreateDto);
@@ -27,4 +29,5 @@ public interface UserService extends UserDetailsService {
     void writeDescription(Long id, String description);
 
     void deleteMember(Long id);
+
 }
