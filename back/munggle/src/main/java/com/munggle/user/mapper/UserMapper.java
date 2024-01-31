@@ -12,6 +12,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -38,6 +39,10 @@ public class UserMapper {
 
     public static UserProfileDto toUserProfileDto(User user) {
         return UserProfileDto.builder()
+                .backgroundImgUrl(Optional.ofNullable(user.getBackgroundImage())
+                        .map(UserImage::getImageURL).orElse(null))
+                .profileImgUrl(Optional.ofNullable(user.getProfileImage())
+                        .map(UserImage::getImageURL).orElse(null))
                 .nickname(user.getNickname())
                 .desc(user.getDescription())
                 .build();

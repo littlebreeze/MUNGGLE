@@ -1,5 +1,6 @@
 package com.munggle.user.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +10,12 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UserProfileDto {
 
-    // 프로필 dto임으로 배경 이미지랑 프로필 이미지 추후 추가
+    private final String backgroundImgUrl;
+
+    private final String profileImgUrl;
+
+    @NotNull
     private final String nickname;
+
     private final String desc;
 }
