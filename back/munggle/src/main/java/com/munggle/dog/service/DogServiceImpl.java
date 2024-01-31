@@ -60,7 +60,7 @@ public class DogServiceImpl implements DogService {
         Long dogId = dogRepository.save(dog).getDogId();
 
         // 전달된 이미지가 있는 경우에만 수정
-        if(dogCreateDto.getImage() != null) {
+        if(dogCreateDto.getImage() != null && !dogCreateDto.getImage().isEmpty()) {
 
             dog.updateImage(uploadDogImage(dogId, dogCreateDto.getImage()));
         }
@@ -79,7 +79,7 @@ public class DogServiceImpl implements DogService {
         }
 
         // 전달된 파일이 있는 경우에 기존 이미지 삭제 후 변경
-        if(dogUpdateDto.getImage() != null){
+        if(dogUpdateDto.getImage() != null && !dogUpdateDto.getImage().isEmpty()) {
 
             // 기존 파일 S3에서 삭제
             String uploadPath = dogFilePath + dogId + "/";
