@@ -30,12 +30,14 @@ public class Walk {
     private String walkName;
 
     @NotNull
-    //private Long userId;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    private Long dogId;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "dog_id")
+    private Dog dog;
 
     @Size(max = 50)
     private String description;
@@ -52,6 +54,10 @@ public class Walk {
 
     public void setUser(User user){
         this.user = user;
+    }
+
+    public void setDog(Dog dog){
+        this.dog = dog;
     }
 
     public void updateWalk(WalkUpdateDto walkUpdateDto){

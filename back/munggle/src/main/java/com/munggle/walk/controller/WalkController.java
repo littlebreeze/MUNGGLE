@@ -27,10 +27,9 @@ public class WalkController {
         walkService.createWalk(walkDto);
     }
 
-    // 넘겨 받는 방식 바꾸기
-    @GetMapping("/my-list/{userId}")
-    public List<WalkDto> myWalkList(@PathVariable Long userId){
-        return walkService.readMyWalks(userId);
+    @GetMapping
+    public List<WalkDto> myWalkList(@AuthenticationPrincipal User principal){
+        return walkService.readMyWalks(principal.getId());
     }
 
     @GetMapping("/list")
