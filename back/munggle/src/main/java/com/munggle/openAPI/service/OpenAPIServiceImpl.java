@@ -96,7 +96,7 @@ public class OpenAPIServiceImpl implements OpenAPIService {
     @Override
     public List<KindDto> selectKind(String input) {
 
-        return kindRepository.findByKindNmLike(input).orElseThrow().stream().map(Kind::toDto).collect(Collectors.toList());
+        return kindRepository.findByKindNmContains(input).orElseThrow().stream().map(Kind::toDto).collect(Collectors.toList());
     }
 
     @Override
