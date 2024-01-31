@@ -34,7 +34,7 @@ import Slide from '@mui/material/Slide';
 import Dialog from '@mui/material/Dialog';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="left" ref={ref} {...props} />;
+  return <Slide direction="up" ref={ref} {...props} />;
 });
 
 export default function Post() {

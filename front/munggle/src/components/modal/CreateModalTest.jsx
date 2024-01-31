@@ -6,16 +6,39 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
+import CropTest from './CropTest.jsx';
+import Dialog from '@mui/material/Dialog';
 
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import ClearIcon from '@mui/icons-material/Clear';
 import Grid from '@mui/material/Grid';
 
 import BackButton from '../../assets/icons/back-button.png';
+import './CreateModalTest.css';
 
 export default function CreateModalTest(props) {
 
   const [selectedImages, setSelectedImages] = useState([]);
+
+  const [cropModalIsOpen, setCropModalIsOpen] = useState(false);
+
+  const openCropPage = (e) => {
+    const files = e.target.files;
+    const fileType = files[0].type;
+    if (fileType.startsWith('image/')) {
+      console.log('이미지를 받았다');
+      setCropModalIsOpen(true);
+    } else if (fileType.startsWith('video/')) {
+      console.log('비디오를 받았다');
+      setCropModalIsOpen(true);
+    } else {
+      window.alert('이미지 또는 비디오를 올리시오')
+    }
+  };
+
+  function closeCropModal() {
+    setCropModalIsOpen(false);
+  };
 
   const handleImageUpload = (e) => {
     const files = e.target.files;
@@ -38,12 +61,11 @@ export default function CreateModalTest(props) {
 
   const renderPreview = () => {
     return selectedImages.map((image, index) => (
-      <Grid key={index} item xs={5}>
-      <div style={{ position: 'relative', marginBottom: 8 }}>
+      <div key={index} style={{ position: 'relative', marginBottom: 8 }}>
           <img
             src={URL.createObjectURL(image)}
             alt={`preview-${index}`}
-            style={{ width: '100%', height: 'auto', borderRadius: 8 }}
+            style={{ height: '200px', borderRadius: 8 }}
           />
           <IconButton
             style={{ position: 'absolute', top: 0, right: 0 }}
@@ -52,11 +74,19 @@ export default function CreateModalTest(props) {
             <ClearIcon />
           </IconButton>
         </div>
-      </Grid>
     ));
   };
   
   return(<>
+  <Dialog
+        open={cropModalIsOpen}
+        onClose={closeCropModal}
+      >
+        <CropTest
+          onClose={closeCropModal}
+        />
+
+      </Dialog>
   <AppBar sx={{ position: 'relative', backgroundColor: 'white' }}>
           <Toolbar>
             <IconButton
@@ -74,24 +104,28 @@ export default function CreateModalTest(props) {
         </AppBar>
 
         {selectedImages.length === 0 ? (
-         <div style={{height:200}}>
+         <div>
           <br></br>
-        <Typography variant="body2">사진을 추가해주세요.</Typography>
+        <Typography variant="body2" height={160}>사진을 추가해주세요.</Typography>
         </div>
       ) : (
-        <Grid container wrap='nowrap'>
+        <div className='imageBox'>
           {renderPreview()}
-        </Grid>
+        </div>
       )}
 
-<div>
+    <div style={{
+      textAlign: 'right'
+    }}>
       <input
         accept="image/*"
         style={{ display: 'none' }}
         id="image-upload-input"
         type="file"
         multiple
-        onChange={handleImageUpload}
+        // onChange={handleImageUpload}
+        onChange={openCropPage}
+        
       />
       <label htmlFor="image-upload-input">
         <Button
@@ -101,8 +135,6 @@ export default function CreateModalTest(props) {
         >
         </Button>
       </label>
-
-  
     </div>
 
         <br/>
@@ -121,9 +153,15 @@ export default function CreateModalTest(props) {
           label="태그"
           helperText="1~30자"
         />
-        <Button autoFocus color="inherit" onClick={props.onClose}>
+ 
+        <div style={{
+          textAlign: 'center'
+        }}>
+        <Button variant="contained" onClick={props.onClose}>
               저장
             </Button>
+            </div>
+   
   
   </>)
 }
