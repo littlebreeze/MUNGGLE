@@ -7,13 +7,15 @@ import imgScrap from "../../assets/icons/scrap.png"
 
 export default function PostListContent(props) {
   const tagList = props.tagList
-  
+
   const tagButton = tagList
     .map((tag, index) => {
       return (
         <HashTagButton 
           key={index}
           tagText={tag}
+          height={20}
+          fontSize={13}
         />
       );
     })
@@ -26,18 +28,19 @@ export default function PostListContent(props) {
         </div>
         <p></p>
         <div className="post-list-content-top-div-right-div">
-          <img 
-            className="post-list-content-top-div-right-left-img" 
-            src={imgLike}
-            width={20}
-            height={20}
-          />
-          <img 
+            <span className="post-list-content-top-div-right-div-span">{props.likes}</span>  
+            <img 
+              className="post-list-content-top-div-right-div-img" 
+              src={imgLike}
+              width={15}
+              height={15}
+            />
+          {/* <img 
             className="post-list-content-top-div-right-right-img" 
             src={imgScrap}
             width={20}
             height={20}
-          />
+          /> */}
         </div>
       </div>
       <div className="post-list-content-middle-div">

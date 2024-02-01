@@ -20,18 +20,25 @@ const customStyles = {
     zIndex: "10",
   },
   content: {
-    width: "360px",
-    height: "630px",
+    // width: "360px",
+    width: "350px",
+    // height: "630px",
+    height: "620px",
     zIndex: "150",
     position: "absolute",
-    top: "385px",
+    // top: "385px",
+    top: "400px",
     left: "200px",
     transform: "translate(-50%, -50%)",
-    borderRadius: "10px",
-    boxShadow: "2px 2px 2px rgba(0, 0, 0, 0.25)",
+    // borderRadius: "10px",
+    // boxShadow: "2px 2rem 2px rgba(0, 0, 0, 0.25)",
+    boxShadow: "0rem 0.25rem 1rem rgba(0, 0, 0, 0.2)",
     backgroundColor: "white",
     justifyContent: "center",
-    overflow: "auto",
+    // overflow: "auto",
+    padding: "0px",
+    paddingBottom: "20px",
+    borderRadius: "0px",
   },
 };
 
@@ -49,12 +56,12 @@ export default function PostDetailModal(props) {
       contentLabel="Post Detail Modal"
     >
       <div className="post-detail-modal-container">
-        <div className="post-detail-modal-top-div">
+        {/* <div className="post-detail-modal-top-div">
           <span className="post-detail-modal-top-span">{ post.id } 번 게시물</span>
-        </div>
+        </div> */}
         
         <div onClick={props.closeModal} className="post-detail-modal-close-button-div">
-          <img className="post-detail-modal-close-button" src={imgClose2} />
+          <img className="post-detail-modal-close-button" src={imgClose} />
         </div>
         
         <PostDetailContent
@@ -63,9 +70,11 @@ export default function PostDetailModal(props) {
           content={post.content}
           createdAt={post.createdAt}
           tagList={post.tagList}
+          likes={post.likes}
+          comments={post.comments}
         />
 
-        <button className="post-detail-modal-submit-button btn btn-secondary" onClick={props.closeModal}>닫기</button>
+        {/* <button className="post-detail-modal-submit-button btn btn-secondary" onClick={props.closeModal}>닫기</button> */}
       </div>
     </Modal>
   );

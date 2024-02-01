@@ -41,12 +41,20 @@
   word-break: keep-all;
 }
 
-.post-list-content-top-div-right-left-img {
-  margin-right: 5px;
+.post-list-content-top-div-right-div {
+  width: 80px;
+  text-align: end;
+  color: rgb(146, 146, 0);
 }
 
-.post-list-content-top-div-right-right-img {
+.post-list-content-top-div-right-div-img {
+  margin-left: 3px;
+  margin-bottom: 3px;
+}
 
+.post-list-content-top-div-right-div-span {
+  font-size: 15px;
+  font-weight: bold;
 }
 
 .post-list-content-middle-div {

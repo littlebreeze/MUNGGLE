@@ -11,30 +11,32 @@
   background-image: url("../../assets/example/testMap.PNG");
 }
 
-.walk-calender-img-div {
-  width: 40px;
-  height: 40px;
+.walk-calender-div {
+  width: 52px;
+  height: 52px;
   position: absolute;
-  top: 5%;
-  right: 1%;
+  top: 7%;
+  right: -1%;
   transform: translate(-50%, -50%);
   z-index: 10;
-  background-color: #f7f6f6;
+  background-color: rgb(253, 245, 169);
   border-radius: 10px;
-  display: flex;
   justify-content: center;
   align-items: center;
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.2);
+  text-align: center;
+  border: 1px solid gainsboro;
 }
 
-.walk-calender-img {
+/* .walk-calender-img {
   width: 50px;
   height: 50px;
-}
+} */
 
 .walk-start-button-div {
   position: absolute;
   left: 50%;
-  bottom: 5%;
+  bottom: 0%;
   transform: translate(-50%, -50%);
   z-index: 10;
   width: 100px;
@@ -46,5 +48,26 @@
   height: 50px;
   border-radius: 10px;
   font-weight: bold;
-  background-color: #f4f4f4c9;
+  background-color: rgb(253, 245, 169);
+  box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.2);
+  border: 1px solid gainsboro;
+  font-size: 20px;
+}
+
+.walk-calender-div-top-div {
+  font-size: 10px;
+  margin-top: 5px;
+  font-weight: bold;
+  height: 10px;
+}
+
+.walk-calender-div-middle-div {
+  margin-left: 13px;
+  width: 50%;
+  border-bottom: 1px solid black;
+}
+
+.walk-calender-div-bottom-div {
+  font-size: 25px;
+  font-weight: bold;
 }

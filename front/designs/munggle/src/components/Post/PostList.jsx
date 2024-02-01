@@ -16,6 +16,7 @@ export default function PostList(props) {
       title={props.title}
       createdAt={props.createdAt}
       tagList={props.tagList}
+      likes={props.likes}
     />
   </div>
  ); 

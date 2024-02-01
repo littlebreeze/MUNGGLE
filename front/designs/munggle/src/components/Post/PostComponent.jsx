@@ -38,6 +38,7 @@ export default function PostComponent(props) {
               title={post.title}
               createdAt={post.createdAt}
               tagList={post.tagList}
+              likes={post.likes}
             />
           </div>
         </div>

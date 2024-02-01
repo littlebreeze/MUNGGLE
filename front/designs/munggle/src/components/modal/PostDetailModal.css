@@ -3,6 +3,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-family: "Pretendard-Regular";
+  /* border: 1px solid black; */
 }
 
 .post-detail-modal-top-div {
@@ -21,17 +23,17 @@
 }
 
 .post-detail-modal-close-button-div {
-  width: 35px;
-  height: 35px;
+  /* width: 35px; */
+  /* height: 35px; */
   border-radius: 10px;
   position: absolute;
-  right: 5px;
-  top: 0;
+  right: 3px;
+  top: -2px;
 }
 
 .post-detail-modal-close-button {
-  width: 35px;
-  height: 35px;
+  width: 15px;
+  height: 15px;
   border-radius: 10px;
 }
 

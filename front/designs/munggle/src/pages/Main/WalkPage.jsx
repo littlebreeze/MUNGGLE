@@ -12,6 +12,22 @@ import iconCalender from "../../assets/icons/calender.png";
 const { kakao } = window;
 
 export default function Walk(props) {
+  const [dayOfTheWeek, setDayoOfWeek] = useState('');
+  const [monthDate, setMonthDate] = useState('');
+
+  useEffect(() => {
+    const currentDate = new Date();
+    const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const dayOfWeek = days[currentDate.getDay()];
+    setDayoOfWeek(dayOfWeek);
+
+    // const month = currentDate.getMonth() + 1;
+    const date = currentDate.getDate();
+    setMonthDate(`${date}`);
+
+    navigator.geolocation.getCurrentPosition(success, error, options);
+  }, []);
+
   const [location, setLocation] = useState({});
 
   const success = (position) => {
@@ -32,10 +48,10 @@ export default function Walk(props) {
     maximumAge: 30000,
   };
 
-  // useEffect(() => {
-  //   navigator.geolocation.getCurrentPosition(success, error, options);
-  //   console.log(location)
-  // }, []);
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(success, error, options);
+    console.log(location)
+  }, []);
 
   useEffect(() => {
     // 지도 그리기
@@ -69,12 +85,15 @@ export default function Walk(props) {
     <div className="walk-container-div">
       <div className="walk-page-map-div" id="map"></div>
 
-      <div className="walk-calender-img-div">
-        <img className="walk-calender-img" src={iconCalender} />
+      <div className="walk-calender-div">
+        <div className="walk-calender-div-top-div">{dayOfTheWeek}</div>
+        {/* <div className="walk-calender-div-middle-div"></div> */}
+        <div className="walk-calender-div-bottom-div">{monthDate}</div>
+        {/* <img className="walk-calender-img" src={iconCalender} /> */}
       </div>
 
       <div onClick={(e) => getLocation()} className="walk-start-button-div">
-        <button className="walk-start-button">산책 갈까?</button>
+        <button className="walk-start-button">산책갈까?</button>
       </div>
     </div>
   );
