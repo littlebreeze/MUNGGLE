@@ -1,8 +1,8 @@
 package com.munggle.post.service;
 
-import com.munggle.post.dto.PostCreateDto;
-import com.munggle.post.dto.PostDetailResponseDto;
-import com.munggle.post.dto.PostUpdateDto;
+import com.munggle.post.dto.request.PostCreateDto;
+import com.munggle.post.dto.response.PostDetailDto;
+import com.munggle.post.dto.request.PostUpdateDto;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,5 +13,5 @@ public interface PostService {
 
     void deletePost(Long postId);
 
-    PostDetailResponseDto getDetailPost(Long postId, Long userId);
+    PostDetailDto getDetailPost(Long postId, Long userId);
 }

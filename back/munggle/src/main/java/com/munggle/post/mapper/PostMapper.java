@@ -2,8 +2,8 @@ package com.munggle.post.mapper;
 
 import com.munggle.domain.model.entity.*;
 import com.munggle.image.dto.FileInfoDto;
-import com.munggle.post.dto.PostCreateDto;
-import com.munggle.post.dto.PostDetailResponseDto;
+import com.munggle.post.dto.request.PostCreateDto;
+import com.munggle.post.dto.response.PostDetailDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -23,8 +23,8 @@ public class PostMapper {
                 .build();
     }
 
-    public static PostDetailResponseDto toPostDetailResponseDto(Post detailPost, String nickname, Boolean isMine, List<String> imageUrls, List<String> hashtags) {
-        return PostDetailResponseDto.builder()
+    public static PostDetailDto toPostDetailResponseDto(Post detailPost, String nickname, Boolean isMine, List<String> imageUrls, List<String> hashtags) {
+        return PostDetailDto.builder()
                 .postTitle(detailPost.getPostTitle())
                 .postContent(detailPost.getPostContent())
                 .images(imageUrls)

@@ -9,11 +9,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import com.munggle.post.dto.PostCreateDto;
-import com.munggle.post.dto.PostUpdateDto;
-import com.munggle.post.dto.PostListResponseDto;
-import com.munggle.post.dto.PostListRequestDto;
-import com.munggle.post.dto.PostDetailResponseDto;
+import com.munggle.post.dto.request.PostCreateDto;
+import com.munggle.post.dto.request.PostUpdateDto;
+import com.munggle.post.dto.response.PostListDto;
+import com.munggle.post.dto.response.PostDetailDto;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -28,7 +27,7 @@ public class PostController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PostListResponseDto getPostList(@RequestBody PostListRequestDto postListRequestDto) {
+    public PostListDto getPostList() {
         // 팔로잉: 최신순으로 정렬
         // 큐레이팅 순서로 정렬
 
@@ -37,8 +36,8 @@ public class PostController {
 
     @GetMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public PostDetailResponseDto viewPost(@AuthenticationPrincipal User principal,
-                                          @PathVariable(value = "postId") Long postId) {
+    public PostDetailDto viewPost(@AuthenticationPrincipal User principal,
+                                  @PathVariable(value = "postId") Long postId) {
 
         Long userId = principal.getId();
         return postService.getDetailPost(postId, userId);
