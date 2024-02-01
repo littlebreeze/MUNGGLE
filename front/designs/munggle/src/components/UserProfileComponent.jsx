@@ -16,8 +16,8 @@ export default function UserProfileComponent(props) {
       <ProfileCircle
         img={props.imgProfile}
         name={props.name}
-        width={55}
-        height={55}
+        width={60}
+        height={60}
       />
       <div className="post-profile-bottom-div">
         <div className="post-profile-bottom-div-left-div">

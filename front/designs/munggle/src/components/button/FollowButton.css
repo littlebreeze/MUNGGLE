@@ -6,7 +6,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 5px;
+  border: 1px solid gainsboro;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .follow-button-span {

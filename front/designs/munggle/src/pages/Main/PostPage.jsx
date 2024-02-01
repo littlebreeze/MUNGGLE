@@ -85,8 +85,8 @@ export default function Post(props) {
           key={index}
           img={profile.img}
           name={profile.name}
-          width={55}
-          height={55}
+          width={60}
+          height={60}
         />
       );
   })

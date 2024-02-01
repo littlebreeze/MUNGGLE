@@ -45,7 +45,7 @@ export default function PostComponent(props) {
     })
   
   return (
-    <div className="post-container-div">
+    <div className="post-bottom-div-container-div">
       {posts}
       <PostDetailModal 
         postData={postData}
