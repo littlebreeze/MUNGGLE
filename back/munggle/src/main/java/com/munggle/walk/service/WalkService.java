@@ -11,9 +11,6 @@ public interface WalkService {
     // 산책 생성
     void createWalk(WalkDto walkDto);
 
-    // 산책 종료 후 후기 등록
-    void updateWalk(Walk walkUpdateDto);
-
     // 내 기록 목록
     List<WalkDto> readMyWalks(Long userId);
 
@@ -28,6 +25,9 @@ public interface WalkService {
     // 산책 상세
     WalkDto detailWalk(Long walkId);
 
-    // 산책 수정
+    // 산책 종료 후 후기 등록, 산책 수정
     WalkDto updateWalk(WalkUpdateDto walkUpdateDto);
+
+    // 산책 공개여부 변경
+    void toggleVisibility(Long walkId);
 }

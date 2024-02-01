@@ -27,15 +27,15 @@ public class WalkController {
         walkService.createWalk(walkDto);
     }
 
-    // 넘겨 받는 방식 바꾸기
-    @GetMapping("/my-list/{userId}")
-    public List<WalkDto> myWalkList(@PathVariable Long userId){
-        return walkService.readMyWalks(userId);
+    @GetMapping
+    public List<WalkDto> myWalkList(@AuthenticationPrincipal User principal){
+        return walkService.readMyWalks(principal.getId());
     }
 
     @GetMapping("/list")
     public List<WalkDto> locationWalkList(@RequestParam Float lat, @RequestParam Float lng){
 
+        // 사용자 정보도 넘겨줘야 프로필을 띄울 수 있음
         return walkService.readLocationWalks(lat, lng);
     }
 
@@ -52,5 +52,10 @@ public class WalkController {
     @DeleteMapping("/{walkId}")
     public void walkDelete(@PathVariable Long walkId){
         walkService.deleteWalk(walkId);
+    }
+
+    @PostMapping("/{walkId}")
+    public void toggleVisibility(@PathVariable Long walkId){
+        walkService.toggleVisibility(walkId);
     }
 }

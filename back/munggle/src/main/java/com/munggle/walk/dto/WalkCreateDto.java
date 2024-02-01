@@ -21,14 +21,4 @@ public class WalkCreateDto {
     private boolean isDeleted;
     private List<Location> locationDtoList;
 
-    // LocationDto를 Location으로 바꾸는 함수
-//    public List<Location> toEntity(){
-//        List<Location> locationList = new ArrayList<>();
-//
-//        for(LocationDto locationDto : this.locationDtoList){
-//            locationList.add(Location.builder().walk(locationDto.g))
-//        }
-//
-//        return locationList;
-//    }
 }

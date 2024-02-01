@@ -30,12 +30,14 @@ public class Walk {
     private String walkName;
 
     @NotNull
-    //private Long userId;
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    private Long dogId;
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "dog_id")
+    private Dog dog;
 
     @Size(max = 50)
     private String description;
@@ -47,11 +49,18 @@ public class Walk {
     @Column(columnDefinition = "boolean default false")
     private boolean isDeleted;
 
+    @Column(columnDefinition = "boolean default false")
+    private Boolean isPrivated;
+
     @OneToMany(mappedBy = "walk", cascade = CascadeType.REMOVE)
     private List<Location> location;
 
     public void setUser(User user){
         this.user = user;
+    }
+
+    public void setDog(Dog dog){
+        this.dog = dog;
     }
 
     public void updateWalk(WalkUpdateDto walkUpdateDto){
@@ -62,6 +71,10 @@ public class Walk {
 
     public void setDeleted(){
         this.isDeleted = true;
+    }
+
+    public void togglePrivated(){
+        this.isPrivated = !this.isPrivated;
     }
 
     public void setLocations(List<Location> locations){
