@@ -30,6 +30,8 @@ const styles = StyleSheet.create ({
   },
   profileCircleImage: {
     borderRadius: 100,
+    borderColor: "lightgrey",
+    borderWidth: 1,
     width: 90,
     height: 90,
   },

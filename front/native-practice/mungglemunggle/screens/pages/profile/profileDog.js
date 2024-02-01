@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, Image, StyleSheet, Dimensions } from "react-native";
+import { View, ScrollView, Text, Image, StyleSheet, Dimensions } from "react-native";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -9,29 +9,31 @@ export default function ProfileDog (props) {
   const dogs = () => {
     return (
       <View style={styles.profileDogListView}>
-        {dogList && dogList.map((dog, index) => (
-          <View style={styles.profileDogView} key={index}>
-            <View style={styles.profileDogImageView}>
-              <Image 
-                style={styles.profileDogImage}
-                source={dog.img}
-              />
-            </View>
-            <View style={styles.profileDogNameView}>
-              <Text style={styles.profileDogName}>{dog.name}</Text>
-            </View>
-            <View style={styles.profileDogViewBottomView}>
-              <View style={styles.profileDogViewBottomViewLeftView}>
-                <Text style={styles.profileDogViewBottomText}>생일 : {dog.birthDate}</Text>
-                <Text style={styles.profileDogViewBottomText}>성별 : {dog.gender}</Text>
+        {dogList && dogList.map((dog, index) => {
+          return (
+            <View style={styles.profileDogView} key={index}>
+              <View style={styles.profileDogImageView}>
+                <Image 
+                  style={styles.profileDogImage}
+                  source={dog.img}
+                />
               </View>
-              <View style={styles.profileDogViewBottomViewRightView}>
-                <Text style={styles.profileDogViewBottomText}>견종 : {dog.kind}</Text>
-                <Text style={styles.profileDogViewBottomText}>무게 : {dog.weight} kg</Text>
+              <View style={styles.profileDogNameView}>
+                <Text style={styles.profileDogName}>{dog.name}</Text>
+              </View>
+              <View style={styles.profileDogViewBottomView}>
+                <View style={styles.profileDogViewBottomViewLeftView}>
+                  <Text style={styles.profileDogViewBottomText}>생일 : {dog.birthDate}</Text>
+                  <Text style={styles.profileDogViewBottomText}>성별 : {dog.gender}</Text>
+                </View>
+                <View style={styles.profileDogViewBottomViewRightView}>
+                  <Text style={styles.profileDogViewBottomText}>견종 : {dog.kind}</Text>
+                  <Text style={styles.profileDogViewBottomText}>무게 : {dog.weight} kg</Text>
+                </View>
               </View>
             </View>
-          </View>
-        ))}
+          );
+        })}
       </View>
     );
   };

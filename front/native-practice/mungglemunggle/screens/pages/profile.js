@@ -31,6 +31,9 @@ import imgPost8 from "../../assets/sample/dog8.jpg";
 import imgPost9 from "../../assets/sample/dog9.jpg";
 import imgPost10 from "../../assets/sample/dog10.jpg";
 
+import FollowButton from "../../components/followButton";
+import DirectMessageButton from "../../components/directMessageButton";
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 const Tab = createMaterialTopTabNavigator();
@@ -235,15 +238,10 @@ export default function ProfileScreen ( {navigation} ) {
         <View style={styles.profileTopViewBottomView}>
           <View style={styles.profileTopViewBottomViewTopView}>
             <Text style={styles.profileTopViewBottomViewName}>{ userProfile.name }</Text>
-            <TouchableOpacity style={styles.followButtonView}>
-              <Text style={styles.followButtonText}>팔로우</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.iconDirectMessageView}>
-              <Image 
-                style={styles.iconDirectMessage}
-                source={iconDirectMessage}
-                />
-            </TouchableOpacity>
+            <View style={styles.profileTopViewBottomViewButtonView}>
+              <FollowButton />
+              <DirectMessageButton />
+            </View>
           </View>
           <View style={styles.profileTopViewBottomViewBottomView}>
             <Text style={styles.textFollow}>팔로워 {userProfile.follower}</Text>
@@ -254,6 +252,7 @@ export default function ProfileScreen ( {navigation} ) {
       </View>
       <View style={styles.profileBottomView}>
         <Tab.Navigator
+          initialRouteName="Dog"
           screenOptions={{
             tabBarShowLabel: false,
             tabBarStyle: {
@@ -278,7 +277,7 @@ export default function ProfileScreen ( {navigation} ) {
           />
           <Tab.Screen 
             name="Post" 
-            component={ProfilePost} 
+            children={() => <ProfilePost postList={postList} />} 
             options={{
               tabBarIcon: () => (
                 <Image
@@ -290,7 +289,7 @@ export default function ProfileScreen ( {navigation} ) {
           />
           <Tab.Screen 
             name="Scrap" 
-            component={ProfileScrap} 
+            children={() => <ProfileScrap postList={postList} />} 
             options={{
               tabBarIcon: () => (
                 <Image
@@ -302,13 +301,15 @@ export default function ProfileScreen ( {navigation} ) {
           />
         </Tab.Navigator>
       </View>
-     </ScrollView>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   profileContainer: {
     width: SCREEN_WIDTH,
+    flex: 1,
+    height: SCREEN_HEIGHT * 0.82,
   },
   profileTopView: {
     width: SCREEN_WIDTH,
@@ -317,7 +318,7 @@ const styles = StyleSheet.create({
   },
   profileBottomView: {
     width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT,
+    height: SCREEN_HEIGHT * 2,
   },
   profileTabBarIcon: {
     width: SCREEN_HEIGHT * 0.04,
@@ -358,34 +359,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "600",
   },
-  followButtonView: {
-    width: SCREEN_HEIGHT * 0.07,
-    height: SCREEN_HEIGHT * 0.03,
-    backgroundColor: "rgb(253, 245, 169)",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 8,
-    position: "absolute",
-    right: SCREEN_WIDTH * 0.1,
-  },
-  followButtonText: {
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  iconDirectMessageView: {
-    width: SCREEN_HEIGHT * 0.04,
-    height: SCREEN_HEIGHT * 0.03,
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 8,
+  profileTopViewBottomViewButtonView: {
+    flexDirection: "row",
+    width: SCREEN_WIDTH * 0.235,
+    justifyContent: "space-between",
     position: "absolute",
     right: SCREEN_WIDTH * 0.01,
-    backgroundColor: "rgb(253, 245, 169)",
-  },
-  iconDirectMessage: {
-    width: SCREEN_HEIGHT * 0.028,
-    height: SCREEN_HEIGHT * 0.027,
-    borderRadius: 8,
+    top: SCREEN_HEIGHT * 0.014,
   },
   profileTopViewBottomViewBottomView: {
     width: SCREEN_WIDTH,

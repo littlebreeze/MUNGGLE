@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Text, View, StyleSheet, Dimensions } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Font from "expo-font";
     
 import HomeScreen from './screens/pages/post';
@@ -11,7 +9,9 @@ import WalkScreen from './screens/pages/walk';
 import Body from './screens/layout/body';
 import Nav from './screens/layout/nav';
 
-const Stack = createNativeStackNavigator();
+// nav : 10 %
+// body : 82 %
+// footer : 8 %
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -25,23 +25,15 @@ export default function App() {
   }, []);
 
   return (
-    <NavigationContainer style={styles.container}>
-      <View style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT * 0.10}}>
-        <Nav />
+    <View style={styles.container}>
+      <View style={{ width: SCREEN_WIDTH, flex: 1}}>
+        <Nav style={{ width: SCREEN_WIDTH, flex: 1}}/>
       </View>
       
-      <Stack.Navigator
-        style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT * 0.90}}
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen 
-          name="Body"
-          component={Body}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+      <View style={{ width: SCREEN_WIDTH, flex: 9}}>
+        <Body style={{ width: SCREEN_WIDTH, flex: 1}}/>
+      </View>
+    </View>
   
   );
 }
@@ -50,9 +42,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
+    flex: 1,
   },
 });
