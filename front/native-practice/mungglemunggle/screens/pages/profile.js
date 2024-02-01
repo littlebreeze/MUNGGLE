@@ -349,7 +349,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   textDescription: {
-
     fontSize: 15,
   },
   followButtonView: {
@@ -372,6 +371,5 @@ const styles = StyleSheet.create({
     width: SCREEN_HEIGHT * 0.03,
     height: SCREEN_HEIGHT * 0.03,
     borderRadius: 8,
-
   },
 });
