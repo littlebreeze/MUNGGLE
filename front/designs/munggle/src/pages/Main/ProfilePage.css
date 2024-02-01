@@ -131,10 +131,12 @@
   height: 35px;
   border: 0px;
   background-color: rgb(253, 245, 169);
-  border-radius: 5px;
   color:  black;
   position: absolute;
   left: 73%;
+  border: 1px solid gainsboro;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
 }
 
 .profile-top-div-bottom-div-top-div-span {
@@ -144,12 +146,14 @@
 
 .profile-top-div-bottom-div-top-div-container {
   position: absolute;
-  left: 88%;
+  left: 87%;
   height: 35px;
   width: 35px;
   border: 0px;
   background-color: rgb(253, 245, 169);
-  border-radius: 5px;
+  border: 1px solid gainsboro;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
 }
 
 .profile-top-div-bottom-div-top-div-img {
