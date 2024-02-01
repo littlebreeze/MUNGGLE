@@ -10,7 +10,8 @@ import com.munggle.post.repository.UserRecentTagCacheRepository;
 import com.munggle.post.repository.UserRecentTagRepository;
 import com.munggle.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import static com.munggle.domain.exception.ExceptionMessage.TAG_NOT_FOUND;
 @Service
 @EnableScheduling
 @RequiredArgsConstructor
+@Slf4j
 public class CuratingServiceImpl implements CuratingService {
 
     private final UserRecentTagCacheRepository userRecentTagCacheRepository;
@@ -31,6 +33,7 @@ public class CuratingServiceImpl implements CuratingService {
     private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     /**
      * cache에서 tag를 가지고 와서 랜덤으로 5개 추출
@@ -39,8 +42,28 @@ public class CuratingServiceImpl implements CuratingService {
      * @return
      */
     public List<String> getTagList(Long userId) {
+
+        log.info("hash: {}", redisTemplate.opsForHash().get("user_tag:e40a8709-db5f-4d02-865a-fac3608a87e9", "tagId"));
+        log.info("hasha: {}", redisTemplate.opsForHash().entries("user_tag:e40a8709-db5f-4d02-865a-fac3608a87e9"));
+//        log.info("hash crud: {}", userRecentTagCacheRepository.findByUserId("1").get(0));
+//        log.info("hash crud1: {}", userRecentTagCacheRepository.findById("e40a8709-db5f-4d02-865a-fac3608a87e9"));
+//        log.info("hash crud2: {}", userRecentTagCacheRepository.findById("user_tag:e40a8709-db5f-4d02-865a-fac3608a87e9"));
+
+//           redisTemplate.opsForHash().get("user_tag:2742692b-aa53-43c5-9fe6-b4980b74e996", "tagId");
+//        Optional<UserRecentTagCache> recentTags = userRecentTagCacheRepository.findById("user_tag:2742692b-aa53-43c5-9fe6-b4980b74e996");
+//        log.info("tagId test: {}", recentTags.get().getTagId());
+
+//        List<UserRecentTagCache> recentTagCacheList = userRecentTagCacheRepository.findAll();
+//        log.info("[0]: {}", recentTagCacheList.get(0));
+
+
         // userId에 해당하는 최근 태그를 가져오기
-        List<UserRecentTagCache> recentTags = userRecentTagCacheRepository.findByUserId(userId, PageRequest.of(0, 30));
+        List<UserRecentTagCache> recentTags = (List<UserRecentTagCache>) userRecentTagCacheRepository.findByUserId(userId);
+//        Optional<UserRecentTagCache> recentTags = userRecentTagCacheRepository.findById("e40a8709-db5f-4d02-865a-fac3608a87e9");
+//        List<UserRecentTagCache> recentTags = null;
+        if(recentTags.isEmpty()) {
+            log.info("recentTags is EMPTY");
+        }
 
         // 각 태그에 대한 tagId 추출
         List<Long> tagIds = recentTags.stream()
@@ -69,8 +92,9 @@ public class CuratingServiceImpl implements CuratingService {
      * @param userId
      * @param tagId
      */
-    @Transactional
-    public void saveRecentTag(Long userId, Long tagId) {
+//    @Transactional
+//    public void saveRecentTag(Long userId, Long tagId) {
+            public void saveRecentTag(Long userId, Long tagId) {
 
         UserRecentTagCache newUserTag = userRecentTagCacheRepository.findByUserIdAndTagId(userId, tagId)
                                 .orElseGet(() -> UserRecentTagCache.builder()
@@ -82,10 +106,10 @@ public class CuratingServiceImpl implements CuratingService {
     /**
      * 주기적으로 cache에 있는 데이터 db에 저장
      */
-    @Scheduled(fixedDelay = 600000) // 10분(밀리초 단위)마다 실행
+//    @Scheduled(fixedDelay = 600000) // 10분(밀리초 단위)마다 실행
     public void migrateRecentTags() {
-        
-        List<UserRecentTagCache> recentTags = userRecentTagCacheRepository.findAll();
+
+        List<UserRecentTagCache> recentTags = (List<UserRecentTagCache>) userRecentTagCacheRepository.findAll();
 
         // 사용자 최신 태그 리스트들을 db에 저장
         for (UserRecentTagCache recentTag : recentTags) {
@@ -93,7 +117,7 @@ public class CuratingServiceImpl implements CuratingService {
         }
     }
 
-    @Transactional
+//    @Transactional
     public void migrateTag(UserRecentTagCache recentTag) {
         User user = userRepository.findByIdAndIsEnabledTrue(recentTag.getUserId())
                 .orElseThrow(() -> new RuntimeException());
@@ -110,6 +134,7 @@ public class CuratingServiceImpl implements CuratingService {
         List<String> tags = getTagList(userId);
         List<Post> getPost;
         if (tags.isEmpty()) { // 존재하는 tag가 없다면 추천순으로 게시글 정렬
+            log.info("isEmpty");
             getPost = postRepository.findAllOrderByLikeCntDesc();
         } else { // 있으면 태그가 존재하는 게시글 추천순으로 정렬
             getPost = postRepository.findByTagsInOrderByLikeCntDesc(tags);
