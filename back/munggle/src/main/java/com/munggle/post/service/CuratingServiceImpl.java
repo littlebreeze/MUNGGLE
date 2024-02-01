@@ -1,16 +1,12 @@
 package com.munggle.post.service;
 
-import com.munggle.domain.model.entity.Tag;
-import com.munggle.domain.model.entity.User;
-import com.munggle.domain.model.entity.UserRecentTag;
-import com.munggle.domain.model.entity.UserRecentTagCache;
+import com.munggle.domain.model.entity.*;
 import com.munggle.post.repository.TagRepository;
 import com.munggle.post.repository.UserRecentTagCacheRepository;
 import com.munggle.post.repository.UserRecentTagRepository;
 import com.munggle.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -28,11 +24,6 @@ public class CuratingServiceImpl implements CuratingService {
     private final UserRepository userRepository;
     private final TagRepository tagRepository;
 
-    @Override
-    public void saveViewPostTag(Long userId, Long postId) {
-
-    }
-
     /**
      * cache에 있는 데이터 가져오기
      *
@@ -49,6 +40,7 @@ public class CuratingServiceImpl implements CuratingService {
      * @param userId
      * @param tagId
      */
+    @Transactional
     public void saveRecentTag(Long userId, Long tagId) {
 
         UserRecentTagCache newUserTag = userRecentTagCacheRepository.findByUserIdAndTagId(userId, tagId)

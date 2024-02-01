@@ -31,8 +31,7 @@ public class PostServiceImpl implements PostService {
     private final PostImageRepository postImageRepository;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
-    private final UserRecentTagRepository userRecentTagRepository;
-    private final UserRecentTagCacheRepository userRecentTagCacheRepository;
+    private final CuratingService curatingService;
 
     /**
      * 게시글 상세보기 메소드
@@ -61,6 +60,7 @@ public class PostServiceImpl implements PostService {
         for (PostTag postTag : postTags) {
             if (postTag.getIsDeleted() == false) {
                 hashtags.add(postTag.getTag().getTagNm());
+                curatingService.saveRecentTag(userId, postTag.getTag().getId()); // 큐레이팅을 위한 해시태그 수집
             }
         }
 
@@ -107,6 +107,8 @@ public class PostServiceImpl implements PostService {
             PostTag newPostTag = PostMapper.toPostTagEntity(newPostTagId, newPost, newTag);
             newPostTag.markAsDeletedFalse();
             postTags.add(newPostTag);
+
+            curatingService.saveRecentTag(userId, newTag.getId()); // 큐레이팅을 위한 해시태그 수집
         }
 
         postTagRepository.saveAll(postTags); // 영속화
