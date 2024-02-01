@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface KindRepository extends JpaRepository<Kind, Long> {
 
-    Optional<List<Kind>> findByKindNmLike(String input);
+    Optional<List<Kind>> findByKindNmContains(String input);
 }

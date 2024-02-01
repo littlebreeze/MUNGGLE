@@ -19,5 +19,6 @@ public interface OpenAPIService {
     // 입력에 따른 품종 리스트
     List<KindDto> selectKind(String input);
 
+    // 품종 리스트 검색
     List<LostDogDto> selectListDog(String region, String kind);
 }

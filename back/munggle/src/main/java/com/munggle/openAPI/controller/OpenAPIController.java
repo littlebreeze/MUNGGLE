@@ -2,16 +2,16 @@ package com.munggle.openAPI.controller;
 
 import com.munggle.domain.model.entity.Kind;
 import com.munggle.domain.model.entity.LostDog;
+import com.munggle.domain.model.entity.User;
 import com.munggle.openAPI.dto.KindDto;
 import com.munggle.openAPI.dto.LostDogDto;
 import com.munggle.openAPI.service.OpenAPIService;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -44,6 +44,7 @@ public class OpenAPIController {
 
     // 품종 정보 요청 - 관리자만 가능하도록 설정
     @GetMapping("/request-kinds")
+    @ResponseStatus(HttpStatus.OK)
     public void requestKind() throws IOException, ParseException {
 
         StringBuilder urlBuilder = new StringBuilder(abandonedUrl); /*URL*/
@@ -56,7 +57,6 @@ public class OpenAPIController {
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Accept", "application/json");
         conn.setRequestProperty("Content-type", "application/json");
-        System.out.println("Response code: " + conn.getResponseCode());
         BufferedReader rd;
         if(conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
             rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
@@ -71,13 +71,13 @@ public class OpenAPIController {
         rd.close();
         conn.disconnect();
 
-        System.out.println(sb.toString());
         // DB에 저장
         openAPIService.insertKind(sb.toString());
     }
 
     // 유기 동물 정보 요청 - 관리자만 가능하도록 설정
     @GetMapping("/request-lostdogs")
+    @ResponseStatus(HttpStatus.OK)
     public void requestLostdog() throws IOException, ParseException {
 
         Long totalCnt = -1L;
@@ -101,7 +101,7 @@ public class OpenAPIController {
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Content-type", "application/json");
-            System.out.println("Response code: " + conn.getResponseCode());
+            conn.setRequestProperty("Accept", "application/json");
             BufferedReader rd;
             if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
                 rd = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
@@ -130,22 +130,23 @@ public class OpenAPIController {
 
     // DB Select
     // 입력한 값에 따라 품종 리스트
-    @GetMapping(value = {"/kinds/{input}", "/kind"})
-    public List<KindDto> kind(@PathVariable(required = false) String input){
+    @GetMapping(value = {"/kinds/{input}", "/kinds", "/kinds/"})
+    @ResponseStatus(HttpStatus.OK)
+    public List<KindDto> kind(@PathVariable(required = false) Optional<String> input){
 
-        return openAPIService.selectKind("%"+input+"%");
+        // 입력값이 없을 때는 ""를 넘겨 전체 리스트가 반환되도록 한다.
+        return openAPIService.selectKind(input.orElse(""));
     }
 
     // 보여줄 유기동물 정보
     // 지역, 품종
-    // 로그인 사용자 정보 받는 방법 결정 후 mapping 수정 예정
     @GetMapping("/lostdogs")
-    public List<LostDogDto> listOfLostDog(Optional<String> region, Optional<String> kind){
+    @ResponseStatus(HttpStatus.OK)
+    public List<LostDogDto> listOfLostDog(@AuthenticationPrincipal User principal, Optional<String> region, Optional<String> kind){
 
-        // null 값 처리를 위한 Optional 사용
         String careAddr = region.orElse("");
         String inputKind = kind.orElse("");
 
-        return openAPIService.selectListDog("%"+careAddr+"%","%"+inputKind);
+        return openAPIService.selectListDog(careAddr,inputKind);
     }
 }

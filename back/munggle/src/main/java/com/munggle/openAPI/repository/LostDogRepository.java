@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface LostDogRepository extends JpaRepository<LostDog, Long> {
 
-    Optional<List<LostDog>> findByCareAddrLikeAndKindLike(String careAddr, String kind);
+    Optional<List<LostDog>> findByCareAddrContainsAndKindEndsWith(String careAddr, String kind);
 }

@@ -43,7 +43,6 @@ public class OpenAPIServiceImpl implements OpenAPIService {
                     .kindId(code)
                     .build();
 
-            // Repository로 DB에 저장 코드 작성하기
             kindRepository.save(kind);
         }
     }
@@ -96,12 +95,12 @@ public class OpenAPIServiceImpl implements OpenAPIService {
     @Override
     public List<KindDto> selectKind(String input) {
 
-        return kindRepository.findByKindNmLike(input).orElseThrow().stream().map(Kind::toDto).collect(Collectors.toList());
+        return kindRepository.findByKindNmContains(input).orElseThrow().stream().map(Kind::toDto).collect(Collectors.toList());
     }
 
     @Override
     public List<LostDogDto> selectListDog(String region, String kind) {
-        return lostDogRepository.findByCareAddrLikeAndKindLike(region, kind).orElseThrow().stream().map(LostDog::toDto).collect(Collectors.toList());
+        return lostDogRepository.findByCareAddrContainsAndKindEndsWith(region, kind).orElseThrow().stream().map(LostDog::toDto).collect(Collectors.toList());
     }
 
 
