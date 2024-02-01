@@ -1,6 +1,7 @@
 package com.munggle.post.controller;
 
 import com.munggle.domain.model.entity.User;
+import com.munggle.post.service.CuratingService;
 import com.munggle.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
+    private final CuratingService curatingService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -32,6 +34,16 @@ public class PostController {
         // 큐레이팅 순서로 정렬
 
         return null;
+    }
+
+    @GetMapping("/curating")
+    @ResponseStatus(HttpStatus.OK)
+    public List<PostListDto> getCuratingPostList(@AuthenticationPrincipal User principal) {
+
+        Long userId = principal.getId();
+        List<PostListDto> curatingPosts = curatingService.getPostCuratingList(userId);
+
+        return curatingPosts;
     }
 
     @GetMapping("/{postId}")
