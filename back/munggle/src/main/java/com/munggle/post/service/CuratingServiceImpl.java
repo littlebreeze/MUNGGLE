@@ -1,6 +1,7 @@
 package com.munggle.post.service;
 
 import com.munggle.domain.model.entity.*;
+import com.munggle.post.dto.response.PostListDto;
 import com.munggle.post.repository.TagRepository;
 import com.munggle.post.repository.UserRecentTagCacheRepository;
 import com.munggle.post.repository.UserRecentTagRepository;
@@ -50,7 +51,6 @@ public class CuratingServiceImpl implements CuratingService {
         userRecentTagCacheRepository.save(newUserTag);
     }
 
-
     /**
      * 주기적으로 cache에 있는 데이터 db에 저장
      */
@@ -75,5 +75,12 @@ public class CuratingServiceImpl implements CuratingService {
                 .user(user).tag(tag).build();
 
         userRecentTagRepository.save(userRecentTag);
+    }
+
+    public List<PostListDto> getPostCuratingList() {
+
+
+
+        return null;
     }
 }
