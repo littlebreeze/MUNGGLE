@@ -4,11 +4,13 @@ import com.munggle.domain.model.entity.*;
 import com.munggle.image.dto.FileInfoDto;
 import com.munggle.post.dto.request.PostCreateDto;
 import com.munggle.post.dto.response.PostDetailDto;
+import com.munggle.post.dto.response.PostListDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -65,6 +67,29 @@ public class PostMapper {
                 .postTagId(postTagId)
                 .post(post)
                 .tag(tag)
+                .build();
+    }
+
+    public static PostListDto toPostListDto(Post post) {
+        List<String> imageUrls = post.getPostImageList().stream()
+                .map(PostImage::getImageURL)
+                .collect(Collectors.toList());
+
+        List<String> hashtags = post.getPostTagList().stream()
+                .filter(postTag -> !postTag.getIsDeleted())
+                .map(PostTag::getTag)
+                .map(Tag::getTagNm)
+                .collect(Collectors.toList());
+
+        return PostListDto.builder()
+                .postId(post.getId())
+                .postTitle(post.getPostTitle())
+                .imageURLs(imageUrls)
+                .hashtags(hashtags)
+                .userId(post.getUser().getId())
+                .nickname(post.getUser().getNickname())
+                .likeCnt(post.getLikeCnt())
+                .createdAt(post.getCreatedAt())
                 .build();
     }
 }
