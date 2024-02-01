@@ -35,6 +35,7 @@ public class WalkController {
     @GetMapping("/list")
     public List<WalkDto> locationWalkList(@RequestParam Float lat, @RequestParam Float lng){
 
+        // 사용자 정보도 넘겨줘야 프로필을 띄울 수 있음
         return walkService.readLocationWalks(lat, lng);
     }
 
@@ -51,5 +52,10 @@ public class WalkController {
     @DeleteMapping("/{walkId}")
     public void walkDelete(@PathVariable Long walkId){
         walkService.deleteWalk(walkId);
+    }
+
+    @PostMapping("/{walkId}")
+    public void toggleVisibility(@PathVariable Long walkId){
+        walkService.toggleVisibility(walkId);
     }
 }

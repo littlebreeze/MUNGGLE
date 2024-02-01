@@ -27,4 +27,7 @@ public interface WalkService {
 
     // 산책 종료 후 후기 등록, 산책 수정
     WalkDto updateWalk(WalkUpdateDto walkUpdateDto);
+
+    // 산책 공개여부 변경
+    void toggleVisibility(Long walkId);
 }

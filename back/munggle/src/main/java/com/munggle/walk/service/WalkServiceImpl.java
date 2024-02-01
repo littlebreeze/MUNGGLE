@@ -59,10 +59,12 @@ public class WalkServiceImpl implements WalkService{
     @Override
     public List<WalkDto> readMyWalks(Long userId) {
 
-        List<Walk> result = walkRepository.findAllByUserIdAndIsDeletedFalse(userId).orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
+        List<Walk> result = walkRepository.findAllByUserIdAndIsDeletedFalse(userId)
+                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
         List<WalkDto> list = new ArrayList<>();
         for(Walk walk : result){
-            walk.setLocations(locationRepository.findAllByWalkWalkId(walk.getWalkId()).orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND)));
+            walk.setLocations(locationRepository.findAllByWalkWalkId(walk.getWalkId())
+                    .orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND)));
             list.add(WalkMapper.toDto(walk));
         }
 
@@ -74,10 +76,12 @@ public class WalkServiceImpl implements WalkService{
 
         // 공개 범위 설정한 사용자의 산책 기록만 보내주자~
         // 마커 찍는건 로그 첫번째로!
-        List<Walk> result = walkRepository.findAllByIsDeletedFalse().orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
+        List<Walk> result = walkRepository.findAllByIsDeletedFalseAndIsPrivatedFalse()
+                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
         List<WalkDto> list = new ArrayList<>();
         for(Walk walk : result){
-            walk.setLocations(locationRepository.findAllByWalkWalkId(walk.getWalkId()).orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND)));
+            walk.setLocations(locationRepository.findAllByWalkWalkId(walk.getWalkId())
+                    .orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND)));
             list.add(WalkMapper.toDto(walk));
         }
         return list;
@@ -85,8 +89,10 @@ public class WalkServiceImpl implements WalkService{
 
     @Override
     public WalkDto detailWalk(Long walkId) {
-        Walk walk = walkRepository.findByWalkIdAndIsDeletedFalse(walkId).orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
-        walk.setLocations(locationRepository.findAllByWalkWalkId(walk.getWalkId()).orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND)));
+        Walk walk = walkRepository.findByWalkIdAndIsDeletedFalse(walkId)
+                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
+        walk.setLocations(locationRepository.findAllByWalkWalkId(walk.getWalkId())
+                .orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND)));
         return WalkMapper.toDto(walk);
     }
 
@@ -94,7 +100,8 @@ public class WalkServiceImpl implements WalkService{
     @Transactional
     public WalkDto updateWalk(WalkUpdateDto walkUpdateDto) {
 
-        Walk walk = walkRepository.findById(walkUpdateDto.getWalkId()).orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
+        Walk walk = walkRepository.findById(walkUpdateDto.getWalkId())
+                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
         walk.updateWalk(walkUpdateDto);
 
         return null;
@@ -102,8 +109,17 @@ public class WalkServiceImpl implements WalkService{
 
     @Override
     @Transactional
+    public void toggleVisibility(Long walkId) {
+        Walk walk = walkRepository.findById(walkId)
+                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
+        walk.togglePrivated();
+    }
+
+    @Override
+    @Transactional
     public void deleteWalk(Long walkId) {
-        Walk walk = walkRepository.findById(walkId).orElseThrow();
+        Walk walk = walkRepository.findById(walkId)
+                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
         walk.setDeleted();
     }
 }

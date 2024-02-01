@@ -13,7 +13,7 @@ public interface WalkRepository extends JpaRepository<Walk, Long> {
     Optional<List<Walk>> findAllByUserIdAndIsDeletedFalse(Long userId);
 
     // 산책 전체 목록
-    Optional<List<Walk>> findAllByIsDeletedFalse();
+    Optional<List<Walk>> findAllByIsDeletedFalseAndIsPrivatedFalse();
 
     // 산책 상세 정보
     Optional<Walk> findByWalkIdAndIsDeletedFalse(Long walkId);

@@ -49,6 +49,9 @@ public class Walk {
     @Column(columnDefinition = "boolean default false")
     private boolean isDeleted;
 
+    @Column(columnDefinition = "boolean default false")
+    private Boolean isPrivated;
+
     @OneToMany(mappedBy = "walk", cascade = CascadeType.REMOVE)
     private List<Location> location;
 
@@ -68,6 +71,10 @@ public class Walk {
 
     public void setDeleted(){
         this.isDeleted = true;
+    }
+
+    public void togglePrivated(){
+        this.isPrivated = !this.isPrivated;
     }
 
     public void setLocations(List<Location> locations){
