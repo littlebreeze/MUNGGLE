@@ -42,6 +42,9 @@ public class Post extends BaseTimeEntity {
     private User user;
 
     @OneToMany(mappedBy = "post")
+    private List<PostImage> postImageList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "post")
     private List<PostTag> postTagList = new ArrayList<>();
 
     @Column(name = "like_cnt")
