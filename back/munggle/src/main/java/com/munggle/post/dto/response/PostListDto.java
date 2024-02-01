@@ -1,13 +1,13 @@
 package com.munggle.post.dto.response;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
-@NoArgsConstructor
+@Getter
+@Builder
+@AllArgsConstructor
 public class PostListDto {
 
     private Long postId;
@@ -17,6 +17,8 @@ public class PostListDto {
     private List<String> imageURLs;
 
     private List<String> hashtags;
+
+    private Long userId;
 
     private String nickname;
 
