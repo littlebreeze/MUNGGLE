@@ -227,11 +227,14 @@ export default function ProfileScreen ( {navigation} ) {
           />
         </View>
         <View style={styles.profileTopViewMiddleView}>
-
+          <Image 
+            style={styles.profileTopViewMiddleViewImage}
+            source={imgProfile1}
+          />
         </View>
         <View style={styles.profileTopViewBottomView}>
           <View style={styles.profileTopViewBottomViewTopView}>
-            <Text>{ userProfile.name }</Text>
+            <Text style={styles.profileTopViewBottomViewName}>{ userProfile.name }</Text>
             <TouchableOpacity style={styles.followButtonView}>
               <Text style={styles.followButtonText}>팔로우</Text>
             </TouchableOpacity>
@@ -239,7 +242,7 @@ export default function ProfileScreen ( {navigation} ) {
               <Image 
                 style={styles.iconDirectMessage}
                 source={iconDirectMessage}
-              />
+                />
             </TouchableOpacity>
           </View>
           <View style={styles.profileTopViewBottomViewBottomView}>
@@ -254,7 +257,7 @@ export default function ProfileScreen ( {navigation} ) {
           screenOptions={{
             tabBarShowLabel: false,
             tabBarStyle: {
-              height: SCREEN_HEIGHT * 0.07,
+              height: SCREEN_HEIGHT * 0.06,
             },
             tabBarItemStyle: {
               height: SCREEN_HEIGHT * 0.06,
@@ -263,7 +266,7 @@ export default function ProfileScreen ( {navigation} ) {
         >
           <Tab.Screen 
             name="Dog" 
-            component={ProfileDog} 
+            children={() => <ProfileDog dogList={userProfile.dogs} />}
             options={{
               tabBarIcon: () => (
                 <Image
@@ -310,33 +313,79 @@ const styles = StyleSheet.create({
   profileTopView: {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT * 0.35,
+    position: "relative",
   },
   profileBottomView: {
     width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 0.6,
+    height: SCREEN_HEIGHT,
   },
   profileTabBarIcon: {
     width: SCREEN_HEIGHT * 0.04,
     height: SCREEN_HEIGHT * 0.04,
+    marginTop: -5,
+    marginLeft: -5,
   },
   profileTopViewTopView: {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT * 0.2,
   },
   profileTopViewMiddleView: {
-    
+    position: "absolute",
+    borderRadius: 100,
+    width: 100,
+    height: 100,
+    top: SCREEN_HEIGHT * 0.133,
+    left: SCREEN_WIDTH * 0.07,
+  },
+  profileTopViewMiddleViewImage: {
+    borderRadius: 100,
+    width: 100,
+    height: 100,
   },
   profileTopViewBottomView: {
+    width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT * 0.15,
-    paddingHorizontal: SCREEN_HEIGHT * 0.02
+    paddingHorizontal: SCREEN_HEIGHT * 0.02,
   },
   profileTopViewBottomViewTopView: {
-    width: SCREEN_WIDTH,
-    marginTop: SCREEN_HEIGHT * 0.01,
-    marginBottom: SCREEN_HEIGHT * 0.01,
+    marginVertical: SCREEN_HEIGHT * 0.01,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    position: "relative",
+  },
+  profileTopViewBottomViewName: {
+    fontSize: 20,
+    fontWeight: "600",
+  },
+  followButtonView: {
+    width: SCREEN_HEIGHT * 0.07,
+    height: SCREEN_HEIGHT * 0.03,
+    backgroundColor: "rgb(253, 245, 169)",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+    position: "absolute",
+    right: SCREEN_WIDTH * 0.1,
+  },
+  followButtonText: {
+    fontSize: 14,
+    fontWeight: "500",
+  },
+  iconDirectMessageView: {
+    width: SCREEN_HEIGHT * 0.04,
+    height: SCREEN_HEIGHT * 0.03,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 8,
+    position: "absolute",
+    right: SCREEN_WIDTH * 0.01,
+    backgroundColor: "rgb(253, 245, 169)",
+  },
+  iconDirectMessage: {
+    width: SCREEN_HEIGHT * 0.028,
+    height: SCREEN_HEIGHT * 0.027,
+    borderRadius: 8,
   },
   profileTopViewBottomViewBottomView: {
     width: SCREEN_WIDTH,
@@ -345,31 +394,10 @@ const styles = StyleSheet.create({
     marginBottom: SCREEN_HEIGHT * 0.01,
   },
   textFollow: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "600",
   },
   textDescription: {
-    fontSize: 15,
-  },
-  followButtonView: {
-    width: SCREEN_HEIGHT * 0.07,
-    height: SCREEN_HEIGHT * 0.03,
-    backgroundColor: "red",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 8,
-  },
-  followButtonText: {
-    fontSize: 15,
-  },
-  iconDirectMessageView: {
-    width: SCREEN_HEIGHT * 0.03,
-    height: SCREEN_HEIGHT * 0.03,
-    borderRadius: 8,
-  },
-  iconDirectMessage: {
-    width: SCREEN_HEIGHT * 0.03,
-    height: SCREEN_HEIGHT * 0.03,
-    borderRadius: 8,
+    fontSize: 14,
   },
 });
