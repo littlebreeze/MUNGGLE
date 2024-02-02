@@ -13,6 +13,9 @@ spring:
     include:
       - db
       - security
+      - api
+      - cloud
+      - email
 
 ---
 spring:
