@@ -23,7 +23,9 @@ public enum ExceptionMessage {
     MATCHING_CHARACTER_NOT_FOUND("매칭 특성이 등록되지 않았습니다."),
     MATCHING_IS_NOT_ON("매칭 옵션이 켜지지 않았습니다."),
     NOT_YOUR_DOG("당신의 반려견이 아닙니다."),
-    TAG_NOT_FOUND("해당 태그를 찾을 수 없습니다.");
+    TAG_NOT_FOUND("해당 태그를 찾을 수 없습니다."),
+    COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다."),
+    NOT_YOUR_COMMENT("당신이 작성한 댓글이 아닙니다.");
 
 
     private final String message;

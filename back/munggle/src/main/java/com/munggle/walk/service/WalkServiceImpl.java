@@ -11,6 +11,7 @@ import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.Walk;
 import com.munggle.user.repository.UserRepository;
 import com.munggle.walk.dto.LocationDto;
+import com.munggle.walk.dto.WalkCreateDto;
 import com.munggle.walk.dto.WalkDto;
 import com.munggle.walk.dto.WalkUpdateDto;
 import com.munggle.walk.mapper.WalkMapper;
@@ -37,7 +38,7 @@ public class WalkServiceImpl implements WalkService{
     private final DogRepository dogRepository;
 
     @Override
-    public void createWalk(WalkDto walkDto) {
+    public void createWalk(WalkCreateDto walkDto) {
 
         Walk walk = WalkMapper.toEntity(walkDto);
 
@@ -59,16 +60,11 @@ public class WalkServiceImpl implements WalkService{
     @Override
     public List<WalkDto> readMyWalks(Long userId) {
 
-        List<Walk> result = walkRepository.findAllByUserIdAndIsDeletedFalse(userId)
-                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
-        List<WalkDto> list = new ArrayList<>();
-        for(Walk walk : result){
-            walk.setLocations(locationRepository.findAllByWalkWalkId(walk.getWalkId())
-                    .orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND)));
-            list.add(WalkMapper.toDto(walk));
-        }
+        List<WalkDto> result = walkRepository.findAllByIsDeletedFalseAndIsPrivatedFalse()
+                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND))
+                .stream().map(walk -> WalkMapper.toDto(walk)).collect(Collectors.toList());
 
-        return list;
+        return result;
     }
 
     @Override
@@ -76,23 +72,18 @@ public class WalkServiceImpl implements WalkService{
 
         // 공개 범위 설정한 사용자의 산책 기록만 보내주자~
         // 마커 찍는건 로그 첫번째로!
-        List<Walk> result = walkRepository.findAllByIsDeletedFalseAndIsPrivatedFalse()
-                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
-        List<WalkDto> list = new ArrayList<>();
-        for(Walk walk : result){
-            walk.setLocations(locationRepository.findAllByWalkWalkId(walk.getWalkId())
-                    .orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND)));
-            list.add(WalkMapper.toDto(walk));
-        }
-        return list;
+        List<WalkDto> result = walkRepository.findAllByIsDeletedFalseAndIsPrivatedFalse()
+                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND))
+                .stream().map(walk -> WalkMapper.toDto(walk)).collect(Collectors.toList());
+
+        return result;
     }
 
     @Override
     public WalkDto detailWalk(Long walkId) {
         Walk walk = walkRepository.findByWalkIdAndIsDeletedFalse(walkId)
                 .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
-        walk.setLocations(locationRepository.findAllByWalkWalkId(walk.getWalkId())
-                .orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND)));
+
         return WalkMapper.toDto(walk);
     }
 

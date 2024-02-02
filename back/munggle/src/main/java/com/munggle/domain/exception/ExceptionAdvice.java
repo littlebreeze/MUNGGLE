@@ -12,14 +12,16 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class ExceptionAdvice {
 
     @ExceptionHandler({UserNotFoundException.class, FollowNotFoundException.class, BlockNotFoundException.class,
-            WalkNotFoundException.class, LocationsNotFoundException.class, DogNotFoundException.class, MatchingCharacterNotFoundException.class})
+            WalkNotFoundException.class, LocationsNotFoundException.class, DogNotFoundException.class, MatchingCharacterNotFoundException.class,
+            CommentNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNotFound(RuntimeException e) {
         return e.getMessage();
     }
 
     @ExceptionHandler({IllegalNicknameException.class, IllegalPasswordException.class, SelfInteractionException.class,
-            MatchingNotOnException.class, NotYourDogException.class})
+            MatchingNotOnException.class, NotYourDogException.class,
+            NotYourCommentException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleBadRequest(RuntimeException e) {
         return e.getMessage();
