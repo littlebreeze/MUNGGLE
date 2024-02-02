@@ -8,7 +8,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableJpaAuditing
 @EnableCaching
-@EnableScheduling
 @SpringBootApplication
 public class MunggleApplication {
 
