@@ -49,8 +49,9 @@ public class PostController {
 
     @GetMapping("/list/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserPostListDto> getAllUserPostList(@PathVariable(value = "userId") Long userId) {
-        return postService.getUserPost(userId);
+    public List<UserPostListDto> getAllUserPostList(@AuthenticationPrincipal User principal,
+                                                    @PathVariable(value = "userId") Long userId) {
+        return postService.getUserPost(userId, principal.getId());
     }
 
     @GetMapping("/{postId}")

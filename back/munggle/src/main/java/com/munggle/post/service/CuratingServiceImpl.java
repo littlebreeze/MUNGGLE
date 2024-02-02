@@ -83,9 +83,9 @@ public class CuratingServiceImpl implements CuratingService {
         List<Post> getPost;
         if (tags.isEmpty()) { // 존재하는 tag가 없다면 추천순으로 게시글 정렬
             log.info("isEmpty");
-            getPost = postRepository.findAllOrderByLikeCntDesc();
+            getPost = postRepository.findAllAndNotMineOrderByLikeCntDesc(userId);
         } else { // 있으면 태그가 존재하는 게시글 추천순으로 정렬
-            getPost = postRepository.findByTagsInOrderByLikeCntDesc(tags);
+            getPost = postRepository.findByTagsAndNotMineOrderByLikeCntDesc(tags, userId);
         }
 
         List<PostListDto> postList = getPost.stream()

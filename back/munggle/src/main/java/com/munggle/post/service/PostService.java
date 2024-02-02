@@ -18,5 +18,5 @@ public interface PostService {
 
     PostDetailDto getDetailPost(Long postId, Long userId);
 
-    List<UserPostListDto> getUserPost(Long userId);
+    List<UserPostListDto> getUserPost(Long findUserId, Long userId);
 }
