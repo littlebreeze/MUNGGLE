@@ -47,7 +47,6 @@
   height: 300px;
   border-radius: 100%;
   z-index: 4;
-  border: 1px solid black;
   position: absolute;
   top: 37%;
 }
@@ -56,6 +55,8 @@
   width: 300px;
   height: 300px;
   border-radius: 100%;
+  background-color: white;
+  border: 1px solid gainsboro;
 }
 
 .matching-main-info-edit-button-div {
@@ -70,4 +71,30 @@
 .matching-main-info-edit-button {
   width:65px;
   height:65px;
+}
+
+.matching-main-top-div {
+  width: 400px;
+  height: 400px;
+  background-color: rgb(253, 245, 169);
+  z-index: -3;
+  position: absolute;
+  top: 0%;
+}
+
+.matching-main-bottom-div {
+  width: 400px;
+  height: 260px;
+  /* background-color: #FCEDD8; */
+  z-index: -3;
+  position: absolute;
+  bottom: 0%;
+}
+
+.matching-main-title-div {
+  position: absolute;
+  font-size: 40px;
+  top: 12%;
+  font-weight: bold;
+  color: black;
 }

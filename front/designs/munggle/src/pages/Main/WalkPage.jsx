@@ -17,7 +17,7 @@ export default function Walk(props) {
 
   useEffect(() => {
     const currentDate = new Date();
-    const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const days = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
     const dayOfWeek = days[currentDate.getDay()];
     setDayoOfWeek(dayOfWeek);
 

@@ -20,8 +20,14 @@ export default function MatchingMainPage () {
 
   return (
     <div className="matching-main-container-div">
-      <div className="">
+      <div className="matching-main-top-div">
 
+      </div>
+      <div className="matching-main-bottom-div">
+
+      </div>
+      <div className="matching-main-title-div">
+        <p>킁킁</p>
       </div>
       <div className="matching-main-background-img-div">
         {/* <img className="matching-main-background-img" src={imgDogs} /> */}
