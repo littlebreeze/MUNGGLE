@@ -13,19 +13,20 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findByIdAndIsDeletedFalse(Long id);
-
-    @Query("select p from Post p where p.isDeleted = false order by p.likeCnt desc")
-    List<Post> findAllOrderByLikeCntDesc();
-
-    @Query("select distinct p from Post p " +
-            "join p.postTagList pt " +
-            "where pt.tag.tagNm in :tags and pt.isDeleted = false and p.isDeleted = false " +
-            "order by p.likeCnt desc")
-    List<Post> findByTagsInOrderByLikeCntDesc(@Param("tags") List<String> tags);
-
+    
     @Query("select p from Post p where p.isDeleted = false and p.user.id = :userId order by p.createdAt desc")
     List<Post> findByUserIdAndIsDeletedFalse(@Param("userId") Long userId);
 
     @Query("select p from Post p where p.isDeleted = false and p.isPrivate = false and p.user.id = :userId order by p.createdAt desc")
     List<Post> findByUserIdAndIsDeletedFalseAndIsPrivateFalse(@Param("userId") Long userId);
+
+    @Query("select p from Post p where p.isDeleted = false and p.user.id <> :userId order by p.likeCnt DESC")
+    List<Post> findAllAndNotMineOrderByLikeCntDesc(@Param("userId") Long userId);
+
+    @Query("select distinct p from Post p " +
+            "join p.postTagList pt " +
+            "where pt.tag.tagNm in :tags and pt.isDeleted = false " +
+            "and p.isDeleted = false and p.user.id <> :userId " +
+            "order by p.likeCnt desc")
+    List<Post> findByTagsAndNotMineOrderByLikeCntDesc(@Param("tags") List<String> tags, @Param("userId") Long userId);
 }
