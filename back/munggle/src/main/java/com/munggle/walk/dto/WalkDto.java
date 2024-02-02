@@ -1,6 +1,7 @@
 package com.munggle.walk.dto;
 
 import com.munggle.domain.model.entity.Location;
+import com.munggle.user.dto.UserProfileDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -20,7 +21,6 @@ public class WalkDto {
 
     private Long walkId;
     private String walkName;
-    private Long userId;
     private Long dogId;
     private String description;
     private Integer duration;
@@ -28,9 +28,8 @@ public class WalkDto {
     private Float rating;
     private boolean isDeleted;
 
+    private UserProfileDto user;
+
     private List<LocationDto> location;
 
-    public void setUserId(Long userId){
-        this.userId = userId;
-    }
 }

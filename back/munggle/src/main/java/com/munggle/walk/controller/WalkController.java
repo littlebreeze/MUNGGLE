@@ -2,6 +2,7 @@ package com.munggle.walk.controller;
 
 import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.Walk;
+import com.munggle.walk.dto.WalkCreateDto;
 import com.munggle.walk.dto.WalkDto;
 import com.munggle.walk.dto.WalkUpdateDto;
 import com.munggle.walk.service.WalkService;
@@ -21,7 +22,7 @@ public class WalkController {
 
     @PostMapping
     public void createWalk(@AuthenticationPrincipal User principal,
-                           @RequestBody @Valid WalkDto walkDto){
+                           @RequestBody @Valid WalkCreateDto walkDto){
 
         walkDto.setUserId(principal.getId());
         walkService.createWalk(walkDto);

@@ -4,7 +4,9 @@ import com.munggle.domain.exception.ExceptionMessage;
 import com.munggle.domain.exception.LocationsNotFoundException;
 import com.munggle.domain.model.entity.Location;
 import com.munggle.domain.model.entity.Walk;
+import com.munggle.user.mapper.UserMapper;
 import com.munggle.walk.dto.LocationDto;
+import com.munggle.walk.dto.WalkCreateDto;
 import com.munggle.walk.dto.WalkDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -17,12 +19,10 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class WalkMapper {
 
-    public static Walk toEntity(WalkDto walkDto){
+    public static Walk toEntity(WalkCreateDto walkDto){
 
         return Walk.builder()
                 .walkName(walkDto.getWalkName())
-                //.userId(walkDto.getUserId())
-                //.dogId(walkDto.getDogId())
                 .description(walkDto.getDescription())
                 .duration(walkDto.getDuration())
                 .distance(walkDto.getDistance())
@@ -37,12 +37,10 @@ public class WalkMapper {
     }
 
     // Entity -> Dto
-    // Location은 이미 DTO로 변환된 결과를 넘겨받아 담아준다
     public static WalkDto toDto(Walk walk){
         return WalkDto.builder()
                 .walkId(walk.getWalkId())
                 .walkName(walk.getWalkName())
-                .userId(walk.getUser().getId())
                 .dogId(walk.getDog().getDogId())
                 .description(walk.getDescription())
                 .duration(walk.getDuration())
@@ -51,6 +49,7 @@ public class WalkMapper {
                 .location(walk.getLocation().stream()
                         .map(Location::toDto)
                         .collect(Collectors.toList()))
+                .user(UserMapper.toUserProfileDto(walk.getUser()))
                 .build();
     }
 }
