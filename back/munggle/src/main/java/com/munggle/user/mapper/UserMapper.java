@@ -30,6 +30,7 @@ public class UserMapper {
 
     public static UserMyPageDto toUserMyPageDto(User user) {
         return UserMyPageDto.builder()
+                .Id(user.getId())
                 .backgroundImgUrl(Optional.ofNullable(user.getBackgroundImage())
                         .map(UserImage::getImageURL).orElse(null))
                 .profileImgUrl(Optional.ofNullable(user.getProfileImage())
