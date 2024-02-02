@@ -1,4 +1,4 @@
-package com.munggle.post.dto;
+package com.munggle.post.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;

@@ -1,8 +1,7 @@
-package com.munggle.post.dto;
+package com.munggle.post.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -11,7 +10,7 @@ import java.util.List;
 @Builder
 @Getter
 @AllArgsConstructor
-public class PostDetailResponseDto {
+public class PostDetailDto {
 
     private String postTitle;
 

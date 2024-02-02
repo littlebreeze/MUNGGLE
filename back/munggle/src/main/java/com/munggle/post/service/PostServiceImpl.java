@@ -4,14 +4,11 @@ import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.*;
 import com.munggle.image.dto.FileInfoDto;
 import com.munggle.image.service.FileS3UploadService;
-import com.munggle.post.dto.PostCreateDto;
-import com.munggle.post.dto.PostDetailResponseDto;
-import com.munggle.post.dto.PostUpdateDto;
+import com.munggle.post.dto.request.PostCreateDto;
+import com.munggle.post.dto.response.PostDetailDto;
+import com.munggle.post.dto.request.PostUpdateDto;
 import com.munggle.post.mapper.PostMapper;
-import com.munggle.post.repository.PostImageRepository;
-import com.munggle.post.repository.PostRepository;
-import com.munggle.post.repository.PostTagRepository;
-import com.munggle.post.repository.TagRepository;
+import com.munggle.post.repository.*;
 import com.munggle.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,6 +31,7 @@ public class PostServiceImpl implements PostService {
     private final PostImageRepository postImageRepository;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
+    private final CuratingService curatingService;
 
     /**
      * 게시글 상세보기 메소드
@@ -43,7 +41,7 @@ public class PostServiceImpl implements PostService {
      * @return
      */
     @Override
-    public PostDetailResponseDto getDetailPost(Long postId, Long userId) {
+    public PostDetailDto getDetailPost(Long postId, Long userId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new NoSuchElementException());
         String nickname = post.getUser().getNickname();
@@ -62,6 +60,7 @@ public class PostServiceImpl implements PostService {
         for (PostTag postTag : postTags) {
             if (postTag.getIsDeleted() == false) {
                 hashtags.add(postTag.getTag().getTagNm());
+                curatingService.saveRecentTag(userId, postTag.getTag().getId()); // 큐레이팅을 위한 해시태그 수집
             }
         }
 
@@ -101,13 +100,15 @@ public class PostServiceImpl implements PostService {
         List<String> hashtags = postCreateDto.getHashtags();
         List<PostTag> postTags = new ArrayList<>();
         for (String hashtag : hashtags) {
-            Tag newTag = tagRepository.findByTagNm(hashtag)
+            Tag tag = tagRepository.findByTagNm(hashtag)
                     .orElseGet(() -> tagRepository.save(PostMapper.toTagEntity(hashtag)));
 
-            PostTagId newPostTagId = PostMapper.toPostTagIdEntity(postId, newTag.getId());
-            PostTag newPostTag = PostMapper.toPostTagEntity(newPostTagId, newPost, newTag);
+            PostTagId newPostTagId = PostMapper.toPostTagIdEntity(postId, tag.getId());
+            PostTag newPostTag = PostMapper.toPostTagEntity(newPostTagId, newPost, tag);
             newPostTag.markAsDeletedFalse();
             postTags.add(newPostTag);
+
+            curatingService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
         }
 
         postTagRepository.saveAll(postTags); // 영속화
@@ -168,6 +169,8 @@ public class PostServiceImpl implements PostService {
                     .orElse(PostMapper.toPostTagEntity(findId, updatePost, tag));
             updatePostTag.markAsDeletedFalse(); // isDeleted false로 변경
             postTags.add(updatePostTag);
+
+            curatingService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
         }
 
         postTagRepository.saveAll(postTags); // 영속화
