@@ -9,6 +9,5 @@ import java.util.Optional;
 public interface UserRecentTagCacheRepository extends CrudRepository<UserRecentTagCache, String> {
     List<UserRecentTagCache> findByUserId(Long userId);
 
-
     Optional<UserRecentTagCache> findByUserIdAndTagId(Long userId, Long tagId);
 }

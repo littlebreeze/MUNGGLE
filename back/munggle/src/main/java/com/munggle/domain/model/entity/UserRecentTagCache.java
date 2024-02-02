@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Getter @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@RedisHash(value = "user_tag")
+@RedisHash(value = "user_tag", timeToLive = 100)
 public class UserRecentTagCache implements Serializable {
 
     @Id
