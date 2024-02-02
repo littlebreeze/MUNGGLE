@@ -1,5 +1,6 @@
 package com.munggle.search.controller;
 
+import com.munggle.search.dto.SearchByTagDto;
 import com.munggle.search.dto.SearchByTitleDto;
 import com.munggle.search.service.SearchService;
 import lombok.RequiredArgsConstructor;
@@ -21,5 +22,9 @@ public class SearchController {
         return searchService.searchByTitle();
     }
 
-
+    @GetMapping("tag/{word}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<SearchByTagDto> searchPostByTag(@PathVariable(value = "word", required = false) String word) {
+        return searchService.searchByTag();
+    }
 }
