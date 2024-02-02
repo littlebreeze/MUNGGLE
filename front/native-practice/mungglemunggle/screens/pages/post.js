@@ -1,16 +1,26 @@
 import React, { useState } from "react";
 import { View, Text, Button, ScrollView, TextInput } from "react-native";
+import { useDispatch } from 'react-redux';
 import { login } from './login.js';
+import { logout } from './actions.js';
 
 export default function PostScreen ({ navigation }) {
+
+  const dispatch = useDispatch();
 
   {/*임시로 추가한 아이디 저장*/}
   const [id, setId] = useState('');
   const [password, setPassword] = useState('');
   const handleLogin = () => {
-    login(id, password);
+    login(id, password, dispatch);
+  };
+  const handleLogout = () => {
+    dispatch(logout());
   };
   {/*임시로 추가한 아이디 저장*/}
+
+  
+
 
   return (
     <ScrollView style={{ flex: 1 }}>
@@ -33,6 +43,10 @@ export default function PostScreen ({ navigation }) {
       <Button
         title="Login"
         onPress={handleLogin}
+      />
+      <Button
+        title="Logout"
+        onPress={handleLogout}
       />
       {/*임시로 추가한 아이디 입력란*/}
 

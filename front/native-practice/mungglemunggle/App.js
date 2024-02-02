@@ -3,6 +3,8 @@ import { Text, View, StyleSheet, Dimensions } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as Font from "expo-font";
+import { Provider } from 'react-redux'; // react-redux용으로 추가
+import store from './screens/pages/store';
     
 import HomeScreen from './screens/pages/post';
 import MatchScreen from './screens/pages/match';
@@ -25,24 +27,25 @@ export default function App() {
   }, []);
 
   return (
-    <NavigationContainer style={styles.container}>
-      <View style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT * 0.10}}>
-        <Nav />
-      </View>
-      
-      <Stack.Navigator
-        style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT * 0.90}}
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen 
-          name="Body"
-          component={Body}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  
+    <Provider store={store}>
+      <NavigationContainer style={styles.container}>
+        <View style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT * 0.10}}>
+          <Nav />
+        </View>
+        
+        <Stack.Navigator
+          style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT * 0.90}}
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen 
+            name="Body"
+            component={Body}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 

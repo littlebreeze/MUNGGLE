@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Button, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -38,47 +39,36 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 const Tab = createMaterialTopTabNavigator();
 
 export default function ProfileScreen ( {navigation} ) {
-
+  const isLoggedIn = useSelector((state) => state.isLoggedIn);
   const[profileData,setProfileData] = useState();
-  let[userProfile, setUserProfile] = useState({});
 
-  {/*마이페이지 데이터 받아오기*/}
+  //마이페이지 데이터 받아오기
+  //추후 (/mypage)에서 (/users/{userId})로 변경
   const fetchData = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
-      const response = await axios.get('http://i10a410.p.ssafy.io:8080/users/mypage', {
+      const response = await axios.get('http://i10a410.p.ssafy.io:8080/users/mypage', {//mypage GET
         headers: {
           'Authorization': `Bearer ${token}`,
         },
       });
-      setProfileData(response.data);
+      setProfileData(response.data);//profileData에 저장
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
-  useEffect(()=>{
-    fetchData();
-  },[]);
-  {/*마이페이지 데이터 받아오기*/}
-
   useEffect(() => {
-    if (profileData) {
-
-      const newProfile = {
-        ...userProfile,
-        backGroundImg: profileData.backgroundImgUrl !== null ? profileData.backgroundImgUrl : imgPost1,
-        profileImg: profileData.profileImgUrl !== null ? profileData.profileImgUrl : imgProfile1,
-        name: profileData.nickname,
-      };
-      setUserProfile(newProfile);//현재 복사 안되는중
+    if (isLoggedIn) {
+      // 로그인 상태가 변경되면 fetchData 함수 실행
+      fetchData();
     }
-  }, [profileData]);
+  }, [isLoggedIn]);
+  //마이페이지 데이터 받아오기 끝
 
-
-  userProfile = {
+  const initialUserProfile = {
     backGroundImg: imgPost1,
     profileImg: imgProfile1,
-    name: "ㅁㅁ",
+    name: "",
     isFollow: false,
     description: "",
     follower: 2,
@@ -101,7 +91,7 @@ export default function ProfileScreen ( {navigation} ) {
         gender: "여자",
       },
     ]
-  } 
+  }
 
   const postList = [
     {
@@ -255,6 +245,25 @@ export default function ProfileScreen ( {navigation} ) {
       ],
     },
   ]
+
+  const [userProfile, setUserProfile] = useState(initialUserProfile);
+
+  //userProfile에 연결
+  useEffect(() => {
+    if (profileData) {
+      let updatedProfile = {
+        backGroundImg: profileData.backgroundImgUrl !== null ? profileData.backgroundImgUrl : imgPost1,
+        profileImg: profileData.profileImgUrl !== null ? profileData.profileImgUrl : imgProfile1,
+        name: profileData.nickname,
+        isFollow: false,
+        description: profileData.description,
+        follower: profileData.follower,
+        following: profileData.following,
+        dogs: profileData.dogs,
+      };
+      setUserProfile((prevProfile) => ({ ...prevProfile, ...updatedProfile }));
+    }
+  }, [profileData]);
   
   return (
     <ScrollView style={styles.profileContainer}>
