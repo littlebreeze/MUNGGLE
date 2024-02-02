@@ -3,7 +3,10 @@ package com.munggle.post.service;
 import com.munggle.post.dto.request.PostCreateDto;
 import com.munggle.post.dto.response.PostDetailDto;
 import com.munggle.post.dto.request.PostUpdateDto;
+import com.munggle.post.dto.response.UserPostListDto;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public interface PostService {
@@ -14,4 +17,6 @@ public interface PostService {
     void deletePost(Long postId);
 
     PostDetailDto getDetailPost(Long postId, Long userId);
+
+    List<UserPostListDto> getUserPost(Long userId);
 }

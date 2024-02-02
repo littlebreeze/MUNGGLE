@@ -5,6 +5,7 @@ import com.munggle.image.dto.FileInfoDto;
 import com.munggle.post.dto.request.PostCreateDto;
 import com.munggle.post.dto.response.PostDetailDto;
 import com.munggle.post.dto.response.PostListDto;
+import com.munggle.post.dto.response.UserPostListDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -90,6 +91,14 @@ public class PostMapper {
                 .nickname(post.getUser().getNickname())
                 .likeCnt(post.getLikeCnt())
                 .createdAt(post.getCreatedAt())
+                .build();
+    }
+
+    public static UserPostListDto toUserPagePostList(Post post) {
+        return UserPostListDto.builder()
+                .postId(post.getId())
+                .postTitle(post.getPostTitle())
+                .imageURL(post.getPostImageList().get(0).getImageURL())
                 .build();
     }
 }

@@ -7,10 +7,12 @@ import com.munggle.image.service.FileS3UploadService;
 import com.munggle.post.dto.request.PostCreateDto;
 import com.munggle.post.dto.response.PostDetailDto;
 import com.munggle.post.dto.request.PostUpdateDto;
+import com.munggle.post.dto.response.UserPostListDto;
 import com.munggle.post.mapper.PostMapper;
 import com.munggle.post.repository.*;
 import com.munggle.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,10 +20,11 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
 
-@Service
+@Service @Slf4j
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
 
@@ -65,6 +68,21 @@ public class PostServiceImpl implements PostService {
         }
 
         return PostMapper.toPostDetailResponseDto(post, nickname, isMine, imageUrls, hashtags);
+    }
+
+    /**
+     * 유저페이지에서 해당 유저의 모든 게시글을 불러오는 메소드
+     * 
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<UserPostListDto> getUserPost(Long userId) {
+        List<Post> userPostList = postRepository.findByUserIdAndIsDeletedFalse(userId);
+
+        return userPostList.stream()
+                .map(PostMapper::toUserPagePostList)
+                .collect(Collectors.toList());
     }
 
     /**

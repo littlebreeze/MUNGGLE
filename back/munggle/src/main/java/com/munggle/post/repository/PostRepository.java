@@ -22,4 +22,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "where pt.tag.tagNm in :tags and pt.isDeleted = false and p.isDeleted = false " +
             "order by p.likeCnt desc")
     List<Post> findByTagsInOrderByLikeCntDesc(@Param("tags") List<String> tags);
+
+    @Query("select p from Post p where p.isDeleted = false and p.user.id = :userId order by p.createdAt desc")
+    List<Post> findByUserIdAndIsDeletedFalse(@Param("userId") Long userId);
 }
