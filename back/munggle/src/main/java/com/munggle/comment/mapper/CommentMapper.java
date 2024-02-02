@@ -5,6 +5,7 @@ import com.munggle.comment.dto.CommentDetailDto;
 import com.munggle.domain.model.entity.Comment;
 import com.munggle.domain.model.entity.Post;
 import com.munggle.domain.model.entity.User;
+import com.munggle.user.mapper.UserMapper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,12 +26,11 @@ public class CommentMapper {
     public static CommentDetailDto toDto(Comment comment){
         return CommentDetailDto.builder()
                 .commentId(comment.getId())
-                .userId(comment.getUser().getId())
                 .postId(comment.getPost().getId())
                 .contents(comment.getContents())
                 //.likeCnt(comment.getLikeCnt())
                 .isDeleted(comment.getIsDeleted())
-                .userImage(comment.getUser().getProfileImage().getImageURL())
+                .user(UserMapper.toUserProfileDto(comment.getUser()))
                 .build();
     }
 }
