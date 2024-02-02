@@ -1,10 +1,12 @@
 package com.munggle.search.controller;
 
-import com.munggle.search.dto.SearchByTagDto;
-import com.munggle.search.dto.SearchByTitleDto;
+import com.munggle.domain.model.entity.User;
+import com.munggle.search.dto.SearchTagDto;
+import com.munggle.search.dto.SearchPostListDto;
 import com.munggle.search.service.SearchService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,15 +18,23 @@ public class SearchController {
 
     private final SearchService searchService;
 
-    @GetMapping("/title/{word}")
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<SearchByTitleDto> searchPostByTitle(@PathVariable(value = "word", required = false) String word) {
-        return searchService.searchByTitle();
+    public List<SearchPostListDto> searchPost(@AuthenticationPrincipal User principal,
+                                              @RequestParam(value = "type", required = false) String type,
+                                              @RequestParam(value = "word", required = false) String word) {
+        Long userId = principal.getId();
+
+        if (type.equals("title")) {
+            return searchService.searchByTitle(userId, word);
+        } else if (type.equals("tag")) {
+            return searchService.searchByTag(userId, word);
+        } return null;
     }
 
-    @GetMapping("tag/{word}")
+    @GetMapping("/tag/{word}")
     @ResponseStatus(HttpStatus.OK)
-    public List<SearchByTagDto> searchPostByTag(@PathVariable(value = "word", required = false) String word) {
+    public List<SearchTagDto> searchPostByTag(@PathVariable(value = "word", required = false) String word) {
         return searchService.searchByTag();
     }
 }
