@@ -106,6 +106,39 @@ export default function Post(props) {
       tagList: [
         "산책", "코기", "신났네",
       ],
+      likes: 23243,
+      comments: [
+        {
+          id: 1,
+          name: "MongoDB",
+          content: "사진이 너무 귀여워요!"
+        },
+        {
+          id: 2,
+          name: "네이티브",
+          content: "강아지 납치합니다"
+        },
+        {
+          id: 3,
+          name: "김태현",
+          content: "멍멍왈왈"
+        },
+        {
+          id: 4,
+          name: "배정식",
+          content: "행복하자 우리"
+        },
+        {
+          id: 5,
+          name: "밥",
+          content: "참 쉽죠?"
+        },
+        // {
+        //   id: 6,
+        //   name: "버터링",
+        //   content: "버터버터"
+        // },
+      ],
     },
     {
       id: 2,
@@ -115,11 +148,24 @@ export default function Post(props) {
         isFollow: false,
       },
       imgPost: imgPost2,
-      title: "애기랑 오랜만에 공원",
+      title: "애기랑 오랜만에 공원에",
       content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
       createdAt: "2024-01-17",
       tagList: [
         "산책", "아구", "힘들어?",
+      ],
+      likes: 324,
+      comments: [
+        // {
+        //   id: 1,
+        //   name: "MongoDB",
+        //   content: "사진이 너무 귀여워요!"
+        // },
+        // {
+        //   id: 2,
+        //   name: "네이티브",
+        //   content: "강아지 납치합니다"
+        // },
       ],
     },
     {
@@ -136,6 +182,19 @@ export default function Post(props) {
       tagList: [
         "신남", "댕글댕글",
       ],
+      likes: 345345,
+      comments: [
+        {
+          id: 1,
+          name: "MongoDB",
+          content: "사진이 너무 귀여워요!"
+        },
+        {
+          id: 2,
+          name: "네이티브",
+          content: "강아지 납치합니다"
+        },
+      ],
     },
     {
       id: 4,
@@ -150,6 +209,19 @@ export default function Post(props) {
       createdAt: "2024-01-17",
       tagList: [
         "산책", "댕댕이", "신났네",
+      ],
+      likes: 5,
+      comments: [
+        {
+          id: 1,
+          name: "MongoDB",
+          content: "사진이 너무 귀여워요!"
+        },
+        {
+          id: 2,
+          name: "네이티브",
+          content: "강아지 납치합니다"
+        },
       ],
     },
     {
@@ -166,6 +238,19 @@ export default function Post(props) {
       tagList: [
         "산책", "댕댕이", "신났네",
       ],
+      likes: 5,
+      comments: [
+        {
+          id: 1,
+          name: "MongoDB",
+          content: "사진이 너무 귀여워요!"
+        },
+        {
+          id: 2,
+          name: "네이티브",
+          content: "강아지 납치합니다"
+        },
+      ],
     },
     {
       id: 6,
@@ -180,6 +265,19 @@ export default function Post(props) {
       createdAt: "2024-01-17",
       tagList: [
         "산책", "댕댕이", "신났네",
+      ],
+      likes: 5,
+      comments: [
+        {
+          id: 1,
+          name: "MongoDB",
+          content: "사진이 너무 귀여워요!"
+        },
+        {
+          id: 2,
+          name: "네이티브",
+          content: "강아지 납치합니다"
+        },
       ],
     },
     {
@@ -196,6 +294,19 @@ export default function Post(props) {
       tagList: [
         "산책", "댕댕이", "신났네",
       ],
+      likes: 5,
+      comments: [
+        {
+          id: 1,
+          name: "MongoDB",
+          content: "사진이 너무 귀여워요!"
+        },
+        {
+          id: 2,
+          name: "네이티브",
+          content: "강아지 납치합니다"
+        },
+      ],
     },
     {
       id: 8,
@@ -210,6 +321,19 @@ export default function Post(props) {
       createdAt: "2024-01-17",
       tagList: [
         "산책", "댕댕이", "신났네",
+      ],
+      likes: 5,
+      comments: [
+        {
+          id: 1,
+          name: "MongoDB",
+          content: "사진이 너무 귀여워요!"
+        },
+        {
+          id: 2,
+          name: "네이티브",
+          content: "강아지 납치합니다"
+        },
       ],
     },
     {
@@ -226,6 +350,19 @@ export default function Post(props) {
       tagList: [
         "산책", "댕댕이", "신났네",
       ],
+      likes: 5435,
+      comments: [
+        {
+          id: 1,
+          name: "MongoDB",
+          content: "사진이 너무 귀여워요!"
+        },
+        {
+          id: 2,
+          name: "네이티브",
+          content: "강아지 납치합니다"
+        },
+      ],
     },
     {
       id: 10,
@@ -239,7 +376,19 @@ export default function Post(props) {
       content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
       createdAt: "2024-01-17",
       tagList: [
-        "산책", "댕댕이", "신났네",
+      ],
+      likes: 336463,
+      comments: [
+        {
+          id: 1,
+          name: "MongoDB",
+          content: "사진이 너무 귀여워요!"
+        },
+        {
+          id: 2,
+          name: "네이티브",
+          content: "강아지 납치합니다"
+        },
       ],
     },
   ]

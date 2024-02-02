@@ -1,6 +1,6 @@
 .matching-main-container-div {
   width: 400px;
-  height: 680px;
+  height: 659px;
   z-index: 1;
   position: relative;
   display: flex;
@@ -21,8 +21,11 @@
 }
 
 .matching-main-background-img {
-  width: 650px;
-  height: 680px;
+  width: 250px;
+  height: 250px;
+  position: absolute;
+  left: 13%;
+  top: 80px;
 }
 
 .matching-main-toggle-button-div {
@@ -44,17 +47,21 @@
   height: 300px;
   border-radius: 100%;
   z-index: 4;
+  position: absolute;
+  top: 37%;
 }
 
 .matching-main-start-button {
   width: 300px;
   height: 300px;
   border-radius: 100%;
+  background-color: white;
+  border: 1px solid gainsboro;
 }
 
 .matching-main-info-edit-button-div {
   position: absolute;
-  bottom: 100px;
+  bottom: 30px;
   right: 30px;
   width:65px;
   height:65px;
@@ -64,4 +71,30 @@
 .matching-main-info-edit-button {
   width:65px;
   height:65px;
+}
+
+.matching-main-top-div {
+  width: 400px;
+  height: 400px;
+  background-color: rgb(253, 245, 169);
+  z-index: -3;
+  position: absolute;
+  top: 0%;
+}
+
+.matching-main-bottom-div {
+  width: 400px;
+  height: 260px;
+  /* background-color: #FCEDD8; */
+  z-index: -3;
+  position: absolute;
+  bottom: 0%;
+}
+
+.matching-main-title-div {
+  position: absolute;
+  font-size: 40px;
+  top: 12%;
+  font-weight: bold;
+  color: black;
 }
