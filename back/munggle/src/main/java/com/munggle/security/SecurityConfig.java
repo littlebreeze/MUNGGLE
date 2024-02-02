@@ -58,7 +58,9 @@ public class SecurityConfig {
                                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider),
-                        UsernamePasswordAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtRefreshTokenFilter(jwtProvider),
+                        JwtAuthenticationFilter.class);
 
         return http.build();
     }

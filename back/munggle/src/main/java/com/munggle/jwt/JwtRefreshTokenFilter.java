@@ -19,12 +19,22 @@ public class JwtRefreshTokenFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+        String requestUrl = request.getRequestURI();
+        if (!requestUrl.contains("/refresh")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        System.out.println(request.getHeader("Refresh-Token"));
         String refreshToken = jwtProvider.resolveRefreshToken(request);
 
-        if (jwtProvider.validateToken(refreshToken)) {
-            Authentication authentication = jwtProvider.getAuthentication(refreshToken);
-            String newAccessToken = jwtProvider.createAccessToken(authentication);
-            response.setHeader("Authorization", "Bearer " + newAccessToken);
+        if (refreshToken == null || !jwtProvider.validateToken(refreshToken)) {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Refresh Token is invalid");
+            return;
         }
+
+        Authentication authentication = jwtProvider.getAuthentication(refreshToken);
+        String newAccessToken = jwtProvider.createAccessToken(authentication);
+        response.setHeader("Authorization", "Bearer " + newAccessToken);
     }
 }

@@ -80,6 +80,7 @@ public class JwtProvider {
         return Jwts.builder()
                 .claim(AUTHORITIES_KEY, authorities)
                 .claim("id", principal.getId())
+                .claim("nickname", principal.getNickname())
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setExpiration(validity)
                 .compact();
@@ -144,7 +145,7 @@ public class JwtProvider {
     }
 
     public String resolveRefreshToken(HttpServletRequest request) {
-        String bearToken = request.getHeader(refreshHeaderKey);
+        String bearToken = request.getHeader(jwtHeaderKey);
         if (bearToken != null && bearToken.startsWith("Bearer ")) {
             return bearToken.replace("Bearer", "");
         }
