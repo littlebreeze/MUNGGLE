@@ -28,6 +28,8 @@ public class WalkDto {
     private Float rating;
     private boolean isDeleted;
 
+    private String userImage;
+
     private List<LocationDto> location;
 
     public void setUserId(Long userId){

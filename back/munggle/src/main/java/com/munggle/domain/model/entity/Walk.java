@@ -77,8 +77,4 @@ public class Walk {
         this.isPrivated = !this.isPrivated;
     }
 
-    public void setLocations(List<Location> locations){
-        this.location = locations;
-    }
-
 }

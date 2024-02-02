@@ -51,6 +51,7 @@ public class WalkMapper {
                 .location(walk.getLocation().stream()
                         .map(Location::toDto)
                         .collect(Collectors.toList()))
+                .userImage(walk.getUser().getProfileImage().getImageURL())
                 .build();
     }
 }
