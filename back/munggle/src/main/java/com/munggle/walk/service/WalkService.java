@@ -1,6 +1,7 @@
 package com.munggle.walk.service;
 
 import com.munggle.domain.model.entity.Walk;
+import com.munggle.walk.dto.WalkCreateDto;
 import com.munggle.walk.dto.WalkDto;
 import com.munggle.walk.dto.WalkUpdateDto;
 
@@ -9,7 +10,7 @@ import java.util.List;
 public interface WalkService {
 
     // 산책 생성
-    void createWalk(WalkDto walkDto);
+    void createWalk(WalkCreateDto walkDto);
 
     // 내 기록 목록
     List<WalkDto> readMyWalks(Long userId);

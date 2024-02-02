@@ -11,6 +11,7 @@ import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.Walk;
 import com.munggle.user.repository.UserRepository;
 import com.munggle.walk.dto.LocationDto;
+import com.munggle.walk.dto.WalkCreateDto;
 import com.munggle.walk.dto.WalkDto;
 import com.munggle.walk.dto.WalkUpdateDto;
 import com.munggle.walk.mapper.WalkMapper;
@@ -37,7 +38,7 @@ public class WalkServiceImpl implements WalkService{
     private final DogRepository dogRepository;
 
     @Override
-    public void createWalk(WalkDto walkDto) {
+    public void createWalk(WalkCreateDto walkDto) {
 
         Walk walk = WalkMapper.toEntity(walkDto);
 

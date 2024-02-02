@@ -19,6 +19,10 @@ public class WalkCreateDto {
     private Float rating;
     private String description;
     private boolean isDeleted;
-    private List<Location> locationDtoList;
+    private List<LocationDto> location;
+
+    public void setUserId(Long userId){
+        this.userId = userId;
+    }
 
 }
