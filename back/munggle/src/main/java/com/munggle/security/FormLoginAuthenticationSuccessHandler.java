@@ -17,10 +17,12 @@ public class FormLoginAuthenticationSuccessHandler implements AuthenticationSucc
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        String token = jwtProvider.createToken(authentication);
+        String accessToken = jwtProvider.createAccessToken(authentication);
+        String refreshToken = jwtProvider.createRefreshToken(authentication);
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write("{\"message\":\"로그인이 되었습니다.\"}");
-        response.addHeader("Authorization", "Bearer " + token);
+        response.addHeader("Authorization", "Bearer " + accessToken);
+        response.addHeader("Refresh-Token", "Bearer " + refreshToken);
     }
 }

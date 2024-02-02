@@ -24,17 +24,24 @@ public class JwtProvider {
 
     private static final String AUTHORITIES_KEY = "authorities";
     private final String jwtHeaderKey;
+
+    private final String refreshHeaderKey;
     private final String secretKey;
+    private final long refreshValidityInMilliseconds;
     private final long tokenValidityInMilliseconds;
     private Key key;
 
     public JwtProvider(
             @Value("${jwt.header}") String jwtHeaderKey,
+            @Value("${refresh_token.header}") String refreshHeaderKey,
             @Value("${jwt.secret}") String secretKey,
+            @Value("${refresh_token.validity}") Long refreshValidityInMilliseconds,
             @Value("${jwt.token-validity-in-seconds}") Long tokenValidityInSeconds
     ) {
         this.jwtHeaderKey = jwtHeaderKey;
+        this.refreshHeaderKey = refreshHeaderKey;
         this.secretKey = secretKey;
+        this.refreshValidityInMilliseconds = refreshValidityInMilliseconds * 1000;
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
     }
 
@@ -44,21 +51,37 @@ public class JwtProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String createToken(Authentication authentication) {
+    public String createAccessToken(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
         User principal = (User) authentication.getPrincipal();
         long now = (new Date()).getTime();
-        Date validaty = new Date(now + this.tokenValidityInMilliseconds);
+        Date validity = new Date(now + this.tokenValidityInMilliseconds);
 
         return Jwts.builder()
                 .claim(AUTHORITIES_KEY, authorities)
                 .claim("id", principal.getId())
                 .claim("nickname", principal.getNickname())
                 .signWith(key, SignatureAlgorithm.HS256)
-                .setExpiration(validaty)
+                .setExpiration(validity)
+                .compact();
+    }
+
+    public String createRefreshToken(Authentication authentication) {
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+        User principal = (User) authentication.getPrincipal();
+        long now = (new Date()).getTime();
+        Date validity = new Date(now + this.refreshValidityInMilliseconds);
+
+        return Jwts.builder()
+                .claim(AUTHORITIES_KEY, authorities)
+                .claim("id", principal.getId())
+                .signWith(key, SignatureAlgorithm.HS256)
+                .setExpiration(validity)
                 .compact();
     }
 
@@ -110,11 +133,18 @@ public class JwtProvider {
         }
 
         return false;
-
     }
 
-    public String resolveToken(HttpServletRequest request) {
+    public String resolveAccessToken(HttpServletRequest request) {
         String bearToken = request.getHeader(jwtHeaderKey);
+        if (bearToken != null && bearToken.startsWith("Bearer ")) {
+            return bearToken.replace("Bearer", "");
+        }
+        return bearToken;
+    }
+
+    public String resolveRefreshToken(HttpServletRequest request) {
+        String bearToken = request.getHeader(refreshHeaderKey);
         if (bearToken != null && bearToken.startsWith("Bearer ")) {
             return bearToken.replace("Bearer", "");
         }
