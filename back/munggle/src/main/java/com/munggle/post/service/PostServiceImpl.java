@@ -77,8 +77,19 @@ public class PostServiceImpl implements PostService {
      * @return
      */
     @Override
-    public List<UserPostListDto> getUserPost(Long userId) {
-        List<Post> userPostList = postRepository.findByUserIdAndIsDeletedFalse(userId);
+    public List<UserPostListDto> getUserPost(Long findUserId, Long userId) {
+
+        List<Post> userPostList;
+        
+        // 존재하지 않은 유저의 페이지를 찾을 경우 에러 반환
+        userRepository.findByIdAndIsEnabledTrue(findUserId)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+
+        if (findUserId.equals(userId)) {
+            userPostList = postRepository.findByUserIdAndIsDeletedFalse(findUserId);
+        } else {
+            userPostList = postRepository.findByUserIdAndIsDeletedFalseAndIsPrivateFalse(findUserId);
+        }
 
         return userPostList.stream()
                 .map(PostMapper::toUserPagePostList)

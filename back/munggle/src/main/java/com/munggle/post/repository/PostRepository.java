@@ -25,4 +25,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("select p from Post p where p.isDeleted = false and p.user.id = :userId order by p.createdAt desc")
     List<Post> findByUserIdAndIsDeletedFalse(@Param("userId") Long userId);
+
+    @Query("select p from Post p where p.isDeleted = false and p.isPrivate = false and p.user.id = :userId order by p.createdAt desc")
+    List<Post> findByUserIdAndIsDeletedFalseAndIsPrivateFalse(@Param("userId") Long userId);
 }
