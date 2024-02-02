@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity} from "react-native";
 
 import imageLogo from "../../assets/icons/logo.png"
 import iconSearch from "../../assets/icons/search.png"
@@ -11,26 +11,32 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 export default function Nav () {
   return (
     <View style={styles.navContainer}>
-      <View style={styles.navLogoView}>
+      <TouchableOpacity style={styles.navLogoView}>
         <Image 
           style={styles.navLogoImage}
           source={imageLogo}
         />
-      </View>
+      </TouchableOpacity>
 
       <View style={styles.navIconView}>
-        <Image 
-          style={styles.navIconSearch}
-          source={iconSearch}
-        />
-        <Image 
-          style={styles.navIconNotification}
-          source={iconNotification}
-        />
-        <Image 
-          style={styles.navIconDirectMessage}
-          source={iconDirectMessage}
-        />
+        <TouchableOpacity style={styles.navIconSearchView}>
+          <Image 
+            style={styles.navIconSearch}
+            source={iconSearch}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navIconNotificationView}>
+          <Image 
+            style={styles.navIconNotification}
+            source={iconNotification}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navIconDirectMessageView}>
+          <Image 
+            style={styles.navIconDirectMessage}
+            source={iconDirectMessage}
+          />
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -63,23 +69,34 @@ const styles = StyleSheet.create ({
     width: SCREEN_WIDTH * 0.3,
     height: SCREEN_HEIGHT * 0.06,
   },
-  navIconSearch: {
+  navIconSearchView: {
     width: SCREEN_WIDTH * 0.065,
     height: SCREEN_HEIGHT * 0.031,
     marginHorizontal: SCREEN_WIDTH * 0.015,
     marginTop: SCREEN_HEIGHT * 0.017,
-
   },
-  navIconNotification: {
+  navIconSearch: {
+    width: SCREEN_WIDTH * 0.065,
+    height: SCREEN_HEIGHT * 0.031,
+  },
+  navIconNotificationView: {
     width: SCREEN_WIDTH * 0.075,
     height: SCREEN_HEIGHT * 0.037,
     marginHorizontal: SCREEN_WIDTH * 0.015,
     marginTop: SCREEN_HEIGHT * 0.015,
   },
-  navIconDirectMessage: {
+  navIconNotification: {
+    width: SCREEN_WIDTH * 0.075,
+    height: SCREEN_HEIGHT * 0.037,
+  },
+  navIconDirectMessageView: {
     width: SCREEN_WIDTH * 0.075,
     height: SCREEN_HEIGHT * 0.037,
     marginHorizontal: SCREEN_WIDTH * 0.015,
     marginTop: SCREEN_HEIGHT * 0.017,
+  },
+  navIconDirectMessage: {
+    width: SCREEN_WIDTH * 0.075,
+    height: SCREEN_HEIGHT * 0.037,
   },
 });

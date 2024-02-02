@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, Button,
-  Image, 
+  Image, Modal, Pressable,
   ScrollView, TouchableOpacity,
   StyleSheet, Dimensions
 } from "react-native";
+// import { Modal } from "react-native-modal";
 
 import imgProfile1 from "../../assets/sample/profile1.jpg";
 import imgProfile2 from "../../assets/sample/profile2.jpg";
@@ -30,6 +31,8 @@ import DirectMessageButton from "../../components/directMessageButton";
 import iconScrap from "../../assets/icons/scrap.png";
 import iconBornBlack from "../../assets/icons/bornBlack.png";
 import iconBornWhite from "../../assets/icons/bornWhite.png";
+import iconCreate from "../../assets/icons/create.png";
+import PostDetail from "../../components/modal/postDetail";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -226,12 +229,12 @@ export default function PostScreen () {
         {profileList && profileList.map((profile, index) => {
           return (
             <View key={index} style={styles.profileCircleContainer}>
-              <View style={styles.profileCircleImageView}>
+              <TouchableOpacity style={styles.profileCircleImageView}>
                 <Image 
                   style={styles.profileCircleImage}
                   source={profile.imgProfile}
                 />
-              </View>
+              </TouchableOpacity>
 
               <View style={styles.profileCircleNameView}>
                 <Text style={styles.profileCircleName}>{ profile.nameProfile }</Text>
@@ -247,6 +250,16 @@ export default function PostScreen () {
     return (
       <View style={styles.postBottomView}>
         {postList && postList.map((post, index) => {
+          const [isOpen, setIsOpen] = useState(false);
+          
+          const openModal = () => {
+            setIsOpen(true)
+          };
+
+          const closeModal = () => {
+            setIsOpen(false)
+          };
+
           return(
             <View key={index} style={styles.postListView}>
               <View style={styles.postListViewLeftView}>
@@ -259,13 +272,17 @@ export default function PostScreen () {
                   <DirectMessageButton />
                 </View>
               </View>
+              
               <View style={styles.postListViewRightView}>
-                <View style={styles.postListImageView}>
+                <TouchableOpacity 
+                  style={styles.postListImageView}
+                  onPress={() => openModal()}
+                >
                   <Image 
                     style={styles.postListImage}
                     source={post.imgPost} 
                   />
-                </View>
+                </TouchableOpacity>
 
                 <View style={styles.postListBottomView}>
                   <View style={styles.postListTextView}>
@@ -282,17 +299,25 @@ export default function PostScreen () {
                     </View>
                   </View>
                   <View style={styles.postListIconView}>
-                    <Image 
-                      style={styles.postLikeIcon}
-                      source={iconBornWhite}
-                    />
-                    <Image 
-                      style={styles.postScrapIcon}
-                      source={iconScrap}
-                    />
+                    <View style={styles.postLikeCountView}>
+                      <Text style={styles.postLikeCountText}>12</Text>
+                    </View>
+                    <TouchableOpacity style={styles.postLikeIcon}>
+                      <Image 
+                        style={styles.postLikeIcon}
+                        source={iconBornWhite}
+                      />
+                    </TouchableOpacity>
                   </View>
                 </View>
               </View>
+              <Modal
+                animationType="fade"
+                transparent={true}
+                visible={isOpen}
+                onRequestClose={() => closeModal()}>
+                <PostDetail closeModal={closeModal} post={post} />
+              </Modal>
             </View>
           );
         })}
@@ -301,22 +326,30 @@ export default function PostScreen () {
   }
 
   return (
-    <ScrollView style={styles.postContainer}>
-      <View style={styles.postTopView}>
-        <View style={styles.postTopViewToggleButtonView}>
-          <TouchableOpacity style={styles.postToggleButtonLeft}>
-            <Text style={styles.postToggleButtonLeftText}>추천</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.postToggleButtonRight}>
-            <Text style={styles.postToggleButtonRightText}>팔로잉</Text>
-          </TouchableOpacity>
+    <View style={styles.postContainer}>
+      <ScrollView style={styles.postScrollView}>
+        <View style={styles.postTopView}>
+          <View style={styles.postTopViewToggleButtonView}>
+            <TouchableOpacity style={styles.postToggleButtonLeft}>
+              <Text style={styles.postToggleButtonLeftText}>추천</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.postToggleButtonRight}>
+              <Text style={styles.postToggleButtonRightText}>팔로잉</Text>
+            </TouchableOpacity>
+          </View>
+
+          {profiles()}        
         </View>
 
-        {profiles()}        
-      </View>
-
-      {posts()}
-    </ScrollView>
+        {posts()}
+      </ScrollView>
+      <TouchableOpacity style={styles.postCreateView}>
+        <Image 
+          style={styles.postCreateImage}
+          source={iconCreate}
+        />
+      </TouchableOpacity>
+    </View>
   );
 };
 
@@ -324,6 +357,10 @@ const styles = StyleSheet.create({
   postContainer: {
     width: SCREEN_WIDTH,
     backgroundColor: "rgb(249, 250, 208)",
+    position: "relative",
+  },
+  postScrollView: {
+    width: SCREEN_WIDTH,
   },
   postTopView: {
     width: SCREEN_WIDTH,
@@ -473,7 +510,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   postTagView: {
-    backgroundColor: "lightgrey",
+    backgroundColor: "rgb(180, 180, 180)",
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
@@ -496,9 +533,24 @@ const styles = StyleSheet.create({
     height: SCREEN_WIDTH * 0.055,
     
   },
-  postScrapIcon: {
+  postLikeCountView: {
     width: SCREEN_WIDTH * 0.055,
     height: SCREEN_WIDTH * 0.055,
-
+    justifyContent: "flex-end",
+  },
+  postLikeCountText: {
+    fontSize: 16,
+    color: "rgb(146, 146, 0)",
+  },
+  postCreateView: {
+    width: SCREEN_WIDTH * 0.19,
+    height: SCREEN_WIDTH * 0.19,
+    position: "absolute",
+    bottom: SCREEN_WIDTH * 0.05,
+    right: SCREEN_WIDTH * 0.05,
+  },
+  postCreateImage: {
+    width: SCREEN_WIDTH * 0.19,
+    height: SCREEN_WIDTH * 0.19,
   },
 })
