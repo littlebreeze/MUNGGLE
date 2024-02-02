@@ -30,6 +30,7 @@ public class CommentMapper {
                 .contents(comment.getContents())
                 //.likeCnt(comment.getLikeCnt())
                 .isDeleted(comment.getIsDeleted())
+                .userImage(comment.getUser().getProfileImage().getImageURL())
                 .build();
     }
 }

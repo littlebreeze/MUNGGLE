@@ -17,4 +17,7 @@ public class CommentDetailDto {
     private String contents;
     private Integer likeCnt;
     private Boolean isDeleted;
+
+    private String userImage;
+
 }
