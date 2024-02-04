@@ -261,11 +261,9 @@ public class UserServiceImpl implements UserService {
         Map<String, Object> userAttributes = oauth2User.getAttributes();
         Map<String, Object> response = (Map<String, Object>) userAttributes.get("response");
         String email = (String) response.get("email");
-        String provider = userRequest.getClientRegistration().getRegistrationId();
-        String username = email + "@" + provider + ".com";
         System.out.println(email);
 
-        this.loadUserByUsername(username);
+        this.loadUserByUsername(email);
         System.out.println("호출3");
         return oauth2User;
     }
