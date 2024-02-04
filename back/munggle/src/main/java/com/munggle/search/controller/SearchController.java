@@ -23,13 +23,9 @@ public class SearchController {
     public List<SearchPostListDto> searchPost(@AuthenticationPrincipal User principal,
                                               @RequestParam(value = "type", required = false) String type,
                                               @RequestParam(value = "word", required = false) String word) {
-        Long userId = principal.getId();
 
-        if (type.equals("title")) {
-            return searchService.searchByTitle(userId, word);
-        } else if (type.equals("tag")) {
-            return searchService.searchByTag(userId, word);
-        } return null;
+        Long userId = principal.getId();
+        return searchService.searchPost(userId, type, word);
     }
 
     @GetMapping("/tag/{word}")

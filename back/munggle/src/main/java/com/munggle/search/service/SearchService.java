@@ -7,9 +7,7 @@ import java.util.List;
 
 public interface SearchService {
 
-    List<SearchPostListDto> searchByTitle(Long userId, String word);
-
-    List<SearchPostListDto> searchByTag(Long userId, String word);
+    List<SearchPostListDto> searchPost(Long userId, String type, String word);
 
     List<SearchTagDto> searchByTag();
 

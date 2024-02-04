@@ -1,8 +1,15 @@
 package com.munggle.search.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
+@Builder
+@Getter
+@AllArgsConstructor
 public class SearchPostListDto {
     private Long postId;
 
