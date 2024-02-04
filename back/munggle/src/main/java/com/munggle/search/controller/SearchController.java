@@ -18,7 +18,7 @@ public class SearchController {
 
     private final SearchService searchService;
 
-    @GetMapping
+    @GetMapping("/post")
     @ResponseStatus(HttpStatus.OK)
     public List<SearchPostListDto> searchPost(@AuthenticationPrincipal User principal,
                                               @RequestParam(value = "type", required = false) String type,
@@ -31,6 +31,6 @@ public class SearchController {
     @GetMapping("/tag/{word}")
     @ResponseStatus(HttpStatus.OK)
     public List<SearchTagDto> searchPostByTag(@PathVariable(value = "word", required = false) String word) {
-        return searchService.searchByTag();
+        return searchService.searchByTag(word);
     }
 }
