@@ -4,7 +4,6 @@ import com.munggle.jwt.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -58,9 +57,7 @@ public class SecurityConfig {
                                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider),
-                        UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtRefreshTokenFilter(jwtProvider),
-                        JwtAuthenticationFilter.class);
+                        UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

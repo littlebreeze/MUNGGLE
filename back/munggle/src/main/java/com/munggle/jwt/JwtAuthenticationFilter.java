@@ -21,13 +21,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String token = jwtProvider.resolveAccessToken(request);
+        String token = jwtProvider.resolveToken(request);
 
         if (StringUtils.hasText(token) && jwtProvider.validateToken(token)) {
             Authentication authentication = jwtProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
+        if (request.getRequestURI().startsWith("/refresh")) {
+            successfulRefreshAuthentication(request, response);
+            return;
+        }
+
         filterChain.doFilter(request, response);
+    }
+
+    private void successfulRefreshAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String refreshToken = jwtProvider.resolveToken(request);
+        try {
+            String newAccessToken = jwtProvider.refreshAccessToken(refreshToken);
+            response.setHeader("Authorization", "Bearer " + newAccessToken);
+        } catch (RuntimeException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write(e.getMessage());
+        }
     }
 }

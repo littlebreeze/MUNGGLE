@@ -22,7 +22,7 @@ public class FormLoginAuthenticationSuccessHandler implements AuthenticationSucc
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         response.getWriter().write("{\"message\":\"로그인이 되었습니다.\"}");
-        response.addHeader("Authorization", "Bearer " + accessToken);
+        response.addHeader("Access-Token", "Bearer " + accessToken);
         response.addHeader("Refresh-Token", "Bearer " + refreshToken);
     }
 }

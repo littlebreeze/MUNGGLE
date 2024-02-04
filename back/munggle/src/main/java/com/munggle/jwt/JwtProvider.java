@@ -7,6 +7,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -19,13 +20,12 @@ import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class JwtProvider {
 
     private static final String AUTHORITIES_KEY = "authorities";
     private final String jwtHeaderKey;
-
-    private final String refreshHeaderKey;
     private final String secretKey;
     private final long refreshValidityInMilliseconds;
     private final long tokenValidityInMilliseconds;
@@ -33,13 +33,11 @@ public class JwtProvider {
 
     public JwtProvider(
             @Value("${jwt.header}") String jwtHeaderKey,
-            @Value("${refresh_token.header}") String refreshHeaderKey,
             @Value("${jwt.secret}") String secretKey,
-            @Value("${refresh_token.validity}") Long refreshValidityInMilliseconds,
+            @Value("${jwt.refresh-token-validaity-in-seconds}") Long refreshValidityInMilliseconds,
             @Value("${jwt.token-validity-in-seconds}") Long tokenValidityInSeconds
     ) {
         this.jwtHeaderKey = jwtHeaderKey;
-        this.refreshHeaderKey = refreshHeaderKey;
         this.secretKey = secretKey;
         this.refreshValidityInMilliseconds = refreshValidityInMilliseconds * 1000;
         this.tokenValidityInMilliseconds = tokenValidityInSeconds * 1000;
@@ -52,38 +50,11 @@ public class JwtProvider {
     }
 
     public String createAccessToken(Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-
-        User principal = (User) authentication.getPrincipal();
-        long now = (new Date()).getTime();
-        Date validity = new Date(now + this.tokenValidityInMilliseconds);
-
-        return Jwts.builder()
-                .claim(AUTHORITIES_KEY, authorities)
-                .claim("id", principal.getId())
-                .claim("nickname", principal.getNickname())
-                .signWith(key, SignatureAlgorithm.HS256)
-                .setExpiration(validity)
-                .compact();
+        return createToken(authentication, this.tokenValidityInMilliseconds);
     }
 
     public String createRefreshToken(Authentication authentication) {
-        String authorities = authentication.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(","));
-        User principal = (User) authentication.getPrincipal();
-        long now = (new Date()).getTime();
-        Date validity = new Date(now + this.refreshValidityInMilliseconds);
-
-        return Jwts.builder()
-                .claim(AUTHORITIES_KEY, authorities)
-                .claim("id", principal.getId())
-                .claim("nickname", principal.getNickname())
-                .signWith(key, SignatureAlgorithm.HS256)
-                .setExpiration(validity)
-                .compact();
+        return createToken(authentication, this.refreshValidityInMilliseconds);
     }
 
     public Authentication getAuthentication(String token) {
@@ -124,32 +95,34 @@ public class JwtProvider {
                     .parseClaimsJws(token);
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            System.out.println("잘못된 JWT 서명입니다.");
+            log.debug("잘못된 JWT 서명입니다.");
         } catch (ExpiredJwtException e) {
-            System.out.println("만료된 JWT 토큰입니다.");
+            log.debug("만료된 JWT 토큰입니다.");
         } catch (UnsupportedJwtException e) {
-            System.out.println("지원되지 않는 JWT 토큰입니다.");
+            log.debug("지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
-            System.out.println("JWT 토큰이 비어있습니다.");
+            log.debug("JWT 토큰이 비어있습니다.");
         }
 
         return false;
     }
 
-    public String resolveAccessToken(HttpServletRequest request) {
+    public String resolveToken(HttpServletRequest request) {
         String bearToken = request.getHeader(jwtHeaderKey);
         if (bearToken != null && bearToken.startsWith("Bearer ")) {
             return bearToken.replace("Bearer", "");
         }
+
         return bearToken;
     }
 
-    public String resolveRefreshToken(HttpServletRequest request) {
-        String bearToken = request.getHeader(jwtHeaderKey);
-        if (bearToken != null && bearToken.startsWith("Bearer ")) {
-            return bearToken.replace("Bearer", "");
+    public String refreshAccessToken(String refreshToken) {
+        if (validateToken(refreshToken)) {
+            Authentication authentication = getAuthentication(refreshToken);
+            return createAccessToken(authentication);
+        } else {
+            throw new RuntimeException("Invalid refresh token");
         }
-        return bearToken;
     }
 
     public List<GrantedAuthority> getAuthorities(String token) {
@@ -169,6 +142,24 @@ public class JwtProvider {
         return Arrays.stream(authorities)
                 .map(authority -> new SimpleGrantedAuthority("ROLE_" + authority))
                 .collect(Collectors.toList());
+    }
+
+    private String createToken(Authentication authentication, long tokenValidityInMilliseconds) {
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+
+        User principal = (User) authentication.getPrincipal();
+        long now = (new Date()).getTime();
+        Date validity = new Date(now + tokenValidityInMilliseconds);
+
+        return Jwts.builder()
+                .claim(AUTHORITIES_KEY, authorities)
+                .claim("id", principal.getId())
+                .claim("nickname", principal.getNickname())
+                .signWith(key, SignatureAlgorithm.HS256)
+                .setExpiration(validity)
+                .compact();
     }
 
 }
