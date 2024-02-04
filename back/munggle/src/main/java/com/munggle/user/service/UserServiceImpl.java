@@ -20,9 +20,14 @@ import com.munggle.user.repository.UserImageRepository;
 import com.munggle.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,10 +35,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 import java.util.Optional;
-import java.util.Optional;
-import java.util.Random;
 
 import static com.munggle.domain.exception.ExceptionMessage.*;
 
@@ -42,6 +45,8 @@ import static com.munggle.domain.exception.ExceptionMessage.*;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
+
+    private DefaultOAuth2UserService defaultOAuth2UserService = new DefaultOAuth2UserService();
 
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
@@ -248,5 +253,20 @@ public class UserServiceImpl implements UserService {
                     userRepository.save(user);  // User 객체 업데이트
                     userImageRepository.deleteByImageName(imageName);  // UserImage 테이블의 데이터 삭제
                 });
+    }
+
+    @Override
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        OAuth2User oauth2User = defaultOAuth2UserService.loadUser(userRequest);
+        Map<String, Object> userAttributes = oauth2User.getAttributes();
+        Map<String, Object> response = (Map<String, Object>) userAttributes.get("response");
+        String email = (String) response.get("email");
+        String provider = userRequest.getClientRegistration().getRegistrationId();
+        String username = email + "@" + provider + ".com";
+        System.out.println(email);
+
+        this.loadUserByUsername(username);
+        System.out.println("호출3");
+        return oauth2User;
     }
 }

@@ -28,7 +28,7 @@ logging:
     com: debug
     org.hibernate.SQL: debug
     org.hibernate.type: trace
-    org.springframework.security: debug
+    org.springframework.security: trace
 
 ---
 spring:
