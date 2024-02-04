@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String refreshToken = jwtProvider.resolveToken(request);
         try {
             String newAccessToken = jwtProvider.refreshAccessToken(refreshToken);
-            response.setHeader("Authorization", "Bearer " + newAccessToken);
+            response.setHeader("Access-token", "Bearer " + newAccessToken);
         } catch (RuntimeException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write(e.getMessage());
