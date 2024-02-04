@@ -12,6 +12,12 @@ public interface TagRepository extends JpaRepository<Tag, Long> {
 
     Optional<Tag> findByTagNm(String hashtag);
 
-    @Query("select t from Tag t where t.tagNm like concat('%', :word, '%')")
+//    @Query("select t from Tag t where t.tagNm like concat('%', :word, '%')")
+    @Query("SELECT t FROM Tag t " +
+            "LEFT JOIN PostTag pt ON t.id = pt.tag.id " +
+            "WHERE t.tagNm LIKE concat('%', :word, '%') " +
+            "GROUP BY t.id " +
+            "ORDER BY COUNT(pt) DESC")
     List<Tag> searchByTagNm(@Param("word") String word);
+
 }
