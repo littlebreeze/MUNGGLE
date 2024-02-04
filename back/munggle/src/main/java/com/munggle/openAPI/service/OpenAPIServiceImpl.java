@@ -1,5 +1,8 @@
 package com.munggle.openAPI.service;
 
+import com.munggle.domain.exception.ExceptionMessage;
+import com.munggle.domain.exception.NotYourDogException;
+import com.munggle.domain.exception.OpenAPIErrorException;
 import com.munggle.domain.model.entity.Kind;
 import com.munggle.domain.model.entity.LostDog;
 import com.munggle.openAPI.dto.KindDto;
@@ -12,7 +15,18 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Service;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,10 +38,15 @@ public class OpenAPIServiceImpl implements OpenAPIService {
     private final LostDogRepository lostDogRepository;
 
     @Override
-    public void insertKind(String kindJSON) throws ParseException {
+    public void insertKind(String kindJSON) throws ParserConfigurationException, ParseException, IOException, SAXException {
 
         JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject = (JSONObject)jsonParser.parse(kindJSON);
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = (JSONObject)jsonParser.parse(kindJSON);
+        } catch (ParseException e) {
+            throw new OpenAPIErrorException(ExceptionMessage.OPEN_API_RESPONSE_ERROR, errorMessage(kindJSON));
+        }
         JSONObject response = (JSONObject)jsonObject.get("response");
         JSONObject body = (JSONObject) response.get("body");
         JSONObject items = (JSONObject) body.get("items");
@@ -48,10 +67,16 @@ public class OpenAPIServiceImpl implements OpenAPIService {
     }
 
     @Override
-    public Long insertLostDog(String lostJSON) throws ParseException {
+    public Long insertLostDog(String lostJSON) throws ParserConfigurationException, ParseException, IOException, SAXException {
 
         JSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject = (JSONObject)jsonParser.parse(lostJSON);
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = (JSONObject)jsonParser.parse(lostJSON);
+        } catch (ParseException e) {
+            System.out.println(errorMessage(lostJSON));
+            throw new OpenAPIErrorException(ExceptionMessage.OPEN_API_RESPONSE_ERROR, errorMessage(lostJSON));
+        }
         JSONObject response = (JSONObject)jsonObject.get("response");
         JSONObject body = (JSONObject) response.get("body");
         Long totalCount = Long.parseLong(String.valueOf(body.get("totalCount")));
@@ -104,4 +129,15 @@ public class OpenAPIServiceImpl implements OpenAPIService {
     }
 
 
+    public String errorMessage(String response) throws ParserConfigurationException, ParseException, IOException, SAXException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+
+        Document document = builder.parse(new InputSource(new StringReader(response)));
+        NodeList msgNode = document.getElementsByTagName("returnAuthMsg");
+        NodeList codeNode = document.getElementsByTagName("returnReasonCode");
+        String msg = msgNode.item(0).getChildNodes().item(0).getNodeValue();
+        String code = codeNode.item(0).getChildNodes().item(0).getNodeValue();
+        return msg +"("+ code+")";
+    }
 }
