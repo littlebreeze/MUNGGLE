@@ -2,6 +2,7 @@ package com.munggle.search.mapper;
 
 import com.munggle.domain.model.entity.*;
 import com.munggle.search.dto.SearchPostListDto;
+import com.munggle.search.dto.SearchTagDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -29,4 +30,10 @@ public class SearchMapper {
                 .build();
     }
 
+    public static SearchTagDto toSearchTagDto(Tag tag) {
+        return SearchTagDto.builder()
+                .tagId(tag.getId())
+                .tagNm(tag.getTagNm())
+                .build();
+    }
 }
