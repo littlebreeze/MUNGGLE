@@ -15,12 +15,14 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     Optional<Post> findByIdAndIsDeletedFalse(Long id);
 
     @Query("select p from Post p where p.postTitle like concat('%', :word, '%') " +
+            "and p.isDeleted = false and p.isPrivate = false " +
             "order by p.updatedAt desc")
-    List<Post> findPostsByPostTitle(@Param("word") String word);
+    List<Post> searchByPostTitle(@Param("word") String word);
 
     @Query("select distinct p from Post p join fetch p.postTagList pt " +
-            "where pt.tag.tagNm = :word and pt.isDeleted = false and p.isDeleted = false " +
+            "where pt.tag.tagNm = :word and pt.isDeleted = false " +
+            "and p.isDeleted = false and p.isPrivate = false " +
             "order by p.updatedAt desc")
-    List<Post> findPostsByTagNm(@Param("word") String word);
+    List<Post> searchByTagNm(@Param("word") String word);
 
 }
