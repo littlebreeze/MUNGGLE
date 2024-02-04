@@ -9,6 +9,6 @@ public interface SearchService {
 
     List<SearchPostListDto> searchPost(Long userId, String type, String word);
 
-    List<SearchTagDto> searchByTag();
+    List<SearchTagDto> searchByTag(String word);
 
 }

@@ -2,7 +2,9 @@ package com.munggle.search.service;
 
 import com.munggle.domain.exception.IllegalSearchTypeException;
 import com.munggle.domain.model.entity.Post;
+import com.munggle.domain.model.entity.Tag;
 import com.munggle.post.repository.PostRepository;
+import com.munggle.post.repository.TagRepository;
 import com.munggle.search.dto.SearchTagDto;
 import com.munggle.search.dto.SearchPostListDto;
 import com.munggle.search.mapper.SearchMapper;
@@ -19,29 +21,33 @@ import static com.munggle.domain.exception.ExceptionMessage.SEARCH_TYPE_ILLEGAL;
 public class SearchServiceImpl implements SearchService {
 
     private final PostRepository postRepository;
+    private final TagRepository tagRepository;
 
     @Override
     public List<SearchPostListDto> searchPost(Long userId, String type, String word) {
 
-        List<Post> postLists;
+        List<Post> postList;
         if (type.equals("title")) {
-            postLists = postRepository.findPostsByPostTitle(word);
+            postList = postRepository.searchByPostTitle(word);
         } else if (type.equals("tag")) {
-            postLists = postRepository.findPostsByTagNm(word);
+            postList = postRepository.searchByTagNm(word);
         } else {
             throw new IllegalSearchTypeException(SEARCH_TYPE_ILLEGAL);
         }
 
-        return postLists.stream()
+        return postList.stream()
                 .map(SearchMapper::toSearchPostListDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<SearchTagDto> searchByTag() {
+    public List<SearchTagDto> searchByTag(String word) {
 
+        List<Tag> tagList = tagRepository.searchByTagNm(word);
 
-        return null;
+        return tagList.stream()
+                .map(SearchMapper::toSearchTagDto)
+                .collect(Collectors.toList());
     }
 
 
