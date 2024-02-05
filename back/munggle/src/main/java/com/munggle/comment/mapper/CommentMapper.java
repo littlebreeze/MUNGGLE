@@ -31,6 +31,8 @@ public class CommentMapper {
                 //.likeCnt(comment.getLikeCnt())
                 .isDeleted(comment.getIsDeleted())
                 .user(UserMapper.toUserProfileDto(comment.getUser()))
+                .createdAt(comment.getCreatedAt())
+                .updatedAt(comment.getUpdatedAt())
                 .build();
     }
 }

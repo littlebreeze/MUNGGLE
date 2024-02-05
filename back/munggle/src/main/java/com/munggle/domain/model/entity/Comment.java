@@ -55,11 +55,11 @@ public class Comment extends BaseTimeEntity{
         this.isDeleted = true;
     }
 
-    public void plusLike(){
-        this.likeCnt++;
-    }
-
-    public void minusLike(){
-        this.likeCnt--;
-    }
+//    public void plusLike(){
+//        this.likeCnt++;
+//    }
+//
+//    public void minusLike(){
+//        this.likeCnt--;
+//    }
 }

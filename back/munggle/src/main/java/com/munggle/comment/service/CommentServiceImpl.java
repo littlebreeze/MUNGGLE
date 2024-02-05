@@ -109,15 +109,9 @@ public class CommentServiceImpl implements CommentService {
         if(commentLike.isEmpty()){
             CommentLikeList newCommentLike = CommentLikeList.builder().id(commentLikeId).comment(comment).user(user).isDeleted(false).build();
             commentLikeRepository.save(newCommentLike);
-            comment.plusLike();
 
         // 있으면 좋아요 여부 토글
         }else{
-            // 삭제(unlike)되어 있었다면
-            if(commentLike.get().getIsDeleted())
-                comment.plusLike();
-            else
-                comment.minusLike();
             commentLike.get().toggleLike();
         }
 
