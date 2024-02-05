@@ -51,15 +51,15 @@ public class PostServiceImpl implements PostService {
     public PostDetailDto getDetailPost(Long postId, Long userId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
-        String nickname = post.getUser().getNickname();
         Boolean isMine = post.getUser().getId().equals(userId);
 
-        // 해당 post의 이미지 url만 list로 가져오기
-        List<String> imageUrls = new ArrayList<>();
-        List<PostImage> postImages = postImageRepository.findAllByPost(post);
-        for (PostImage postImage : postImages) {
-            imageUrls.add(postImage.getImageURL());
-        }
+        // 좋아요 여부 확인
+        PostLikeId postLikeId = PostMapper.toPostLikedIdEntity(userId, postId);
+        Boolean isLiked = postLikeRespository.existsByPostLikeIdAndIsDeletedFalse(postLikeId);
+
+        // 스크랩 여부 확인
+        ScrapId scrapId = PostMapper.toScrapIdEntity(userId, postId);
+        Boolean isScraped = scrapRepository.existsByScrapIdAndIsDeletedFalse(scrapId);
 
         // 해당 post의 해시태그 명만 list로 가져오기
         List<String> hashtags = new ArrayList<>();
@@ -71,7 +71,7 @@ public class PostServiceImpl implements PostService {
             }
         }
 
-        return PostMapper.toPostDetailResponseDto(post, nickname, isMine, imageUrls, hashtags);
+        return PostMapper.toPostDetailDto(post, hashtags, isMine, isLiked, isScraped);
     }
 
     /**
@@ -239,10 +239,7 @@ public class PostServiceImpl implements PostService {
     // ==== 좋아요 생성/삭제 ==== //
     @Override
     public void postLike(Long userId, Long postId) {
-        PostLikeId postLikeId = PostLikeId.builder()
-                                .userId(userId)
-                                .postId(postId)
-                                .build();
+        PostLikeId postLikeId = PostMapper.toPostLikedIdEntity(userId, postId);
         User user = userRepository.findByIdAndIsEnabledTrue(userId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
@@ -269,10 +266,7 @@ public class PostServiceImpl implements PostService {
     // ==== 스크랩 생성/삭제 ==== //
     @Override
     public void postScrap(Long userId, Long postId) {
-        ScrapId scrapId = ScrapId.builder()
-                            .userId(userId)
-                            .postId(postId)
-                            .build();
+        ScrapId scrapId = PostMapper.toScrapIdEntity(userId, postId);
 
         User user = userRepository.findByIdAndIsEnabledTrue(userId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));

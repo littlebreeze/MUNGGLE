@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ScrapRepository extends JpaRepository<Scrap, ScrapId> {
+
+    Boolean existsByScrapIdAndIsDeletedFalse(ScrapId scrapId);
 }

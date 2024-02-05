@@ -24,8 +24,9 @@ public class PostListDto {
 
     private Integer likeCnt;
 
+    private Boolean isLiked;
+
     private LocalDateTime createdAt;
 
     // 유저 프로필 이미지 추후 추가 예정
-    // 좋아요 유무 추가 예정
 }

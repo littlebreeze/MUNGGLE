@@ -26,15 +26,21 @@ public class PostMapper {
                 .build();
     }
 
-    public static PostDetailDto toPostDetailResponseDto(Post detailPost, String nickname, Boolean isMine, List<String> imageUrls, List<String> hashtags) {
+    public static PostDetailDto toPostDetailDto(Post detailPost, List<String> hashtags, Boolean isMine, Boolean isLiked, Boolean isScraped) {
+        List<String> imageUrls = detailPost.getPostImageList().stream()
+                .map(PostImage::getImageURL)
+                .collect(Collectors.toList());
+
         return PostDetailDto.builder()
                 .postTitle(detailPost.getPostTitle())
                 .postContent(detailPost.getPostContent())
                 .images(imageUrls)
                 .hashtags(hashtags)
-                .nickname(nickname)
+                .nickname(detailPost.getUser().getNickname())
                 .likeCnt(detailPost.getLikeCnt())
                 .isMine(isMine)
+                .isLiked(isLiked)
+                .isScraped(isScraped)
                 .createdAt(detailPost.getCreatedAt())
                 .updatedAt(detailPost.getUpdatedAt())
                 .isUpdated(detailPost.getCreatedAt().equals(detailPost.getUpdatedAt()))
@@ -71,7 +77,7 @@ public class PostMapper {
                 .build();
     }
 
-    public static PostListDto toPostListDto(Post post) {
+    public static PostListDto toPostListDto(Post post, Boolean isLiked) {
         List<String> imageUrls = post.getPostImageList().stream()
                 .map(PostImage::getImageURL)
                 .collect(Collectors.toList());
@@ -90,6 +96,7 @@ public class PostMapper {
                 .userId(post.getUser().getId())
                 .nickname(post.getUser().getNickname())
                 .likeCnt(post.getLikeCnt())
+                .isLiked(isLiked)
                 .createdAt(post.getCreatedAt())
                 .build();
     }
@@ -117,6 +124,20 @@ public class PostMapper {
                 .user(user)
                 .post(post)
                 .isDeleted(false)
+                .build();
+    }
+
+    public static PostLikeId toPostLikedIdEntity(Long userId, Long postId) {
+        return PostLikeId.builder()
+                .userId(userId)
+                .postId(postId)
+                .build();
+    }
+
+    public static ScrapId toScrapIdEntity(Long userId, Long postId) {
+        return ScrapId.builder()
+                .userId(userId)
+                .postId(postId)
                 .build();
     }
 }
