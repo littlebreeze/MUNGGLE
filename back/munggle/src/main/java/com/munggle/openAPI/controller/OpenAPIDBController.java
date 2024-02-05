@@ -41,8 +41,8 @@ public class OpenAPIDBController {
 
     @Value("${api.serviceKey}")
     private String serviceKey_en;
-    @Value("${api.serviceKey_decode}")
-    private String serviceKey_de;
+//    @Value("${api.serviceKey_decode}")
+//    private String serviceKey_de;
 
     // 동물보호관리시스템 유기동물 정보 조회 서비스 URL
     @Value("${api.abandoned}")
@@ -65,7 +65,7 @@ public class OpenAPIDBController {
         String result = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path(kindUri)
-                        .queryParam("serviceKey", serviceKey_de)
+                        .queryParam("serviceKey", serviceKey_en)
                         .queryParam("up_kind_cd", "417000")
                         .queryParam("_type","json")
                         .build())
@@ -100,7 +100,7 @@ public class OpenAPIDBController {
             String result = webClient.get()
                     .uri(uriBuilder -> uriBuilder
                             .path(lostDogUri)
-                            .queryParam("serviceKey", serviceKey_de)
+                            .queryParam("serviceKey", serviceKey_en)
                             .queryParam("upkind", "417000")
                             .queryParam("pageNo", finalPageNo)
                             .queryParam("numOfRows",numOfRows)
