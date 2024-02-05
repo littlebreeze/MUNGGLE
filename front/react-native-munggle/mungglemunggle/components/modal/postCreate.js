@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image, StyleSheet,
   ScrollView, TouchableOpacity, Button,
   Dimensions,
@@ -24,7 +24,7 @@ export default function PostCreate (props) {
   const [tags, setTags] = useState([]);
 
   const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3], //비율 변경 가능
@@ -61,13 +61,13 @@ export default function PostCreate (props) {
 
           <View style={{height:260}}>
             <ScrollView
-            horizontal={true}
-            showHorizontalScrollIndicator={false}
-            style={{paddingVertical: 20, backgroundColor: 'gray'}}>
-              {images.map((uri, index) => (
-              <Image key={index} source={{ uri }} style={{ width: 200, height: 200, marginRight: 10, marginTop: 20 }} />
-                    
-                  ))}
+              horizontal={true}
+              showHorizontalScrollIndicator={false}
+              style={{paddingVertical: 20, backgroundColor: 'gray'}}>
+                {images.map((uri, index) => (
+                <Image key={index} source={{ uri }} style={{ width: 200, height: 200, marginRight: 10, marginTop: 20 }} />
+                      
+                    ))}
             </ScrollView>
           </View>
 
