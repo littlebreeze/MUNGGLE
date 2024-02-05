@@ -68,6 +68,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        OAuth2User oauth2User = defaultOAuth2UserService.loadUser(userRequest);
+        Map<String, Object> userAttributes = oauth2User.getAttributes();
+        Map<String, Object> response = (Map<String, Object>) userAttributes.get("response");
+        String email = (String) response.get("email");
+        User user = (User) this.loadUserByUsername(email);
+
+        return user;
+    }
+
+    @Override
     public UserMyPageDto getUserMypage(Long id) {
         User user = findMemberById(id);
         return UserMapper.toUserMyPageDto(user);
@@ -253,18 +264,5 @@ public class UserServiceImpl implements UserService {
                     userRepository.save(user);  // User 객체 업데이트
                     userImageRepository.deleteByImageName(imageName);  // UserImage 테이블의 데이터 삭제
                 });
-    }
-
-    @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oauth2User = defaultOAuth2UserService.loadUser(userRequest);
-        Map<String, Object> userAttributes = oauth2User.getAttributes();
-        Map<String, Object> response = (Map<String, Object>) userAttributes.get("response");
-        String email = (String) response.get("email");
-        System.out.println(email);
-
-        this.loadUserByUsername(email);
-        System.out.println("호출3");
-        return oauth2User;
     }
 }
