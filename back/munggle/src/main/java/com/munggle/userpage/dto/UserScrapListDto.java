@@ -1,4 +1,4 @@
-package com.munggle.post.dto.response;
+package com.munggle.userpage.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,11 +7,9 @@ import lombok.Getter;
 @Getter
 @Builder
 @AllArgsConstructor
-public class UserPostListDto {
+public class UserScrapListDto {
 
     private Long postId;
-
-    private String postTitle;
 
     private String imageURL;
 

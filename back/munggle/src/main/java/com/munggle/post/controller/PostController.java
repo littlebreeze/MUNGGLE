@@ -1,7 +1,6 @@
 package com.munggle.post.controller;
 
 import com.munggle.domain.model.entity.User;
-import com.munggle.post.dto.response.UserPostListDto;
 import com.munggle.post.service.CuratingService;
 import com.munggle.post.service.PostService;
 import jakarta.validation.Valid;
@@ -55,13 +54,6 @@ public class PostController {
         List<PostListDto> curatingPosts = curatingService.getPostCuratingList(userId);
 
         return curatingPosts;
-    }
-
-    @GetMapping("/list/{userId}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<UserPostListDto> getAllUserPostList(@AuthenticationPrincipal User principal,
-                                                    @PathVariable(value = "userId") Long userId) {
-        return postService.getUserPost(userId, principal.getId());
     }
 
     /**

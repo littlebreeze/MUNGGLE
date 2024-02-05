@@ -8,7 +8,6 @@ import com.munggle.image.service.FileS3UploadService;
 import com.munggle.post.dto.request.PostCreateDto;
 import com.munggle.post.dto.response.PostDetailDto;
 import com.munggle.post.dto.request.PostUpdateDto;
-import com.munggle.post.dto.response.UserPostListDto;
 import com.munggle.post.mapper.PostMapper;
 import com.munggle.post.repository.*;
 import com.munggle.user.repository.UserRepository;
@@ -21,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.munggle.domain.exception.ExceptionMessage.POST_NOT_FOUND;
 import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
@@ -72,32 +70,6 @@ public class PostServiceImpl implements PostService {
         }
 
         return PostMapper.toPostDetailDto(post, hashtags, isMine, isLiked, isScraped);
-    }
-
-    /**
-     * 유저페이지에서 해당 유저의 모든 게시글을 불러오는 메소드
-     *
-     * @param userId
-     * @return
-     */
-    @Override
-    public List<UserPostListDto> getUserPost(Long findUserId, Long userId) {
-
-        List<Post> userPostList;
-
-        // 존재하지 않은 유저의 페이지를 찾을 경우 에러 반환
-        userRepository.findByIdAndIsEnabledTrue(findUserId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-
-        if (findUserId.equals(userId)) {
-            userPostList = postRepository.findByUserIdAndIsDeletedFalse(findUserId);
-        } else {
-            userPostList = postRepository.findByUserIdAndIsDeletedFalseAndIsPrivateFalse(findUserId);
-        }
-
-        return userPostList.stream()
-                .map(PostMapper::toUserPagePostList)
-                .collect(Collectors.toList());
     }
 
     /**

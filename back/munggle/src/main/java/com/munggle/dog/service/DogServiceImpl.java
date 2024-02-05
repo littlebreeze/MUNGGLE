@@ -110,15 +110,4 @@ public class DogServiceImpl implements DogService {
         return DogMapper.toDetailDto(dog);
     }
 
-    @Override
-    public List<DogDetailDto> getDogList(Long userId) {
-
-        // 넘겨 받은 사용자가 있는지 확인
-        User user = userRepository.findByIdAndIsEnabledTrue(userId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-        
-        List<Dog> list = dogRepository.findAllByUserIdAndIsDeletedIsFalse(userId)
-                .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
-        return list.stream().map(dog -> DogMapper.toDetailDto(dog)).collect(Collectors.toList());
-    }
 }
