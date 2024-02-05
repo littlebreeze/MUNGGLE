@@ -79,7 +79,7 @@ public class UserpageServiceImpl implements UserpageService {
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
         if (findUserId.equals(userId)) {
-            userScrapList = scrapRepository.findByUserIdAndIsDeletedFalse(findUserId);
+            userScrapList = scrapRepository.findPostsByUserIdAndIsDeletedFalse(findUserId);
         } else {
             throw new NotAllowAccessPageException(NOT_ALLOW_PAGE);
         }
