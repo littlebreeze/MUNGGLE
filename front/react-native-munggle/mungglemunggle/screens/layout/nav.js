@@ -1,5 +1,8 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity} from "react-native";
+import React, {useState} from "react";
+import { View, Text, StyleSheet, 
+  Image, Dimensions, TouchableOpacity,
+  Modal,
+} from "react-native";
 
 import imageLogo from "../../assets/icons/logo.png"
 import iconSearch from "../../assets/icons/search.png"
@@ -8,7 +11,7 @@ import iconDirectMessage from "../../assets/icons/directMessage.png"
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
-export default function Nav () {
+export default function Nav (props) {
   return (
     <View style={styles.navContainer}>
       <TouchableOpacity style={styles.navLogoView}>
@@ -19,19 +22,28 @@ export default function Nav () {
       </TouchableOpacity>
 
       <View style={styles.navIconView}>
-        <TouchableOpacity style={styles.navIconSearchView}>
+        <TouchableOpacity 
+          style={styles.navIconSearchView}
+          onPress={props.openSearchModal}  
+        >
           <Image 
             style={styles.navIconSearch}
             source={iconSearch}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navIconNotificationView}>
+        <TouchableOpacity 
+          style={styles.navIconNotificationView}
+          onPress={props.openNotificationModal}
+        >
           <Image 
             style={styles.navIconNotification}
             source={iconNotification}
           />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.navIconDirectMessageView}>
+        <TouchableOpacity 
+          style={styles.navIconDirectMessageView}
+          onPress={props.openDirectMessageModal}
+        >
           <Image 
             style={styles.navIconDirectMessage}
             source={iconDirectMessage}

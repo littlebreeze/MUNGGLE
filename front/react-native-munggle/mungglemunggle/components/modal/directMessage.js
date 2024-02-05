@@ -11,15 +11,15 @@ import axios, { Axios } from "axios";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
-export default function Notification (props) {
+export default function DirectMessage (props) {
 
   return (
-    <View style={styles.notificationModalBackGround}>
-      <View style={styles.notificationModalContainer}>
-        <ScrollView style={styles.notificationModalScrollView}>
+    <View style={styles.directMessageModalBackGround}>
+      <View style={styles.directMessageModalContainer}>
+        <ScrollView style={styles.directMessageModalScrollView}>
           <TouchableOpacity
             style={styles.closeView}
-            onPress={props.closeNotificationModal}
+            onPress={props.closeDirectMessageModal}
             >
             <Image 
               style={styles.closeImage}
@@ -27,15 +27,15 @@ export default function Notification (props) {
             />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.notificationTopView}>
-            <Text style={styles.notificationTopText}>알림</Text>
+          <TouchableOpacity style={styles.directMessageTopView}>
+            <Text style={styles.directMessageTopText}>DM</Text>
           </TouchableOpacity>
 
-          <View style={styles.notificationMiddleView}>
+          <View style={styles.directMessageMiddleView}>
             <Text>middle</Text>
           </View>
 
-          <View style={styles.notificationBottomView}>
+          <View style={styles.directMessageBottomView}>
             <Text>bottom</Text>
           </View>
         </ScrollView>
@@ -45,13 +45,13 @@ export default function Notification (props) {
 }
 
 const styles = StyleSheet.create({
-  notificationModalBackGround: {
+  directMessageModalBackGround: {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,
     justifyContent: "center",
     alignItems: "center",
   },
-  notificationModalContainer: {
+  directMessageModalContainer: {
     justifyContent: "center",
     alignItems: "center",
     width: SCREEN_WIDTH * 0.9,
@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     padding: SCREEN_WIDTH * 0.0,
     position: "relative",
   },
-  notificationModalScrollView: {
+  directMessageModalScrollView: {
   },
 
   closeView: {
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     height: SCREEN_WIDTH * 0.06,
   },
 
-  notificationTopView: {
+  directMessageTopView: {
     marginTop: SCREEN_HEIGHT * 0.03,
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.31,
@@ -84,7 +84,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  notificationMiddleView: {
+  directMessageMiddleView: {
     marginTop: SCREEN_HEIGHT * 0.01,
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.1,
@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
 
-  notificationBottomView: {
+  directMessageBottomView: {
     marginBottom: SCREEN_HEIGHT * 0.01,
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.215,
