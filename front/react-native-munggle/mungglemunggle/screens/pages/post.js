@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Button,
   Image, Modal, Pressable,
   ScrollView, TouchableOpacity,
@@ -35,6 +35,9 @@ import iconCreate from "../../assets/icons/create.png";
 
 import PostDetail from "../../components/modal/postDetail";
 import PostCreate from "../../components/modal/postCreate";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -218,6 +221,31 @@ export default function PostScreen () {
       ],
     },
   ]
+
+  
+  const [testPostList, setTestPostList] = useState([]);
+  
+  const getPost = async () => {
+    const apiUrl = await AsyncStorage.getItem("API_URL");
+
+    const accessToken = await AsyncStorage.getItem("accessToken");
+
+    axios.get(
+      `${apiUrl}/posts/curating`,
+      {headers: {
+        "access-token": accessToken ,
+      }}
+    ).then((res) => {
+      setTestPostList(res.data);
+    }) .catch((err) => {
+      console.log(err)
+    })
+  }
+
+  useEffect(() => {
+    getPost();
+    console.log(testPostList);
+  }, [])
 
   const profiles = () => {
     return (
