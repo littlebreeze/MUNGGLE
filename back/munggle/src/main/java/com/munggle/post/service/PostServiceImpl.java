@@ -1,5 +1,6 @@
 package com.munggle.post.service;
 
+import com.munggle.domain.exception.PostNotFoundException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.*;
 import com.munggle.image.dto.FileInfoDto;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import static com.munggle.domain.exception.ExceptionMessage.POST_NOT_FOUND;
 import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
 
 @Service @Slf4j
