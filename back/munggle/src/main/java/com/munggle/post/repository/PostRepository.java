@@ -20,13 +20,17 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("select p from Post p where p.isDeleted = false and p.isPrivate = false and p.user.id = :userId order by p.createdAt desc")
     List<Post> findByUserIdAndIsDeletedFalseAndIsPrivateFalse(@Param("userId") Long userId);
 
-    @Query("select p from Post p where p.isDeleted = false and p.user.id <> :userId order by p.likeCnt DESC")
+    @Query("select p from Post p " +
+            "where p.isDeleted = false and p.isPrivate = false " +
+            "and p.user.id <> :userId " +
+            "order by p.likeCnt DESC")
     List<Post> findAllAndNotMineOrderByLikeCntDesc(@Param("userId") Long userId);
 
     @Query("select distinct p from Post p " +
             "join p.postTagList pt " +
             "where pt.tag.tagNm in :tags and pt.isDeleted = false " +
-            "and p.isDeleted = false and p.user.id <> :userId " +
+            "and p.isDeleted = false and p.isPrivate = false " +
+            "and p.user.id <> :userId " +
             "order by p.likeCnt desc")
     List<Post> findByTagsAndNotMineOrderByLikeCntDesc(@Param("tags") List<String> tags, @Param("userId") Long userId);
 
