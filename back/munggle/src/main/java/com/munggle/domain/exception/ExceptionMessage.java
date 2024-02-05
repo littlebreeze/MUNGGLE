@@ -25,7 +25,8 @@ public enum ExceptionMessage {
     NOT_YOUR_DOG("당신의 반려견이 아닙니다."),
     TAG_NOT_FOUND("해당 태그를 찾을 수 없습니다."),
     COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다."),
-    NOT_YOUR_COMMENT("당신이 작성한 댓글이 아닙니다.");
+    NOT_YOUR_COMMENT("당신이 작성한 댓글이 아닙니다."),
+    SEARCH_TYPE_ILLEGAL("지원하지 않는 검색 기능입니다.");
 
 
     private final String message;

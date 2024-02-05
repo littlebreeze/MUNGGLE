@@ -29,4 +29,16 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "and p.isDeleted = false and p.user.id <> :userId " +
             "order by p.likeCnt desc")
     List<Post> findByTagsAndNotMineOrderByLikeCntDesc(@Param("tags") List<String> tags, @Param("userId") Long userId);
+
+    @Query("select p from Post p where p.postTitle like concat('%', :word, '%') " +
+            "and p.isDeleted = false and p.isPrivate = false " +
+            "order by p.updatedAt desc")
+    List<Post> searchByPostTitle(@Param("word") String word);
+
+    @Query("select distinct p from Post p join fetch p.postTagList pt " +
+            "where pt.tag.tagNm = :word and pt.isDeleted = false " +
+            "and p.isDeleted = false and p.isPrivate = false " +
+            "order by p.updatedAt desc")
+    List<Post> searchByTagNm(@Param("word") String word);
+
 }

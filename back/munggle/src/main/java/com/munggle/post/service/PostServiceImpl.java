@@ -46,7 +46,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDetailDto getDetailPost(Long postId, Long userId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-                .orElseThrow(() -> new NoSuchElementException());
+                .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
         String nickname = post.getUser().getNickname();
         Boolean isMine = post.getUser().getId().equals(userId);
 
@@ -72,7 +72,7 @@ public class PostServiceImpl implements PostService {
 
     /**
      * 유저페이지에서 해당 유저의 모든 게시글을 불러오는 메소드
-     * 
+     *
      * @param userId
      * @return
      */
@@ -80,7 +80,7 @@ public class PostServiceImpl implements PostService {
     public List<UserPostListDto> getUserPost(Long findUserId, Long userId) {
 
         List<Post> userPostList;
-        
+
         // 존재하지 않은 유저의 페이지를 찾을 경우 에러 반환
         userRepository.findByIdAndIsEnabledTrue(findUserId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
@@ -157,8 +157,8 @@ public class PostServiceImpl implements PostService {
         String newContent = postUpdateDto.getPostContent();
         Boolean newIsPrivate = postUpdateDto.getIsPrivate();
 
-        Post updatePost = postRepository.findById(postUpdateDto.getPostId())
-                .orElseThrow();
+        Post updatePost = postRepository.findByIdAndIsDeletedFalse(postUpdateDto.getPostId())
+                .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
 
         updatePost.updatePost(newTitle, newContent, newIsPrivate);
 
@@ -215,7 +215,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void deletePost(Long postId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
-                .orElseThrow(() -> new NoSuchElementException());
+                .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
         post.markAsDeleted();
 
         // post image 삭제
