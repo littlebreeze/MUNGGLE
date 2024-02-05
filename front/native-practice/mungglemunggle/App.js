@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Text, View, StyleSheet, Dimensions } from 'react-native';
+import { Text, View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import axios from 'axios';
+import WebView from 'react-native-webview';
 import * as Font from "expo-font";
 import { Provider } from 'react-redux'; // react-redux용으로 추가
 import store from './screens/pages/store';
@@ -17,35 +19,54 @@ const Stack = createNativeStackNavigator();
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
-const getFonts = () => Font.loadAsync({
-  "pretendard": require("./assets/fonts/Pretendard-Regular.ttf"),
-});
+
 
 export default function App() {
-  useEffect(() => {
-    getFonts
-  }, []);
+
+  const [data, setData] = useState("");
+
+    async function postData() {
+      try {
+        //응답 성공 
+        const response = await axios.post('http://i10a410.p.ssafy.io:8080/oauth2/authorization/naver',{
+            //보내고자 하는 데이터 
+
+        },
+        // {
+        //   headers: {
+        //     "Content-Type": "multipart/form-data",    //400에러
+        //     "Content-Type": "application/x-www-form-urlencoded",    //500에러
+        //     "Content-Type": "application/json"//500에러
+        //   },
+        // }
+        );
+        console.log(response.data);
+        setData(response.data);
+      } catch (error) {
+        //응답 실패
+        console.error(error);
+      }
+    };
+
+
+
+  const handleButtonPress = () => {
+    console.log('Button Pressed!');
+    postData();
+  };
 
   return (
-    <Provider store={store}>
-      <NavigationContainer style={styles.container}>
-        <View style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT * 0.10}}>
-          <Nav />
-        </View>
-        
-        <Stack.Navigator
-          style={{ width: SCREEN_WIDTH, height: SCREEN_HEIGHT * 0.90}}
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <Stack.Screen 
-            name="Body"
-            component={Body}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </Provider>
+    <View>
+      <TouchableOpacity style={{marginTop:'20%'}} onPress={handleButtonPress}>
+        <Text style={styles.buttonText}>Press Me</Text>
+      </TouchableOpacity>
+      <View style={{height: 300 }}>
+      <WebView
+        source={{ html: data }}
+      />
+      </View>
+      <Text>123</Text>
+      </View>
   );
 }
 
