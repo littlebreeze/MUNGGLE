@@ -38,6 +38,7 @@ public class PostServiceImpl implements PostService {
     private final PostTagRepository postTagRepository;
     private final CuratingService curatingService;
     private final PostLikeRespository postLikeRespository;
+    private final ScrapRepository scrapRepository;
 
     /**
      * 게시글 상세보기 메소드
@@ -235,10 +236,13 @@ public class PostServiceImpl implements PostService {
     }
 
 
-    // ==== 좋아요 생성 ==== //
+    // ==== 좋아요 생성/삭제 ==== //
     @Override
     public void postLike(Long userId, Long postId) {
-        PostLikeId postLikeId = PostMapper.toPostLikeIdEntity(userId, postId);
+        PostLikeId postLikeId = PostLikeId.builder()
+                                .userId(userId)
+                                .postId(postId)
+                                .build();
         User user = userRepository.findByIdAndIsEnabledTrue(userId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
@@ -261,8 +265,29 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+
+    // ==== 스크랩 생성/삭제 ==== //
     @Override
     public void postScrap(Long userId, Long postId) {
+        ScrapId scrapId = ScrapId.builder()
+                            .userId(userId)
+                            .postId(postId)
+                            .build();
+
+        User user = userRepository.findByIdAndIsEnabledTrue(userId)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        Post post = postRepository.findByIdAndIsDeletedFalse(postId)
+                .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
+
+        Optional<Scrap> scrap = scrapRepository.findById(scrapId);
+        if (scrap.isPresent()) { // 스크랩 데이터가 이미 존재할 때
+            Boolean isDeleted = scrap.get().isDeleted(); // isDeleted 여부에 따라
+            scrap.get().markAsDeleted(!isDeleted); // update 후 저장
+
+            scrapRepository.save(scrap.get());
+        } else {
+            scrapRepository.save(PostMapper.toScrapEntity(scrapId, user, post));
+        }
 
     }
 

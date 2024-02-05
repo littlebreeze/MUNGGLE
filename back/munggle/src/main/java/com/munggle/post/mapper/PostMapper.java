@@ -102,16 +102,18 @@ public class PostMapper {
                 .build();
     }
 
-    public static PostLikeId toPostLikeIdEntity(Long userId, Long postId) {
-        return PostLikeId.builder()
-                .userId(userId)
-                .postId(postId)
-                .build();
-    }
-
     public static PostLike toPostLikeEntity(PostLikeId postLikeId, User user, Post post) {
         return PostLike.builder()
                 .postLikeId(postLikeId)
+                .user(user)
+                .post(post)
+                .isDeleted(false)
+                .build();
+    }
+
+    public static Scrap toScrapEntity(ScrapId scrapId, User user, Post post) {
+        return Scrap.builder()
+                .scrapId(scrapId)
                 .user(user)
                 .post(post)
                 .isDeleted(false)
