@@ -46,6 +46,7 @@ import static com.munggle.domain.exception.ExceptionMessage.*;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
+    private String email;
     private DefaultOAuth2UserService defaultOAuth2UserService = new DefaultOAuth2UserService();
 
     @Value("${spring.mail.auth-code-expiration-millis}")
@@ -70,9 +71,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oauth2User = defaultOAuth2UserService.loadUser(userRequest);
-        Map<String, Object> userAttributes = oauth2User.getAttributes();
-        Map<String, Object> response = (Map<String, Object>) userAttributes.get("response");
-        String email = (String) response.get("email");
+        System.out.println(oauth2User);
+
+        if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
+            Map<String, Object> response = (Map<String, Object>) oauth2User.getAttributes().get("response");
+            email = (String) response.get("email");
+        }
+
+        if (userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
+            Map<String, Object> kakaoAccount = (Map<String, Object>) oauth2User.getAttributes().get("kakao_account");
+            email = (String) kakaoAccount.get("email");
+        }
+        System.out.println(email);
         User user = (User) this.loadUserByUsername(email);
 
         return user;
