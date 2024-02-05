@@ -1,7 +1,8 @@
 import React from "react";
 import { View, Text, Image, StyleSheet,
   ScrollView, TouchableOpacity, Button,
-  Dimensions, 
+  Dimensions,
+  TextInput, 
 } from "react-native";
 
 import iconClose from "../../assets/icons/close1.png";
@@ -14,13 +15,59 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 export default function PostDetail (props) {
   const post = props.post;
 
+  const comments = [
+    {
+      username: "형우",
+      content: "사진이 너무 귀여워요!",
+    },
+    {
+      username: "윤지",
+      content: "강아지 납치합니다",
+    },
+    {
+      username: "태현",
+      content: "멍멍! 왈왈!",
+    },
+    {
+      username: "정식",
+      content: "행복아 산책가자",
+    },
+    {
+      username: "지원",
+      content: "참 쉽조?",
+    },
+    {
+      username: "평섭",
+      content: "멍글멍글~",
+    },
+  ];
+
+  const commentList = () => {
+    return (
+      <View style={styles.postDetailCommentList}>
+        {comments && comments.map((comment, index) => {
+          return (
+          <View key={index} style={styles.postDetailComment}>
+            <View style={styles.postDetailCommentUsernameView}>
+              <Text style={styles.postDetailCommentUsername}>{comment.username}</Text>
+            </View>
+            <View style={styles.postDetailCommentContentView}>
+              <Text style={styles.postDetailCommentContent}>{comment.content}</Text>
+            </View>
+          </View>
+          );
+        })}
+      </View>
+    );
+  }
+
   return (
     <View style={styles.detailModalBackGround}>
       <View style={styles.detailModalContainer}>
         <ScrollView style={styles.detailModalScrollView}>
           <TouchableOpacity
             style={styles.closeView}
-            onPress={props.closeModal}
+            onPress={props.closeDetailModal}
             >
             <Image 
               style={styles.closeImage}
@@ -43,14 +90,18 @@ export default function PostDetail (props) {
 
             <View style={styles.postDetailMiddleRightView}>
               <Text style={styles.postDetailLikeCount}>1234</Text>
-              <Image 
-                style={styles.postDetailLikeIcon}
-                source={iconBornWhite}
+              <TouchableOpacity>
+                <Image 
+                  style={styles.postDetailLikeIcon}
+                  source={iconBornWhite}
                 />
-              <Image 
-                style={styles.postDetailScrapIcon}
-                source={iconScrap}
-              />
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Image 
+                  style={styles.postDetailScrapIcon}
+                  source={iconScrap}
+                />
+              </TouchableOpacity>
             </View>
           </View>
 
@@ -72,7 +123,25 @@ export default function PostDetail (props) {
 
           
           <View style={styles.postDetailCommentView}>
-            <Text>댓글 영역</Text>
+            <View style={styles.postDetailCommentTopView}>
+              <Text style={styles.postDetailCommentTitle}>댓글</Text>
+              <Text style={styles.postDetailCommentCount}>5 개</Text>
+            </View>
+
+            <View style={styles.postDetailCommentMiddleView}>
+              {commentList()}
+            </View>
+
+            <View style={styles.postDetailCommentBottomView}>
+              {/* 키보드 디테일 동작 설정 필요 */}
+              <TextInput
+                style={styles.postDetailCommentTextInput}
+                placeholder="내용을 입력해주세요."
+                placeholderTextColor="gray"
+                keyboardAppearance="dark"
+                keyboardType="web-search"
+              />
+            </View>
           </View>
         </ScrollView>
       </View>
@@ -101,15 +170,15 @@ const styles = StyleSheet.create({
   },
 
   closeView: {
-    width: SCREEN_WIDTH * 0.08,
-    height: SCREEN_WIDTH * 0.08,
+    width: SCREEN_WIDTH * 0.06,
+    height: SCREEN_WIDTH * 0.06,
     position: "absolute",
     top: 0,
-    right: SCREEN_WIDTH * 0.36,
+    right: 0,
   },
   closeImage: {
-    width: SCREEN_WIDTH * 0.08,
-    height: SCREEN_WIDTH * 0.08,
+    width: SCREEN_WIDTH * 0.06,
+    height: SCREEN_WIDTH * 0.06,
   },
 
   postDetailTopView: {
@@ -127,27 +196,27 @@ const styles = StyleSheet.create({
   postDetailMiddleView: {
     marginTop: SCREEN_HEIGHT * 0.01,
     width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.06,
+    height: SCREEN_HEIGHT * 0.1,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
   },
   postDetailMiddleLeftView: {
     width: SCREEN_WIDTH * 0.5,
-    height: SCREEN_HEIGHT * 0.06,
+    height: SCREEN_HEIGHT * 0.1,
     justifyContent: "space-around",
   },
   postDetailTitle: {
-    fontSize: 18,
+    fontSize: 23,
     fontWeight: "600",
   },
   postDetailDate: {
-    fontSize: 14,
+    fontSize: 17,
     color: "gray",
   },
   postDetailMiddleRightView: {
     width: SCREEN_WIDTH * 0.3,
-    height: SCREEN_HEIGHT * 0.06,
+    height: SCREEN_HEIGHT * 0.1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: 'space-around',
@@ -156,40 +225,109 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "500",
     color: "rgb(146, 146, 0)",
+    marginBottom: SCREEN_HEIGHT * 0.02,
   },
   postDetailLikeIcon: {
     width: SCREEN_WIDTH * 0.07,
     height: SCREEN_WIDTH * 0.07,
+    marginBottom: SCREEN_HEIGHT * 0.02,
   },
   postDetailScrapIcon: {
     width: SCREEN_WIDTH * 0.07,
     height: SCREEN_WIDTH * 0.07,
+    marginBottom: SCREEN_HEIGHT * 0.02,
   },
   
   postDetailContentView: {
+    marginBottom: SCREEN_HEIGHT * 0.01,
     width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.2,
+    height: SCREEN_HEIGHT * 0.215,
     alignItems: "center",
   },
   postDetailContentInView: {
     width: SCREEN_WIDTH * 0.8,
-    height: SCREEN_HEIGHT * 0.2,
+    height: SCREEN_HEIGHT * 0.215,
   },
   postDetailContent: {
-
+    fontSize: 19,
   },
 
   postDetailTagListView: {
-
+    flexDirection: "row",
+    marginLeft: SCREEN_WIDTH * 0.05,
   },
   postDetailTagView: {
-
+    backgroundColor: "rgb(180, 180, 180)",
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: SCREEN_WIDTH * 0.005,
+    paddingHorizontal: SCREEN_WIDTH * 0.03,
+    paddingVertical: SCREEN_HEIGHT * 0.003,
   },
   postDetailTagText: {
-
+    color: "white",
+    fontSize: 17,
   },
 
   postDetailCommentView: {
-
+    width: SCREEN_WIDTH * 0.9,
+    alignItems: "center",
+    marginTop: SCREEN_HEIGHT * 0.01,
+  },
+  postDetailCommentTopView: {
+    width: SCREEN_WIDTH * 0.8,
+    height: SCREEN_HEIGHT * 0.05,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  postDetailCommentTitle: {
+    fontSize: 20,
+    fontWeight: "600",
+  },
+  postDetailCommentCount: {
+    fontSize: 20,
+    fontWeight: "600",
+  },
+  postDetailCommentMiddleView: {
+    width: SCREEN_WIDTH * 0.8,
+  },
+  postDetailCommentList: {
+    width: SCREEN_WIDTH * 0.8,
+    alignItems: "center",
+  },
+  postDetailComment: {
+    width: SCREEN_WIDTH * 0.75,
+    flexDirection: "row",
+  },
+  postDetailCommentUsernameView: {
+    width: SCREEN_WIDTH * 0.20,
+    height: SCREEN_HEIGHT * 0.03,
+    justifyContent: "flex-end",
+  },
+  postDetailCommentUsername: {
+    fontSize: 17,
+    fontWeight: "600",
+  },
+  postDetailCommentContentView: {
+    width: SCREEN_WIDTH * 0.55,
+    height: SCREEN_HEIGHT * 0.03,
+    justifyContent: "flex-end",
+  },
+  postDetailCommentContent: {
+    fontSize: 15,
+  },
+  postDetailCommentBottomView: {
+    width: SCREEN_WIDTH * 0.9,
+    alignItems: "center",
+    marginVertical: SCREEN_HEIGHT * 0.02
+  },
+  postDetailCommentTextInput: {
+    width: SCREEN_WIDTH * 0.8,
+    height: SCREEN_HEIGHT * 0.05,
+    borderWidth: 1,
+    borderColor: "gray",
+    paddingLeft: SCREEN_WIDTH * 0.02,
+    fontSize: 15,
   },
 });

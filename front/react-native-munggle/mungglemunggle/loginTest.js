@@ -5,6 +5,7 @@ import { View, Text, Image, StyleSheet,
   TextInput, 
 } from "react-native";
 
+import { WebView } from "react-native-webview";
 
 // import ImagePicker from 'react-native-image-crop-picker';
 
@@ -15,6 +16,9 @@ import axios, { Axios } from "axios";
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 export default function PostCreate (props) {
+  const [isPage, setIsPage] = useState(false);
+  const [loginPage, setLoginPage] = useState(false);
+
   const openPicker = () => {
     // return(
     //   ImagePicker.openPicker({
@@ -23,7 +27,21 @@ export default function PostCreate (props) {
     //     console.log(images);
     //   })
     // );
+    axios.post(
+      "http://i10a410.p.ssafy.io:8080/oauth2/authorization/naver",
+      )
+      .then((response) => {
+        setLoginPage(response.data);
+        setIsPage(true);
+      })
+      .catch((err) => {
+        console.log(err)
+      })
   }
+
+  // useEffect(() => {
+
+  // }, isPage);
 
   return (
     <View style={styles.createModalBackGround}>
@@ -42,6 +60,13 @@ export default function PostCreate (props) {
           <TouchableOpacity onPress={openPicker} style={styles.postCreateTopView}>
             <Text style={styles.postCreateTopText}>게시물 생성</Text>
           </TouchableOpacity>
+          
+          {isPage && 
+            <WebView
+              style={{ width: SCREEN_WIDTH * 0.9, height: SCREEN_HEIGHT}}
+              source={{ html: loginPage}}
+            />
+          } 
 
           <View style={styles.postCreateMiddleView}>
             <Text>middle</Text>

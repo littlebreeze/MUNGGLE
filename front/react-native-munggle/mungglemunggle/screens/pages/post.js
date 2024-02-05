@@ -32,7 +32,9 @@ import iconScrap from "../../assets/icons/scrap.png";
 import iconBornBlack from "../../assets/icons/bornBlack.png";
 import iconBornWhite from "../../assets/icons/bornWhite.png";
 import iconCreate from "../../assets/icons/create.png";
+
 import PostDetail from "../../components/modal/postDetail";
+import PostCreate from "../../components/modal/postCreate";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -250,15 +252,11 @@ export default function PostScreen () {
     return (
       <View style={styles.postBottomView}>
         {postList && postList.map((post, index) => {
-          const [isOpen, setIsOpen] = useState(false);
+          const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
           
-          const openModal = () => {
-            setIsOpen(true)
-          };
+          const openDetailModal = () => { setIsDetailModalOpen(true) };
 
-          const closeModal = () => {
-            setIsOpen(false)
-          };
+          const closeDetailModal = () => { setIsDetailModalOpen(false) };
 
           return(
             <View key={index} style={styles.postListView}>
@@ -276,7 +274,7 @@ export default function PostScreen () {
               <View style={styles.postListViewRightView}>
                 <TouchableOpacity 
                   style={styles.postListImageView}
-                  onPress={() => openModal()}
+                  onPress={() => openDetailModal()}
                 >
                   <Image 
                     style={styles.postListImage}
@@ -314,9 +312,9 @@ export default function PostScreen () {
               <Modal
                 animationType="fade"
                 transparent={true}
-                visible={isOpen}
-                onRequestClose={() => closeModal()}>
-                <PostDetail closeModal={closeModal} post={post} />
+                visible={isDetailModalOpen}
+                onRequestClose={() => closeDetailModal()}>
+                <PostDetail closeDetailModal={closeDetailModal} post={post} />
               </Modal>
             </View>
           );
@@ -324,6 +322,11 @@ export default function PostScreen () {
       </View>
     );
   }
+
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  const openCreateModal = () => { setIsCreateModalOpen(true) }; 
+  const closeCreateModal = () => { setIsCreateModalOpen(false) }; 
 
   return (
     <View style={styles.postContainer}>
@@ -343,12 +346,22 @@ export default function PostScreen () {
 
         {posts()}
       </ScrollView>
-      <TouchableOpacity style={styles.postCreateView}>
+      <TouchableOpacity 
+        onPress={() => openCreateModal()}
+        style={styles.postCreateView}
+      >
         <Image 
           style={styles.postCreateImage}
           source={iconCreate}
         />
       </TouchableOpacity>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isCreateModalOpen}
+        onRequestClose={() => closeCreateModal()}>
+        <PostCreate closeCreateModal={closeCreateModal} />
+      </Modal>
     </View>
   );
 };

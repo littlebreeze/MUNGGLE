@@ -9,17 +9,21 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@react-native-seoul/kakao-login": "^5.3.1",
     "@react-native-seoul/masonry-list": "^1.4.2",
+    "@react-native-seoul/naver-login": "^3.0.0",
     "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/drawer": "^6.6.6",
     "@react-navigation/material-top-tabs": "^6.6.5",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
+    "axios": "^1.6.7",
     "expo": "~50.0.4",
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",
     "react-native": "0.73.2",
     "react-native-gesture-handler": "~2.14.0",
+    "react-native-image-crop-picker": "^0.40.2",
     "react-native-masonry-list": "^2.16.1",
     "react-native-material-ui": "^1.30.1",
     "react-native-modal": "^13.0.1",
@@ -28,6 +32,7 @@
     "react-native-screens": "~3.29.0",
     "react-native-shadow-2": "^7.0.8",
     "react-native-tab-view": "^3.5.2",
+    "react-native-webview": "^13.7.0",
     "toggle-switch-react-native": "^3.3.0"
   },
   "devDependencies": {
