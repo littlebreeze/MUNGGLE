@@ -38,7 +38,7 @@ public class UserpageController {
 
     @GetMapping("/{userId}/dog")
     @ResponseStatus(HttpStatus.OK)
-    public List<DogDetailDto> getUserDogs(@PathVariable Long userId){
+    public List<DogDetailDto> getUserDogs(@PathVariable(value = "userId") Long userId){
         return userpageService.getDogList(userId);
     }
 }
