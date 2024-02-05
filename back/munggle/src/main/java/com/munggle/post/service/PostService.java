@@ -19,4 +19,8 @@ public interface PostService {
     PostDetailDto getDetailPost(Long postId, Long userId);
 
     List<UserPostListDto> getUserPost(Long findUserId, Long userId);
+
+    void insertPostLike(Long userId, Long postId);
+
+    void deletePostLike(Long userId, Long postId);
 }

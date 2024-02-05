@@ -20,7 +20,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 import static com.munggle.domain.exception.ExceptionMessage.POST_NOT_FOUND;
@@ -37,6 +36,7 @@ public class PostServiceImpl implements PostService {
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
     private final CuratingService curatingService;
+    private final PostLikeRespository postLikeRespository;
 
     /**
      * 게시글 상세보기 메소드
@@ -233,4 +233,24 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+
+    // ==== 좋아요 생성 ==== //
+    @Override
+    public void insertPostLike(Long userId, Long postId) {
+        PostLikeId postLikeId = PostMapper.toPostLikeIdEntity(userId, postId);
+        PostLike postLike = postLikeRespository.findById(postLikeId)
+                .orElse(PostMapper.toPostLikeEntity(postLikeId, userId, postId, false));
+
+        postLikeRespository.save(postLike);
+    }
+
+    // ==== 좋아요 삭제 ==== //
+    @Override
+    public void deletePostLike(Long userId, Long postId) {
+        PostLikeId postLikeId = PostMapper.toPostLikeIdEntity(userId, postId);
+        PostLike postLike = postLikeRespository.findById(postLikeId)
+                .orElse(PostMapper.toPostLikeEntity(postLikeId, userId, postId, true));
+
+        postLikeRespository.save(postLike);
+    }
 }

@@ -101,4 +101,20 @@ public class PostMapper {
                 .imageURL(post.getPostImageList().get(0).getImageURL())
                 .build();
     }
+
+    public static PostLikeId toPostLikeIdEntity(Long userId, Long postId) {
+        return PostLikeId.builder()
+                .userId(userId)
+                .postId(postId)
+                .build();
+    }
+
+    public static PostLike toPostLikeEntity(PostLikeId postLikeId, Long userId, Long postId, Boolean isDeleted) {
+        return PostLike.builder()
+                .postLikeId(postLikeId)
+                .userId(userId)
+                .postId(postId)
+                .isDeleted(isDeleted)
+                .build();
+    }
 }
