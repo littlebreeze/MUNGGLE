@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 @Builder
-public class CommentLikeList {
+public class CommentLike {
 
     @EmbeddedId
     private CommentLikeId id;

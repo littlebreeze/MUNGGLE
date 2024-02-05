@@ -12,7 +12,7 @@ import com.munggle.domain.exception.NotYourCommentException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.Comment;
 import com.munggle.domain.model.entity.CommentLikeId;
-import com.munggle.domain.model.entity.CommentLikeList;
+import com.munggle.domain.model.entity.CommentLike;
 import com.munggle.domain.model.entity.User;
 import com.munggle.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -103,15 +103,21 @@ public class CommentServiceImpl implements CommentService {
         CommentLikeId commentLikeId = CommentLikeId.builder().userId(userId).commentId(commentId).build();
 
         // 이미 있는지 확인하고 없으면 생성
-        Optional<CommentLikeList> commentLike = commentLikeRepository.findById(commentLikeId);
+        Optional<CommentLike> commentLike = commentLikeRepository.findById(commentLikeId);
 
         // 비어있으면 새로 생성
         if(commentLike.isEmpty()){
-            CommentLikeList newCommentLike = CommentLikeList.builder().id(commentLikeId).comment(comment).user(user).isDeleted(false).build();
+            CommentLike newCommentLike = CommentLike.builder().id(commentLikeId).comment(comment).user(user).isDeleted(false).build();
             commentLikeRepository.save(newCommentLike);
+            comment.plusLike();
 
         // 있으면 좋아요 여부 토글
         }else{
+            // 삭제되어있었으면
+            if(comment.getIsDeleted())
+                comment.plusLike();
+            else
+                comment.minusLike();
             commentLike.get().toggleLike();
         }
 
