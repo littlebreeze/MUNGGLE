@@ -20,7 +20,7 @@ public interface PostService {
 
     List<UserPostListDto> getUserPost(Long findUserId, Long userId);
 
-    void insertPostLike(Long userId, Long postId);
+    void postLike(Long userId, Long postId);
 
-    void deletePostLike(Long userId, Long postId);
+    void postScrap(Long userId, Long postId);
 }

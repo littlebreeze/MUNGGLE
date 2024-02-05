@@ -1,9 +1,6 @@
 package com.munggle.domain.model.entity;
 
-import jakarta.persistence.EmbeddedId;
-import jakarta.persistence.Entity;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,11 +18,19 @@ public class PostLike {
     @EmbeddedId
     private PostLikeId postLikeId;
 
+    @ManyToOne
+    @JoinColumn(name = "post_id")
     @MapsId("postId")
-    private Long postId;
+    private Post post;
 
+    @ManyToOne
+    @JoinColumn(name = "user_id")
     @MapsId("userId")
-    private Long userId;
+    private User user;
 
     private boolean isDeleted;
+
+    public void markAsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
+    }
 }

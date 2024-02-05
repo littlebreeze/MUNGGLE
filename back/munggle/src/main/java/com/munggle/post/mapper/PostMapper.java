@@ -109,12 +109,12 @@ public class PostMapper {
                 .build();
     }
 
-    public static PostLike toPostLikeEntity(PostLikeId postLikeId, Long userId, Long postId, Boolean isDeleted) {
+    public static PostLike toPostLikeEntity(PostLikeId postLikeId, User user, Post post) {
         return PostLike.builder()
                 .postLikeId(postLikeId)
-                .userId(userId)
-                .postId(postId)
-                .isDeleted(isDeleted)
+                .user(user)
+                .post(post)
+                .isDeleted(false)
                 .build();
     }
 }

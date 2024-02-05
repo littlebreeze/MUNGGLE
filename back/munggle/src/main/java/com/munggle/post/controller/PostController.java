@@ -134,16 +134,16 @@ public class PostController {
                             @PathVariable(value = "postId") Long postId) {
 
         Long userId = principal.getId();
-        postService.insertPostLike(userId, postId);
+        postService.postLike(userId, postId);
     }
 
-    @DeleteMapping("/{postId}/like")
+    @PostMapping("/{postId}/scrap")
     @ResponseStatus(HttpStatus.OK)
     public void deletePostLike(@AuthenticationPrincipal User principal,
                                @PathVariable(value = "postId") Long postId) {
 
         Long userId = principal.getId();
-        postService.deletePostLike(userId, postId);
+        postService.postScrap(userId, postId);
     }
 
 }

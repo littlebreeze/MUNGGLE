@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.munggle.domain.exception.ExceptionMessage.POST_NOT_FOUND;
@@ -236,21 +237,33 @@ public class PostServiceImpl implements PostService {
 
     // ==== 좋아요 생성 ==== //
     @Override
-    public void insertPostLike(Long userId, Long postId) {
+    public void postLike(Long userId, Long postId) {
         PostLikeId postLikeId = PostMapper.toPostLikeIdEntity(userId, postId);
-        PostLike postLike = postLikeRespository.findById(postLikeId)
-                .orElse(PostMapper.toPostLikeEntity(postLikeId, userId, postId, false));
+        User user = userRepository.findByIdAndIsEnabledTrue(userId)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        Post post = postRepository.findByIdAndIsDeletedFalse(postId)
+                .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
 
-        postLikeRespository.save(postLike);
+        Optional<PostLike> postLike = postLikeRespository.findById(postLikeId);
+
+        if (postLike.isPresent()) { // 좋아요가 이미 존재할 때
+            Boolean isDeleted = postLike.get().isDeleted(); // isDeleted 여부에 따라
+            postLike.get().markAsDeleted(!isDeleted); // update 후 저장
+            post.calcLikeCount(isDeleted); // likeCnt 다시 저장
+
+            postLikeRespository.save(postLike.get());
+            postRepository.save(post);
+        } else {
+            post.calcLikeCount(true);
+
+            postLikeRespository.save(PostMapper.toPostLikeEntity(postLikeId, user, post));
+            postRepository.save(post);
+        }
     }
 
-    // ==== 좋아요 삭제 ==== //
     @Override
-    public void deletePostLike(Long userId, Long postId) {
-        PostLikeId postLikeId = PostMapper.toPostLikeIdEntity(userId, postId);
-        PostLike postLike = postLikeRespository.findById(postLikeId)
-                .orElse(PostMapper.toPostLikeEntity(postLikeId, userId, postId, true));
+    public void postScrap(Long userId, Long postId) {
 
-        postLikeRespository.save(postLike);
     }
+
 }
