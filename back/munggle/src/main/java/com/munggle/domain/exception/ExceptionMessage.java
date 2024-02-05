@@ -17,6 +17,7 @@ public enum ExceptionMessage {
     EMAIL_DUPLICATE("이미 가입된 이메일입니다."),
     WALK_LOG_NOT_FOUND("산책 로그를 찾을 수 없습니다."),
     POST_NOT_FOUND("게시글을 찾을 수 없습니다."),
+    NOT_ALLOW_PAGE("접근할 수 없는 페이지입니다."),
     EXTENSION_ILLEGAL("지원하지 않는 파일 확장자입니다."),
     PASSWORD_NOT_CONFIRM("새 비밀번호와 비밀번호 확인이 일치하지 않습니다."),
     DOG_NOT_FOUND("반려견 정보를 찾을 수 없습니다."),

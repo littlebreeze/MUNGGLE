@@ -5,6 +5,7 @@ import com.munggle.dog.mapper.DogMapper;
 import com.munggle.dog.repository.DogRepository;
 import com.munggle.domain.exception.DogNotFoundException;
 import com.munggle.domain.exception.ExceptionMessage;
+import com.munggle.domain.exception.NotAllowAccessPageException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.Dog;
 import com.munggle.domain.model.entity.Post;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.munggle.domain.exception.ExceptionMessage.NOT_ALLOW_PAGE;
 import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
 
 @Service
@@ -60,6 +62,13 @@ public class UserpageServiceImpl implements UserpageService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 스크랩한 게시글을 불러오는 메소드
+     * 
+     * @param findUserId
+     * @param userId
+     * @return
+     */
     @Override
     public List<UserScrapListDto> getUserScrap(Long findUserId, Long userId) {
 
@@ -72,7 +81,7 @@ public class UserpageServiceImpl implements UserpageService {
         if (findUserId.equals(userId)) {
             userScrapList = scrapRepository.findByUserIdAndIsDeletedFalse(findUserId);
         } else {
-            throw new RuntimeException();
+            throw new NotAllowAccessPageException(NOT_ALLOW_PAGE);
         }
 
         return userScrapList.stream()
@@ -80,6 +89,12 @@ public class UserpageServiceImpl implements UserpageService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * 유저의 강아지 리스트를 불러오는 메소드
+     * 
+     * @param userId
+     * @return
+     */
     @Override
     public List<DogDetailDto> getDogList(Long userId) {
 
