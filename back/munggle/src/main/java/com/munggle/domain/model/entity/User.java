@@ -21,10 +21,12 @@ import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 import static com.munggle.domain.exception.ExceptionMessage.NICKNAME_ILLEGAL;
 import static com.munggle.domain.exception.ExceptionMessage.PASSWORD_ILLEGAL;
@@ -37,7 +39,7 @@ import static com.munggle.domain.exception.ExceptionMessage.PASSWORD_ILLEGAL;
 @Getter
 @Builder
 // 배경화면, 프로필 이미지 필드 필요
-public class User implements UserDetails {
+public class User implements UserDetails, OAuth2User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -139,6 +141,11 @@ public class User implements UserDetails {
     }
 
     @Override
+    public Map<String, Object> getAttributes() {
+        return Map.of("email", this.username);
+    }
+
+    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
     }
@@ -156,5 +163,10 @@ public class User implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
+    }
+
+    @Override
+    public String getName() {
+        return this.username;
     }
 }

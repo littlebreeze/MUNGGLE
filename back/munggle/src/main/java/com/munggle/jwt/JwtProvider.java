@@ -34,7 +34,7 @@ public class JwtProvider {
     public JwtProvider(
             @Value("${jwt.header}") String jwtHeaderKey,
             @Value("${jwt.secret}") String secretKey,
-            @Value("${jwt.refresh-token-validaity-in-seconds}") Long refreshValidityInMilliseconds,
+            @Value("${jwt.refresh-token-validity-in-seconds}") Long refreshValidityInMilliseconds,
             @Value("${jwt.token-validity-in-seconds}") Long tokenValidityInSeconds
     ) {
         this.jwtHeaderKey = jwtHeaderKey;
