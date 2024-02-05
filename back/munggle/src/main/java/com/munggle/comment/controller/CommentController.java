@@ -61,5 +61,11 @@ public class CommentController {
         commentService.deleteComment(principal.getId(), commentId);
     }
 
-    // 댓글 좋아요
+    // 댓글 토글
+    @PostMapping("/{postId}/{commentId}")
+    public void likeComment(@AuthenticationPrincipal User principal,
+                            @PathVariable Long postId, @PathVariable Long commentId){
+
+        commentService.toggleComment(principal.getId(), commentId);
+    }
 }

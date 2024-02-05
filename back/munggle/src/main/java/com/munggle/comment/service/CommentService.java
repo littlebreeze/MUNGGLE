@@ -25,5 +25,7 @@ public interface CommentService {
     // 댓글 삭제
     void deleteComment(Long userId, Long commentId);
 
-    // 댓글 좋아요
+    // 댓글 토글
+    void toggleComment(Long userId, Long commentId);
+
 }

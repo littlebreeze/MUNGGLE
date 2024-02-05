@@ -26,7 +26,7 @@ public class Comment extends BaseTimeEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    private Long Id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -53,5 +53,13 @@ public class Comment extends BaseTimeEntity{
 
     public void deleteComment(){
         this.isDeleted = true;
+    }
+
+    public void plusLike(){
+        this.likeCnt++;
+    }
+
+    public void minusLike(){
+        this.likeCnt--;
     }
 }
