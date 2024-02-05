@@ -1,13 +1,3 @@
-import React, { useEffect, useRef, useState } from "react";
-import { View, Text, Button, ScrollView, StyleSheet, Dimensions, TouchableWithoutFeedback } from "react-native";
-import { WebView } from "react-native-webview";
-import * as Location from "expo-location";
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
-
-const apiKey = 'c688164e37f35d82c0237627a526de76'
-
-const html = `
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -124,50 +114,31 @@ const html = `
         <script>
 				var startButton = document.getElementById('startButton');
         var stopButton = document.getElementById('stopButton');
-        let currentLatitude = null;
-        let currentLongitude = null;
-        let routes = [];
-
-        document.addEventListener('message', (e) => {
-
-          currentLatitude = JSON.parse(e.data);
-          alert(currentLatitude);
-
-        } );
-
-        document.addEventListener('message', (e) => {
-
-          currentLongitude = JSON.parse(e.data);
-          alert(currentLongitude);
-
-        } );
-        
-
-        function sendLocations() {
-          window.ReactNativeWebView.postMessage(JSON.stringify(routes));
-        }
 
 				startButton.onclick = function() {
 					alert("시작");
           startButton.style.display = 'none';
           stopButton.style.display = 'block';
+          // 지도 위에 선이 표시되고 있다면 지도에서 제거합니다
           deleteClickLine();
-          deleteCircleDot(); 
+          
+          // 지도 위에 커스텀오버레이가 표시되고 있다면 지도에서 제거합니다
           deleteDistnce();
+  
+          // 지도 위에 선을 그리기 위해 클릭한 지점과 해당 지점의 거리정보가 표시되고 있다면 지도에서 제거합니다
+          deleteCircleDot();
 				}
-
+        
         stopButton.onclick = function() {
 					alert("그만");
           startButton.style.display = 'block';
           stopButton.style.display = 'none';
           stopDrawing()
-          sendLocations()
-          routes = []
 				}
 
         var mapContainer = document.getElementById('map'), // 지도를 표시할 div  
             mapOption = { 
-                center: new kakao.maps.LatLng(currentLocation.latitude, -(currentLocation.longitude)), // 지도의 중심좌표
+                center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
                 level: 3 // 지도의 확대 레벨
             };
         
@@ -185,6 +156,8 @@ const html = `
         
             // 마우스로 클릭한 위치입니다 
             var clickPosition = mouseEvent.latLng;
+            console.log(mouseEvent);
+            console.log(clickPosition);
         
             // 지도 클릭이벤트가 발생했는데 선을 그리고있는 상태가 아니면
             if (!drawingFlag) {
@@ -205,7 +178,6 @@ const html = `
                 clickLine = new kakao.maps.Polyline({
                     map: map, // 선을 표시할 지도입니다 
                     path: [clickPosition], // 선을 구성하는 좌표 배열입니다 클릭한 위치를 넣어줍니다
-                    routes: [clickPosition],
                     strokeWeight: 3, // 선의 두께입니다 
                     strokeColor: '#db4040', // 선의 색깔입니다
                     strokeOpacity: 1, // 선의 불투명도입니다 0에서 1 사이값이며 0에 가까울수록 투명합니다
@@ -231,15 +203,12 @@ const html = `
         
                 // 좌표 배열에 클릭한 위치를 추가합니다
                 path.push(clickPosition);
-                routes.push(clickPosition);
                 
                 // 다시 선에 좌표 배열을 설정하여 클릭 위치까지 선을 그리도록 설정합니다
                 clickLine.setPath(path);
         
                 var distance = Math.round(clickLine.getLength());
                 displayCircleDot(clickPosition, distance);
-
-                console.log(path);
             }
         });
             
@@ -428,133 +397,4 @@ const html = `
             
         </script>    
     </body>
-</html>      
-`;
-
-
-export default function WalkScreen ({ navigation }) {
-  // const [isClick, setIsClick] = useState(false);
-  // const webViewRef = useRef(null);
-  
-	// const handleStartViewClick = () => {
-    // 	setIsClick(!isClick)
-    // }
-    
-  const [isDrawing, setIsDrawing] = useState(false);
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
-  const webViewRef = useRef(null);
-
-  useEffect(() => {
-    (async () => {
-      
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('현재 위치를 받아올 수 없습니다!');
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-
-    })();
-  }, []);
-
-  useEffect(() => {
-    if (location && webViewRef.current) {
-      console.log(location);
-      webViewRef.current.postMessage(JSON.stringify(location.coords.latitude));
-      webViewRef.current.postMessage(JSON.stringify(location.coords.longitude));
-      // console.log(JSON.parse(JSON.stringify(location.coords)).longitude);
-    }
-  }, [location]);
-
-
-  let text = 'Waiting..';
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-    console.log(location.coords.latitude);
-    console.log(location.coords.longitude);
-  }
-	
-	// useEffect(() => {
-	// 	if (!isDrawing) {
-	// 		alert("산책을 시작합니다!");
-	// 		setIsDrawing(true);
-	// 		// console.log(webViewRef);
-	// 		webViewRef.current.postMessage = "startDrawing";
-	// 		// console.log(webViewRef);
-	// 	} else {
-	// 		alert("산책을 종료합니다!");
-	// 		setIsDrawing(false);
-	// 		// console.log(webViewRef);
-	// 		webViewRef.current.postMessage = "stopDrawing";
-	// 		console.log('진행중');
-	// 		// console.log(webViewRef);
-	// 	}
-	// }, [isClick])
-
-  return (
-    <View style={styles.walkMainContainer}>
-      <WebView
-        // ref={webViewRef}
-        style={styles.walkMainMap}
-        source={{ uri: "https://lustrous-valkyrie-2d2928.netlify.app/" }}
-        // onMessage={(event) => {
-        //   const message = event.nativeEvent.data;
-				// 	console.log(message);
-        // }}
-        // onMessage={(event) => {
-				// 	console.log(1);
-        //   const message = event.nativeEvent.data;
-				// 	console.log(message);
-        //   if (message === "startDrawing") {
-
-        //   } else if (message === "stopDrawing") {
-				// 		console.log(1);
-        //     webViewRef.current.injectJavaScript(`
-        //     stopDrawingEvent();
-        //     deleteClickLine();
-        //     showDistance(content, position);
-        //     deleteDistnce();
-        //     getTimeHTML(distance);
-        //   `);
-        //   }
-        // }}
-      />
-
-    {/* <View style={styles.container}>
-      <Text style={styles.paragraph}>{text}</Text>
-    </View> */}
-
-      
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  walkMainContainer: {
-    flex: 1,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 0.82,
-  },
-  walkMainMap: {
-    flex: 0,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 0.82,
-  },
-  walkMainStart: {
-    width: 100,
-    height: 100,
-    position: "absolute",
-    borderWidth: 1,
-    borderColor: "black",
-    borderRadius: 100,
-    bottom: 50,
-    left: 150,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-})
+</html>    

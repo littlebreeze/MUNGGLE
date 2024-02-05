@@ -21,10 +21,16 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.megar0829.mungglemunggle"
     },
     "web": {
       "favicon": "./assets/favicon.ico"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "89e42a86-0057-4287-86f9-d4ff9d8e9926"
+      }
     }
   }
 }
