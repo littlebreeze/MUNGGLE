@@ -50,15 +50,15 @@ public class SecurityConfig {
                 .permitAll()
                 .and()
                 .formLogin(
-                        configure -> configure.successHandler(new FormLoginAuthenticationSuccessHandler(jwtProvider))
-                                .failureHandler(new FormLoginAuthenticationFailureHandler()))
+                        configure -> configure.successHandler(new LoginAuthenticationSuccessHandler(jwtProvider))
+                                .failureHandler(new LoginAuthenticationFailureHandler()))
                 .exceptionHandling(
                         configurer -> configurer.accessDeniedHandler(new JwtAccessDeniedHandler())
                                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 )
                 .oauth2Login(
-                        configure -> configure.successHandler(new FormLoginAuthenticationSuccessHandler(jwtProvider))
-                                .failureHandler(new FormLoginAuthenticationFailureHandler())
+                        configure -> configure.successHandler(new LoginAuthenticationSuccessHandler(jwtProvider))
+                                .failureHandler(new LoginAuthenticationFailureHandler())
                 )
 
                 .exceptionHandling(
