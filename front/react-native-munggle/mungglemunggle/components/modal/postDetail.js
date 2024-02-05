@@ -163,22 +163,22 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT * 0.78,
     backgroundColor: "white",
     marginBottom: SCREEN_HEIGHT * 0.03,
-    padding: SCREEN_WIDTH * 0.0,
+    borderRadius: 30,
     position: "relative",
   },
   detailModalScrollView: {
   },
 
   closeView: {
-    width: SCREEN_WIDTH * 0.06,
-    height: SCREEN_WIDTH * 0.06,
+    width: SCREEN_WIDTH * 0.05,
+    height: SCREEN_WIDTH * 0.05,
     position: "absolute",
-    top: 0,
-    right: 0,
+    top: 5,
+    right: 5,
   },
   closeImage: {
-    width: SCREEN_WIDTH * 0.06,
-    height: SCREEN_WIDTH * 0.06,
+    width: SCREEN_WIDTH * 0.05,
+    height: SCREEN_WIDTH * 0.05,
   },
 
   postDetailTopView: {
