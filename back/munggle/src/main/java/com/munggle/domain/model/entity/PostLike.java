@@ -7,17 +7,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 
-@Entity
-@Builder
+@Entity @Builder
 @Getter
-@Table(name = "scraps")
+@Table(name = "post_likes")
 @DynamicUpdate
 @NoArgsConstructor
 @AllArgsConstructor
-public class Scrap {
+public class PostLike {
 
     @EmbeddedId
-    private ScrapId scrapId;
+    private PostLikeId postLikeId;
 
     @ManyToOne
     @JoinColumn(name = "post_id")

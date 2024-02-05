@@ -16,5 +16,4 @@ public interface DogService {
 
     DogDetailDto getDetailDog(Long dogId);
 
-    List<DogDetailDto> getDogList(Long userId);
 }

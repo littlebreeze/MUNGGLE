@@ -62,10 +62,4 @@ public class DogController {
         return dogService.getDetailDog(dogId);
     }
 
-    // 사용자 반려견 리스트
-    @GetMapping("/list/{userId}")
-    @ResponseStatus(HttpStatus.OK)
-    public List<DogDetailDto> getUserDogs(@PathVariable Long userId){
-        return dogService.getDogList(userId);
-    }
 }

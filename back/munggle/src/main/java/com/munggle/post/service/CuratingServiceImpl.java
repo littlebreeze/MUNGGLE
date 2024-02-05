@@ -4,6 +4,7 @@ import com.munggle.domain.exception.TagNotFoundException;
 import com.munggle.domain.model.entity.*;
 import com.munggle.post.dto.response.PostListDto;
 import com.munggle.post.mapper.PostMapper;
+import com.munggle.post.repository.PostLikeRespository;
 import com.munggle.post.repository.PostRepository;
 import com.munggle.post.repository.TagRepository;
 import com.munggle.post.repository.UserRecentTagCacheRepository;
@@ -25,6 +26,7 @@ public class CuratingServiceImpl implements CuratingService {
     private final UserRecentTagCacheRepository userRecentTagCacheRepository;
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
+    private final PostLikeRespository postLikeRespository;
 
     /**
      * cache에서 tag를 가지고 와서 랜덤으로 5개 추출
@@ -89,8 +91,15 @@ public class CuratingServiceImpl implements CuratingService {
         }
 
         List<PostListDto> postList = getPost.stream()
-                .map(post -> PostMapper.toPostListDto(post))
+                .map(post -> {
+                    // 좋아요 여부 확인
+                    PostLikeId postLikeId = PostMapper.toPostLikedIdEntity(userId, post.getId());
+                    Boolean isLiked = postLikeRespository.existsByPostLikeIdAndIsDeletedFalse(postLikeId);
+
+                    return PostMapper.toPostListDto(post, isLiked);
+                })
                 .collect(Collectors.toList());
+
 
         return postList;
     }
