@@ -137,7 +137,7 @@ public class PostServiceImpl implements PostService {
 
             PostTagId newPostTagId = PostMapper.toPostTagIdEntity(postId, tag.getId());
             PostTag newPostTag = PostMapper.toPostTagEntity(newPostTagId, newPost, tag);
-            newPostTag.markAsDeletedFalse();
+            newPostTag.markAsDeleted(false);
             postTags.add(newPostTag);
 
             curatingService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
@@ -186,7 +186,7 @@ public class PostServiceImpl implements PostService {
         // 기존 해시태그 삭제
         List<PostTag> deleteTags = postTagRepository.findAllByPost(updatePost);  // db에서 isDeleted true로 변경
         for (PostTag deleteTag : deleteTags) {
-            deleteTag.markAsDeleted();
+            deleteTag.markAsDeleted(true);
         }
 
         // 업데이트 된 해시태그 저장
@@ -199,7 +199,7 @@ public class PostServiceImpl implements PostService {
             PostTagId findId = PostMapper.toPostTagIdEntity(updatePost.getId(), tag.getId());
             PostTag updatePostTag = postTagRepository.findById(findId)
                     .orElse(PostMapper.toPostTagEntity(findId, updatePost, tag));
-            updatePostTag.markAsDeletedFalse(); // isDeleted false로 변경
+            updatePostTag.markAsDeleted(false); // isDeleted false로 변경
             postTags.add(updatePostTag);
 
             curatingService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
@@ -230,7 +230,7 @@ public class PostServiceImpl implements PostService {
         // post tag 삭제
         List<PostTag> deleteTags = postTagRepository.findAllByPost(post);  // db에서 isDeleted true로 변경
         for (PostTag deleteTag : deleteTags) {
-            deleteTag.markAsDeleted();
+            deleteTag.markAsDeleted(true);
         }
     }
 
