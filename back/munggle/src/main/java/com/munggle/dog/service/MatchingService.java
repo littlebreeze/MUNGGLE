@@ -9,13 +9,13 @@ import java.util.List;
 public interface MatchingService {
 
     // 내 반려견 특징 수정
-    void updateMyDogCharacter(Long dogId, DogCharDto dogCharDto);
+    void updateMyDogCharacter(DogCharDto dogCharDto);
 
     // 상대 반려견 특징 생성
-    void insertMatchingCharacter(Long dogId, DogCharDto dogCharDto);
+    void insertMatchingCharacter(DogCharDto dogCharDto);
 
     // 상대 반려견 특징 수정
-    void updateMatchingCharacter(Long dogId, DogCharDto dogCharDto);
+    void updateMatchingCharacter(DogCharDto dogCharDto);
 
     // 매칭된 반려견 리스트
     List<DogDetailDto> matchingList(Long dogId);
@@ -28,4 +28,10 @@ public interface MatchingService {
 
     // 상대 반려견 특징
     DogCharDto matchingCharaterList(Long dogId);
+
+    // 상대 반려견 선별 내용 저장 (수락/거절 상관 없이)
+    void insertMatchingSelection(Long dogId, Long[] selections);
+
+    // 선별 내용 초기화 (특성 수정시 or 목록 초기화 시) - 서비스 단위로만 만들어 둠
+    void resetMatchingSelection(Long dogId);
 }

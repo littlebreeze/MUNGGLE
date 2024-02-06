@@ -6,6 +6,7 @@ import com.munggle.dog.mapper.DogMapper;
 import com.munggle.dog.repository.DogRepository;
 import com.munggle.dog.repository.MatchingQueryRepository;
 import com.munggle.dog.repository.MatchingRepository;
+import com.munggle.dog.repository.MatchingSelectionRepository;
 import com.munggle.domain.exception.DogNotFoundException;
 import com.munggle.domain.exception.ExceptionMessage;
 import com.munggle.domain.exception.MatchingCharacterNotFoundException;
@@ -27,24 +28,25 @@ public class MatchingServiceImpl implements MatchingService {
     private final DogRepository dogRepository;
     private final MatchingRepository matchingRepository;
     private final MatchingQueryRepository matchingQueryRepository;
+    private final MatchingSelectionRepository matchingSelectionRepository;
 
     @Override
     @Transactional
-    public void updateMyDogCharacter(Long dogId, DogCharDto dogCharDto) {
-        Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
+    public void updateMyDogCharacter(DogCharDto dogCharDto) {
+        Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogCharDto.getDogId())
                 .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
         dog.updateCharacterId(dogCharDto);
     }
 
     @Override
     @Transactional
-    public void insertMatchingCharacter(Long dogId, DogCharDto dogCharDto) {
+    public void insertMatchingCharacter(DogCharDto dogCharDto) {
         // 내 반려견 찾아와서 매칭 켜기
-        Dog dog = dogRepository.findById(dogId)
+        Dog dog = dogRepository.findById(dogCharDto.getDogId())
                 .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
         dog.onMatching();
         Matching matching = Matching.builder()
-                .dog(Dog.builder().dogId(dogId).build())
+                .dog(dog)
                 .isNeutering(dogCharDto.getIsNeutering())
                 .characterId(dogCharDto.toCharacterString())
                 .build();
@@ -53,16 +55,14 @@ public class MatchingServiceImpl implements MatchingService {
 
     @Override
     @Transactional
-    public void updateMatchingCharacter(Long dogId, DogCharDto dogCharDto) {
-        Matching matching = matchingRepository.findByDogDogId(dogId)
+    public void updateMatchingCharacter(DogCharDto dogCharDto) {
+        Matching matching = matchingRepository.findByDogDogId(dogCharDto.getDogId())
                 .orElseThrow(()->new MatchingCharacterNotFoundException(ExceptionMessage.MATCHING_CHARACTER_NOT_FOUND));
         matching.updateMatcing(dogCharDto);
     }
 
     /*
-    * 여기까지 했을 때 정렬...은?
-    * 상위 20개를 하려면 정렬 기준이 필요한데,,,
-    * 선택/넘긴 멍멍이들도 관리가 되어야함.
+    * 상위 20개를 하려면 정렬 기준
      */
     @Override
     public List<DogDetailDto> matchingList(Long dogId) {
@@ -123,4 +123,16 @@ public class MatchingServiceImpl implements MatchingService {
                 .characterId(matching.returnCharacterList())
                 .build();
     }
+
+    @Override
+    public void insertMatchingSelection(Long dogId, Long[] others) {
+
+
+    }
+
+    @Override
+    public void resetMatchingSelection(Long dogId) {
+
+    }
+
 }

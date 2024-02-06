@@ -20,26 +20,26 @@ public class MatchingController {
     private final MatchingService matchingService;
 
     // 본인 반려견 특징 편집
-    @PutMapping("/my/{dogId}")
+    @PutMapping("/my")
     @ResponseStatus(HttpStatus.OK)
-    public void updateMyDog(@PathVariable Long dogId, @RequestBody DogCharDto dogCharDto){
-        matchingService.updateMyDogCharacter(dogId, dogCharDto);
+    public void updateMyDog(@RequestBody DogCharDto dogCharDto){
+        matchingService.updateMyDogCharacter(dogCharDto);
     }
 
     // 상대 반려견 특징 생성 - 매칭 옵션 켜기
-    @PostMapping("/{dogId}")
+    @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public void createMatching(@PathVariable Long dogId, @RequestBody DogCharDto dogCharDto){
+    public void createMatching(@RequestBody DogCharDto dogCharDto){
 
-        matchingService.insertMatchingCharacter(dogId,dogCharDto);
+        matchingService.insertMatchingCharacter(dogCharDto);
     }
 
     // 상대 반려견 특징 편집
-    @PutMapping("/{dogId}")
+    @PutMapping
     @ResponseStatus(HttpStatus.OK)
-    public void updateMatching(@PathVariable Long dogId, @RequestBody DogCharDto dogCharDto){
+    public void updateMatching(@RequestBody DogCharDto dogCharDto){
 
-        matchingService.updateMatchingCharacter(dogId,dogCharDto);
+        matchingService.updateMatchingCharacter(dogCharDto);
     }
 
     // 특징에 따른 반려견 리스트
@@ -73,4 +73,12 @@ public class MatchingController {
 
         matchingService.toggleMatching(dogId);
     }
+
+//    @PostMapping
+//    @ResponseStatus(HttpStatus.OK)
+//    public void saveMatchingSelection(@RequestBody ){
+//
+//
+//    }
+
 }
