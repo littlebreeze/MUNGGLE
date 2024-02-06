@@ -8,10 +8,13 @@ import com.munggle.post.mapper.PostMapper;
 import com.munggle.post.repository.PostLikeRespository;
 import com.munggle.post.repository.PostRepository;
 import com.munggle.post.repository.TagRepository;
+import com.munggle.search.dto.SearchPagePostDto;
 import com.munggle.search.dto.SearchTagDto;
 import com.munggle.search.dto.SearchPostListDto;
 import com.munggle.search.mapper.SearchMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -58,6 +61,33 @@ public class SearchServiceImpl implements SearchService {
         return tagList.stream()
                 .map(SearchMapper::toSearchTagDto)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public SearchPagePostDto searchPagePost(Long userId, String type, String word, Pageable pageable) {
+        Page<Post> postPage;
+        if (type.equals("title")) {
+            postPage = postRepository.searchByPostTitlePage(word, pageable);
+        } else if (type.equals("tag")) {
+            postPage = postRepository.searchByTagNmPage(word, pageable);
+        } else {
+            throw new IllegalSearchTypeException(SEARCH_TYPE_ILLEGAL);
+        }
+
+        List<SearchPostListDto> posts = postPage.getContent().stream()
+                .map(post -> {
+                    // 좋아요 여부 확인
+                    PostLikeId postLikeId = PostMapper.toPostLikedIdEntity(userId, post.getId());
+                    Boolean isLiked = postLikeRespository.existsByPostLikeIdAndIsDeletedFalse(postLikeId);
+
+                    return SearchMapper.toSearchPostListDto(post, isLiked);
+                })
+                .collect(Collectors.toList());
+
+        return SearchPagePostDto.builder()
+                .posts(posts)
+                .last(postPage.isLast())
+                .build();
     }
 
 
