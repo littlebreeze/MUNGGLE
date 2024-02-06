@@ -66,7 +66,7 @@ public class PostController {
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public void savePost(@AuthenticationPrincipal User principal,
-                         @RequestPart(value = "dto") @Valid PostCreateDto postCreateDto,
+                         @RequestPart(value = "dto", required = false) @Valid PostCreateDto postCreateDto,
                          @RequestPart(value = "file", required = false) List<MultipartFile> files) {
 //        log.info("제목: {}, 이미지: {}", postCreateDto.getPostTitle(), files.get(0));
 
@@ -78,7 +78,7 @@ public class PostController {
     @PutMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public void updatePost(@PathVariable(value = "postId") Long postId,
-                           @RequestPart(value = "dto") @Valid PostUpdateDto postUpdateDto,
+                           @RequestPart(value = "dto", required = false) @Valid PostUpdateDto postUpdateDto,
                            @RequestPart(value = "file", required = false) List<MultipartFile> files) {
         log.info("제목: {}, 이미지: {}", postUpdateDto.getPostTitle(), files.get(0));
 
