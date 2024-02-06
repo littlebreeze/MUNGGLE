@@ -14,17 +14,10 @@ import org.springframework.stereotype.Service;
 public class OidcUserServiceImpl implements OidUserService{
 
     private final UserService userService;
-    private String email;
-    private DefaultOAuth2UserService defaultOAuth2UserService = new DefaultOAuth2UserService();
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oauth2User = defaultOAuth2UserService.loadUser(userRequest);
-
-        if (userRequest.getClientRegistration().getRegistrationId().equals("google")) {
-            email = (String) oauth2User.getAttributes().get("email");
-        }
-
+        String email = userRequest.getIdToken().getEmail();
         User user = (User) userService.loadUserByUsername(email);
 
         return user;
