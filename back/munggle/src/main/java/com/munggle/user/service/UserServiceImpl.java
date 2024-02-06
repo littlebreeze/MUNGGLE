@@ -75,9 +75,6 @@ public class UserServiceImpl
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oauth2User = defaultOAuth2UserService.loadUser(userRequest);
-//        System.out.println(oauth2User);
-//        System.out.println("소셜로그인 시작");
-
 
         if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
             Map<String, Object> response = (Map<String, Object>) oauth2User.getAttributes().get("response");
@@ -89,7 +86,6 @@ public class UserServiceImpl
             email = (String) kakaoAccount.get("email");
         }
 
-        System.out.println(email);
         User user = (User) this.loadUserByUsername(email);
 
         return user;
