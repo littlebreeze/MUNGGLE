@@ -17,6 +17,8 @@ public interface UserService extends UserDetailsService, OAuth2UserService<OAuth
 
     List<UserListDto> getSearchPage(String keyword);
 
+    void checkDuplicateNickname(String nickname);
+
     void verify(String email, String autoCode);
 
     void sendCodeToEmail(String email);
@@ -36,5 +38,4 @@ public interface UserService extends UserDetailsService, OAuth2UserService<OAuth
     void deleteBackgroundImage(Long id);
 
     void deleteProfileImage(Long id);
-
 }

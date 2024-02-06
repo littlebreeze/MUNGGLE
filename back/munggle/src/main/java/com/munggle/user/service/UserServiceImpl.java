@@ -1,5 +1,6 @@
 package com.munggle.user.service;
 
+import com.munggle.domain.exception.DuplicateNickNameException;
 import com.munggle.domain.exception.EmailVerificationFailException;
 import com.munggle.domain.exception.PasswordNotConfirmException;
 import com.munggle.domain.exception.UserNotFoundException;
@@ -106,6 +107,14 @@ public class UserServiceImpl
     public List<UserListDto> getSearchPage(String keyword) {
         List<User> userList = userRepository.findByNicknameContainingAndIsEnabledTrue(keyword);
         return UserMapper.fromUsers(userList);
+    }
+
+    @Override
+    public void checkDuplicateNickname(String nickname) {
+        userRepository.findByNicknameAndIsEnabledTrue(nickname)
+                .ifPresent(user -> {
+                    throw new DuplicateNickNameException(DUPLICATED_NICKNAME);
+                });
     }
 
     @Override

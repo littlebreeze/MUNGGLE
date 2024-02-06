@@ -39,6 +39,12 @@ public class UserController {
         return userService.getSearchPage(keyword);
     }
 
+    @GetMapping("/nickname")
+    @ResponseStatus(HttpStatus.OK)
+    public void checkDuplicatedNickname(@RequestParam("nickname") String nickname) {
+        userService.checkDuplicateNickname(nickname);
+    }
+
     @PostMapping("/emails/verification-requests")
     @ResponseStatus(HttpStatus.OK)
     public void sendVerificationMessage(@RequestParam("email") String email) {

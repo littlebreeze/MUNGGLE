@@ -15,4 +15,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsernameAndIsEnabledTrue(String username);
 
     List<User> findByNicknameContainingAndIsEnabledTrue(String keyword);
+
+    Optional<Object> findByNicknameAndIsEnabledTrue(String nickname);
 }

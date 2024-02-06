@@ -35,4 +35,10 @@ public class ExceptionAdvice {
         // 메일 전송 실패는 보통 서버 내부 오류로 간주됩니다.
         return e.getMessage();
     }
+
+    @ExceptionHandler(DuplicateNickNameException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public String handleDuplicateException(RuntimeException e) {
+        return e.getMessage();
+    }
 }
