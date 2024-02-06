@@ -43,15 +43,15 @@ public class MatchingController {
     }
 
     // 특징에 따른 반려견 리스트
-    @GetMapping("/list")
+    @GetMapping("/{dogId}/list")
     @ResponseStatus(HttpStatus.OK)
-    public List<DogDetailDto> matchingList(@RequestBody Long dogId){
+    public List<DogDetailDto> matchingList(@PathVariable Long dogId){
 
         return matchingService.matchingList(dogId);
     }
 
     // 내 특성 - 수정 시 필요
-    @GetMapping ("/my")
+    @GetMapping ("/my/{dogId}")
     @ResponseStatus(HttpStatus.OK)
     public DogCharDto myCharacter(@RequestBody Long dogId){
 
@@ -59,9 +59,9 @@ public class MatchingController {
     }
 
     // 상대 특성 - 수정 시 필요
-    @GetMapping
+    @GetMapping("/{dogId}")
     @ResponseStatus(HttpStatus.OK)
-    public DogCharDto matchingCharacter(@RequestBody Long dogId){
+    public DogCharDto matchingCharacter(@PathVariable Long dogId){
 
         return matchingService.matchingCharaterList(dogId);
     }
@@ -69,7 +69,7 @@ public class MatchingController {
     // 매칭 온오프
     @PostMapping("/my")
     @ResponseStatus(HttpStatus.OK)
-    public void toggleMatching(@RequestBody Long dogId){
+    public void toggleMatching(@PathVariable Long dogId){
 
         matchingService.toggleMatching(dogId);
     }
