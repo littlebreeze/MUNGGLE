@@ -24,12 +24,33 @@ const getFonts = () => Font.loadAsync({
 });
 
 export default function App() {
-  const [isLogin, setIsLogin] = useState(true);
+  console.log(AsyncStorage.getItem("isLogin"));
+  
+  const [isLogin, setIsLogin] = useState(false);
+  
+  const logIn =  () => {
+    setIsLogin(true);
+    AsyncStorage.setItem("isLogin", "true")
+    .then(AsyncStorage.getItem("isLogin")
+    .then((value) => console.log(value)));
+  };
+
+  const logOut = () => {
+    AsyncStorage.setItem("isLogin", "false")
+    .then(setIsLogin(false));
+  };
 
   useEffect(() => {
     getFonts;
     AsyncStorage.setItem("API_URL", "http://i10a410.p.ssafy.io:8080");
   }, []);
+
+  useEffect(() => {
+    if (!isLogin) {
+      AsyncStorage.getItem("isLogin")
+      .then((value) => setIsLogin(value === "true"));
+    }
+  }, [isLogin])
 
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
@@ -52,6 +73,7 @@ export default function App() {
       <View style={styles.container}>
         <View style={{ width: SCREEN_WIDTH, flex: 1}}>
           <Nav
+            logOut={logOut}
             openSearchModal={openSearchModal} 
             openNotificationModal={openNotificationModal}
             openDirectMessageModal={openDirectMessageModal} 
@@ -90,7 +112,7 @@ export default function App() {
     );
   } else {
     return (
-      <LoginScreen setIsLogin={setIsLogin} />
+      <LoginScreen logIn={logIn} setIsLogin={setIsLogin} />
     );
   }
 

@@ -12,7 +12,8 @@
         {
           "urlScheme": "http://i10a410.p.ssafy.io:8080/oauth2/authorization/naver"
         }
-      ]
+      ],
+      "expo-router"
     ],
     "splash": {
       "image": "./assets/splash.png",
@@ -38,4 +39,3 @@
     }
   }
 }
-

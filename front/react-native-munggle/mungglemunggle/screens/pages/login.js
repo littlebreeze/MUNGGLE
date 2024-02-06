@@ -1,170 +1,311 @@
 import React, {useEffect, useState} from "react";
-import { View, Text, TextInput, 
+import { View, Text, TextInput, Modal,
   Image, TouchableOpacity, Dimensions,
   StyleSheet, 
 } from "react-native";
-import logo from "../../assets/icons/logo.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as AuthSession from "expo-auth-session";
 import axios from "axios";
 
+import imgLogo from "../../assets/icons/logo.png";
+import iconGoogle from "../../assets/icons/googleLogin.png"; 
+import iconKakao from "../../assets/icons/kakaoLogin.png"; 
+import iconNaver from "../../assets/icons/naverLogin.png"; 
+
+import SignUp from "../../components/modal/signUp";
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 export default function LoginScreen (props) {
-  const [apiUrl, setApiUrl] = useState(AsyncStorage.getItem("API_URL"));
+  const apiUrl = "http://i10a410.p.ssafy.io:8080";
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  useEffect(() => {
+    console.log(AsyncStorage.getItem("isLogin"));
+  }, []);
+
   const handleLogin = () => {
     const payLoad = { username, password };
-    // console.log(payLoad);
-    // console.log(apiUrl._j);
-    // console.log(`${apiUrl._j}/login/`);
+    console.log(payLoad);
+
     axios.post(
-      `${apiUrl._j}/login`,
+      `${apiUrl}/login`,
       payLoad,
       {headers: {
         "Content-Type": "application/x-www-form-urlencoded",
       }})
       .then((res) => {
-        AsyncStorage.setItem("accessToken", res.headers.get("access-token"));
-        AsyncStorage.setItem("accessToken", res.headers.get("refresh-token"));
-        props.setIsLogin(true);
+        AsyncStorage.setItem("accessToken", res.headers.get("access-token"))
+        .then(AsyncStorage.setItem("accessToken", res.headers.get("refresh-token")))
+        .then(
+          axios.get(
+            `${apiUrl}/users/mypage`,
+            {headers: {
+              "Authorization": res.headers.get("access-token")
+            }}
+          ).then((response) => {
+            AsyncStorage.setItem("userId", `${response.data.id}`)
+            .then(() =>
+              props.logIn()
+            );
+          }).catch((err) => {
+            console.log(err);
+          })
+        )
       })
       .catch((err) => console.log(err))
   };
 
+  const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
+
+  const openSignUpModal = () => { setIsSignUpModalOpen(true) }; 
+  const closeSignUpModal = () => { setIsSignUpModalOpen(false) }; 
 
 
   return (
     <View style={styles.loginContainer}>
-      <Image 
-        style={styles.loginTopImage} 
-        source={logo}
-      />
+      <View style={styles.loginTopImageView}>
+        <Image 
+          style={styles.loginTopImage} 
+          source={imgLogo}
+        />
+      </View>
       
-      <TextInput 
-        placeholder="아이디"
-        value={username}
-        onChangeText={(text) => setUsername(text)}
-        style={styles.usernameInput} 
-      />
-      
-      <TextInput
-        placeholder="비밀번호"
-        value={password}
-        onChangeText={(text) => setPassword(text)}
-        secureTextEntry={true} 
-        style={styles.passwordInput} 
-      />
+      <View style={styles.textInputView}>
+        <TextInput 
+          placeholder="아이디"
+          value={username}
+          onChangeText={(e) => setUsername(e)}
+          style={styles.usernameInput} 
+        />
+        
+        <TextInput
+          placeholder="비밀번호"
+          value={password}
+          onChangeText={(e) => setPassword(e)}
+          secureTextEntry={true} 
+          style={styles.passwordInput} 
+        />
+      </View>
       
       <TouchableOpacity 
-        style={styles.loginButton} 
+        style={styles.loginButtonView} 
         onPress={handleLogin}
       >
         <Text style={styles.loginButtonText}>로그인</Text>
       </TouchableOpacity>
       
       <View style={styles.signInButtonView}>
-        <TouchableOpacity>
-          <Text>회원가입</Text>
+        <TouchableOpacity 
+          style={styles.signInButtonTouch}
+          onPress={openSignUpModal}
+        >
+          <Text style={styles.signInButtonText}>회원가입</Text>
         </TouchableOpacity>
-        <TouchableOpacity>
-          <Text>아이디/비밀번호 찾기</Text>
+        <TouchableOpacity 
+          style={styles.signInButtonTouch}
+        >
+          <Text style={styles.signInButtonText}>아이디/비밀번호 찾기</Text>
         </TouchableOpacity>
       </View>
       
-      <View style={{ flexDirection: "row", alignItems: "center", marginVertical: 20 }}>
-        <View style={{ flex: 1, height: 1, backgroundColor: "black" }} />
-        <Text style={{ marginHorizontal: 10 }}>또는</Text>
-        <View style={{ flex: 1, height: 1, backgroundColor: "black" }} />
+      <View style={styles.underLineView}>
+        <View style={styles.underLineSideView} />
+        <View style={styles.underLineCenterView}>
+          <Text style={styles.underLineText}>또는</Text>
+        </View>
+        <View style={styles.underLineSideView} />
       </View>
       
-      <TouchableOpacity 
-        style={styles.googleLoginButton}
-      >
-        <Text>구글로 시작하기</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={styles.kakaoLoginButton}
-      >
-        <Text>카카오로 시작하기</Text>
-      </TouchableOpacity>
-      
-      <TouchableOpacity 
-        style={styles.naverLoginButton}
-      >
-        <Text>네이버로 시작하기</Text>
-      </TouchableOpacity>
+      <View style={styles.snsLoginView}>
+        <TouchableOpacity 
+          style={styles.googleLoginView}
+        >
+          <Image 
+            style={styles.googleLoginIcon}
+            source={iconGoogle}
+          />
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.kakaoLoginView}
+        >
+          <Image 
+            style={styles.kakaoLoginIcon}
+            source={iconKakao}
+          />
+        </TouchableOpacity>
+        
+        <TouchableOpacity 
+          style={styles.naverLoginView}
+        >
+          <Image 
+            style={styles.naverLoginIcon}
+            source={iconNaver}
+          />
+        </TouchableOpacity>
+      </View>
+
+      <Modal
+        animationType="slide"
+        apiUrl={apiUrl}
+        transparent={true}
+        visible={isSignUpModalOpen}
+        onRequestClose={() => closeSignUpModal()}>
+        <SignUp closeSignUpModal={closeSignUpModal} />
+      </Modal>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   loginContainer: {
-    flex: 1, 
-    justifyContent: "center", 
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
     alignItems: "center",
   },
 
-  loginTopImage: {
-    width: "45%", 
-    height: "10%", 
-    marginBottom: "20%"
+  loginTopImageView: {
+    width: SCREEN_WIDTH * 0.6, 
+    height: SCREEN_HEIGHT * 0.15, 
+    marginTop: SCREEN_HEIGHT * 0.2,
+    marginBottom: SCREEN_HEIGHT * 0.05,
   },
-
+  loginTopImage: {
+    width: SCREEN_WIDTH * 0.6, 
+    height: SCREEN_HEIGHT * 0.15, 
+  },
+  
+  textInputView: {
+    width: SCREEN_WIDTH * 0.8, 
+    height: SCREEN_HEIGHT * 0.2, 
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: SCREEN_HEIGHT * 0.02,
+  },
   usernameInput: {
-    height: 40, 
+    width: SCREEN_WIDTH * 0.65, 
+    height: SCREEN_HEIGHT * 0.07, 
+
     borderColor: "gray", 
     borderWidth: 1, 
-    marginBottom: 10, 
-    padding: 10, 
-    width: 200,
+    borderRadius: 20,
+    paddingLeft: SCREEN_WIDTH * 0.05,
+    fontSize: 17,
+    marginVertical: SCREEN_HEIGHT * 0.01,
   },
   passwordInput: {
-    height: 40, 
+    width: SCREEN_WIDTH * 0.65, 
+    height: SCREEN_HEIGHT * 0.07, 
+    
     borderColor: "gray", 
     borderWidth: 1, 
-    marginBottom: 20, 
-    padding: 10, 
-    width: 200
+    borderRadius: 20,
+    paddingLeft: SCREEN_WIDTH * 0.05,
+    fontSize: 17,
+    marginVertical: SCREEN_HEIGHT * 0.01,
   },
 
-  loginButton: {
-    backgroundColor: "blue", 
-    padding: 10, 
-    borderRadius: 5, 
-    marginBottom: 20,
+  loginButtonView: {
+    width: SCREEN_WIDTH * 0.23,
+    height: SCREEN_HEIGHT * 0.06,
+    backgroundColor: "rgb(253, 245, 169)", 
+    borderRadius: 10, 
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: SCREEN_HEIGHT * 0.02,
   },
   loginButtonText: {
-    color: "white", 
-    textAlign: "center", 
+    color: "black", 
+    fontSize: 18,
+    fontWeight: "600",
   },
   
   signInButtonView: {
     flexDirection: "row", 
     justifyContent: "space-between", 
-    width: "100%"
+    width: SCREEN_WIDTH * 0.8,
+    height: SCREEN_HEIGHT * 0.06,
+    marginVertical: SCREEN_HEIGHT * 0.005,
+  },
+  signInButtonTouch: {
+    width: SCREEN_WIDTH * 0.35,
+    height: SCREEN_HEIGHT * 0.05,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  signInButtonText: {
+    fontSize: 15,
   },
 
-  googleLoginButton: {
-    backgroundColor: "white", 
-    padding: 10, 
-    borderRadius: 5, 
-    marginBottom: 10,
+  underLineView: {
+    flexDirection: "row", 
+    alignItems: "center",
+    width: SCREEN_WIDTH, 
+    height: SCREEN_HEIGHT * 0.04,
   },
-  kakaoLoginButton: {
-    backgroundColor: "yellow", 
-    padding: 10, 
-    borderRadius: 5, 
-    marginBottom: 10,
+  underLineSideView: {
+    width: SCREEN_WIDTH * 0.42,
+    height: SCREEN_HEIGHT * 0.002, 
+    backgroundColor: "black"
   },
-  naverLoginButton: {
-    backgroundColor: "green", 
-    padding: 10, 
-    borderRadius: 5, 
-    marginBottom: 10,
+  underLineCenterView: {
+    width: SCREEN_WIDTH * 0.16,
+    height: SCREEN_HEIGHT * 0.03, 
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  underLineText: {
+    fontSize: 17,
+    fontWeight: "500",
+  },
+
+  snsLoginView: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT * 0.15,
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "center",
+  },
+  googleLoginView: {
+    width: SCREEN_WIDTH * 0.2,
+    height: SCREEN_HEIGHT * 0.1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  googleLoginIcon: {
+    width: SCREEN_WIDTH * 0.17,
+    height: SCREEN_HEIGHT * 0.08,
+    borderWidth: 0.5,
+    borderColor: "gray",
+    borderRadius: 100,
+  },
+  kakaoLoginView: {
+    width: SCREEN_WIDTH * 0.2,
+    height: SCREEN_HEIGHT * 0.1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  kakaoLoginIcon: {
+    width: SCREEN_WIDTH * 0.17,
+    height: SCREEN_HEIGHT * 0.08,
+    borderWidth: 0.5,
+    borderColor: "gray",
+    borderRadius: 100,
+  },
+  naverLoginView: {
+    width: SCREEN_WIDTH * 0.2,
+    height: SCREEN_HEIGHT * 0.1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  naverLoginIcon: {
+    width: SCREEN_WIDTH * 0.17,
+    height: SCREEN_HEIGHT * 0.08,
+    borderWidth: 0.5,
+    borderColor: "gray",
+    borderRadius: 100,
   },
 });

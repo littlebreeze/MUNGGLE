@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useId, useState } from "react";
 import { View, Text, Button, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -34,11 +34,83 @@ import imgPost10 from "../../assets/sample/dog10.jpg";
 import FollowButton from "../../components/followButton";
 import DirectMessageButton from "../../components/directMessageButton";
 
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 const Tab = createMaterialTopTabNavigator();
 
-export default function ProfileScreen ( {navigation} ) {
+export default function ProfileScreen () {
+  const apiUrl = "http://i10a410.p.ssafy.io:8080";
+
+  const [profile, setProfile] = useState({});
+
+  const [userId, setUserId] = useState("");
+  const [authToken, setAuthToken] = useState("");
+
+  const [dogList, setDogList] = useState([]);
+  const [testPostList, setTestPostList] = useState([]);
+  const [scrapList, setScrapList] = useState([]);
+  
+  useEffect(() => { 
+    // get token
+    AsyncStorage.getItem("accessToken")
+    .then((token) => {
+      setAuthToken(token);
+    })
+    // get user Id
+    .then(
+      axios.get(
+        `${apiUrl}/users/mypage`,
+          {headers: {
+            "Authorization": authToken ,
+          }}
+        ).then((res) =>{
+        console.log(res.data); 
+        setUserId(res.data.id);
+        })
+        // get Dog List
+        .then(
+          axios.get(
+            `${apiUrl}/userpages/${userId}/dog`,
+              {headers: {
+                "Authorization": authToken ,
+              }}
+            ).then((res) => {
+              setDogList(res.data);
+              console.log(res.data);
+            })
+            .catch((err) => console.log(err))
+        )
+        // get Post List
+        .then(
+          axios.get(
+            `${apiUrl}/userpages/${userId}/post`,
+              {headers: {
+                "Authorization": authToken ,
+              }}
+            ).then((res) => {setTestPostList(res.data);})
+            .catch((err) => console.log(err))
+        )
+        // get Scrap List
+        .then(
+          axios.get(
+            `${apiUrl}/userpages/${userId}/scrap`,
+              {headers: {
+                "Authorization": authToken ,
+              }}
+            ).then((res) => setScrapList(res.data))
+            .catch((err) => console.log(err))
+        )
+        .catch((err) => console.log(err))
+    )
+  }, []);
+  
+  console.log(dogList);
+  console.log(testPostList);
+  console.log(scrapList);
+
   const userProfile = {
     backGroundImg: imgPost1,
     profileImg: imgProfile1,
@@ -265,7 +337,7 @@ export default function ProfileScreen ( {navigation} ) {
         >
           <Tab.Screen 
             name="Dog" 
-            children={() => <ProfileDog dogList={userProfile.dogs} />}
+            children={() => <ProfileDog  dogList={userProfile.dogs} />}
             options={{
               tabBarIcon: () => (
                 <Image
@@ -277,7 +349,7 @@ export default function ProfileScreen ( {navigation} ) {
           />
           <Tab.Screen 
             name="Post" 
-            children={() => <ProfilePost postList={postList} />} 
+            children={() => <ProfilePost  postList={postList} />} 
             options={{
               tabBarIcon: () => (
                 <Image
@@ -289,7 +361,7 @@ export default function ProfileScreen ( {navigation} ) {
           />
           <Tab.Screen 
             name="Scrap" 
-            children={() => <ProfileScrap postList={postList} />} 
+            children={() => <ProfileScrap  postList={postList} />} 
             options={{
               tabBarIcon: () => (
                 <Image

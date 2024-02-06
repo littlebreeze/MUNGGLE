@@ -20,7 +20,11 @@ export default function Nav (props) {
           source={imageLogo}
         />
       </TouchableOpacity>
-
+      <TouchableOpacity
+       onPress={props.logOut}
+      >
+        <Text>로그아웃</Text>
+      </TouchableOpacity>
       <View style={styles.navIconView}>
         <TouchableOpacity 
           style={styles.navIconSearchView}

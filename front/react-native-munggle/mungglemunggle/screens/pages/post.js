@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Button,
   Image, Modal, Pressable,
   ScrollView, TouchableOpacity,
-  StyleSheet, Dimensions
+  StyleSheet, Dimensions,
+  ActivityIndicator,
 } from "react-native";
 // import { Modal } from "react-native-modal";
 
@@ -221,25 +222,26 @@ export default function PostScreen () {
       ],
     },
   ]
-
   
   const [testPostList, setTestPostList] = useState([]);
   
   const getPost = async () => {
     const apiUrl = await AsyncStorage.getItem("API_URL");
 
-    const accessToken = await AsyncStorage.getItem("accessToken");
-
-    axios.get(
-      `${apiUrl}/posts/curating`,
-      {headers: {
-        "access-token": accessToken ,
-      }}
-    ).then((res) => {
-      setTestPostList(res.data);
-    }) .catch((err) => {
-      console.log(err)
+    AsyncStorage.getItem("accessToken")
+    .then((token) => { 
+      axios.get(
+        `${apiUrl}/posts/curating`,
+        {headers: {
+          "Authorization": token ,
+        }}
+      ).then((res) => {
+        setTestPostList(res.data);
+      }) .catch((err) => {
+        console.log(err)
+      })
     })
+
   }
 
   useEffect(() => {
@@ -280,6 +282,81 @@ export default function PostScreen () {
     return (
       <View style={styles.postBottomView}>
         {postList && postList.map((post, index) => {
+          const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+          
+          const openDetailModal = () => { setIsDetailModalOpen(true) };
+
+          const closeDetailModal = () => { setIsDetailModalOpen(false) };
+
+          return(
+            <View key={index} style={styles.postListView}>
+              <View style={styles.postListViewLeftView}>
+                <ProfileCircle 
+                  imageProfile={post.user.imgProfile}
+                  nameProfile={post.user.name}
+                />
+                <View style={styles.postListProfileButtonView}>
+                  <FollowButton />
+                  <DirectMessageButton />
+                </View>
+              </View>
+              
+              <View style={styles.postListViewRightView}>
+                <TouchableOpacity 
+                  style={styles.postListImageView}
+                  onPress={() => openDetailModal()}
+                >
+                  <Image 
+                    style={styles.postListImage}
+                    source={post.imgPost} 
+                  />
+                </TouchableOpacity>
+
+                <View style={styles.postListBottomView}>
+                  <View style={styles.postListTextView}>
+                    <Text style={styles.postListTitle}>{post.title}</Text>
+                    <Text style={styles.postListDate}>{post.createdAt}</Text>
+                    <View style={styles.postListTagView}>
+                      {post.tagList && post.tagList.map((tag, index) => {
+                        return (
+                          <View style={styles.postTagView} key={index}>
+                            <Text style={styles.postTagText}># {tag}</Text>
+                          </View>
+                        );
+                      })}
+                    </View>
+                  </View>
+                  <View style={styles.postListIconView}>
+                    <View style={styles.postLikeCountView}>
+                      <Text style={styles.postLikeCountText}>12</Text>
+                    </View>
+                    <TouchableOpacity style={styles.postLikeIcon}>
+                      <Image 
+                        style={styles.postLikeIcon}
+                        source={iconBornWhite}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+              <Modal
+                animationType="fade"
+                transparent={true}
+                visible={isDetailModalOpen}
+                onRequestClose={() => closeDetailModal()}>
+                <PostDetail closeDetailModal={closeDetailModal} post={post} />
+              </Modal>
+            </View>
+          );
+        })}
+      </View>
+    );
+  }
+
+  const testPosts = () => {
+    return (
+      <View style={styles.postBottomView}>
+        {testPostList && testPostList.map((post, index) => {
           const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
           
           const openDetailModal = () => { setIsDetailModalOpen(true) };
