@@ -68,7 +68,7 @@ public class PostController {
     public void savePost(@AuthenticationPrincipal User principal,
                          @RequestPart(value = "dto", required = false) @Valid PostCreateDto postCreateDto,
                          @RequestPart(value = "file", required = false) List<MultipartFile> files) {
-//        log.info("제목: {}, 이미지: {}", postCreateDto.getPostTitle(), files.get(0));
+        log.info("제목: {}, 이미지: {}", postCreateDto.getPostTitle(), files.get(0));
 
         postCreateDto.setImages(files);
         postCreateDto.setUserId(principal.getId());
