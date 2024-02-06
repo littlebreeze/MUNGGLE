@@ -1,5 +1,6 @@
 package com.munggle.user.service;
 
+import com.munggle.domain.exception.DuplicateNickNameException;
 import com.munggle.domain.exception.EmailVerificationFailException;
 import com.munggle.domain.exception.PasswordNotConfirmException;
 import com.munggle.domain.exception.UserNotFoundException;
@@ -47,8 +48,7 @@ import static com.munggle.domain.exception.ExceptionMessage.*;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class UserServiceImpl
-        implements UserService {
+public class UserServiceImpl implements UserService {
 
     private String email;
     private DefaultOAuth2UserService defaultOAuth2UserService = new DefaultOAuth2UserService();
@@ -107,6 +107,15 @@ public class UserServiceImpl
         List<User> userList = userRepository.findByNicknameContainingAndIsEnabledTrue(keyword);
         return UserMapper.fromUsers(userList);
     }
+
+    @Override
+    public void checkDuplicateNickname(String nickname) {
+        userRepository.findByNicknameAndIsEnabledTrue(nickname)
+                .ifPresent(user -> {
+                    throw new DuplicateNickNameException(DUPLICATED_NICKNAME);
+                });
+    }
+
 
     @Override
     @Transactional
