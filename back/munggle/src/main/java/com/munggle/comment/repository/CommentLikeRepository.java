@@ -5,4 +5,5 @@ import com.munggle.domain.model.entity.CommentLike;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CommentLikeRepository extends JpaRepository<CommentLike, CommentLikeId> {
+    Boolean existsByIdAndIsDeletedFalse(CommentLikeId commentLikeId);
 }
