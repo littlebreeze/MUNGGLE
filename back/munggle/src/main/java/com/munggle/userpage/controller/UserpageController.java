@@ -35,7 +35,7 @@ public class UserpageController {
     @GetMapping("/{userId}/post")
     @ResponseStatus(HttpStatus.OK)
     public List<UserPostListDto> getUserPostList(@AuthenticationPrincipal User principal,
-                                                    @PathVariable(value = "userId") Long userId) {
+                                                 @PathVariable(value = "userId") Long userId) {
         return userpageService.getUserPost(userId, principal.getId());
     }
 

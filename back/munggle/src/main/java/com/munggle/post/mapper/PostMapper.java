@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -36,7 +37,8 @@ public class PostMapper {
                 .images(imageUrls)
                 .hashtags(hashtags)
                 .userId(detailPost.getUser().getId())
-                .profileImage(detailPost.getUser().getProfileImage().getImageURL())
+                .profileImage(Optional.ofNullable(detailPost.getUser().getProfileImage())
+                              .map(UserImage::getImageURL).orElse(null))
                 .nickname(detailPost.getUser().getNickname())
                 .likeCnt(detailPost.getLikeCnt())
                 .isMine(isMine)
@@ -95,7 +97,8 @@ public class PostMapper {
                 .imageURLs(imageUrls)
                 .hashtags(hashtags)
                 .userId(post.getUser().getId())
-                .profileImage(post.getUser().getProfileImage().getImageURL())
+                .profileImage(Optional.ofNullable(post.getUser().getProfileImage())
+                              .map(UserImage::getImageURL).orElse(null))
                 .nickname(post.getUser().getNickname())
                 .likeCnt(post.getLikeCnt())
                 .isLiked(isLiked)
