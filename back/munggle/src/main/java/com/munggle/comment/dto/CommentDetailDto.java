@@ -26,4 +26,6 @@ public class CommentDetailDto {
 
     private LocalDateTime updatedAt;
 
+    private Boolean haveLiked;
+
 }

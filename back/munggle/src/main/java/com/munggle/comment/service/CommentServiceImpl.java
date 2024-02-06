@@ -60,19 +60,33 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentDetailDto> getCommentList(Long postId) {
+    public List<CommentDetailDto> getCommentList(User principal, Long postId) {
         return commentRepository.findAllByPostIdAndIsDeletedFalse(postId)
                 .orElseThrow(()->new CommentNotFoundException(ExceptionMessage.COMMENT_NOT_FOUND))
-                .stream().map(comment -> CommentMapper.toDto(comment))
+                .stream().map(comment -> {
+                    Boolean haveLiked = false;
+
+                    if(principal != null)
+                        haveLiked = commentLikeRepository.existsByIdAndIsDeletedFalse(CommentLikeId
+                                .builder().commentId(comment.getId()).userId(principal.getId()).build());
+
+                    return CommentMapper.toDto(comment, haveLiked);
+                })
                 .collect(Collectors.toList());
     }
 
     @Override
-    public CommentDetailDto getComment(Long commentId) {
+    public CommentDetailDto getComment(User principal, Long commentId) {
         Comment comment = commentRepository.findByIdAndIsDeletedFalse(commentId)
                 .orElseThrow(()->new CommentNotFoundException(ExceptionMessage.COMMENT_NOT_FOUND));
 
-        return CommentMapper.toDto(comment);
+        Boolean haveLiked = false;
+
+        if(principal != null)
+            haveLiked = commentLikeRepository.existsByIdAndIsDeletedFalse(CommentLikeId
+                .builder().commentId(commentId).userId(principal.getId()).build());
+
+        return CommentMapper.toDto(comment, haveLiked);
     }
 
     @Override

@@ -23,7 +23,7 @@ public class CommentMapper {
                 .build();
     }
 
-    public static CommentDetailDto toDto(Comment comment){
+    public static CommentDetailDto toDto(Comment comment, Boolean haveLiked){
         return CommentDetailDto.builder()
                 .commentId(comment.getId())
                 .postId(comment.getPost().getId())
@@ -33,6 +33,7 @@ public class CommentMapper {
                 .user(UserMapper.toUserProfileDto(comment.getUser()))
                 .createdAt(comment.getCreatedAt())
                 .updatedAt(comment.getUpdatedAt())
+                .haveLiked(haveLiked)
                 .build();
     }
 }
