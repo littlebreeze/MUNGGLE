@@ -71,18 +71,12 @@ public class JwtProvider {
         Long id = Long.parseLong(claims.get("id").toString());
         String nickname = claims.get("nickname").toString();
         String authority = this.getAuthorities(token).get(0).getAuthority().substring(5);
-        User principal = new User(id,
-                "",
-                "",
-                nickname,
-                null,
-                null,
-                null,
-                Role.valueOf(authority),
-                null,
-                null,
-                true,
-                0);
+        User principal = User.builder()
+                .id(id)
+                .nickname(nickname)
+                .role(Role.valueOf(authority))
+                .isEnabled(true)
+                .build();
 
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
