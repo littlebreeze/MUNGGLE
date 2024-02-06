@@ -20,12 +20,9 @@ public class OidcUserServiceImpl implements OidUserService{
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oauth2User = defaultOAuth2UserService.loadUser(userRequest);
-        System.out.println(oauth2User.toString());
 
         if (userRequest.getClientRegistration().getRegistrationId().equals("google")) {
-            System.out.println("구글 로그인 시작");
             email = (String) oauth2User.getAttributes().get("email");
-            System.out.println(email);
         }
 
         User user = (User) userService.loadUserByUsername(email);
