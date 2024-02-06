@@ -4,7 +4,6 @@ import com.munggle.domain.exception.IllegalNicknameException;
 import com.munggle.domain.exception.IllegalPasswordException;
 import com.munggle.domain.model.entity.converter.PasswordConverter;
 import com.munggle.domain.model.entity.type.Role;
-import com.munggle.user.dto.UpdateProfileDto;
 import com.munggle.util.NicknameValidator;
 import com.munggle.util.PasswordValidator;
 import jakarta.persistence.*;
@@ -12,15 +11,15 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.time.LocalDateTime;
@@ -34,12 +33,18 @@ import static com.munggle.domain.exception.ExceptionMessage.PASSWORD_ILLEGAL;
 @Entity
 @Table(name = "users")
 @DynamicUpdate
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 // 배경화면, 프로필 이미지 필드 필요
-public class User implements UserDetails, OAuth2User {
+public class User implements UserDetails, OAuth2User, OidcUser {
+
+    @Transient
+    private OidcIdToken idToken;
+
+    @Transient
+    private OidcUserInfo userInfo;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -168,5 +173,20 @@ public class User implements UserDetails, OAuth2User {
     @Override
     public String getName() {
         return this.username;
+    }
+
+    @Override
+    public Map<String, Object> getClaims() {
+        return idToken != null ? idToken.getClaims() : Collections.emptyMap();
+    }
+
+    @Override
+    public OidcIdToken getIdToken() {
+        return idToken;
+    }
+
+    @Override
+    public OidcUserInfo getUserInfo() {
+        return userInfo;
     }
 }

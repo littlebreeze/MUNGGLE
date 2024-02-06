@@ -26,5 +26,7 @@ public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessH
         response.getWriter().write("{\"message\":\"로그인이 되었습니다.\"}");
         response.addHeader("Access-Token", "Bearer " + accessToken);
         response.addHeader("Refresh-Token", "Bearer " + refreshToken);
+        log.info(accessToken);
+        log.info(refreshToken);
     }
 }
