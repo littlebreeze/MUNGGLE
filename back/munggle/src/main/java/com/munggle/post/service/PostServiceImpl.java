@@ -34,7 +34,7 @@ public class PostServiceImpl implements PostService {
     private final PostImageRepository postImageRepository;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
-    private final CuratingService curatingService;
+    private final PostListService postListService;
     private final PostLikeRespository postLikeRespository;
     private final ScrapRepository scrapRepository;
 
@@ -65,7 +65,7 @@ public class PostServiceImpl implements PostService {
         for (PostTag postTag : postTags) {
             if (postTag.getIsDeleted() == false) {
                 hashtags.add(postTag.getTag().getTagNm());
-                curatingService.saveRecentTag(userId, postTag.getTag().getId()); // 큐레이팅을 위한 해시태그 수집
+                postListService.saveRecentTag(userId, postTag.getTag().getId()); // 큐레이팅을 위한 해시태그 수집
             }
         }
 
@@ -113,7 +113,7 @@ public class PostServiceImpl implements PostService {
             newPostTag.markAsDeleted(false);
             postTags.add(newPostTag);
 
-            curatingService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
+            postListService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
         }
 
         postTagRepository.saveAll(postTags); // 영속화
@@ -175,7 +175,7 @@ public class PostServiceImpl implements PostService {
             updatePostTag.markAsDeleted(false); // isDeleted false로 변경
             postTags.add(updatePostTag);
 
-            curatingService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
+            postListService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
         }
 
         postTagRepository.saveAll(postTags); // 영속화

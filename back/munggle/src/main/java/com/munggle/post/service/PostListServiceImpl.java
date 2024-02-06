@@ -2,6 +2,7 @@ package com.munggle.post.service;
 
 import com.munggle.domain.exception.TagNotFoundException;
 import com.munggle.domain.model.entity.*;
+import com.munggle.follow.retpository.FollowRepository;
 import com.munggle.post.dto.response.PostListDto;
 import com.munggle.post.mapper.PostMapper;
 import com.munggle.post.repository.PostLikeRespository;
@@ -21,11 +22,12 @@ import static com.munggle.domain.exception.ExceptionMessage.TAG_NOT_FOUND;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CuratingServiceImpl implements CuratingService {
+public class PostListServiceImpl implements PostListService {
 
     private final UserRecentTagCacheRepository userRecentTagCacheRepository;
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
+    private final FollowRepository followRepository;
     private final PostLikeRespository postLikeRespository;
 
     /**
@@ -102,6 +104,14 @@ public class CuratingServiceImpl implements CuratingService {
 
 
         return postList;
+    }
+
+    @Override
+    public List<PostListDto> getPostFollowingList(Long userId) {
+
+        List<Follow> following = followRepository.findByFollowFromIdAndIsFollowedTrue(userId);
+
+        return null;
     }
 }
 

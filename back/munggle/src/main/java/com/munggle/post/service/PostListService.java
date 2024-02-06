@@ -5,12 +5,14 @@ import com.munggle.post.dto.response.PostListDto;
 
 import java.util.List;
 
-public interface CuratingService {
+public interface PostListService {
 
     void saveRecentTag(Long userId, Long tagId);
 
     List<String> getTagList(Long userId);
 
     List<PostListDto> getPostCuratingList(Long userId);
+
+    List<PostListDto> getPostFollowingList(Long userId);
 
 }

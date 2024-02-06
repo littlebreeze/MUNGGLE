@@ -1,7 +1,7 @@
 package com.munggle.post.controller;
 
 import com.munggle.domain.model.entity.User;
-import com.munggle.post.service.CuratingService;
+import com.munggle.post.service.PostListService;
 import com.munggle.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,44 +25,31 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final CuratingService curatingService;
+    private final PostListService postListService;
 
-    /**
-     * 게시글 목록 (팔로우)
-     *
-     * @return
-     */
+    // === 팔로우 최신 게시글 === //
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PostListDto getPostList() {
-        // 팔로잉: 최신순으로 정렬
+    public List<PostListDto> getPostList(@AuthenticationPrincipal User principal) {
+
+        Long userId = principal.getId();
+
 
         return null;
     }
 
-    /**
-     * 게시글 목록 (큐레이팅)
-     *
-     * @param principal
-     * @return
-     */
+    // === 큐레이팅 추천순 게시글 === //
     @GetMapping("/curating")
     @ResponseStatus(HttpStatus.OK)
     public List<PostListDto> getCuratingPostList(@AuthenticationPrincipal User principal) {
 
         Long userId = principal.getId();
-        List<PostListDto> curatingPosts = curatingService.getPostCuratingList(userId);
+        List<PostListDto> curatingPosts = postListService.getPostCuratingList(userId);
 
         return curatingPosts;
     }
 
-    /**
-     * 게시글 상세 보기
-     *
-     * @param principal
-     * @param postId
-     * @return
-     */
+    // === 게시글 상세보기 === //
     @GetMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public PostDetailDto viewPost(@AuthenticationPrincipal User principal,
@@ -72,13 +59,7 @@ public class PostController {
         return postService.getDetailPost(postId, userId);
     }
 
-    /**
-     * 게시글 등록
-     *
-     * @param principal
-     * @param postCreateDto
-     * @param files
-     */
+    // === 게시글 등록 === //
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public void savePost(@AuthenticationPrincipal User principal,
@@ -90,36 +71,26 @@ public class PostController {
         postService.insertPost(postCreateDto);
     }
 
-    /**
-     * 게시글 수정
-     *
-     * @param postId
-     * @param postUpdateDto
-     * @param files
-     */
+    // === 게시글 수정 === //
     @PutMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public void updatePost(@PathVariable(value = "postId") Long postId,
                            @RequestPart(value = "dto") @Valid PostUpdateDto postUpdateDto,
                            @RequestPart(value = "file", required = false) List<MultipartFile> files) {
-        log.info("제목: {}, 이미지: {}", postUpdateDto.getPostTitle(), files.get(0));
 
         postUpdateDto.setImages(files);
         postUpdateDto.setPostId(postId);
         postService.updatePost(postUpdateDto);
     }
 
-    /**
-     * 게시글 삭제
-     *
-     * @param postId
-     */
+    // === 게시글 삭제 === //
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public void deletePost(@PathVariable(value = "postId") Long postId) {
         postService.deletePost(postId);
     }
 
+    // === 좋아요 등록 / 삭제 === //
     @PostMapping("/{postId}/like")
     @ResponseStatus(HttpStatus.OK)
     public void insertPostLike(@AuthenticationPrincipal User principal,
@@ -129,6 +100,7 @@ public class PostController {
         postService.postLike(userId, postId);
     }
 
+    // === 스크랩 등록 / 삭제 === //
     @PostMapping("/{postId}/scrap")
     @ResponseStatus(HttpStatus.OK)
     public void deletePostLike(@AuthenticationPrincipal User principal,
