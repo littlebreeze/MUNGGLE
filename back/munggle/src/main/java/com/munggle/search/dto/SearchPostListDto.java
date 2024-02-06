@@ -19,6 +19,8 @@ public class SearchPostListDto {
 
     private Long userId;
 
+    private String profileImage;
+
     private String nickname;
 
     private Integer likeCnt;
@@ -26,7 +28,5 @@ public class SearchPostListDto {
     private Boolean isLiked;
 
     private LocalDateTime createdAt;
-
-    // 추후 유저 프로필 이미지 추가 예정
 
 }

@@ -24,6 +24,7 @@ public class SearchMapper {
                 .postTitle(post.getPostTitle())
                 .imageURLs(imageUrls)
                 .userId(post.getUser().getId())
+                .profileImage(post.getUser().getProfileImage().getImageURL())
                 .nickname(post.getUser().getNickname())
                 .likeCnt(post.getLikeCnt())
                 .isLiked(isLiked)

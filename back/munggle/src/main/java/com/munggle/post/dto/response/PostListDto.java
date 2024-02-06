@@ -20,6 +20,8 @@ public class PostListDto {
 
     private Long userId;
 
+    private String profileImage;
+
     private String nickname;
 
     private Integer likeCnt;

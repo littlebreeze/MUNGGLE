@@ -20,6 +20,10 @@ public class PostDetailDto {
 
     private List<String> hashtags;
 
+    private Long userId;
+
+    private String profileImage;
+
     private String nickname;
 
     private Integer likeCnt;
@@ -35,6 +39,5 @@ public class PostDetailDto {
     private LocalDateTime updatedAt;
 
     private Boolean isUpdated;
-
 
 }
