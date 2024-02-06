@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.text.ParseException;
+
 @RestControllerAdvice
 @Slf4j
 public class ExceptionAdvice {
@@ -20,8 +22,8 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler({IllegalNicknameException.class, IllegalPasswordException.class, SelfInteractionException.class,
-            MatchingNotOnException.class, NotYourDogException.class,
-            NotYourCommentException.class})
+            MatchingNotOnException.class, NotYourDogException.class, NotYourCommentException.class,
+            OpenAPIErrorException.class })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleBadRequest(RuntimeException e) {
         return e.getMessage();
@@ -33,5 +35,4 @@ public class ExceptionAdvice {
         // 메일 전송 실패는 보통 서버 내부 오류로 간주됩니다.
         return e.getMessage();
     }
-
 }

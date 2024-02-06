@@ -27,6 +27,7 @@ public enum ExceptionMessage {
     COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다."),
     NOT_YOUR_COMMENT("당신이 작성한 댓글이 아닙니다."),
     SEARCH_TYPE_ILLEGAL("지원하지 않는 검색 기능입니다.");
+    OPEN_API_RESPONSE_ERROR("오류가 발생했습니다. 잠시후 다시 시도해주세요 : ");
 
 
     private final String message;
