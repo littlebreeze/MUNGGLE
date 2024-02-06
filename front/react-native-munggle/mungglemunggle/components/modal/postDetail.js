@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.78,
+    height: SCREEN_HEIGHT * 0.8,
     backgroundColor: "white",
     marginBottom: SCREEN_HEIGHT * 0.03,
     borderRadius: 30,

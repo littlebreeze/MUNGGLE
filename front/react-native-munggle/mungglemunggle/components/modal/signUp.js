@@ -229,12 +229,13 @@ const styles = StyleSheet.create({
   signUpModalContainer: {
     alignItems: "center",
     width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.92,
+    height: SCREEN_HEIGHT * 0.94,
     backgroundColor: "white",
     position: "relative",
     borderWidth: 2,
     borderColor: "gray",
     borderRadius: 20,
+    marginBottom: SCREEN_HEIGHT * 0.035,
   },
 
   closeView: {

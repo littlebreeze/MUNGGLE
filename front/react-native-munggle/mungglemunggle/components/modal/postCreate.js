@@ -230,10 +230,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.82,
+    height: SCREEN_HEIGHT * 0.8,
     borderRadius: 30,
     backgroundColor: "white",
-    marginTop: SCREEN_HEIGHT * 0.08,
+    marginBottom: SCREEN_HEIGHT * 0.03,
     position: "relative",
   },
   createModalScrollView: {
