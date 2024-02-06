@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,12 +20,18 @@ public class MatchingQueryRepository {
 
     private final EntityManager em;
 
-    public List<DogDetailDto> findDogFriends(User user, Boolean isNeutering, List<String> characters){
+    public List<DogDetailDto> findDogFriends(User user, Boolean isNeutering, List<String> characters, List<Long> selectionList){
+
         String query = "SELECT d "
                 + "FROM Dog d WHERE d.isMatching = TRUE " + "AND d.user <> :userId ";
 
         // 중성화 여부
         query += "AND d.isNeutering = :isNeutering ";
+
+        // 이미 선별된 반려견 제외
+        if(!selectionList.isEmpty()) {
+            query += "AND d.dogId NOT IN :list ";
+        }
 
         // 특징에 따른 선별
         query += "AND ( ";
@@ -42,6 +49,8 @@ public class MatchingQueryRepository {
         TypedQuery<Dog> queryResult = em.createQuery(query, Dog.class);
 
         queryResult.setParameter("userId", user);
+        if(!selectionList.isEmpty())
+            queryResult.setParameter("list", selectionList);
         queryResult.setParameter("isNeutering", isNeutering.booleanValue());
 
         List<DogDetailDto> result = queryResult.getResultList().stream().map(item -> DogMapper.toDetailDto(item)).collect(Collectors.toList());

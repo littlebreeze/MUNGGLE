@@ -89,7 +89,12 @@ public class MatchingServiceImpl implements MatchingService {
                 .characterId(matching.returnCharacterList())
                 .build();
 
-        return matchingQueryRepository.findDogFriends(dog.getUser(), matching.getIsNeutering(), matching.returnCharacterList());
+        List<Long> selectionList = matchingSelectionRepository.findAllById_DogId(dogId)
+                .orElse(null)
+                .stream().map(selection -> (Long) selection.getId().getOtherId()).collect(Collectors.toList());
+
+        // 매칭 선별 리스트도 넘겨주기
+        return matchingQueryRepository.findDogFriends(dog.getUser(), matching.getIsNeutering(), matching.returnCharacterList(), selectionList);
     }
 
     @Override
@@ -138,6 +143,11 @@ public class MatchingServiceImpl implements MatchingService {
                 .orElseThrow(()-> new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
 
         for(Long other : selectionRequestDto.getOthersId()){
+
+            // 자기 자신은 넣을 수 없음
+            if(selectionRequestDto.getDogId() == other)
+                continue;
+
             Dog otherDog = dogRepository.findByDogIdAndIsDeletedIsFalse(other)
                     .orElseThrow(()-> new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
             MatchingSelectionId id = MatchingSelectionId.builder().dogId(dog.getDogId()).otherId(otherDog.getDogId()).build();
