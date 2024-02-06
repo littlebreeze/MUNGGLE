@@ -2,7 +2,9 @@ package com.munggle.dog.service;
 
 import com.munggle.dog.dto.DogCharDto;
 import com.munggle.dog.dto.DogDetailDto;
+import com.munggle.dog.dto.SelectionRequestDto;
 import com.munggle.dog.mapper.DogMapper;
+import com.munggle.dog.mapper.MatchingSelectionMapper;
 import com.munggle.dog.repository.DogRepository;
 import com.munggle.dog.repository.MatchingQueryRepository;
 import com.munggle.dog.repository.MatchingRepository;
@@ -13,10 +15,13 @@ import com.munggle.domain.exception.MatchingCharacterNotFoundException;
 import com.munggle.domain.exception.MatchingNotOnException;
 import com.munggle.domain.model.entity.Dog;
 import com.munggle.domain.model.entity.Matching;
+import com.munggle.domain.model.entity.MatchingSelection;
+import com.munggle.domain.model.entity.MatchingSelectionId;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -125,9 +130,24 @@ public class MatchingServiceImpl implements MatchingService {
     }
 
     @Override
-    public void insertMatchingSelection(Long dogId, Long[] others) {
+    public void insertMatchingSelection(SelectionRequestDto selectionRequestDto) {
 
+        List<MatchingSelection> list = new ArrayList<>();
 
+        Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(selectionRequestDto.getDogId())
+                .orElseThrow(()-> new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
+
+        for(Long other : selectionRequestDto.getOthersId()){
+            Dog otherDog = dogRepository.findByDogIdAndIsDeletedIsFalse(other)
+                    .orElseThrow(()-> new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
+            MatchingSelectionId id = MatchingSelectionId.builder().dogId(dog.getDogId()).otherId(otherDog.getDogId()).build();
+            list.add(MatchingSelection.builder()
+                            .id(id)
+                            .dog(dog).other(otherDog)
+                    .build());
+        }
+
+        matchingSelectionRepository.saveAll(list);
     }
 
     @Override

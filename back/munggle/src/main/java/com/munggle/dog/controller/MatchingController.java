@@ -2,6 +2,7 @@ package com.munggle.dog.controller;
 
 import com.munggle.dog.dto.DogCharDto;
 import com.munggle.dog.dto.DogDetailDto;
+import com.munggle.dog.dto.SelectionRequestDto;
 import com.munggle.dog.service.MatchingService;
 import com.munggle.domain.model.entity.Matching;
 import lombok.RequiredArgsConstructor;
@@ -74,11 +75,11 @@ public class MatchingController {
         matchingService.toggleMatching(dogId);
     }
 
-    @PostMapping
+    @PostMapping("/selection")
     @ResponseStatus(HttpStatus.OK)
-    public void saveMatchingSelection(@RequestBody ){
+    public void saveMatchingSelection(@RequestBody SelectionRequestDto selectionRequestDto){
 
-
+        matchingService.insertMatchingSelection(selectionRequestDto);
     }
 
 }
