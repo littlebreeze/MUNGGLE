@@ -3,6 +3,8 @@ package com.munggle.userpage.controller;
 
 import com.munggle.dog.dto.DogDetailDto;
 import com.munggle.domain.model.entity.User;
+import com.munggle.user.dto.UserProfileDto;
+import com.munggle.user.service.UserService;
 import com.munggle.userpage.dto.UserPostListDto;
 import com.munggle.userpage.dto.UserScrapListDto;
 import com.munggle.userpage.service.UserpageService;
@@ -21,6 +23,14 @@ import java.util.List;
 public class UserpageController {
 
     private final UserpageService userpageService;
+    private final UserService userService;
+
+    @GetMapping("/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public UserProfileDto getUserProfile(@AuthenticationPrincipal User principal,
+                                         @PathVariable(value = "userId") Long userId) {
+        return userService.getUserProfile(userId);
+    }
 
     @GetMapping("/{userId}/post")
     @ResponseStatus(HttpStatus.OK)
