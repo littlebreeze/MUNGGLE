@@ -41,16 +41,18 @@ public class CommentController {
 
     // 게시글 댓글 목록
     @GetMapping("/{postId}")
-    public List<CommentDetailDto> readCommentList(@PathVariable Long postId){
+    public List<CommentDetailDto> readCommentList(@AuthenticationPrincipal User principal,
+                                                  @PathVariable Long postId){
 
-        return commentService.getCommentList(postId);
+        return commentService.getCommentList(principal, postId);
     }
 
     // 댓글 상세
     @GetMapping("/{postId}/{commentId}")
-    public CommentDetailDto createComment(@PathVariable Long postId, @PathVariable Long commentId){
+    public CommentDetailDto createComment(@AuthenticationPrincipal User principal,
+                                          @PathVariable Long postId, @PathVariable Long commentId){
 
-        return commentService.getComment(commentId);
+        return commentService.getComment(principal, commentId);
     }
 
     // 댓글 삭제
@@ -61,5 +63,11 @@ public class CommentController {
         commentService.deleteComment(principal.getId(), commentId);
     }
 
-    // 댓글 좋아요
+    // 댓글 토글
+    @PostMapping("/{postId}/{commentId}")
+    public void likeComment(@AuthenticationPrincipal User principal,
+                            @PathVariable Long postId, @PathVariable Long commentId){
+
+        commentService.toggleComment(principal.getId(), commentId);
+    }
 }

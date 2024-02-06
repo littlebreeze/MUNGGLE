@@ -3,6 +3,7 @@ package com.munggle.comment.service;
 import com.munggle.comment.dto.CommentCreateDto;
 import com.munggle.comment.dto.CommentDetailDto;
 import com.munggle.comment.dto.CommentUpdateDto;
+import com.munggle.domain.model.entity.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,13 +18,15 @@ public interface CommentService {
     void updateComment(Long userId, CommentUpdateDto commentUpdateDto);
 
     // 게시글 댓글 목록
-    List<CommentDetailDto> getCommentList(Long postId);
+    List<CommentDetailDto> getCommentList(User principal, Long postId);
 
     // 댓글 상세
-    CommentDetailDto getComment(Long commentId);
+    CommentDetailDto getComment(User principal,Long commentId);
 
     // 댓글 삭제
     void deleteComment(Long userId, Long commentId);
 
-    // 댓글 좋아요
+    // 댓글 토글
+    void toggleComment(Long userId, Long commentId);
+
 }
