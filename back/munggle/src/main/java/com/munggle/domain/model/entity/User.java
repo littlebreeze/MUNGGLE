@@ -144,6 +144,12 @@ public class User implements UserDetails, OAuth2User, OidcUser {
     public void resetFollowIncreaseCount() {
         this.followIncreaseCount = 0;
     }
+    public void plusFollowIncreaseCount(){
+        this.followIncreaseCount++;
+    }
+    public void minusFollowIncreaseCount(){
+        this.followIncreaseCount--;
+    }
 
     @Override
     public Map<String, Object> getAttributes() {

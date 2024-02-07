@@ -38,4 +38,8 @@ public interface UserService extends UserDetailsService, OAuth2UserService<OAuth
     void deleteBackgroundImage(Long id);
 
     void deleteProfileImage(Long id);
+
+    List<UserProfileDto> recommendUserList(Long userId);
+
+    void resetFollowIncreaseCnt();
 }

@@ -74,6 +74,7 @@ public class FollowServiceImpl implements FollowService {
         User targetUser = userRepository.findByIdAndIsEnabledTrue(targetUserId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         // 팔로우 과정
+        targetUser.plusFollowIncreaseCount();
         FollowId followId = FollowMapper.toFollowId(fromUserId, targetUserId);
         Follow follow = followRepository.findById(followId)
                 .orElseGet(() -> followRepository.save(
@@ -91,6 +92,11 @@ public class FollowServiceImpl implements FollowService {
     @Override
     @Transactional
     public void unfollow(Long fromUserId, Long targetUserId) {
+
+        User targetUser = userRepository.findByIdAndIsEnabledTrue(targetUserId)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        targetUser.minusFollowIncreaseCount();
+
         FollowId followId = FollowMapper.toFollowId(fromUserId, targetUserId);
         Follow follow = followRepository.findById(followId)
                 .orElseThrow(() -> new FollowNotFoundException(FOLLOW_NOT_FOUND));

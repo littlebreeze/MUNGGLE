@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableJpaAuditing
 @EnableCaching
 @SpringBootApplication
+@EnableScheduling
 public class MunggleApplication {
 
 	public static void main(String[] args) {

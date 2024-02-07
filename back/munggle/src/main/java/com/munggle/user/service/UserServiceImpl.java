@@ -1,11 +1,9 @@
 package com.munggle.user.service;
 
-import com.munggle.domain.exception.DuplicateNickNameException;
-import com.munggle.domain.exception.EmailVerificationFailException;
-import com.munggle.domain.exception.PasswordNotConfirmException;
-import com.munggle.domain.exception.UserNotFoundException;
+import com.munggle.domain.exception.*;
 import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.UserImage;
+import com.munggle.follow.retpository.FollowRepository;
 import com.munggle.image.dto.FileInfoDto;
 import com.munggle.image.service.FileS3UploadService;
 import com.munggle.user.dto.*;
@@ -23,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -41,6 +40,7 @@ import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.munggle.domain.exception.ExceptionMessage.*;
 
@@ -60,6 +60,7 @@ public class UserServiceImpl implements UserService {
     private final UserImageRepository userImageRepository;
     private final FileS3UploadService fileS3UploadService;
     private final EmailVerificationRepository emailVerificationRepository;
+    private final FollowRepository followRepository;
 
     private User findMemberById(Long id) {
         return userRepository.findByIdAndIsEnabledTrue(id)
@@ -286,5 +287,30 @@ public class UserServiceImpl implements UserService {
                     userRepository.save(user);  // User 객체 업데이트
                     userImageRepository.deleteByImageName(imageName);  // UserImage 테이블의 데이터 삭제
                 });
+    }
+
+    @Override
+    public List<UserProfileDto> recommendUserList(Long userId){
+
+        List<Long> followIdList = followRepository.findByFollowFromIdAndIsFollowedTrue(userId).stream().map(user -> user.getFollowTo().getId()).collect(Collectors.toList());
+
+        List<User> list = new ArrayList<>();
+
+        if(followIdList.isEmpty())
+            list = userRepository.findAllAndNotMeOrderByFollowIncreaseCountDesc(userId);
+        else
+            list = userRepository.findAllAndNotMeNotFollowOrderByFollowIncreaseCountDesc(userId, followIdList);
+        return list
+                .stream().map(user->UserMapper.toUserProfileDto(user)).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    @Scheduled(cron = "* 59 23 * * *", zone = "Asia/Seoul")
+    public void resetFollowIncreaseCnt(){
+        List<User> userList = userRepository.findAll().stream().map(user-> {
+            user.resetFollowIncreaseCount();
+            return user;
+        }).collect(Collectors.toList());
     }
 }
