@@ -5,12 +5,12 @@ import com.munggle.image.dto.FileInfoDto;
 import com.munggle.post.dto.request.PostCreateDto;
 import com.munggle.post.dto.response.PostDetailDto;
 import com.munggle.post.dto.response.PostListDto;
-import com.munggle.post.dto.response.UserPostListDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -26,15 +26,24 @@ public class PostMapper {
                 .build();
     }
 
-    public static PostDetailDto toPostDetailResponseDto(Post detailPost, String nickname, Boolean isMine, List<String> imageUrls, List<String> hashtags) {
+    public static PostDetailDto toPostDetailDto(Post detailPost, List<String> hashtags, Boolean isMine, Boolean isLiked, Boolean isScraped) {
+        List<String> imageUrls = detailPost.getPostImageList().stream()
+                .map(PostImage::getImageURL)
+                .collect(Collectors.toList());
+
         return PostDetailDto.builder()
                 .postTitle(detailPost.getPostTitle())
                 .postContent(detailPost.getPostContent())
                 .images(imageUrls)
                 .hashtags(hashtags)
-                .nickname(nickname)
+                .userId(detailPost.getUser().getId())
+                .profileImage(Optional.ofNullable(detailPost.getUser().getProfileImage())
+                              .map(UserImage::getImageURL).orElse(null))
+                .nickname(detailPost.getUser().getNickname())
                 .likeCnt(detailPost.getLikeCnt())
                 .isMine(isMine)
+                .isLiked(isLiked)
+                .isScraped(isScraped)
                 .createdAt(detailPost.getCreatedAt())
                 .updatedAt(detailPost.getUpdatedAt())
                 .isUpdated(detailPost.getCreatedAt().equals(detailPost.getUpdatedAt()))
@@ -71,7 +80,7 @@ public class PostMapper {
                 .build();
     }
 
-    public static PostListDto toPostListDto(Post post) {
+    public static PostListDto toPostListDto(Post post, Boolean isLiked) {
         List<String> imageUrls = post.getPostImageList().stream()
                 .map(PostImage::getImageURL)
                 .collect(Collectors.toList());
@@ -88,17 +97,44 @@ public class PostMapper {
                 .imageURLs(imageUrls)
                 .hashtags(hashtags)
                 .userId(post.getUser().getId())
+                .profileImage(Optional.ofNullable(post.getUser().getProfileImage())
+                              .map(UserImage::getImageURL).orElse(null))
                 .nickname(post.getUser().getNickname())
                 .likeCnt(post.getLikeCnt())
+                .isLiked(isLiked)
                 .createdAt(post.getCreatedAt())
                 .build();
     }
 
-    public static UserPostListDto toUserPagePostList(Post post) {
-        return UserPostListDto.builder()
-                .postId(post.getId())
-                .postTitle(post.getPostTitle())
-                .imageURL(post.getPostImageList().get(0).getImageURL())
+    public static PostLike toPostLikeEntity(PostLikeId postLikeId, User user, Post post) {
+        return PostLike.builder()
+                .postLikeId(postLikeId)
+                .user(user)
+                .post(post)
+                .isDeleted(false)
+                .build();
+    }
+
+    public static Scrap toScrapEntity(ScrapId scrapId, User user, Post post) {
+        return Scrap.builder()
+                .scrapId(scrapId)
+                .user(user)
+                .post(post)
+                .isDeleted(false)
+                .build();
+    }
+
+    public static PostLikeId toPostLikedIdEntity(Long userId, Long postId) {
+        return PostLikeId.builder()
+                .userId(userId)
+                .postId(postId)
+                .build();
+    }
+
+    public static ScrapId toScrapIdEntity(Long userId, Long postId) {
+        return ScrapId.builder()
+                .userId(userId)
+                .postId(postId)
                 .build();
     }
 }

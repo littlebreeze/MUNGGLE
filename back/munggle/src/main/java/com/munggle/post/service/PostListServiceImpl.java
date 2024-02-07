@@ -2,13 +2,18 @@ package com.munggle.post.service;
 
 import com.munggle.domain.exception.TagNotFoundException;
 import com.munggle.domain.model.entity.*;
+import com.munggle.follow.retpository.FollowRepository;
+import com.munggle.post.dto.response.PagePostDto;
 import com.munggle.post.dto.response.PostListDto;
 import com.munggle.post.mapper.PostMapper;
+import com.munggle.post.repository.PostLikeRespository;
 import com.munggle.post.repository.PostRepository;
 import com.munggle.post.repository.TagRepository;
 import com.munggle.post.repository.UserRecentTagCacheRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +25,13 @@ import static com.munggle.domain.exception.ExceptionMessage.TAG_NOT_FOUND;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CuratingServiceImpl implements CuratingService {
+public class PostListServiceImpl implements PostListService {
 
     private final UserRecentTagCacheRepository userRecentTagCacheRepository;
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
+    private final FollowRepository followRepository;
+    private final PostLikeRespository postLikeRespository;
 
     /**
      * cache에서 tag를 가지고 와서 랜덤으로 5개 추출
@@ -89,10 +96,43 @@ public class CuratingServiceImpl implements CuratingService {
         }
 
         List<PostListDto> postList = getPost.stream()
-                .map(post -> PostMapper.toPostListDto(post))
+                .map(post -> {
+                    // 좋아요 여부 확인
+                    PostLikeId postLikeId = PostMapper.toPostLikedIdEntity(userId, post.getId());
+                    Boolean isLiked = postLikeRespository.existsByPostLikeIdAndIsDeletedFalse(postLikeId);
+
+                    return PostMapper.toPostListDto(post, isLiked);
+                })
                 .collect(Collectors.toList());
 
+
         return postList;
+    }
+
+    @Override
+    public PagePostDto getFollowingPost(Long userId, Pageable pageable) {
+
+        List<Follow> following = followRepository.findByFollowFromIdAndIsFollowedTrue(userId);
+        List<User> followedUsers = following.stream()
+                .map(Follow::getFollowTo)
+                .collect(Collectors.toList());
+
+        Page<Post> postPage = postRepository.findLatestPostsByUsers(followedUsers, pageable);
+
+        List<PostListDto> posts = postPage.getContent().stream()
+                .map(post -> {
+                    // 좋아요 여부 확인
+                    PostLikeId postLikeId = PostMapper.toPostLikedIdEntity(userId, post.getId());
+                    Boolean isLiked = postLikeRespository.existsByPostLikeIdAndIsDeletedFalse(postLikeId);
+
+                    return PostMapper.toPostListDto(post, isLiked);
+                })
+                .collect(Collectors.toList());
+
+        return PagePostDto.builder()
+                .posts(posts)
+                .last(postPage.isLast())
+                .build();
     }
 }
 

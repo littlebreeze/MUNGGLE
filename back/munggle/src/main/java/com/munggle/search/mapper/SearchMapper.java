@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,6 +25,8 @@ public class SearchMapper {
                 .postTitle(post.getPostTitle())
                 .imageURLs(imageUrls)
                 .userId(post.getUser().getId())
+                .profileImage(Optional.ofNullable(post.getUser().getProfileImage())
+                        .map(UserImage::getImageURL).orElse(null))
                 .nickname(post.getUser().getNickname())
                 .likeCnt(post.getLikeCnt())
                 .createdAt(post.getCreatedAt())

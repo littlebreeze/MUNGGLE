@@ -19,12 +19,14 @@ public class SearchPostListDto {
 
     private Long userId;
 
+    private String profileImage;
+
     private String nickname;
 
     private Integer likeCnt;
 
-    private LocalDateTime createdAt;
+    private Boolean isLiked;
 
-    // 추후 유저 프로필 이미지와 좋아요 유무 추가 예정
+    private LocalDateTime createdAt;
 
 }
