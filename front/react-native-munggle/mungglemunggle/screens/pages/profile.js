@@ -247,10 +247,19 @@ export default function ProfileScreen () {
 
 
   const editProfile = async () => {
-    await editBackgroundImage();
-    await editProfileImage();
-    await editProfileData();
-    // setIsEdit(false);
+    if (profile.backgroundImgUrl != backgroundImgUrl.uri) {
+      await editBackgroundImage();
+    }
+
+    if (profile.profileImgUrl != profileImgUrl.uri) {
+      await editProfileImage();
+    }
+    
+    if (profile.nickname != nickname || profile.description != description) {
+      await editProfileData();
+    }
+    
+    setIsEdit(false);
   };
 
   const myProfileImg = () => {

@@ -472,50 +472,50 @@ export default function WalkScreen () {
   const [time, setTime] = useState(0);
   const webViewRef = useRef(null);
 
-  useEffect(() => {
-    (async () => {
+  // useEffect(() => {
+  //   (async () => {
       
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== 'granted') {
+  //       setErrorMsg('Permission to access location was denied');
+  //       return;
+  //     }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
-  }, []);
+  //     let location = await Location.getCurrentPositionAsync({});
+  //     setLocation(location);
+  //   })();
+  // }, []);
 
-  useEffect(() => {
-    const timer = setInterval(async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('현재 위치를 받아올 수 없습니다!');
-        return;
-      }
+  // useEffect(() => {
+  //   const timer = setInterval(async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== 'granted') {
+  //       setErrorMsg('현재 위치를 받아올 수 없습니다!');
+  //       return;
+  //     }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    }, 10000);
+  //     let location = await Location.getCurrentPositionAsync({});
+  //     setLocation(location);
+  //   }, 10000);
 
-    return () => clearInterval(timer);
-  }, [location]);
+  //   return () => clearInterval(timer);
+  // }, [location]);
 
-  useEffect(() => {
-    if (location && webViewRef.current) {
-      webViewRef.current.postMessage(JSON.stringify({
-        type: 'latitude',
-        // data: location.coords.latitude
-        data: 37.5012647456244
-      }));
-      webViewRef.current.postMessage(JSON.stringify({
-        type: 'longitude',
-        // data: location.coords.longitude
-        data: 127.03958123605
-      }));
-      console.log(JSON.parse(JSON.stringify(location.coords)));
-    }
-  }, [location]);
+  // useEffect(() => {
+  //   if (location && webViewRef.current) {
+  //     webViewRef.current.postMessage(JSON.stringify({
+  //       type: 'latitude',
+  //       // data: location.coords.latitude
+  //       data: 37.5012647456244
+  //     }));
+  //     webViewRef.current.postMessage(JSON.stringify({
+  //       type: 'longitude',
+  //       // data: location.coords.longitude
+  //       data: 127.03958123605
+  //     }));
+  //     console.log(JSON.parse(JSON.stringify(location.coords)));
+  //   }
+  // }, [location]);
 
 
   let text = 'Waiting..';

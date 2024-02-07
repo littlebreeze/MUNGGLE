@@ -75,23 +75,29 @@ const userData = [{
 //테스트 post 데이터(추후 삭제)
 const postData = [
   {
-      "postId": 4,
-      "postTitle": "멋진 내 강아지",
-      "imageURLs": [
-          "https://s3-munggle-files.s3.ap-northeast-2.amazonaws.com/1/4/63a54005-926f-480f-a222-2dc6a718e7d7png"
-      ],
-      "userId": 1,
-      "profileImage": "https://images.mypetlife.co.kr/content/uploads/2023/11/17133418/61fbb115-3845-4427-b72d-76c5e650cd3c.jpeg",
-      "nickname": "멍멍123",
-      "likeCnt": 123,
-      "isLiked": true,
-      "createdAt": "2024-01-29T15:18:38.236335"
+    "postId": 1,
+    "postTitle": "멋진 내 강아지",
+    "imageURLs": [
+        "https://s3-munggle-files.s3.ap-northeast-2.amazonaws.com/1/4/63a54005-926f-480f-a222-2dc6a718e7d7png",
+        "https://blancs.co.kr/web/product/big/201906/1e94a6b1b4be68347b0cd84a79b482ba.jpg",
+        "https://live.staticflickr.com/7669/17268903144_b5e9d79c4e_z.jpg",
+        "https://cdn.imweb.me/thumbnail/20221027/f76c4c81b7bde.jpg",
+    ],
+    "userId": 1,
+    "profileImage": "https://images.mypetlife.co.kr/content/uploads/2023/11/17133418/61fbb115-3845-4427-b72d-76c5e650cd3c.jpeg",
+    "nickname": "멍멍123",
+    "likeCnt": 123,
+    "isLiked": true,
+    "createdAt": "2024-01-29T15:18:38.236335"
   },
   {
-    "postId": 4,
+    "postId": 2,
     "postTitle": "강아지와 산책",
     "imageURLs": [
-        "https://blancs.co.kr/web/product/big/201906/1e94a6b1b4be68347b0cd84a79b482ba.jpg"
+        "https://blancs.co.kr/web/product/big/201906/1e94a6b1b4be68347b0cd84a79b482ba.jpg",
+        "https://live.staticflickr.com/7669/17268903144_b5e9d79c4e_z.jpg",
+        "https://cdn.imweb.me/thumbnail/20221027/f76c4c81b7bde.jpg",
+        "https://s3-munggle-files.s3.ap-northeast-2.amazonaws.com/1/4/63a54005-926f-480f-a222-2dc6a718e7d7png",
     ],
     "userId": 1,
     "profileImage": "http://www.evermodel.com/uploaded/model/414/d3d415e8cad046393ac6aa22f0bfd5980_slide.jpg",
@@ -99,33 +105,40 @@ const postData = [
     "likeCnt": 23,
     "isLiked": false,
     "createdAt": "2024-01-25T15:18:38.236335"
-},
-{
-  "postId": 4,
-  "postTitle": "강아지 생일",
-  "imageURLs": [
-      "https://cdn.imweb.me/thumbnail/20221027/f76c4c81b7bde.jpg"
-  ],
-  "userId": 1,
-  "profileImage": "http://www.evermodel.com/uploaded/model/414/d3d415e8cad046393ac6aa22f0bfd5983_slide.jpg",
-  "nickname": "멍글34",
-  "likeCnt": 3,
-  "isLiked": true,
-  "createdAt": "2024-01-22T15:18:38.236335"
-},
-{
-  "postId": 4,
-  "postTitle": "멋진 강아지와 나",
-  "imageURLs": [
-      "https://live.staticflickr.com/7669/17268903144_b5e9d79c4e_z.jpg"
-  ],
-  "userId": 1,
-  "profileImage": "https://images.mypetlife.co.kr/content/uploads/2023/11/17133418/61fbb115-3845-4427-b72d-76c5e650cd3c.jpeg",
-  "nickname": "멍12멍",
-  "likeCnt": 13,
-  "isLiked": false,
-  "createdAt": "2024-01-28T15:18:38.236335"
-},];
+  },
+  {
+    "postId": 3,
+    "postTitle": "강아지 생일",
+    "imageURLs": [
+        "https://cdn.imweb.me/thumbnail/20221027/f76c4c81b7bde.jpg",
+        "https://blancs.co.kr/web/product/big/201906/1e94a6b1b4be68347b0cd84a79b482ba.jpg",
+        "https://s3-munggle-files.s3.ap-northeast-2.amazonaws.com/1/4/63a54005-926f-480f-a222-2dc6a718e7d7png",
+        "https://live.staticflickr.com/7669/17268903144_b5e9d79c4e_z.jpg",
+    ],
+    "userId": 1,
+    "profileImage": "http://www.evermodel.com/uploaded/model/414/d3d415e8cad046393ac6aa22f0bfd5983_slide.jpg",
+    "nickname": "멍글34",
+    "likeCnt": 3,
+    "isLiked": true,
+    "createdAt": "2024-01-22T15:18:38.236335"
+  },
+  {
+    "postId": 4,
+    "postTitle": "멋진 강아지와 나",
+    "imageURLs": [
+        "https://live.staticflickr.com/7669/17268903144_b5e9d79c4e_z.jpg",
+        "https://cdn.imweb.me/thumbnail/20221027/f76c4c81b7bde.jpg",
+        "https://blancs.co.kr/web/product/big/201906/1e94a6b1b4be68347b0cd84a79b482ba.jpg",
+        "https://s3-munggle-files.s3.ap-northeast-2.amazonaws.com/1/4/63a54005-926f-480f-a222-2dc6a718e7d7png",
+    ],
+    "userId": 1,
+    "profileImage": "https://images.mypetlife.co.kr/content/uploads/2023/11/17133418/61fbb115-3845-4427-b72d-76c5e650cd3c.jpeg",
+    "nickname": "멍12멍",
+    "likeCnt": 13,
+    "isLiked": false,
+    "createdAt": "2024-01-28T15:18:38.236335"
+  },
+];
 
 export default function Search(props) {
   const [searchQuery, setSearchQuery] = useState('');
@@ -183,7 +196,44 @@ export default function Search(props) {
     //GET : /search/post에서 type(title, tag)에 따른 데이터를 받는다
     handleTabPress(0);
     console.log("handleSearch");
-  }
+  };
+
+  const searchView = () => {
+    return (
+      <View style={styles.searchTopView}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="검색어를 입력하세요"
+          value={searchQuery}
+          onChangeText={(text) => setSearchQuery(text)}
+        />
+        <TouchableOpacity onPress={handleSearch}>
+          <Image
+            style={styles.searchImage}
+            source={iconSearch}
+          />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
+  const tabView = () => {
+    return (
+      <View style={styles.searchMiddleView}>
+        {['게시물', '이용자', '태그'].map((tab, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[
+              styles.tabButton,
+              activeTab === index && styles.activeTabButton,
+            ]}
+            onPress={() => handleTabPress(index)}>
+            <Text style={styles.tabButtonText}>{tab}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    );
+  };
 
   return (
     <View style={styles.searchModalBackGround}>
@@ -199,36 +249,9 @@ export default function Search(props) {
           />
         </TouchableOpacity>
 
-        {/*검색창,검색버튼*/}
-        <View style={styles.searchTopView}>
-          <TextInput
-            style={styles.searchInput}
-            placeholder="검색어를 입력하세요"
-            value={searchQuery}
-            onChangeText={(text) => setSearchQuery(text)}
-          />
-          <TouchableOpacity onPress={handleSearch}>
-          <Image
-            style={styles.searchImage}
-            source={iconSearch}
-          />
-          </TouchableOpacity>
-        </View>
+        {searchView()}
 
-        {/*탭바*/}
-        <View style={styles.searchMiddleView}>
-          {['게시물', '이용자', '태그'].map((tab, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[
-                styles.tabButton,
-                activeTab === index && styles.activeTabButton,
-              ]}
-              onPress={() => handleTabPress(index)}>
-              <Text style={styles.tabButtonText}>{tab}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+        {tabView()}
 
         {/*내용*/}
         <ScrollView
@@ -236,7 +259,8 @@ export default function Search(props) {
           horizontal
           pagingEnabled
           showsHorizontalScrollIndicator={false}
-          ref={scrollViewRef}>
+          ref={scrollViewRef}
+        >
           {[0, 1, 2].map((idx) => (
           <ScrollView
             key={idx}
@@ -303,50 +327,50 @@ export default function Search(props) {
           ))}
 
                     {/* Modal */}
-      <Modal
-      animationType="slide"
-      transparent={true}
-      visible={isModalVisible}
-      onRequestClose={closeModal}
-    >
-      <TouchableOpacity onPress={closeModal}>
-        <Image
-              style={styles.closeModalText}
-              source={iconClose}
-            />
-          </TouchableOpacity>
-      <View style={styles.modalContainer}>
-      <ScrollView
-            contentContainerStyle={styles.result}
-            vertical
-            showsVerticalScrollIndicator={false}>
-
-            {
-              modalData.map((item, index) => (
-              <View style={styles.profileContainer} key={index}>
-                <TouchableOpacity onPress={handleUserPress}>
-                  <Image style={styles.profileImage} source={{ uri: item.profileImage }} />
-                  <Text style={styles.nickname}>{item.nickname}</Text>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={isModalVisible}
+            onRequestClose={closeModal}
+          >
+            <TouchableOpacity onPress={closeModal}>
+              <Image
+                    style={styles.closeModalText}
+                    source={iconClose}
+                  />
                 </TouchableOpacity>
+            <View style={styles.modalContainer}>
+              <ScrollView
+                contentContainerStyle={styles.result}
+                vertical
+                showsVerticalScrollIndicator={false}
+              >
+                {
+                  modalData.map((item, index) => (
+                  <View style={styles.profileContainer} key={index}>
+                    <TouchableOpacity onPress={handleUserPress}>
+                      <Image style={styles.profileImage} source={{ uri: item.profileImage }} />
+                      <Text style={styles.nickname}>{item.nickname}</Text>
+                    </TouchableOpacity>
 
-                <TouchableOpacity onPress={handlePostPress}>
-                  <Image style={styles.postImage} source={{ uri: item.imageURLs[0] }} />
-                  <Text style={styles.postTitle}>{item.postTitle}</Text>
-                  <Text style={styles.createdAt}>{item.createdAt.substring(0, 10)}</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity onPress={handlePostPress}>
+                      <Image style={styles.postImage} source={{ uri: item.imageURLs[0] }} />
+                      <Text style={styles.postTitle}>{item.postTitle}</Text>
+                      <Text style={styles.createdAt}>{item.createdAt.substring(0, 10)}</Text>
+                    </TouchableOpacity>
 
-                <View style={styles.likeContainer}>
-                  <TouchableOpacity onPress={handleLikePress}>
-                    <Text>{item.isLiked ? '❤️' : '🤍'}</Text>
-                  </TouchableOpacity>
-                  <Text style={styles.likeCount}>{item.likeCnt}</Text>
-                </View>
-              </View>
-                ))
-              }
+                    <View style={styles.likeContainer}>
+                      <TouchableOpacity onPress={handleLikePress}>
+                        <Text>{item.isLiked ? '❤️' : '🤍'}</Text>
+                      </TouchableOpacity>
+                      <Text style={styles.likeCount}>{item.likeCnt}</Text>
+                    </View>
+                  </View>
+                  ))
+                }           
               </ScrollView>
-              </View>
-    </Modal>
+            </View>
+          </Modal>
         </ScrollView>
       </View>
     </View>
@@ -364,7 +388,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.8,
-    backgroundColor: "white",
+    backgroundColor: "red",
     marginBottom: SCREEN_HEIGHT * 0.03,
     position: "relative",
     borderRadius: 30,
@@ -549,12 +573,9 @@ const styles = StyleSheet.create({
   },
   closeModalText: {
     position: 'absolute',
-    fontSize: 18,
-    color: 'black',
     width: SCREEN_WIDTH * 0.06,
     height: SCREEN_WIDTH * 0.06,
     top: SCREEN_WIDTH * 0.21,
     right: SCREEN_WIDTH * 0.05,
-    backgroundColor: 'white'
   },
 });
