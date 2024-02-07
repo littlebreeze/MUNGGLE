@@ -1,6 +1,7 @@
 package com.munggle.post.repository;
 
 import com.munggle.domain.model.entity.Post;
+import com.munggle.domain.model.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -56,4 +57,14 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "where pt.tag.tagNm = :word and pt.isDeleted = false " +
             "and p.isDeleted = false and p.isPrivate = false")
     Page<Post> searchByTagNmPage(@Param("word") String word, Pageable pageable);
+
+    @Query("select distinct p from Post p " +
+            "where p.isDeleted = false and p.isPrivate = false " +
+            "and p.user in :users " +
+            "order by p.createdAt desc")
+    Page<Post> findLatestPostsByUsers(
+            @Param("users") List<User> users,
+            Pageable pageable
+    );
+
 }
