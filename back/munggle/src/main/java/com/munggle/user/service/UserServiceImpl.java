@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -288,6 +289,7 @@ public class UserServiceImpl implements UserService {
                 });
     }
 
+    @Override
     public List<UserProfileDto> recommendUserList(Long userId){
 
         List<Long> followIdList = followRepository.findByFollowFromIdAndIsFollowedTrue(userId).stream().map(user -> user.getFollowTo().getId()).collect(Collectors.toList());
@@ -295,12 +297,20 @@ public class UserServiceImpl implements UserService {
         List<User> list = new ArrayList<>();
 
         if(followIdList.isEmpty())
-            list = userRepository.findAllAndNotMeOrderByFollowIncreaseCountDesc(userId)
-                    .orElseThrow(()->new UserNotFoundException(USER_NOT_FOUND));
+            list = userRepository.findAllAndNotMeOrderByFollowIncreaseCountDesc(userId);
         else
-            list = userRepository.findAllAndNotMeNotFollowOrderByFollowIncreaseCountDesc(userId, followIdList)
-                    .orElseThrow(()->new UserNotFoundException(USER_NOT_FOUND));
+            list = userRepository.findAllAndNotMeNotFollowOrderByFollowIncreaseCountDesc(userId, followIdList);
         return list
                 .stream().map(user->UserMapper.toUserProfileDto(user)).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    @Scheduled(cron = "* 59 23 * * *", zone = "Asia/Seoul")
+    public void resetFollowIncreaseCnt(){
+        List<User> userList = userRepository.findAll().stream().map(user-> {
+            user.resetFollowIncreaseCount();
+            return user;
+        }).collect(Collectors.toList());
     }
 }
