@@ -17,5 +17,4 @@ public interface ScrapRepository extends JpaRepository<Scrap, ScrapId> {
 
     @Query("select s.post from Scrap s where s.user.id = :userId and s.isDeleted = false")
     List<Post> findPostsByUserIdAndIsDeletedFalse(@Param("userId") Long userId);
-
 }

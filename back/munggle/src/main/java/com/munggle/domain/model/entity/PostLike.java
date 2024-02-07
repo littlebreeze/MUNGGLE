@@ -33,4 +33,5 @@ public class PostLike {
     public void markAsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
+
 }

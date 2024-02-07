@@ -12,5 +12,4 @@ import org.springframework.stereotype.Repository;
 public interface PostLikeRespository extends JpaRepository<PostLike, PostLikeId> {
 
     Boolean existsByPostLikeIdAndIsDeletedFalse(PostLikeId postLikeId);
-
 }
