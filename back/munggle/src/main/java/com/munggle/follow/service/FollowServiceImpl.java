@@ -12,12 +12,12 @@ import com.munggle.user.dto.UserListDto;
 import com.munggle.user.mapper.UserMapper;
 import com.munggle.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.munggle.domain.exception.ExceptionMessage.*;
 
@@ -30,25 +30,33 @@ public class FollowServiceImpl implements FollowService {
     private final FollowRepository followRepository;
 
     @Override
-    public List<UserListDto> getFollowerList(Long userId) {
-        // 팔로우를 타겟멤버를 기준으로 받아와서 팔로우한 유저를 담는 리스트로 변환
-        List<User> users = followRepository.findByFollowToIdAndIsFollowedTrue(userId)
-                .stream()
-                .map(Follow::getFollowFrom)
-                .toList();
-
-        // 유저리스트 dto로 변환
-        return UserMapper.fromUsers(users);
+    public Page<UserListDto> getFollowerList(Long userId, Pageable pageable) {
+//        // 팔로우를 타겟멤버를 기준으로 받아와서 팔로우한 유저를 담는 리스트로 변환
+//        List<User> users = followRepository.findByFollowToIdAndIsFollowedTrue(userId)
+//                .stream()
+//                .map(Follow::getFollowFrom)
+//                .toList();
+//
+//        // 유저리스트 dto로 변환
+//        return UserMapper.fromUsers(users);
+        Page<User> userListDtoPage = followRepository.findByFollowToIdAndIsFollowedTrue(userId, pageable)
+                .map(Follow::getFollowFrom);
+        return UserMapper.convertToUserListDtoPage(userListDtoPage);
     }
 
     @Override
-    public List<UserListDto> getFollowingList(Long userId) {
-        List<User> users = followRepository.findByFollowFromIdAndIsFollowedTrue(userId)
-                .stream()
-                .map(Follow::getFollowTo)
-                .collect(Collectors.toList());
+    public Page<UserListDto> getFollowingList(Long userId, Pageable pageable) {
+//        List<User> users = followRepository.findByFollowFromIdAndIsFollowedTrue(userId)
+//                .stream()
+//                .map(Follow::getFollowTo)
+//                .collect(Collectors.toList());
+//
+//        return UserMapper.fromUsers(users);
+        Page<User> userListDtoPage = followRepository.findByFollowFromIdAndIsFollowedTrue(userId, pageable)
+                .map(Follow::getFollowTo);
 
-        return UserMapper.fromUsers(users);
+        return UserMapper.convertToUserListDtoPage(userListDtoPage);
+
     }
 
     @Override

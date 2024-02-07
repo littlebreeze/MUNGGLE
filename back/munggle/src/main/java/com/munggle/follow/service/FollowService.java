@@ -1,14 +1,14 @@
 package com.munggle.follow.service;
 
 import com.munggle.user.dto.UserListDto;
-
-import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface FollowService {
 
-    List<UserListDto> getFollowerList(Long userId);
+    Page<UserListDto> getFollowerList(Long userId, Pageable pageable);
 
-    List<UserListDto> getFollowingList(Long userId);
+    Page<UserListDto> getFollowingList(Long userId, Pageable pageable);
 
     Integer getFollowerCount(Long userId);
 

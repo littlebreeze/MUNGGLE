@@ -10,6 +10,7 @@ import com.munggle.user.dto.UserProfileDto;
 import com.munggle.user.dto.UserListDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -59,6 +60,10 @@ public class UserMapper {
         return users.stream()
                 .map(UserListDto::toUserListDto)
                 .collect(Collectors.toList());
+    }
+
+    public static Page<UserListDto> convertToUserListDtoPage(Page<User> userPage) {
+        return userPage.map(UserListDto::toUserListDto);
     }
 
     public static UserImage toUserImage(FileInfoDto file, User user, String type) {

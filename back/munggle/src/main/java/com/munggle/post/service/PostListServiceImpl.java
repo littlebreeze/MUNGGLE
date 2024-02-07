@@ -111,7 +111,6 @@ public class PostListServiceImpl implements PostListService {
 
     @Override
     public PagePostDto getFollowingPost(Long userId, Pageable pageable) {
-
         List<Follow> following = followRepository.findByFollowFromIdAndIsFollowedTrue(userId);
         List<User> followedUsers = following.stream()
                 .map(Follow::getFollowTo)

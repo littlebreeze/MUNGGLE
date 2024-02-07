@@ -4,6 +4,9 @@ import com.munggle.domain.model.entity.User;
 import com.munggle.follow.service.FollowService;
 import com.munggle.user.dto.UserListDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -18,21 +21,25 @@ public class FollowController {
     private final FollowService followService;
 
     @GetMapping("/follower/{userId}")
-    public List<UserListDto> getFollowerList(@PathVariable Long userId) {
-        return followService.getFollowerList(userId);
+    @ResponseStatus(HttpStatus.OK)
+    public Page<UserListDto> getFollowerList(@PageableDefault(size = 8) Pageable pageable, @PathVariable Long userId) {
+        return followService.getFollowerList(userId, pageable);
     }
 
     @GetMapping("/following/{userId}")
-    public List<UserListDto> getFollowingList(@PathVariable Long userId) {
-        return followService.getFollowingList(userId);
+    @ResponseStatus(HttpStatus.OK)
+    public Page<UserListDto> getFollowingList(@PageableDefault(size = 8) Pageable pageable, @PathVariable Long userId) {
+        return followService.getFollowingList(userId, pageable);
     }
 
     @GetMapping("/follower/{userId}/count")
+    @ResponseStatus(HttpStatus.OK)
     public Integer getFollowerCount(@PathVariable Long userId) {
         return followService.getFollowerCount(userId);
     }
 
     @GetMapping("/following/{userId}/count")
+    @ResponseStatus(HttpStatus.OK)
     public Integer getFollowingCount(@PathVariable Long userId) {
         return followService.getFollowingCount(userId);
     }
