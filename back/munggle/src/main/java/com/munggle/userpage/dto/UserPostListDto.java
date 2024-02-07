@@ -14,5 +14,4 @@ public class UserPostListDto {
     private String postTitle;
 
     private String imageURL;
-
 }

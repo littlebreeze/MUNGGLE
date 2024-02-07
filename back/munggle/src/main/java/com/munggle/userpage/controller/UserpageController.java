@@ -51,4 +51,5 @@ public class UserpageController {
     public List<DogDetailDto> getUserDogs(@PathVariable(value = "userId") Long userId){
         return userpageService.getDogList(userId);
     }
+
 }

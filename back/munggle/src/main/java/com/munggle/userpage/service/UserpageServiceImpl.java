@@ -106,4 +106,5 @@ public class UserpageServiceImpl implements UserpageService {
                 .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
         return list.stream().map(dog -> DogMapper.toDetailDto(dog)).collect(Collectors.toList());
     }
+
 }

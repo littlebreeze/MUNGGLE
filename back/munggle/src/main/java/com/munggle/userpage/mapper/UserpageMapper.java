@@ -24,4 +24,5 @@ public class UserpageMapper {
                 .imageURL(post.getPostImageList().get(0).getImageURL())
                 .build();
     }
+
 }

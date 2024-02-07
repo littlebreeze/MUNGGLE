@@ -12,5 +12,4 @@ public class UserScrapListDto {
     private Long postId;
 
     private String imageURL;
-
 }

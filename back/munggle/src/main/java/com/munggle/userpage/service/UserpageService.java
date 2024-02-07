@@ -12,4 +12,5 @@ public interface UserpageService {
     List<UserScrapListDto> getUserScrap(Long findUserId, Long userId);
 
     List<DogDetailDto> getDogList(Long userId);
+
 }
