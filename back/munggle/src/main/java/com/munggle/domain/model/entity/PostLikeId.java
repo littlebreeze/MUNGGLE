@@ -1,8 +1,9 @@
 package com.munggle.domain.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
+
 import java.io.Serializable;
 
 @Getter
@@ -11,12 +12,11 @@ import java.io.Serializable;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class PostTagId implements Serializable {
+public class PostLikeId implements Serializable {
 
     @Column(name = "post_id")
     private Long postId;
 
-    @Column(name = "tag_id")
-    private Long tagId;
-
+    @Column(name = "user_id")
+    private Long userId;
 }

@@ -30,12 +30,7 @@ public class PostTag {
     @NotNull
     private Boolean isDeleted;
 
-    public void markAsDeleted() {
-        this.isDeleted = true;
-    }
-
-
-    public void markAsDeletedFalse() {
-        this.isDeleted = false;
+    public void markAsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 }
