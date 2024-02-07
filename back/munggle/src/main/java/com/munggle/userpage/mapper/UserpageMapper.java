@@ -23,7 +23,9 @@ public class UserpageMapper {
     public static UserScrapListDto toUserPageScrapList(Post post) {
         return UserScrapListDto.builder()
                 .postId(post.getId())
-                .imageURL(post.getPostImageList().get(0).getImageURL())
+                .imageURL(Optional.ofNullable(post.getPostImageList())
+                        .map(imageList -> imageList.isEmpty() ? null : imageList.get(0).getImageURL())
+                        .orElse(null))
                 .build();
     }
 
