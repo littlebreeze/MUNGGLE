@@ -81,9 +81,6 @@ public class PostController {
                               @PathVariable(value = "postId") Long postId,
                               @RequestPart(value = "file", required = false) List<MultipartFile> files) {
 
-//        postCreateDto.setImages(files);
-//        postCreateDto.setUserId(principal.getId());
-//        postService.insertPost(postCreateDto);
         postService.savePostImages(files, postId, principal.getId());
     }
 
