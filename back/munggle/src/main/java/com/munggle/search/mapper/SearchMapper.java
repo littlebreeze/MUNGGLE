@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SearchMapper {
 
-    public static SearchPostListDto toSearchPostListDto(Post post) {
+    public static SearchPostListDto toSearchPostListDto(Post post, Boolean isLiked) {
         List<String> imageUrls = post.getPostImageList().stream()
                 .map(PostImage::getImageURL)
                 .collect(Collectors.toList());
@@ -29,6 +29,7 @@ public class SearchMapper {
                         .map(UserImage::getImageURL).orElse(null))
                 .nickname(post.getUser().getNickname())
                 .likeCnt(post.getLikeCnt())
+                .isLiked(isLiked)
                 .createdAt(post.getCreatedAt())
                 .build();
     }

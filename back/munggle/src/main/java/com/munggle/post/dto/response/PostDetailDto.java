@@ -28,6 +28,10 @@ public class PostDetailDto {
 
     private Integer likeCnt;
 
+    private Boolean isLiked;
+
+    private Boolean isScraped;
+
     private Boolean isMine;
 
     private LocalDateTime createdAt;

@@ -29,7 +29,7 @@ import java.util.List;
 public class PostController {
 
     private final PostService postService;
-    private final CuratingService curatingService;
+    private final PostListService postListService;
 
     // === 팔로우 최신 게시글 === //
     @GetMapping("/following")

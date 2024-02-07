@@ -2,7 +2,10 @@ package com.munggle.search.service;
 
 import com.munggle.domain.exception.IllegalSearchTypeException;
 import com.munggle.domain.model.entity.Post;
+import com.munggle.domain.model.entity.PostLikeId;
 import com.munggle.domain.model.entity.Tag;
+import com.munggle.post.mapper.PostMapper;
+import com.munggle.post.repository.PostLikeRespository;
 import com.munggle.post.repository.PostRepository;
 import com.munggle.post.repository.TagRepository;
 import com.munggle.search.dto.SearchPagePostDto;
@@ -25,6 +28,7 @@ public class SearchServiceImpl implements SearchService {
 
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
+    private final PostLikeRespository postLikeRespository;
 
     @Override
     public List<SearchPostListDto> searchPost(Long userId, String type, String word) {
@@ -39,7 +43,13 @@ public class SearchServiceImpl implements SearchService {
         }
 
         return postList.stream()
-                .map(SearchMapper::toSearchPostListDto)
+                .map(post -> {
+                    // 좋아요 여부 확인
+                    PostLikeId postLikeId = PostMapper.toPostLikedIdEntity(userId, post.getId());
+                    Boolean isLiked = postLikeRespository.existsByPostLikeIdAndIsDeletedFalse(postLikeId);
+
+                    return SearchMapper.toSearchPostListDto(post, isLiked);
+                })
                 .collect(Collectors.toList());
     }
 
