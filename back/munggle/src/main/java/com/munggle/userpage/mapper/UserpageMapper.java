@@ -16,7 +16,9 @@ public class UserpageMapper {
         return UserPostListDto.builder()
                 .postId(post.getId())
                 .postTitle(post.getPostTitle())
-                .imageURL(post.getPostImageList().get(0).getImageURL())
+                .imageURL(Optional.ofNullable(post.getPostImageList())
+                        .map(imageList -> imageList.isEmpty() ? null : imageList.get(0).getImageURL())
+                        .orElse(null))
                 .build();
     }
 
