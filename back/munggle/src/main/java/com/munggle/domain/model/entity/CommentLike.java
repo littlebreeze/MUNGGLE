@@ -34,4 +34,5 @@ public class CommentLike {
     public void toggleLike(){
         this.isDeleted = !this.isDeleted;
     }
+
 }
