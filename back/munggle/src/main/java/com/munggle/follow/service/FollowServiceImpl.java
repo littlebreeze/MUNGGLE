@@ -31,14 +31,6 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public Page<UserListDto> getFollowerList(Long userId, Pageable pageable) {
-//        // 팔로우를 타겟멤버를 기준으로 받아와서 팔로우한 유저를 담는 리스트로 변환
-//        List<User> users = followRepository.findByFollowToIdAndIsFollowedTrue(userId)
-//                .stream()
-//                .map(Follow::getFollowFrom)
-//                .toList();
-//
-//        // 유저리스트 dto로 변환
-//        return UserMapper.fromUsers(users);
         Page<User> userListDtoPage = followRepository.findByFollowToIdAndIsFollowedTrue(userId, pageable)
                 .map(Follow::getFollowFrom);
         return UserMapper.convertToUserListDtoPage(userListDtoPage, userId);
@@ -46,12 +38,6 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public Page<UserListDto> getFollowingList(Long userId, Pageable pageable) {
-//        List<User> users = followRepository.findByFollowFromIdAndIsFollowedTrue(userId)
-//                .stream()
-//                .map(Follow::getFollowTo)
-//                .collect(Collectors.toList());
-//
-//        return UserMapper.fromUsers(users);
         Page<User> userPage = followRepository.findByFollowFromIdAndIsFollowedTrue(userId, pageable)
                 .map(Follow::getFollowTo);
 
