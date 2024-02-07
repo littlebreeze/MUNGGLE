@@ -20,4 +20,8 @@ public class UserProfileDto {
     private final String nickname;
 
     private final String desc;
+
+    private final Integer followerCount;
+
+    private final Integer followingCount;
 }

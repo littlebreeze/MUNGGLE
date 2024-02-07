@@ -12,12 +12,12 @@ import com.munggle.user.dto.UserListDto;
 import com.munggle.user.mapper.UserMapper;
 import com.munggle.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static com.munggle.domain.exception.ExceptionMessage.*;
 
@@ -30,35 +30,33 @@ public class FollowServiceImpl implements FollowService {
     private final FollowRepository followRepository;
 
     @Override
-    public List<UserListDto> getFollowerList(Long userId) {
-        // 팔로우를 타겟멤버를 기준으로 받아와서 팔로우한 유저를 담는 리스트로 변환
-        List<User> users = followRepository.findByFollowToIdAndIsFollowedTrue(userId)
-                .stream()
-                .map(Follow::getFollowFrom)
-                .toList();
-
-        // 유저리스트 dto로 변환
-        return UserMapper.fromUsers(users);
+    public Page<UserListDto> getFollowerList(Long userId, Pageable pageable) {
+        Page<User> userListDtoPage = followRepository.findByFollowToIdAndIsFollowedTrue(userId, pageable)
+                .map(Follow::getFollowFrom);
+        return UserMapper.convertToUserListDtoPage(userListDtoPage, userId);
     }
 
     @Override
-    public List<UserListDto> getFollowingList(Long userId) {
-        List<User> users = followRepository.findByFollowFromIdAndIsFollowedTrue(userId)
-                .stream()
-                .map(Follow::getFollowTo)
-                .collect(Collectors.toList());
+    public Page<UserListDto> getFollowingList(Long userId, Pageable pageable) {
+        Page<User> userPage = followRepository.findByFollowFromIdAndIsFollowedTrue(userId, pageable)
+                .map(Follow::getFollowTo);
 
-        return UserMapper.fromUsers(users);
+        return this.convertToUserListDtoPage(userPage, userId);
     }
 
     @Override
-    public Long getFollowerCount(Long userId) {
+    public Integer getFollowerCount(Long userId) {
         return followRepository.countByFollowToIdAndIsFollowedTrue(userId);
     }
 
     @Override
-    public Long getFollowingCount(Long userId) {
+    public Integer getFollowingCount(Long userId) {
         return followRepository.countByFollowFromIdAndIsFollowedTrue(userId);
+    }
+
+    @Override
+    public boolean checkIsFollowed(Long myId, Long targetId) {
+        return followRepository.existsByFollowFromIdAndFollowToIdAndIsFollowedTrue(myId, targetId);
     }
 
     @Override
@@ -113,4 +111,13 @@ public class FollowServiceImpl implements FollowService {
 
         follow.unfollow();
     }
+
+    public Page<UserListDto> convertToUserListDtoPage(Page<User> userPage, Long myId) {
+        return userPage.map(user -> {
+            UserListDto userListDto = UserListDto.toUserListDto(user);
+            userListDto.setFollowing(checkIsFollowed(myId, user.getId()));
+            return userListDto;
+        });
+    }
+
 }

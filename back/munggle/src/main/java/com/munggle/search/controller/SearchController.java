@@ -24,16 +24,6 @@ public class SearchController {
     private final SearchService searchService;
     private final UserService userService;
 
-//    @GetMapping("/post")
-//    @ResponseStatus(HttpStatus.OK)
-//    public List<SearchPostListDto> searchPost(@AuthenticationPrincipal User principal,
-//                                              @RequestParam(value = "type", required = false) String type,
-//                                              @RequestParam(value = "word", required = false) String word) {
-//
-//        Long userId = principal.getId();
-//        return searchService.searchPost(userId, type, word);
-//    }
-
     @GetMapping("/post")
     @ResponseStatus(HttpStatus.OK)
     public SearchPagePostDto searchPost(@AuthenticationPrincipal User principal,

@@ -1,6 +1,7 @@
 package com.munggle.domain.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +23,8 @@ public class UserImage {
 
     private String imageURL;
 
-    @JoinColumn(name = "user_id", nullable = false)
+    @NotNull
+    @JoinColumn(name = "user_id")
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
