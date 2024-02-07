@@ -33,12 +33,6 @@ public class UserController {
         return userService.getUserProfile(userId);
     }
 
-    @GetMapping("/search")
-    @ResponseStatus(HttpStatus.OK)
-    public List<UserListDto> searchUserByNickname(@RequestParam("keyword") String keyword) {
-        return userService.getSearchPage(keyword);
-    }
-
     @GetMapping("/nickname")
     @ResponseStatus(HttpStatus.OK)
     public void checkDuplicatedNickname(@RequestParam("nickname") String nickname) {
