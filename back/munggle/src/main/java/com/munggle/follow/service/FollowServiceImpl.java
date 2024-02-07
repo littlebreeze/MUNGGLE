@@ -70,6 +70,11 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
+    public boolean checkIsFollowed(Long myId, Long targetId) {
+        return followRepository.existsByFollowFromIdAndFollowToIdAndIsFollowedTrue(myId, targetId);
+    }
+
+    @Override
     @Transactional
     public void followUser(Long fromUserId, Long targetUserId) {
         // 자기 자신을 팔로우하는지 검증

@@ -44,6 +44,14 @@ public class FollowController {
         return followService.getFollowingCount(userId);
     }
 
+    @GetMapping("/follow-check/{targetId}")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean checkFollow(@AuthenticationPrincipal User principal,
+                               @PathVariable Long targetId) {
+        Long myId = principal.getId();
+        return followService.checkIsFollowed(myId, targetId);
+    }
+
     @PostMapping("/{targetUserId}")
     @ResponseStatus(HttpStatus.OK)
     public void followUser(@PathVariable Long targetUserId, @AuthenticationPrincipal User principal) {

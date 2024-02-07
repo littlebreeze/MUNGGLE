@@ -14,6 +14,8 @@ public interface FollowService {
 
     Integer getFollowingCount(Long userId);
 
+    boolean checkIsFollowed(Long myId, Long targetId);
+
     void followUser(Long fromUserId, Long targetUserId);
 
     void unfollow(Long fromUserId, Long targetUserId);
