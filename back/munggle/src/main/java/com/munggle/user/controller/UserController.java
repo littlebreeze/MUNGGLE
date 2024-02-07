@@ -110,4 +110,11 @@ public class UserController {
         Long id = principal.getId();
         userService.deleteProfileImage(id);
     }
+
+    @GetMapping("/recommend")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserProfileDto> recommendUserList(@AuthenticationPrincipal User principal){
+        Long id = principal.getId();
+        return userService.recommendUserList(id);
+    }
 }

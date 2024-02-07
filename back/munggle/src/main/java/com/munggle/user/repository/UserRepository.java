@@ -1,7 +1,10 @@
 package com.munggle.user.repository;
 
+import com.munggle.domain.model.entity.Post;
 import com.munggle.domain.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,4 +20,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByNicknameContainingAndIsEnabledTrue(String keyword);
 
     Optional<Object> findByNicknameAndIsEnabledTrue(String nickname);
+
+    @Query("select u from User u where u.isEnabled = true and u.id <> :userId order by u.followIncreaseCount DESC")
+    Optional<List<User>> findAllAndNotMeOrderByFollowIncreaseCountDesc(@Param("userId") Long userId);
+
+
+    @Query("select u from User u where u.isEnabled = true and u.id <> :userId and u.id not in :followList order by u.followIncreaseCount DESC")
+    Optional<List<User>> findAllAndNotMeNotFollowOrderByFollowIncreaseCountDesc(@Param("userId") Long userId, @Param("followList") List<Long> followList);
 }
