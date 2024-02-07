@@ -1,11 +1,15 @@
 package com.munggle.post.controller;
 
 import com.munggle.domain.model.entity.User;
+import com.munggle.post.dto.response.PagePostDto;
 import com.munggle.post.service.PostListService;
 import com.munggle.post.service.PostService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -28,14 +32,15 @@ public class PostController {
     private final PostListService postListService;
 
     // === 팔로우 최신 게시글 === //
-    @GetMapping
+    @GetMapping("/following")
     @ResponseStatus(HttpStatus.OK)
-    public List<PostListDto> getPostList(@AuthenticationPrincipal User principal) {
+    public PagePostDto getFollowingPostList(@AuthenticationPrincipal User principal,
+                                            @PageableDefault(size = 3, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Long userId = principal.getId();
+        PagePostDto pagePost = postListService.getFollowingPost(userId, pageable);
 
-
-        return null;
+        return pagePost;
     }
 
     // === 큐레이팅 추천순 게시글 === //
@@ -62,13 +67,24 @@ public class PostController {
     // === 게시글 등록 === //
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public void savePost(@AuthenticationPrincipal User principal,
-                         @RequestPart(value = "dto") @Valid PostCreateDto postCreateDto,
-                         @RequestPart(value = "file", required = false) List<MultipartFile> files) {
+    public Long savePost(@AuthenticationPrincipal User principal,
+                         @RequestBody @Valid PostCreateDto postCreateDto) {
 
-        postCreateDto.setImages(files);
         postCreateDto.setUserId(principal.getId());
-        postService.insertPost(postCreateDto);
+        return postService.insertPost(postCreateDto);
+    }
+
+    // === 게시글 이미지 등록 === //
+    @PostMapping("/{postId}/images")
+    @ResponseStatus(HttpStatus.OK)
+    public void savePostImage(@AuthenticationPrincipal User principal,
+                              @PathVariable(value = "postId") Long postId,
+                              @RequestPart(value = "file", required = false) List<MultipartFile> files) {
+
+//        postCreateDto.setImages(files);
+//        postCreateDto.setUserId(principal.getId());
+//        postService.insertPost(postCreateDto);
+        postService.savePostImages(files, postId, principal.getId());
     }
 
     // === 게시글 수정 === //
