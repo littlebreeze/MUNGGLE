@@ -10,9 +10,9 @@ public interface FollowService {
 
     List<UserListDto> getFollowingList(Long userId);
 
-    Long getFollowerCount(Long userId);
+    Integer getFollowerCount(Long userId);
 
-    Long getFollowingCount(Long userId);
+    Integer getFollowingCount(Long userId);
 
     void followUser(Long fromUserId, Long targetUserId);
 

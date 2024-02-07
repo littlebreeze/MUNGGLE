@@ -24,5 +24,7 @@ public class UserMyPageDto {
 
     private final String description;
 
-    private final String role;
+    private final Integer followerCount;
+
+    private final Integer followingCount;
 }

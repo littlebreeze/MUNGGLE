@@ -6,6 +6,7 @@ import com.munggle.domain.exception.PasswordNotConfirmException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.UserImage;
+import com.munggle.follow.service.FollowService;
 import com.munggle.image.dto.FileInfoDto;
 import com.munggle.image.service.FileS3UploadService;
 import com.munggle.user.dto.*;
@@ -58,6 +59,7 @@ public class UserServiceImpl implements UserService {
     private final EmailService emailService;
     private final UserRepository userRepository;
     private final UserImageRepository userImageRepository;
+    private final FollowService followService;
     private final FileS3UploadService fileS3UploadService;
     private final EmailVerificationRepository emailVerificationRepository;
 
@@ -94,7 +96,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserMyPageDto getUserMypage(Long id) {
         User user = findMemberById(id);
-        return UserMapper.toUserMyPageDto(user);
+        Integer followerCount = followService.getFollowerCount(id);
+        Integer followingCount = followService.getFollowingCount(id);
+        return UserMapper.toUserMyPageDto(user, followerCount, followingCount);
     }
 
     public UserProfileDto getUserProfile(Long id) {

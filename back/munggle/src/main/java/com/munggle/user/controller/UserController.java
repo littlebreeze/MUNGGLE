@@ -1,6 +1,7 @@
 package com.munggle.user.controller;
 
 import com.munggle.domain.model.entity.User;
+import com.munggle.follow.service.FollowService;
 import com.munggle.user.dto.*;
 import com.munggle.user.service.UserService;
 import jakarta.validation.Valid;

@@ -28,7 +28,7 @@ public class UserMapper {
                 .build();
     }
 
-    public static UserMyPageDto toUserMyPageDto(User user) {
+    public static UserMyPageDto toUserMyPageDto(User user, Integer followerCount, Integer followingCount) {
         return UserMyPageDto.builder()
                 .Id(user.getId())
                 .backgroundImgUrl(Optional.ofNullable(user.getBackgroundImage())
@@ -38,7 +38,8 @@ public class UserMapper {
                 .username(user.getUsername())
                 .nickname(user.getNickname())
                 .description(user.getDescription())
-                .role(user.getRole() == Role.ADMIN ? "관리자" : "회원")
+                .followerCount(followerCount)
+                .followingCount(followingCount)
                 .build();
     }
 
