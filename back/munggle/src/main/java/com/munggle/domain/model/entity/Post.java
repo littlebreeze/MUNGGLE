@@ -76,4 +76,5 @@ public class Post extends BaseTimeEntity {
         if (cnt) this.likeCnt++;
         else this.likeCnt--;
     }
+
 }

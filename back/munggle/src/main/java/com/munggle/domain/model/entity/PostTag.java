@@ -33,5 +33,4 @@ public class PostTag {
     public void markAsDeleted(Boolean isDeleted) {
         this.isDeleted = isDeleted;
     }
-
 }

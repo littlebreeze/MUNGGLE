@@ -18,4 +18,5 @@ public class PostTagId implements Serializable {
 
     @Column(name = "tag_id")
     private Long tagId;
+
 }
