@@ -72,7 +72,7 @@ public class UserController {
         userService.changeBackgroundImage(id, file);
     }
 
-    @PutMapping("profile-image")
+    @PutMapping("/profile-image")
     @ResponseStatus(HttpStatus.OK)
     public void updateProfileImage(@AuthenticationPrincipal User principal,
                                    @RequestPart(value = "profileImage") MultipartFile file) {
