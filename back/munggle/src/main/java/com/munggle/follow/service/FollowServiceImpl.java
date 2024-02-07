@@ -41,7 +41,7 @@ public class FollowServiceImpl implements FollowService {
 //        return UserMapper.fromUsers(users);
         Page<User> userListDtoPage = followRepository.findByFollowToIdAndIsFollowedTrue(userId, pageable)
                 .map(Follow::getFollowFrom);
-        return UserMapper.convertToUserListDtoPage(userListDtoPage);
+        return UserMapper.convertToUserListDtoPage(userListDtoPage, userId);
     }
 
     @Override
@@ -52,11 +52,10 @@ public class FollowServiceImpl implements FollowService {
 //                .collect(Collectors.toList());
 //
 //        return UserMapper.fromUsers(users);
-        Page<User> userListDtoPage = followRepository.findByFollowFromIdAndIsFollowedTrue(userId, pageable)
+        Page<User> userPage = followRepository.findByFollowFromIdAndIsFollowedTrue(userId, pageable)
                 .map(Follow::getFollowTo);
 
-        return UserMapper.convertToUserListDtoPage(userListDtoPage);
-
+        return this.convertToUserListDtoPage(userPage, userId);
     }
 
     @Override
@@ -120,4 +119,13 @@ public class FollowServiceImpl implements FollowService {
 
         follow.unfollow();
     }
+
+    public Page<UserListDto> convertToUserListDtoPage(Page<User> userPage, Long myId) {
+        return userPage.map(user -> {
+            UserListDto userListDto = UserListDto.toUserListDto(user);
+            userListDto.setFollowing(checkIsFollowed(myId, user.getId()));
+            return userListDto;
+        });
+    }
+
 }

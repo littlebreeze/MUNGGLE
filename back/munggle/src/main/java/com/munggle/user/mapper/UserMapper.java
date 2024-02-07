@@ -62,9 +62,10 @@ public class UserMapper {
                 .collect(Collectors.toList());
     }
 
-    public static Page<UserListDto> convertToUserListDtoPage(Page<User> userPage) {
+    public static Page<UserListDto> convertToUserListDtoPage(Page<User> userPage, Long id) {
         return userPage.map(UserListDto::toUserListDto);
     }
+
 
     public static UserImage toUserImage(FileInfoDto file, User user, String type) {
         return UserImage.builder()
