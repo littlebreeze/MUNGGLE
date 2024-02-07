@@ -24,6 +24,8 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 export default function PostCreate (props) {
   const apiUrl = "http://i10a410.p.ssafy.io:8080";
 
+  const [token, setToken] = useState("");
+
   const [images, setImages] = useState([]);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -32,51 +34,106 @@ export default function PostCreate (props) {
 
   const [isPrivate, setIsPrivate] = useState(false);
 
-  const createPost = () => {
-    const dto = {
+
+  const getToken = async () => {
+    await AsyncStorage.getItem("accessToken")
+    .then((accessToken) => setToken(accessToken));
+  }
+
+  useEffect(() => {
+    getToken();
+  }, []);
+
+  const createPostData = async () => {
+    const payLoad = {
       postTitle: title, 
       postContent: content, 
       isPrivate: isPrivate,
       hashtags: tags,
     };
 
+    const postId = await axios.post(
+      `${apiUrl}/posts`,
+      payLoad,
+      {headers: {
+        "Authorization": token,
+        "Content-Type": "application/json",
+      }}
+    );
+    console.log(postId.data);
+
     const formData = new FormData();
 
-    formData.append("file", images);
-    formData.append("dto", new Blob([JSON.stringify(dto)], {type:"application/json"}));
+    images.forEach((image) => {
+      const localUri = image.uri;
+      const fileName = localUri.split('/').pop();
+      const match = /\.(\w+)$/.exec(fileName ?? '');
+      const type = match ? `image/${match[1]}` : `image`;
 
-    console.log(images);
-    console.log(dto);
-
-    AsyncStorage.getItem("accessToken")
-    .then((token) => { 
-      axios.post(
-        `${apiUrl}/posts`,
-        formData,
-        {headers: {
-          "Authorization": token,
-          "Content-Type": "multipart/form-data",
-        }}
-      ).then((res) => {
-        console.log(res);
-      }).catch((err) => {
-        console.log(err)
-      })
+      formData.append('files', { uri: localUri, name: fileName, type});
     })
-  }
 
-  const pickImage = () => {
-    ImagePicker.launchImageLibraryAsync({
+    await axios.post(
+      `${apiUrl}/posts/${postId.data}/images`,
+      formData,
+      {headers: {
+        "Authorization": token,
+        "Content-type": "multipart/form-data; charset=UTF-8",
+      }}
+    ).then((res) => {
+      console.log(res.status);
+    }).catch((err) => {
+      console.log(err)
+    })
+  };
+
+  // const createPostImages = async () => {
+
+  //   const formData = new FormData();
+
+  //   images.forEach((image) => {
+  //     const localUri = image.uri;
+  //     const fileName = localUri.split('/').pop();
+  //     const match = /\.(\w+)$/.exec(fileName ?? '');
+  //     const type = match ? `image/${match[1]}` : `image`;
+
+  //     formData.append('files', { uri: localUri, name: fileName, type});
+  //   })
+
+  //   await axios.post(
+  //     `${apiUrl}/posts/${postId}/images`,
+  //     formData,
+  //     {headers: {
+  //       "Authorization": token,
+  //       "Content-Type": "multipart/form-data",
+  //     }}
+  //   ).then((res) => {
+  //     console.log(res.status);
+  //   }).catch((err) => {
+  //     console.log(err)
+  //   })
+  // };
+
+  const createPost = async () => {
+    await createPostData();
+    // await createPostImages();
+  };
+
+  const pickImage = async () => {
+    const response = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
       aspect: [4, 3], //비율 변경 가능
       quality: 1,
-      }).then((res) => {
-        setImages([...images, res.assets[0]]);
-      }).catch((err) => {
-        console.log(err)
-      })
-    };
+    });
+
+    if (response.canceled) {
+      return null;
+    }
+    console.log(response.assets[0].uri);
+
+    await setImages([...images, response.assets[0]]);
+  };
 
   const createTag = () => {
     setTags([...tags, tag]);

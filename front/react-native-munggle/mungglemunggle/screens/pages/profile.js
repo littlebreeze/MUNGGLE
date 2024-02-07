@@ -1,5 +1,8 @@
 import React, { useEffect, useId, useState } from "react";
-import { View, Text, Button, Image, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import { View, Text, Button, Image, 
+  ScrollView, StyleSheet, Dimensions, 
+  TouchableOpacity, Modal, TextInput
+} from "react-native";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
@@ -31,11 +34,17 @@ import imgPost8 from "../../assets/sample/dog8.jpg";
 import imgPost9 from "../../assets/sample/dog9.jpg";
 import imgPost10 from "../../assets/sample/dog10.jpg";
 
+import iconEdit from "../../assets/icons/infoEdit.png";
+
 import FollowButton from "../../components/followButton";
 import DirectMessageButton from "../../components/directMessageButton";
 
+import imgDefaultProfile from "../../assets/icons/defaultProfile.png";
+
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AntDesign } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -46,66 +55,383 @@ export default function ProfileScreen () {
 
   const [profile, setProfile] = useState({});
 
-  const [userId, setUserId] = useState("");
   const [authToken, setAuthToken] = useState("");
 
   const [dogList, setDogList] = useState([]);
   const [testPostList, setTestPostList] = useState([]);
   const [scrapList, setScrapList] = useState([]);
   
-  useEffect(() => { 
-    // get token
-    AsyncStorage.getItem("accessToken")
-    .then((token) => {
-      setAuthToken(token);
+  const [isEdit, setIsEdit] = useState(false);
+
+  const [backgroundImgUrl, setBackgroundImgUrl] = useState("");
+  const [profileImgUrl, setProfileImgUrl] = useState("");
+  const [nickname, setNickname] = useState("");
+  const [description, setDescription] = useState("");
+
+  // useEffect(() => { 
+  //   // get token
+  //   AsyncStorage.getItem("accessToken")
+  //   .then((token) => {
+  //     setAuthToken(token);
+  //   })
+  //   // get user Id
+  //   .then(
+  //     axios.get(
+  //       `${apiUrl}/users/mypage`,
+  //         {headers: {
+  //           "Authorization": authToken ,
+  //         }}
+  //       ).then(async (res) =>{
+  //         await setProfile(res.data);
+  //       }).then(() => {
+  //         console.log(profile.id);
+  //       })
+  //         // get Dog List
+  //         .then(
+  //           axios.get(
+  //           `${apiUrl}/userpages/${profile.id}/dog`,
+  //             {headers: {
+  //               "Authorization": authToken ,
+  //             }}
+  //           ).then((dog) => {
+  //             setDogList(dog.data); 
+  //             console.log("dog====================");
+  //             console.log(dog.data); 
+  //             console.log("dog====================");
+  //           })
+  //           .catch((err) => console.log(err))
+  //         )
+  //         // get Post List
+  //         .then(
+  //           axios.get(
+  //           `${apiUrl}/userpages/${profile.id}/post`,
+  //             {headers: {
+  //               "Authorization": authToken ,
+  //             }}
+  //           ).then((post) => {
+  //             setTestPostList(post.data);
+  //             console.log("post====================");
+  //             console.log(post.data);
+  //             console.log("post====================");
+  //           })
+  //           .catch((err) => console.log(err))
+  //         )
+  //         // // get Scrap List
+  //         // .then(
+  //         //   axios.get(
+  //         //     `${apiUrl}/userpages/${profile.id}/scrap`,
+  //         //       {headers: {
+  //         //         "Authorization": authToken ,
+  //         //       }}
+  //         //     ).then((scrap) => {
+  //         //       console.log("scrap===================="); 
+  //         //       setScrapList(scrap.data);
+  //         //       console.log(scrap.data);
+  //         //       console.log("scrap====================");
+  //         //     })
+  //         //     .catch((err) => console.log(err))
+  //         // ) 
+  //         .catch((err) => console.log(err))
+  //       .catch((err) => {
+  //         console.log(err);
+  //       })
+  //   ) 
+  // }, []);
+
+  const changeBackgroundImg = async () => {
+    const response = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3], //비율 변경 가능
+      quality: 1,
+    });
+
+    if (response.canceled) {
+      return null;
+    }
+    console.log(response.assets[0].uri);
+
+    setBackgroundImgUrl(response.assets[0]);
+  };
+
+  const changeProfileImg = async () => {
+    const response = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3], //비율 변경 가능
+      quality: 1,
+    });
+
+    if (response.canceled) {
+      return null;
+    }
+    console.log(response.assets[0].uri);
+
+    setProfileImgUrl(response.assets[0]);
+  };
+  
+  const editBackgroundImage = async () => {
+    const localUri = backgroundImgUrl.uri;
+    const fileName = localUri.split('/').pop();
+    const match = /\.(\w+)$/.exec(fileName ?? '');
+    const type = match ? `image/${match[1]}` : `image`;
+    const formData = new FormData();
+    formData.append('backgroundImage', { uri: localUri, name: fileName, type});
+
+    console.log(formData);
+
+    await axios.put(
+      `${apiUrl}/users/background`,
+      formData,
+      {headers: {
+        "Authorization": authToken ,
+        "Content-Type": "multipart/form-data",
+      }}
+    ).then((res) => {
+      console.log("배경 이미지 변경 ========================");
+      console.log(res.status);
+    }).catch((err) => {
+      console.log("배경 이미지 변경 ========================");
+      console.log(err);
     })
-    // get user Id
-    .then(
-      axios.get(
-        `${apiUrl}/users/mypage`,
-          {headers: {
-            "Authorization": authToken ,
-          }}
-        ).then((res) =>{
-        console.log(res.data); 
-        setUserId(res.data.id);
-        })
-        // get Dog List
-        .then(
-          axios.get(
-            `${apiUrl}/userpages/${userId}/dog`,
-              {headers: {
-                "Authorization": authToken ,
+  };
+
+  const editProfileImage = async () => {
+    const localUri = profileImgUrl.uri;
+    const fileName = localUri.split('/').pop();
+    const match = /\.(\w+)$/.exec(fileName ?? '');
+    const type = match ? `image/${match[1]}` : `image`;
+
+    const formData = new FormData();
+    formData.append('profileImage', { uri: localUri, name: fileName, type});
+
+    console.log(formData);
+
+    await axios.put(
+      `${apiUrl}/users/profile-image`,
+      formData,
+      {headers: {
+        "Authorization": authToken ,
+        "Content-Type": "multipart/form-data",
+      }}
+    ).then((res) => {
+      console.log("프로필 이미지 변경==================");
+      console.log(res.status);
+    }).catch((err) => {
+      console.log("프로필 이미지 변경==================");
+      console.log(err);
+    })
+  };
+
+  const editProfileData = async () => {
+    const payLoad = {
+      newNickname: nickname,
+      description: description,
+    };
+
+    await axios.put(
+      `${apiUrl}/users`,
+      payLoad,
+      {headers: {
+        "Authorization": authToken ,
+        "Content-Type": "application/json",
+      }}
+    ).then((res) => {
+      console.log("프로필 데이터 변경==================");
+      console.log(res.status);
+    }).catch((err) => {
+      console.log("프로필 데이터 변경==================");
+      console.log(err);
+    })
+  };
+
+
+  const editProfile = async () => {
+    await editBackgroundImage();
+    await editProfileImage();
+    await editProfileData();
+    // setIsEdit(false);
+  };
+
+  const myProfileImg = () => {
+    if (!profileImgUrl && !profile.profileImgUrl) {
+      return (
+        <View style={styles.profileDefaultTopView}>
+          <View style={styles.profileDefaultImageView}>
+            <Image 
+              style={{
+                ...styles.profileDefaultImage, 
+                opacity: 0.8,
               }}
-            ).then((res) => {
-              setDogList(res.data);
-              console.log(res.data);
-            })
-            .catch((err) => console.log(err))
-        )
-        // get Post List
-        .then(
-          axios.get(
-            `${apiUrl}/userpages/${userId}/post`,
-              {headers: {
-                "Authorization": authToken ,
+              source={imgDefaultProfile}
+            /> 
+            <TouchableOpacity 
+              style={styles.profileEditDefaultProfileImgButtonView}
+              onPress={changeProfileImg}
+            >
+              <AntDesign 
+                name="pluscircleo" 
+                size={60} 
+                color="black" 
+                style={styles.profileEditDefaultProfileImgButtonIcon}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.profileEditDefaultButtonView}
+              onPress={editProfile}
+            >
+              <AntDesign 
+                name="checksquareo" 
+                size={33} 
+                color="rgb(13, 110, 253)" 
+                style={styles.profileEditButtonIcon}
+              />
+            </TouchableOpacity>
+          </View>  
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.profileTopViewMiddleView}>
+          <View style={styles.profileImageView}>
+            <Image 
+              style={{
+                ...styles.profileImage, 
+                opacity: 0.8,
               }}
-            ).then((res) => {setTestPostList(res.data);})
-            .catch((err) => console.log(err))
-        )
-        // get Scrap List
-        .then(
-          axios.get(
-            `${apiUrl}/userpages/${userId}/scrap`,
-              {headers: {
-                "Authorization": authToken ,
+              source={
+                profileImgUrl ? profileImgUrl : profile.profileImgUrl}
+            />
+            <TouchableOpacity 
+              style={styles.profileEditProfileImgButtonView}
+              onPress={changeProfileImg}
+            >
+              <AntDesign 
+                name="pluscircleo" 
+                size={60} 
+                color="black" 
+                style={styles.profileEditProfileImgButtonIcon}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.profileEditButtonView}
+              onPress={editProfile}
+            >
+              <AntDesign 
+                name="checksquareo" 
+                size={33} 
+                color="rgb(13, 110, 253)" 
+                style={styles.profileEditButtonIcon}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      );
+    };
+  };
+
+  const myProfile = () => {
+    if (isEdit) {
+      return (
+        <View style={styles.profileTopView}>
+          <View style={styles.profileTopViewTopView}>
+            <Image 
+              style={{
+                ...styles.profileTopViewTopView, 
+                opacity:0.6, 
+                backgroundColor: "rgb(249, 250, 208)"
               }}
-            ).then((res) => setScrapList(res.data))
-            .catch((err) => console.log(err))
-        )
-        .catch((err) => console.log(err))
-    )
-  }, []);
+              source={
+                backgroundImgUrl 
+                ? backgroundImgUrl 
+                : profile.backgroundImgUrl
+              }
+              />
+            <TouchableOpacity 
+              style={styles.profileEditBackgroundImgButtonView}
+              onPress={changeBackgroundImg}
+            >
+              <AntDesign 
+                name="pluscircleo" 
+                size={80}
+                color="black" 
+                style={styles.profileEditBackgroundImgButtonIcon}
+                />
+            </TouchableOpacity>
+          </View>
+          {myProfileImg()}
+          <View style={styles.profileTopViewBottomView}>
+            <View style={styles.profileTopViewBottomViewTopView}>
+              <View style={styles.profileEditTopView}></View>
+              <TextInput 
+                placeholder={userProfile.name}
+                style={styles.profileEditUsername}
+                value={nickname}
+                onChangeText={(e) => setNickname(e)}
+              />
+              <View style={styles.profileTopViewBottomViewButtonView}>
+                <FollowButton />
+                <DirectMessageButton />
+              </View>
+            </View>
+            <View style={styles.profileTopViewBottomViewBottomView}>
+              <Text style={styles.textFollow}>팔로워 {userProfile.follower}</Text>
+              <Text style={{...styles.textFollow, marginLeft:SCREEN_HEIGHT * 0.02}}>팔로잉 {userProfile.following}</Text>
+            </View>
+            <TextInput 
+              placeholder={userProfile.description}
+              value={description}
+              style={{...styles.textDescription, height: SCREEN_HEIGHT * 0.05, paddingBottom: SCREEN_HEIGHT * 0.005,}}
+              multiline
+              onChangeText={(e) => setDescription(e)}
+            />
+          </View>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.profileTopView}>
+          <View style={styles.profileTopViewTopView}>
+            <Image 
+              style={styles.profileTopViewTopView}
+              source={imgPost1}
+            />
+          </View>
+          <View style={styles.profileTopViewMiddleView}>
+            <View style={styles.profileImageView}>
+              <Image 
+                style={styles.profileImage}
+                source={imgProfile1}
+              />
+              <TouchableOpacity 
+                style={styles.profileEditButtonView}
+                onPress={() => setIsEdit(true)}
+              >
+                <Image 
+                  style={styles.profileEditButtonIcon}
+                  source={iconEdit}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.profileTopViewBottomView}>
+            <View style={styles.profileTopViewBottomViewTopView}>
+              <Text style={styles.profileTopViewBottomViewName}>{ userProfile.name }</Text>
+              <View style={styles.profileTopViewBottomViewButtonView}>
+                <FollowButton />
+                <DirectMessageButton />
+              </View>
+            </View>
+            <View style={styles.profileTopViewBottomViewBottomView}>
+              <Text style={styles.textFollow}>팔로워 {userProfile.follower}</Text>
+              <Text style={{...styles.textFollow, marginLeft:SCREEN_HEIGHT * 0.02}}>팔로잉 {userProfile.following}</Text>
+            </View>
+            <Text style={styles.textDescription}>{userProfile.description}</Text>
+          </View>
+        </View>
+      );
+    };
+  };
   
   console.log(dogList);
   console.log(testPostList);
@@ -294,34 +620,7 @@ export default function ProfileScreen () {
   
   return (
     <ScrollView style={styles.profileContainer}>
-      <View style={styles.profileTopView}>
-        <View style={styles.profileTopViewTopView}>
-          <Image 
-            style={styles.profileTopViewTopView}
-            source={imgPost1}
-          />
-        </View>
-        <View style={styles.profileTopViewMiddleView}>
-          <Image 
-            style={styles.profileTopViewMiddleViewImage}
-            source={imgProfile1}
-          />
-        </View>
-        <View style={styles.profileTopViewBottomView}>
-          <View style={styles.profileTopViewBottomViewTopView}>
-            <Text style={styles.profileTopViewBottomViewName}>{ userProfile.name }</Text>
-            <View style={styles.profileTopViewBottomViewButtonView}>
-              <FollowButton />
-              <DirectMessageButton />
-            </View>
-          </View>
-          <View style={styles.profileTopViewBottomViewBottomView}>
-            <Text style={styles.textFollow}>팔로워 {userProfile.follower}</Text>
-            <Text style={{...styles.textFollow, marginLeft:SCREEN_HEIGHT * 0.02}}>팔로잉 {userProfile.following}</Text>
-          </View>
-          <Text style={styles.textDescription}>{userProfile.description}</Text>
-        </View>
-      </View>
+      {myProfile()}
       <View style={styles.profileBottomView}>
         <Tab.Navigator
           initialRouteName="Dog"
@@ -373,6 +672,7 @@ export default function ProfileScreen () {
           />
         </Tab.Navigator>
       </View>
+
     </ScrollView>
   );
 };
@@ -401,20 +701,77 @@ const styles = StyleSheet.create({
   profileTopViewTopView: {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT * 0.2,
+    position: "relative",
+  },
+  profileTopViewTopImage: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT * 0.2,
   },
   profileTopViewMiddleView: {
     position: "absolute",
     borderRadius: 100,
-    width: 100,
-    height: 100,
-    top: SCREEN_HEIGHT * 0.133,
+    width: SCREEN_WIDTH * 0.26,
+    height: SCREEN_WIDTH * 0.26,
+    top: SCREEN_HEIGHT * 0.127,
     left: SCREEN_WIDTH * 0.07,
   },
-  profileTopViewMiddleViewImage: {
+  profileImageView: {
     borderRadius: 100,
-    width: 100,
-    height: 100,
+    width: SCREEN_WIDTH * 0.26,
+    height: SCREEN_WIDTH * 0.26,
+    position: "relative",
   },
+  profileDefaultTopView: {
+    position: "absolute",
+    borderRadius: 100,
+    width: SCREEN_WIDTH * 0.26,
+    height: SCREEN_WIDTH * 0.26,
+    top: SCREEN_HEIGHT * 0.14,
+    left: SCREEN_WIDTH * 0.09,
+  },
+  profileEditDefaultProfileImgButtonView: {
+    position: "absolute",
+    left: SCREEN_WIDTH * 0.043,
+    top: SCREEN_WIDTH * 0.043,
+  },
+  profileDefaultImageView: {
+    borderRadius: 100,
+    width: SCREEN_WIDTH * 0.26,
+    height: SCREEN_WIDTH * 0.26,
+    position: "relative",
+  },
+  profileDefaultImage: {
+    borderRadius: 100,
+    width: SCREEN_WIDTH * 0.23,
+    height: SCREEN_WIDTH * 0.23,
+    borderWidth: 1,
+    borderColor: "gray",
+  },
+  profileImage: {
+    borderRadius: 100,
+    width: SCREEN_WIDTH * 0.26,
+    height: SCREEN_WIDTH * 0.26,
+  },
+  
+  profileEditDefaultButtonView: {
+    position: "absolute",
+    bottom: 0,
+    right: 0,
+    width: SCREEN_WIDTH * 0.09,
+    height: SCREEN_WIDTH * 0.09,
+  },
+  profileEditButtonView: {
+    position: "absolute",
+    bottom: -5,
+    right: -10,
+    width: SCREEN_WIDTH * 0.09,
+    height: SCREEN_WIDTH * 0.09,
+  },
+  profileEditButtonIcon: {
+    width: SCREEN_WIDTH * 0.09,
+    height: SCREEN_WIDTH * 0.09,
+  },
+
   profileTopViewBottomView: {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT * 0.15,
@@ -452,4 +809,56 @@ const styles = StyleSheet.create({
   textDescription: {
     fontSize: 14,
   },
+
+  profileEditBackgroundImgButtonView: {
+    position: "absolute",
+    left: SCREEN_WIDTH * 0.41,
+    top: SCREEN_HEIGHT * 0.06,
+  },
+  profileEditBackgroundImgButtonIcon: {
+    opacity: 0.6,
+  },
+  profileEditProfileImgButtonView: {
+    position: "absolute",
+    left: SCREEN_WIDTH * 0.058,
+    top: SCREEN_WIDTH * 0.058,
+  },
+  profileEditDefaultProfileImgButtonIcon: {
+    opacity: 0.8,
+  },
+  profileEditProfileImgButtonIcon: {
+    opacity: 0.5,
+  },
+  profileEditTopView: {
+    width: SCREEN_WIDTH * 0.3,
+    height: SCREEN_HEIGHT * 0.04,
+  },
+  profileEditUsername: {
+    position: "absolute",
+    backgroundColor: "white",
+    fontSize: 20,
+    fontWeight: "600",
+    width: SCREEN_WIDTH * 0.3,
+    height: SCREEN_HEIGHT * 0.04,
+    textAlign: "center",
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 5,
+  },
+  // textDescription: {
+  // },
+  // textDescription: {
+  // },
+  // textDescription: {
+  // },
+  // textDescription: {
+  // },
+  // textDescription: {
+  // },
+  // textDescription: {
+  // },
+  // textDescription: {
+  // },
+  // textDescription: {
+  // },
 });
