@@ -4,6 +4,7 @@ import com.munggle.comment.dto.CommentCreateDto;
 import com.munggle.comment.dto.CommentDetailDto;
 import com.munggle.comment.dto.CommentUpdateDto;
 import com.munggle.domain.model.entity.User;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public interface CommentService {
     void updateComment(Long userId, CommentUpdateDto commentUpdateDto);
 
     // 게시글 댓글 목록
-    List<CommentDetailDto> getCommentList(User principal, Long postId);
+    List<CommentDetailDto> getCommentList(User principal, Long postId, Pageable pageable);
 
     // 댓글 상세
     CommentDetailDto getComment(User principal,Long commentId);

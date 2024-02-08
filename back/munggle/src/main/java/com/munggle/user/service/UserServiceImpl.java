@@ -25,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -303,10 +304,14 @@ public class UserServiceImpl implements UserService {
 
         List<User> list = new ArrayList<>();
 
+        // 상위 20명만 리턴
+        int page = 0; // 첫 페이지
+        int size = 20; // 페이지 당 결과 수
+
         if(followIdList.isEmpty())
-            list = userRepository.findAllAndNotMeOrderByFollowIncreaseCountDesc(userId);
+            list = userRepository.findAllAndNotMeOrderByFollowIncreaseCountDesc(userId, PageRequest.of(page, size));
         else
-            list = userRepository.findAllAndNotMeNotFollowOrderByFollowIncreaseCountDesc(userId, followIdList);
+            list = userRepository.findAllAndNotMeNotFollowOrderByFollowIncreaseCountDesc(userId, followIdList, PageRequest.of(page, size));
         return list
                 .stream().map(user->UserMapper.toUserProfileDto(user)).collect(Collectors.toList());
     }

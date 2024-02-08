@@ -17,6 +17,7 @@ import com.munggle.domain.model.entity.User;
 import com.munggle.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -60,8 +61,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentDetailDto> getCommentList(User principal, Long postId) {
-        return commentRepository.findAllByPostIdAndIsDeletedFalse(postId)
+    public List<CommentDetailDto> getCommentList(User principal, Long postId, Pageable pageable) {
+        return commentRepository.findAllByPostIdAndIsDeletedFalse(postId, pageable)
                 .orElseThrow(()->new CommentNotFoundException(ExceptionMessage.COMMENT_NOT_FOUND))
                 .stream().map(comment -> {
                     Boolean haveLiked = false;
