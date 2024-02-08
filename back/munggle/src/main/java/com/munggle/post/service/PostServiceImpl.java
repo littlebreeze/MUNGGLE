@@ -138,6 +138,22 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+
+    @Override
+    @Transactional
+    public void savePostImage(MultipartFile image, Long postId, Long userId) {
+        Post newPost = postRepository.findByIdAndIsDeletedFalse(postId)
+                .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
+
+        // 이미지 저장
+        String uploadPath = userId + "/" + postId + "/";
+        FileInfoDto fileInfo = fileS3UploadService.uploadFile(uploadPath, image); //s3 저장소에 업로드
+
+        // db에 이미지 파일 정보 저장
+        PostImage newImage = PostMapper.toPostImageEntity(fileInfo, newPost);
+        postImageRepository.save(newImage);
+    }
+
     /**
      * 게시글 수정 메소드
      *

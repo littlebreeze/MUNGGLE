@@ -77,7 +77,7 @@ public class PostController {
     // === 게시글 이미지 등록 === //
     @PostMapping("/{postId}/images")
     @ResponseStatus(HttpStatus.OK)
-    public void savePostImage(@AuthenticationPrincipal User principal,
+    public void savePostImages(@AuthenticationPrincipal User principal,
                               @PathVariable(value = "postId") Long postId,
                               @RequestPart(value = "file", required = false) List<MultipartFile> files) {
 
@@ -87,6 +87,15 @@ public class PostController {
             log.info("files == null");
         }
         postService.savePostImages(files, postId, principal.getId());
+    }
+
+    @PostMapping("/{postId}/image")
+    @ResponseStatus(HttpStatus.OK)
+    public void savePostImage(@AuthenticationPrincipal User principal,
+                              @PathVariable(value = "postId") Long postId,
+                              @RequestPart(value = "file") MultipartFile file) {
+
+        postService.savePostImage(file, postId, principal.getId());
     }
 
     // === 게시글 수정 === //

@@ -22,4 +22,6 @@ public interface PostService {
     void postLike(Long userId, Long postId);
 
     void postScrap(Long userId, Long postId);
+
+    void savePostImage(MultipartFile image, Long postId, Long userId);
 }
