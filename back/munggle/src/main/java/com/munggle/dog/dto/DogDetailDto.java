@@ -1,6 +1,7 @@
 package com.munggle.dog.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.munggle.user.dto.UserProfileDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,4 +27,6 @@ public class DogDetailDto {
     private String name;
     private String image;   // Url
     private String description;
+
+    private UserProfileDto user;
 }

@@ -4,6 +4,7 @@ import com.munggle.dog.dto.DogCreateDto;
 import com.munggle.dog.dto.DogDetailDto;
 import com.munggle.domain.model.entity.Dog;
 import com.munggle.domain.model.entity.Kind;
+import com.munggle.user.mapper.UserMapper;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -28,7 +29,6 @@ public class DogMapper {
     // Entity -> Dto
 
     public static DogDetailDto toDetailDto(Dog dog) {
-
         return DogDetailDto.builder()
                 .dogId(dog.getDogId())
                 .kindId(dog.getKind().getKindId())
@@ -40,6 +40,7 @@ public class DogMapper {
                 .name(dog.getName())
                 .image(dog.getImageUrl())
                 .description(dog.getDescription())
+                .user(UserMapper.toUserProfileDto(dog.getUser()))
                 .build();
     }
 }
