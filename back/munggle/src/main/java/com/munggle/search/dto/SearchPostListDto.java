@@ -27,6 +27,8 @@ public class SearchPostListDto {
 
     private Boolean isLiked;
 
+    private Boolean isFollowed;
+
     private LocalDateTime createdAt;
 
 }

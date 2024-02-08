@@ -34,6 +34,8 @@ public class PostDetailDto {
 
     private Boolean isMine;
 
+    private Boolean isFollowed;
+
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
