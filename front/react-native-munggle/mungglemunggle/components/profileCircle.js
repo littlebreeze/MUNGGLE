@@ -10,7 +10,6 @@ export default function ProfileCircle (props) {
           source={props.imageProfile}
         />
       </TouchableOpacity>
-
       <View style={styles.profileCircleNameView}>
         <Text style={styles.profileCircleName}>{ props.nameProfile }</Text>
       </View>

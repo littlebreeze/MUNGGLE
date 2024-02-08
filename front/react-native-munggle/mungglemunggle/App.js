@@ -52,7 +52,7 @@ export default function App() {
     }
   }, [isLogin])
 
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(true);
 
   const openSearchModal = () => { setIsSearchModalOpen(true) }; 
   const closeSearchModal = () => { setIsSearchModalOpen(false) }; 
