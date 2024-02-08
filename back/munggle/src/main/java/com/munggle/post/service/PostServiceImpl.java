@@ -89,18 +89,6 @@ public class PostServiceImpl implements PostService {
         // 게시글 영속화
         Long postId = postRepository.save(newPost).getId();
 
-//        // 이미지 저장
-//        if (postCreateDto.getImages() != null) {
-//            List<MultipartFile> files = postCreateDto.getImages();
-//            String uploadPath = userId + "/" + postId + "/";
-//            List<FileInfoDto> fileInfoDtos = fileS3UploadService.uploadFlieList(uploadPath, files); //s3 저장소에 업로드
-//
-//            for (FileInfoDto fileInfo : fileInfoDtos) { // db에 이미지 파일 정보 저장
-//                PostImage newImage = PostMapper.toPostImageEntity(fileInfo, newPost);
-//                postImageRepository.save(newImage);
-//            }
-//        }
-
         // 해시태그 저장
         List<String> hashtags = postCreateDto.getHashtags();
         List<PostTag> postTags = new ArrayList<>();
@@ -138,6 +126,8 @@ public class PostServiceImpl implements PostService {
                 PostImage newImage = PostMapper.toPostImageEntity(fileInfo, newPost);
                 postImageRepository.save(newImage);
             }
+        } else {
+            log.info("images : null");
         }
     }
 
