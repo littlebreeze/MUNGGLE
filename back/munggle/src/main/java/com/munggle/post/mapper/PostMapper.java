@@ -98,6 +98,7 @@ public class PostMapper {
                 .imageURLs(imageUrls)
                 .hashtags(hashtags)
                 .userId(post.getUser().getId())
+                .isFollowed(isFollowed)
                 .profileImage(Optional.ofNullable(post.getUser().getProfileImage())
                               .map(UserImage::getImageURL).orElse(null))
                 .nickname(post.getUser().getNickname())
