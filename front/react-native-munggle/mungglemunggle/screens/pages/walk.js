@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, Button, ScrollView, StyleSheet, Dimensions, TouchableOpacity } from "react-native";
+import { View, Text, Button, ScrollView, StyleSheet, Dimensions, TouchableOpacity, Alert } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Location from "expo-location";
+import { KAKAOMAP_API_KEY } from '@env';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
-const apiKey = 'c688164e37f35d82c0237627a526de76'
+const apiKey = KAKAOMAP_API_KEY
 
 const htmlContainer = `
 <html>
@@ -93,13 +94,13 @@ const htmlContainer = `
       맵을 불러오고 있습니다.
     </div>
     <script>
-      let routes = [];
       var startButton = document.getElementById('startButton');
       var stopButton = document.getElementById('stopButton');
       var map = null;
       var currentLocation = null;
       var marker = null;
       var markerPosition = null;
+      var mapIsNullMessage = document.getElementById('mapIsNullMessage');
 
       var drawingFlag = false; // 선이 그려지고 있는 상태를 가지고 있을 변수입니다
       var moveLine; // 선이 그려지고 있을때 마우스 움직임에 따라 그려질 선 객체 입니다
@@ -110,19 +111,18 @@ const htmlContainer = `
       document.addEventListener('message', async (e) => {
         const { type, data } = JSON.parse(e.data);
         currentLocation = data;
+        alert(map);
         if (!map) {
           createMap(currentLocation.latitude, -currentLocation.longitude);  
+          mapIsNullMessage.style.display = 'none';
+          alert('맵생성완료');
         } else {
+          alert('이미맵이생성됨')
           if (drawingFlag) {
-            startDrawing(currentLocation.latitude + 0.001, -currentLocation.longitude + 0.001);
+            startDrawing(currentLocation.latitude, -currentLocation.longitude);
           }
         }
       });
-
-      function sendLocations() {
-        window.ReactNativeWebview.postMessage(JSON.stringify(routes));
-        alert(routes);
-      };
       
       function createMap(lat, lng) {
         var mapContainer = document.getElementById('map'); // 지도를 표시할 div 
@@ -155,9 +155,6 @@ const htmlContainer = `
         startButton.style.display = 'block';
         stopButton.style.display = 'none';
         stopDrawing();
-        sendLocations();
-        alert(routes);
-        routes = [];
       }
       
       function panTo(lat, lng) {
@@ -206,7 +203,6 @@ const htmlContainer = `
           clickLine = new kakao.maps.Polyline({
               map: map, // 선을 표시할 지도입니다 
               path: [new kakao.maps.LatLng(lat, lng)], // 선을 구성하는 좌표 배열입니다 클릭한 위치를 넣어줍니다
-              routes: [new kakao.maps.LatLng(lat, lng)],
               strokeWeight: 3, // 선의 두께입니다 
               strokeColor: '#db4040', // 선의 색깔입니다
               strokeOpacity: 1, // 선의 불투명도입니다 0에서 1 사이값이며 0에 가까울수록 투명합니다
@@ -232,7 +228,6 @@ const htmlContainer = `
 
           // 좌표 배열에 클릭한 위치를 추가합니다
           path.push(new kakao.maps.LatLng(lat, lng));
-          routes.push(new kakao.maps.LatLng(lat, lng));
           
           // 다시 선에 좌표 배열을 설정하여 클릭 위치까지 선을 그리도록 설정합니다
           clickLine.setPath(path);
@@ -257,6 +252,8 @@ const htmlContainer = `
           
           // 마우스 클릭으로 그린 선의 좌표 배열을 얻어옵니다
           var path = clickLine.getPath();
+
+          window.ReactNativeWebView.postMessage(JSON.stringify(path));
 
           // 선을 구성하는 좌표의 개수가 2개 이상이면
           if (path.length > 1) {
@@ -286,8 +283,6 @@ const htmlContainer = `
           // 상태를 false로, 그리지 않고 있는 상태로 변경합니다
           drawingFlag = false;          
         }  
-        window.ReactNativeWebview.postMessage(JSON.stringify(routes));
-        alert(routes);
       };   
       
       // 클릭으로 그려진 선을 지도에서 제거하는 함수입니다
@@ -441,6 +436,12 @@ export default function WalkScreen ({ navigation }) {
 
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
+
+      webViewRef.current.postMessage(JSON.stringify({
+        type: 'location',
+        data: location.coords
+      }));
+      console.log(1, JSON.parse(JSON.stringify(location.coords)));
     })();
   }, []);
 
@@ -454,7 +455,7 @@ export default function WalkScreen ({ navigation }) {
 
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
-    }, 3000);
+    }, 2000);
 
     return () => clearInterval(timer);
   }, [location]);
@@ -465,7 +466,7 @@ export default function WalkScreen ({ navigation }) {
         type: 'location',
         data: location.coords
       }));
-      console.log(1, JSON.parse(JSON.stringify(location.coords)));
+      console.log(2, JSON.parse(JSON.stringify(location.coords)));
     }
       // webViewRef.current.postMessage(JSON.stringify({
       //   type: 'latitude',
@@ -477,7 +478,7 @@ export default function WalkScreen ({ navigation }) {
       //   // data: location.coords.longitude
       //   data: 127.03958123605
       // }));
-}, [location]);
+  }, [location]);
 
   let text = 'Waiting..';
   if (errorMsg) {
@@ -505,6 +506,11 @@ export default function WalkScreen ({ navigation }) {
 	// 	}
 	// }, [isClick])
 
+  const onMessage = (event) => {
+    const message = event.nativeEvent.data;
+    console.log(message);
+  }
+
   return (
     <View style={styles.walkMainContainer}>
       {location ? (
@@ -512,10 +518,7 @@ export default function WalkScreen ({ navigation }) {
           ref={webViewRef}
           style={styles.walkMainMap}
           source={{ html: htmlContainer }}
-          onMessage={(event) => {
-            const message = event.nativeEvent.data;
-            console.log(message);
-          }}
+          onMessage={onMessage}
         />
       ) : (
         <View style={styles.walkMainLoading}>

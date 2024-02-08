@@ -20,6 +20,7 @@
     "expo-status-bar": "~1.11.1",
     "react": "18.2.0",
     "react-native": "0.73.2",
+    "react-native-dotenv": "^3.4.9",
     "react-native-gesture-handler": "~2.14.0",
     "react-native-masonry-list": "^2.16.1",
     "react-native-material-ui": "^1.30.1",
