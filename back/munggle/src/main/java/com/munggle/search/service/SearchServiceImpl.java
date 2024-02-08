@@ -4,6 +4,7 @@ import com.munggle.domain.exception.IllegalSearchTypeException;
 import com.munggle.domain.model.entity.Post;
 import com.munggle.domain.model.entity.PostLikeId;
 import com.munggle.domain.model.entity.Tag;
+import com.munggle.follow.service.FollowService;
 import com.munggle.post.mapper.PostMapper;
 import com.munggle.post.repository.PostLikeRespository;
 import com.munggle.post.repository.PostRepository;
@@ -29,29 +30,7 @@ public class SearchServiceImpl implements SearchService {
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
     private final PostLikeRespository postLikeRespository;
-
-    @Override
-    public List<SearchPostListDto> searchPost(Long userId, String type, String word) {
-
-        List<Post> postList;
-        if (type.equals("title")) {
-            postList = postRepository.searchByPostTitle(word);
-        } else if (type.equals("tag")) {
-            postList = postRepository.searchByTagNm(word);
-        } else {
-            throw new IllegalSearchTypeException(SEARCH_TYPE_ILLEGAL);
-        }
-
-        return postList.stream()
-                .map(post -> {
-                    // 좋아요 여부 확인
-                    PostLikeId postLikeId = PostMapper.toPostLikedIdEntity(userId, post.getId());
-                    Boolean isLiked = postLikeRespository.existsByPostLikeIdAndIsDeletedFalse(postLikeId);
-
-                    return SearchMapper.toSearchPostListDto(post, isLiked);
-                })
-                .collect(Collectors.toList());
-    }
+    private final FollowService followService;
 
     @Override
     public List<SearchTagDto> searchByTag(String word) {
@@ -79,8 +58,12 @@ public class SearchServiceImpl implements SearchService {
                     // 좋아요 여부 확인
                     PostLikeId postLikeId = PostMapper.toPostLikedIdEntity(userId, post.getId());
                     Boolean isLiked = postLikeRespository.existsByPostLikeIdAndIsDeletedFalse(postLikeId);
+                    // 내 게시글 인지 확인
+                    Boolean isMine = post.getUser().getId().equals(userId);
+                    // 팔로우 여부 확인
+                    Boolean isFollowed = followService.checkIsFollowed(userId, post.getUser().getId());
 
-                    return SearchMapper.toSearchPostListDto(post, isLiked);
+                    return SearchMapper.toSearchPostListDto(post, isLiked, isMine, isFollowed);
                 })
                 .collect(Collectors.toList());
 

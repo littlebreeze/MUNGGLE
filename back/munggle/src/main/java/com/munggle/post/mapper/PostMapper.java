@@ -26,7 +26,7 @@ public class PostMapper {
                 .build();
     }
 
-    public static PostDetailDto toPostDetailDto(Post detailPost, List<String> hashtags, Boolean isMine, Boolean isLiked, Boolean isScraped) {
+    public static PostDetailDto toPostDetailDto(Post detailPost, List<String> hashtags, Boolean isMine, Boolean isLiked, Boolean isScraped, Boolean isFollowed) {
         List<String> imageUrls = detailPost.getPostImageList().stream()
                 .map(PostImage::getImageURL)
                 .collect(Collectors.toList());
@@ -42,6 +42,7 @@ public class PostMapper {
                 .nickname(detailPost.getUser().getNickname())
                 .likeCnt(detailPost.getLikeCnt())
                 .isMine(isMine)
+                .isFollowed(isFollowed)
                 .isLiked(isLiked)
                 .isScraped(isScraped)
                 .createdAt(detailPost.getCreatedAt())
@@ -80,7 +81,7 @@ public class PostMapper {
                 .build();
     }
 
-    public static PostListDto toPostListDto(Post post, Boolean isLiked) {
+    public static PostListDto toPostListDto(Post post, Boolean isLiked, Boolean isFollowed) {
         List<String> imageUrls = post.getPostImageList().stream()
                 .map(PostImage::getImageURL)
                 .collect(Collectors.toList());

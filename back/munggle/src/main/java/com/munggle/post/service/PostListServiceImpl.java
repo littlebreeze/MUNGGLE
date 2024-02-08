@@ -3,6 +3,7 @@ package com.munggle.post.service;
 import com.munggle.domain.exception.TagNotFoundException;
 import com.munggle.domain.model.entity.*;
 import com.munggle.follow.retpository.FollowRepository;
+import com.munggle.follow.service.FollowService;
 import com.munggle.post.dto.response.PagePostDto;
 import com.munggle.post.dto.response.PostListDto;
 import com.munggle.post.mapper.PostMapper;
@@ -32,6 +33,7 @@ public class PostListServiceImpl implements PostListService {
     private final TagRepository tagRepository;
     private final FollowRepository followRepository;
     private final PostLikeRespository postLikeRespository;
+    private final FollowService followService;
 
     /**
      * cache에서 tag를 가지고 와서 랜덤으로 5개 추출
@@ -100,8 +102,9 @@ public class PostListServiceImpl implements PostListService {
                     // 좋아요 여부 확인
                     PostLikeId postLikeId = PostMapper.toPostLikedIdEntity(userId, post.getId());
                     Boolean isLiked = postLikeRespository.existsByPostLikeIdAndIsDeletedFalse(postLikeId);
+                    Boolean isFollowed = followService.checkIsFollowed(userId, post.getUser().getId());
 
-                    return PostMapper.toPostListDto(post, isLiked);
+                    return PostMapper.toPostListDto(post, isLiked, isFollowed);
                 })
                 .collect(Collectors.toList());
 
@@ -124,7 +127,7 @@ public class PostListServiceImpl implements PostListService {
                     PostLikeId postLikeId = PostMapper.toPostLikedIdEntity(userId, post.getId());
                     Boolean isLiked = postLikeRespository.existsByPostLikeIdAndIsDeletedFalse(postLikeId);
 
-                    return PostMapper.toPostListDto(post, isLiked);
+                    return PostMapper.toPostListDto(post, isLiked, true);
                 })
                 .collect(Collectors.toList());
 

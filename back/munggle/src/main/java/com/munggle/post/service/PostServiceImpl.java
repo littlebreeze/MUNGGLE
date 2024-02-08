@@ -3,6 +3,7 @@ package com.munggle.post.service;
 import com.munggle.domain.exception.PostNotFoundException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.*;
+import com.munggle.follow.service.FollowService;
 import com.munggle.image.dto.FileInfoDto;
 import com.munggle.image.service.FileS3UploadService;
 import com.munggle.post.dto.request.PostCreateDto;
@@ -37,6 +38,7 @@ public class PostServiceImpl implements PostService {
     private final PostListService postListService;
     private final PostLikeRespository postLikeRespository;
     private final ScrapRepository scrapRepository;
+    private final FollowService followService;
 
     /**
      * 게시글 상세보기 메소드
@@ -49,6 +51,8 @@ public class PostServiceImpl implements PostService {
     public PostDetailDto getDetailPost(Long postId, Long userId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
+
+        // 내 게시글인지 확인
         Boolean isMine = post.getUser().getId().equals(userId);
 
         // 좋아요 여부 확인
@@ -58,6 +62,9 @@ public class PostServiceImpl implements PostService {
         // 스크랩 여부 확인
         ScrapId scrapId = PostMapper.toScrapIdEntity(userId, postId);
         Boolean isScraped = scrapRepository.existsByScrapIdAndIsDeletedFalse(scrapId);
+
+        // 팔로우 여부 확인
+        Boolean isFollowed = followService.checkIsFollowed(userId, post.getUser().getId());
 
         // 해당 post의 해시태그 명만 list로 가져오기
         List<String> hashtags = new ArrayList<>();
@@ -69,7 +76,7 @@ public class PostServiceImpl implements PostService {
             }
         }
 
-        return PostMapper.toPostDetailDto(post, hashtags, isMine, isLiked, isScraped);
+        return PostMapper.toPostDetailDto(post, hashtags, isMine, isLiked, isScraped, isFollowed);
     }
 
     /**

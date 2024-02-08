@@ -9,8 +9,6 @@ import java.util.List;
 
 public interface SearchService {
 
-    List<SearchPostListDto> searchPost(Long userId, String type, String word);
-
     List<SearchTagDto> searchByTag(String word);
 
     SearchPagePostDto searchPagePost(Long userId, String type, String word, Pageable pageable);
