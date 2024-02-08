@@ -89,6 +89,7 @@ public class PostController {
         postService.savePostImages(files, postId, principal.getId());
     }
 
+    // === 이미지 하나만 등록 === //
     @PostMapping("/{postId}/image")
     @ResponseStatus(HttpStatus.OK)
     public void savePostImage(@AuthenticationPrincipal User principal,

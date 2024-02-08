@@ -14,6 +14,7 @@ import com.munggle.post.repository.UserRecentTagCacheRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -90,12 +91,18 @@ public class PostListServiceImpl implements PostListService {
 
         List<String> tags = getTagList(userId);
         List<Post> getPost;
+
+        int page = 0; // 첫 페이지
+        int size = 30; // 페이지 당 결과 수
+
+        // 태그가 없는 경우
         if (tags.isEmpty()) { // 존재하는 tag가 없다면 추천순으로 게시글 정렬
             log.info("isEmpty");
-            getPost = postRepository.findAllAndNotMineOrderByLikeCntDesc(userId);
+            getPost = postRepository.findAllAndNotMineOrderByLikeCntDesc(userId, PageRequest.of(page, size));
         } else { // 있으면 태그가 존재하는 게시글 추천순으로 정렬
-            getPost = postRepository.findByTagsAndNotMineOrderByLikeCntDesc(tags, userId);
+            getPost = postRepository.findByTagsAndNotMineOrderByLikeCntDesc(tags, userId, PageRequest.of(page, size));
         }
+
 
         List<PostListDto> postList = getPost.stream()
                 .map(post -> {
