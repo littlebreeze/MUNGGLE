@@ -1,8 +1,11 @@
 package com.munggle.dog.controller;
 
+import com.munggle.dog.dto.CharacterDto;
 import com.munggle.dog.dto.DogCharDto;
 import com.munggle.dog.dto.DogDetailDto;
 import com.munggle.dog.dto.SelectionRequestDto;
+import com.munggle.dog.mapper.MatchingMapper;
+import com.munggle.dog.repository.CharacterRepository;
 import com.munggle.dog.service.MatchingService;
 import com.munggle.domain.model.entity.Matching;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
@@ -19,6 +23,7 @@ import java.util.List;
 public class MatchingController {
 
     private final MatchingService matchingService;
+    private final CharacterRepository characterRepository;
 
     // 본인 반려견 특징 편집
     @PutMapping("/my")
@@ -82,4 +87,10 @@ public class MatchingController {
         matchingService.insertMatchingSelection(selectionRequestDto);
     }
 
+    // 특성 리스트
+    @GetMapping("/characters")
+    @ResponseStatus(HttpStatus.OK)
+    public List<CharacterDto> characterList(){
+        return characterRepository.findAll().stream().map(MatchingMapper::toCharDto).collect(Collectors.toList());
+    }
 }
