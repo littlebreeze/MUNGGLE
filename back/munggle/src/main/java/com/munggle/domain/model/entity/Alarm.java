@@ -26,6 +26,8 @@ public class Alarm {
 
     private Long toUserId;
 
+    private Long targetId;
+
     private LocalDateTime createdAt;
 
     private Boolean isDeleted;

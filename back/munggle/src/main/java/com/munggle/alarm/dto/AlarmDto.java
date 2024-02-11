@@ -5,16 +5,20 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AlarmListDto {
+public class AlarmDto {
 
-    private Long userId;
+    private Long alarmId;
 
-    private List<AlarmDto> alarms;
+    private String alarmType;
+
+    private Long fromUserId;
+
+    private Long target;
+
+    private Boolean isChecked;
 
 }
