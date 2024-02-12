@@ -28,11 +28,11 @@ public class Alarm {
     private AlarmType alarmType;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "from_user_id")
     private User fromUser;
 
     @ManyToOne @NotNull
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "to_user_id")
     private User toUser;
 
     // postId, dmId 값 저장
