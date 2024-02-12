@@ -5,11 +5,12 @@ import com.munggle.alarm.dto.AlarmListDto;
 
 public interface AlarmService {
 
-    void InsetAlarm(AlarmCreateDto alarmCreateDto);
-
     AlarmListDto getAlarmList(Long userId);
+
+    Integer countAlarm(Long userId);
+
+    void InsetAlarm(AlarmCreateDto alarmCreateDto);
 
     void deleteAlarm(Long alarmId);
 
-    void checkAlarms(Long userId);
 }

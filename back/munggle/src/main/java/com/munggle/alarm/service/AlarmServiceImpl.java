@@ -34,8 +34,9 @@ public class AlarmServiceImpl implements AlarmService{
 
         User toUser = userRepository.findByIdAndIsEnabledTrue(userId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        checkAlarms(toUser); // 알림 확인 처리 메서드
 
-        List<Alarm> alarm = alarmRepository.findByToUserIdAndIsDeletedFalse(toUser);
+        List<Alarm> alarm = alarmRepository.findByToUser(toUser);
 
         return AlarmListDto.builder()
                 .userId(userId)
@@ -43,6 +44,16 @@ public class AlarmServiceImpl implements AlarmService{
                         .map(AlarmMapper::toAlarmDetailDto)
                         .collect(Collectors.toList()))
                 .build();
+    }
+
+    // === 알림 개수 확인 메서드 === //
+    @Override
+    public Integer countAlarm(Long userId) {
+
+        User user = userRepository.findByIdAndIsEnabledTrue(userId)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+
+        return alarmRepository.countByToUserIdAndIsCheckedFalse(user);
     }
 
     // === 알림 타입을 지정해주는 메서드 === //
@@ -87,14 +98,11 @@ public class AlarmServiceImpl implements AlarmService{
         alarmRepository.delete(alarm);
     }
 
-    @Override
+    // === 알림 확인 메서드 === //
     @Transactional
-    public void checkAlarms(Long userId) {
+    public void checkAlarms(User toUser) {
 
-        User toUser = userRepository.findByIdAndIsEnabledTrue(userId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-
-        List<Alarm> alarms = alarmRepository.findByToUserIdAndIsDeletedFalse(toUser);
+        List<Alarm> alarms = alarmRepository.findByToUserAndIsCheckedFalse(toUser);
         for (Alarm alarm : alarms) {
             alarm.markAsChecked();
         }
