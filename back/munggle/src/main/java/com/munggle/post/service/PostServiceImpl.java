@@ -112,9 +112,9 @@ public class PostServiceImpl implements PostService {
 
         postTagRepository.saveAll(postTags); // 영속화
 
-        List<User> followedUsers = followRepository.findByFollowFromIdAndIsFollowedTrue(userId)
+        List<User> followedUsers = followRepository.findByFollowToIdAndIsFollowedTrue(userId)
                 .stream()
-                .map(Follow::getFollowTo)
+                .map(Follow::getFollowFrom)
                 .collect(Collectors.toList());
         for (User follow : followedUsers) {
             alarmService.insertAlarm("POST", user, follow, postId);
