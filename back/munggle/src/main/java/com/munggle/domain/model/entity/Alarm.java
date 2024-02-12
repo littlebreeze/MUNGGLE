@@ -40,8 +40,9 @@ public class Alarm {
 
     private LocalDateTime createdAt;
 
-    private Boolean isDeleted;
-
     private Boolean isChecked;
 
+    public void markAsChecked() {
+        this.isChecked = true;
+    }
 }
