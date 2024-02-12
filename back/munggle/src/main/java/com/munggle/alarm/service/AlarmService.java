@@ -1,7 +1,7 @@
 package com.munggle.alarm.service;
 
-import com.munggle.alarm.dto.AlarmCreateDto;
 import com.munggle.alarm.dto.AlarmListDto;
+import com.munggle.domain.model.entity.User;
 
 public interface AlarmService {
 
@@ -9,7 +9,7 @@ public interface AlarmService {
 
     Integer countAlarm(Long userId);
 
-    void InsetAlarm(AlarmCreateDto alarmCreateDto);
+    void insertAlarm(String type, User fromUser, User toUser, Long target);
 
     void deleteAlarm(Long alarmId);
 

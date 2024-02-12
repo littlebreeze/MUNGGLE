@@ -1,6 +1,5 @@
 package com.munggle.alarm.mapper;
 
-import com.munggle.alarm.dto.AlarmCreateDto;
 import com.munggle.alarm.dto.AlarmDetailDto;
 import com.munggle.domain.model.entity.Alarm;
 import com.munggle.domain.model.entity.User;
@@ -13,13 +12,13 @@ import org.springframework.stereotype.Component;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AlarmMapper {
 
-    public static Alarm toEntity(AlarmCreateDto alarm, User from, User to, AlarmType type) {
+    public static Alarm toEntity(AlarmType type, User from, User to, Long target) {
 
         return Alarm.builder()
                 .alarmType(type)
                 .fromUser(from)
                 .toUser(to)
-                .targetId(alarm.getTarget())
+                .targetId(target)
                 .isChecked(false)
                 .build();
     }

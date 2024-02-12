@@ -1,6 +1,5 @@
 package com.munggle.alarm.service;
 
-import com.munggle.alarm.dto.AlarmCreateDto;
 import com.munggle.alarm.dto.AlarmListDto;
 import com.munggle.alarm.mapper.AlarmMapper;
 import com.munggle.alarm.repository.AlarmRepository;
@@ -76,16 +75,11 @@ public class AlarmServiceImpl implements AlarmService{
 
     @Override
     @Transactional
-    public void InsetAlarm(AlarmCreateDto alarmCreateDto) {
+    public void insertAlarm(String type, User fromUser, User toUser, Long target) {
 
-        AlarmType type = getAlarmType(alarmCreateDto.getAlarmType());
-        User fromUser = userRepository.findByIdAndIsEnabledTrue(alarmCreateDto.getFromUserId())
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-        User toUser = userRepository.findByIdAndIsEnabledTrue(alarmCreateDto.getToUserId())
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        AlarmType getType = getAlarmType(type);
 
-        Alarm alarm = AlarmMapper.toEntity(alarmCreateDto, fromUser, toUser, type);
-
+        Alarm alarm = AlarmMapper.toEntity(getType, fromUser, toUser, target);
         alarmRepository.save(alarm);
     }
 
