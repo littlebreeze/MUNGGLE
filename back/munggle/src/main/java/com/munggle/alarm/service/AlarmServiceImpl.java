@@ -35,7 +35,7 @@ public class AlarmServiceImpl implements AlarmService{
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         checkAlarms(toUser); // 알림 확인 처리 메서드
 
-        List<Alarm> alarm = alarmRepository.findByToUser(toUser);
+        List<Alarm> alarm = alarmRepository.findByToUserOrderByCreatedAtDesc(toUser);
 
         return AlarmListDto.builder()
                 .userId(userId)

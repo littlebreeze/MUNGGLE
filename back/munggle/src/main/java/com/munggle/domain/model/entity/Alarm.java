@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
@@ -17,10 +19,12 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "alarms")
+@EntityListeners(AuditingEntityListener.class)
 public class Alarm {
 
     @Id
     @Column(name = "alarm_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
@@ -35,9 +39,9 @@ public class Alarm {
     @JoinColumn(name = "to_user_id")
     private User toUser;
 
-    // postId, dmId 값 저장
     private Long targetId;
 
+    @CreatedDate
     private LocalDateTime createdAt;
 
     private Boolean isChecked;
