@@ -188,9 +188,8 @@ export default function SignUp (props) {
             <TextInput 
               placeholder="비밀번호"
               style={styles.signUpTextInput}
-              keyboardType="visible-password"
               value={password1}
-              secureTextEntry={true}
+              secureTextEntry={true} 
               onChangeText={(e) => setPassword1(e)}
             />
           </View>
@@ -198,7 +197,6 @@ export default function SignUp (props) {
             <TextInput 
               placeholder="비밀번호 확인"
               style={styles.signUpTextInput}
-              keyboardType="visible-password"
               secureTextEntry={true}
               value={password2}
               onChangeText={(e) => setPassword2(e)}

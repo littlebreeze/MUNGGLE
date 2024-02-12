@@ -52,7 +52,7 @@ export default function App() {
     }
   }, [isLogin])
 
-  const [isSearchModalOpen, setIsSearchModalOpen] = useState(true);
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
 
   const openSearchModal = () => { setIsSearchModalOpen(true) }; 
   const closeSearchModal = () => { setIsSearchModalOpen(false) }; 
@@ -88,17 +88,17 @@ export default function App() {
         <Modal
           animationType="fade"
           transparent={true}
-          visible={isNotificationModalOpen}
-          onRequestClose={() => closeNotificationModal()}>
-          <Notification closeNotificationModal={closeNotificationModal} />
+          visible={isSearchModalOpen}
+          onRequestClose={() => closeSearchModal()}>
+          <Search closeSearchModal={closeSearchModal} />
         </Modal>
 
         <Modal
           animationType="fade"
           transparent={true}
-          visible={isSearchModalOpen}
-          onRequestClose={() => closeSearchModal()}>
-          <Search closeSearchModal={closeSearchModal} />
+          visible={isNotificationModalOpen}
+          onRequestClose={() => closeNotificationModal()}>
+          <Notification closeNotificationModal={closeNotificationModal} />
         </Modal>
 
         <Modal

@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {StyleSheet, ScrollView, Text, View, Dimensions,
 TouchableOpacity, Image, TextInput, Modal, ActivityIndicator
 } from 'react-native';
@@ -13,21 +13,24 @@ import FollowButton from '../followButton';
 import DirectMessageButton from '../directMessageButton';
 import ProfileCircle from '../profileCircle';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from "axios";
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 //테스트 tag 데이터(추후 삭제)
 const tagData = [
   {
     "tagId": 1,
-    "tagNm": "Hash"
+    "tagNm": "강아지"
   },
   {
     "tagId": 2,
-    "tagNm": "Tag"
+    "tagNm": "귀여워"
   },
   {
     "tagId": 3,
-    "tagNm": "Dog"
+    "tagNm": "산책"
   },
   {
     "tagId": 4,
@@ -141,6 +144,9 @@ const postData = [
 ];
 
 export default function Search(props) {
+  const apiUrl = "http://i10a410.p.ssafy.io:8080";
+  const [authToken, setAuthToken] = useState("");
+
   const [searchText, setSearchText] = useState('');
   const [activeTab, setActiveTab] = useState(0);
   const [contentData, setContentData] = useState([postData, userData, tagData]);
@@ -149,22 +155,33 @@ export default function Search(props) {
   // const [postData, setPostData] = useState([]);
 
   const scrollViewRef = useRef(null);
-  const [selectedTag, setSelectedTag] = useState(null);
-  const [isModalVisible, setModalVisible] = useState(false);
 
+  const [tagSearchPosts, setTagSearchPosts] = useState([]);
 
-//태그 눌렀을때 모달 이벤트
-  const handleTagPress = (tag) => {
-    handleSearch("tag"); //modalData변경
-    setSelectedTag(tag);
-    setModalVisible(true);
+  const getTagSearchData = async (tagName) => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+    const payLoad = {
+      type: "tag",
+      word: tagName,
+    };
+
+    await axios.get(
+      `${apiUrl}/search/post?page=${0}`,
+      payLoad,
+      {headers: {
+        "Authorization": authToken ,
+      }}
+    ).then((res) => {
+      console.log(res.data);
+      console.log(res.status);
+      setTagSearchPosts(res.data);
+    }).catch((err) => {
+      console.log(err);
+    })
   };
-
-  const closeModal = () => {
-    setModalVisible(false);
-    setSelectedTag(null);
-  };
-
 
 //게시물 결과에서의 이벤트
   const handleUserPress = () => {
@@ -193,8 +210,6 @@ export default function Search(props) {
   const handleSearch = (type) => {
     //api를 통해 tagDada, userData, postData 또는 modalData 변경
     //GET : /search/post에서 type(title, tag)에 따른 데이터를 받는다
-    handleTabPress(0);
-    console.log("handleSearch");
   };
 
   const searchView = () => {
@@ -228,7 +243,9 @@ export default function Search(props) {
             style={[
               styles.tabButton,
               activeTab === index && styles.activeTabButton,
-              index != 2 && {borderRightWidth: 1, borderColor: "gray"}
+              index != 2 && {borderRightWidth: 1, borderRightColor: "gray"},
+              index == 0 && {borderLeftWidth: 1, borderLeftColor: "lightgrey"},
+              index == 2 && {borderRightWidth: 1, borderRightColor: "lightgrey"},
             ]}
             onPress={() => handleTabPress(index)}>
             <Text style={styles.tabButtonText}>{tab}</Text>
@@ -302,7 +319,7 @@ export default function Search(props) {
       })}
     </View>
   );
- }
+ };
 
  const userContent = () => {
   return (
@@ -329,7 +346,52 @@ export default function Search(props) {
       </TouchableOpacity>
     ))
   );
- }
+ };
+
+ const tagContent = () => {
+  return (
+    <View style={styles.tagContentContainer}>
+      {tagData && tagData.map((tag, index) => {
+          const [isTagSearchModal, setIsTagSearchModal] = useState(false);
+
+          const openTagSearchModal = () => {
+            setIsTagSearchModal(true);
+          };
+        
+          const closeTagSearchModal = () => {
+            setIsTagSearchModal(false);
+          };
+
+          const handleTagPress = async (tagName) => {
+            await getTagSearchData(tagName);
+            openTagSearchModal();
+          };
+        return (
+          <View>
+            <TouchableOpacity key={index} style={styles.tagContainer}
+              onPress={() => {
+                handleTagPress(tag.tagNm);
+              }}
+            >
+              <View style={styles.tagContent}>
+                <Text style={styles.tagName}># {tag.tagNm}</Text>
+              </View>
+            </TouchableOpacity>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={isTagSearchModal}
+              onRequestClose={closeTagSearchModal}
+            >
+              <SearchTagResult searchTag={tag.tagNm} closeTagSearchModal={closeTagSearchModal} />
+            </Modal>
+          </View>
+          );
+        }
+      )}
+    </View>
+  );
+ };
 
   return (
     <View style={styles.searchModalBackGround}>
@@ -371,30 +433,10 @@ export default function Search(props) {
 
                 {/*태그 결과 컨테이너 구조*/}
                 {idx === 2 && (
-                  contentData[idx].map((item, index) => (
-                    <TouchableOpacity key={index} style={styles.tagContainer}
-                      onPress={() => {
-                        handleTagPress(item.tagNm);
-                      }}
-                    >
-                      <View style={styles.tagContent}>
-                        <View style={styles.circle}></View>
-                        <Text style={styles.hashSymbol}>#</Text>
-                        <Text style={styles.tagName}>{item.tagNm}</Text>
-                      </View>
-                    </TouchableOpacity>
-                  ))
+                  tagContent()
                 )}
               </View>
             ))}
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={isModalVisible}
-              onRequestClose={closeModal}
-            >
-              <SearchTagResult closeModal={closeModal} />
-            </Modal>
           </ScrollView>
         </ScrollView>
       </View>
@@ -412,8 +454,8 @@ const styles = StyleSheet.create({
   searchModalContainer: {
     alignItems: "center",
     width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.8,
-    marginBottom: SCREEN_HEIGHT * 0.03,
+    height: SCREEN_HEIGHT * 0.88,
+    marginBottom: SCREEN_HEIGHT * 0.1,
     position: "relative",
     borderRadius: 30,
     borderWidth: 1,
@@ -466,8 +508,9 @@ const styles = StyleSheet.create({
  
   searchMiddleView: {
     marginTop: SCREEN_HEIGHT * 0.005,
+    marginBottom: SCREEN_HEIGHT * 0.01,
     width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.07,
+    height: SCREEN_HEIGHT * 0.062,
     flexDirection: "row",
   },
 
@@ -627,24 +670,28 @@ const styles = StyleSheet.create({
   },
 
   //태그 컨테이너 관련
+  tagContentContainer : {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    width: SCREEN_WIDTH * 0.85,
+    height: SCREEN_HEIGHT * 0.06,
+    justifyContent: "space-between",
+  },
   tagContainer: {
-    width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.1,
-    justifyContent: "center",
+    width: SCREEN_WIDTH * 0.41,
+    height: SCREEN_HEIGHT * 0.06,
+    justifyContent: "flex-start",
     borderRadius: 10,
     backgroundColor: '#e0e0e0',
     marginVertical: 8,
+    flexDirection: 'row',
+    marginVertical: SCREEN_HEIGHT * 0.01,
+
   },
   tagContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 8,
-  },
-  hashSymbol: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    marginRight: 8,
-    paddingLeft: 15,
+    paddingLeft: SCREEN_WIDTH * 0.05,
   },
   tagName: {
     fontSize: 16,
