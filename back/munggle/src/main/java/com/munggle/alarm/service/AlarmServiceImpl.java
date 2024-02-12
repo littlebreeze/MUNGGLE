@@ -86,7 +86,7 @@ public class AlarmServiceImpl implements AlarmService{
     @Override
     @Transactional
     public void deleteAlarm(Long alarmId) {
-        Alarm alarm = alarmRepository.findByIdAndIsDeletedFalse(alarmId)
+        Alarm alarm = alarmRepository.findById(alarmId)
                 .orElseThrow(() -> new AlarmNotFoundException(ALARM_NOT_FOUND));
 
         alarmRepository.delete(alarm);

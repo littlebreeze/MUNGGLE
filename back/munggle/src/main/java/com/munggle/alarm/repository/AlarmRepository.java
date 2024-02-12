@@ -13,8 +13,6 @@ public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 
     Integer countByToUserIdAndIsCheckedFalse(User user);
 
-    Optional<Alarm> findByIdAndIsDeletedFalse(Long alarmId);
-
     List<Alarm> findByToUser(User toUser);
 
     List<Alarm> findByToUserAndIsCheckedFalse(User toUser);
