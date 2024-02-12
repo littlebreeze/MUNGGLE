@@ -11,8 +11,12 @@ import java.util.Optional;
 @Repository
 public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 
-    List<Alarm> findByToUserIdAndIsDeletedFalse(User toUser);
+    Integer countByToUserIdAndIsCheckedFalse(User user);
 
     Optional<Alarm> findByIdAndIsDeletedFalse(Long alarmId);
+
+    List<Alarm> findByToUser(User toUser);
+
+    List<Alarm> findByToUserAndIsCheckedFalse(User toUser);
 
 }
