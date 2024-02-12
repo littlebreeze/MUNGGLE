@@ -11,7 +11,7 @@ import java.util.Optional;
 @Repository
 public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 
-    Integer countByToUserIdAndIsCheckedFalse(User user);
+    Integer countByToUserAndIsCheckedFalse(User user);
 
     List<Alarm> findByToUserOrderByCreatedAtDesc(User toUser);
 

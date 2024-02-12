@@ -52,7 +52,7 @@ public class AlarmServiceImpl implements AlarmService{
         User user = userRepository.findByIdAndIsEnabledTrue(userId)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
 
-        return alarmRepository.countByToUserIdAndIsCheckedFalse(user);
+        return alarmRepository.countByToUserAndIsCheckedFalse(user);
     }
 
     // === 알림 타입을 지정해주는 메서드 === //
