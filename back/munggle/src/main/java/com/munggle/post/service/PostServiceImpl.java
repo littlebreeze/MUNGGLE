@@ -1,8 +1,10 @@
 package com.munggle.post.service;
 
+import com.munggle.alarm.service.AlarmService;
 import com.munggle.domain.exception.PostNotFoundException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.*;
+import com.munggle.follow.retpository.FollowRepository;
 import com.munggle.image.dto.FileInfoDto;
 import com.munggle.image.service.FileS3UploadService;
 import com.munggle.post.dto.request.PostCreateDto;
@@ -20,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.munggle.domain.exception.ExceptionMessage.POST_NOT_FOUND;
 import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
@@ -37,6 +40,8 @@ public class PostServiceImpl implements PostService {
     private final PostListService postListService;
     private final PostLikeRespository postLikeRespository;
     private final ScrapRepository scrapRepository;
+    private final FollowRepository followRepository;
+    private final AlarmService alarmService;
 
     /**
      * 게시글 상세보기 메소드
@@ -83,23 +88,12 @@ public class PostServiceImpl implements PostService {
 
         Post newPost = PostMapper.toEntity(postCreateDto);
         Long userId = postCreateDto.getUserId();
-        newPost.addUserToPost(userRepository.findByIdAndIsEnabledTrue(userId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND)));
+        User user = userRepository.findByIdAndIsEnabledTrue(userId)
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        newPost.addUserToPost(user);
 
         // 게시글 영속화
         Long postId = postRepository.save(newPost).getId();
-
-//        // 이미지 저장
-//        if (postCreateDto.getImages() != null) {
-//            List<MultipartFile> files = postCreateDto.getImages();
-//            String uploadPath = userId + "/" + postId + "/";
-//            List<FileInfoDto> fileInfoDtos = fileS3UploadService.uploadFlieList(uploadPath, files); //s3 저장소에 업로드
-//
-//            for (FileInfoDto fileInfo : fileInfoDtos) { // db에 이미지 파일 정보 저장
-//                PostImage newImage = PostMapper.toPostImageEntity(fileInfo, newPost);
-//                postImageRepository.save(newImage);
-//            }
-//        }
 
         // 해시태그 저장
         List<String> hashtags = postCreateDto.getHashtags();
@@ -118,9 +112,16 @@ public class PostServiceImpl implements PostService {
 
         postTagRepository.saveAll(postTags); // 영속화
 
+        List<User> followedUsers = followRepository.findByFollowFromIdAndIsFollowedTrue(userId)
+                .stream()
+                .map(Follow::getFollowTo)
+                .collect(Collectors.toList());
+        for (User follow : followedUsers) {
+            alarmService.insertAlarm("POST", user, follow, postId);
+        }
+
         return postId; //게시글 번호 반환
     }
-
 
     @Override
     @Transactional
@@ -253,7 +254,11 @@ public class PostServiceImpl implements PostService {
 
             postLikeRespository.save(PostMapper.toPostLikeEntity(postLikeId, user, post));
             postRepository.save(post);
+
+            // 최초 1회 좋아요만 알림 생성
+            alarmService.insertAlarm("LIKE", user, post.getUser(), postId);
         }
+
     }
 
 
@@ -278,5 +283,6 @@ public class PostServiceImpl implements PostService {
         }
 
     }
+
 
 }
