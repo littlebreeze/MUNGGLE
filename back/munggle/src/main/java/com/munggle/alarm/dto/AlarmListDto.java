@@ -15,6 +15,6 @@ public class AlarmListDto {
 
     private Long userId;
 
-    private List<AlarmDto> alarms;
+    private List<AlarmDetailDto> alarms;
 
 }

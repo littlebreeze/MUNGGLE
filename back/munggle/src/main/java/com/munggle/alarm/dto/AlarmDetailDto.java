@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AlarmDto {
+public class AlarmDetailDto {
 
     private Long alarmId;
 
@@ -17,7 +17,7 @@ public class AlarmDto {
 
     private Long fromUserId;
 
-    private Long target;
+    private Long targetId;
 
     private Boolean isChecked;
 
