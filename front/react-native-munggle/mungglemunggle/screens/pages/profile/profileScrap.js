@@ -37,11 +37,10 @@ export default function ProfileScrap (props) {
   const renderItem = ({ item, i }) => (
     <TouchableOpacity 
       key={i} 
-      style={[styles.scrapImageBox, 
-      { height: getRandomHeight() }]}
+      style={styles.scrapImageBox}
       onPress={() => openDetailModal(item.postId)}
     >
-      <Image style={styles.scrapImage} src={item.imageURL} />
+      <Image style={{...styles.scrapImage, height: getRandomHeight()}} src={item.imageURL} />
     </TouchableOpacity>
   );
 
@@ -68,7 +67,7 @@ export default function ProfileScrap (props) {
   }
 
 return (
-  <ScrollView style={styles.postScrapContainer}>
+  <View style={styles.postScrapContainer}>
     {scraps()}
     <Modal
       animationType="fade"
@@ -77,29 +76,26 @@ return (
       onRequestClose={() => closeDetailModal()}>
       <PostDetail closeDetailModal={closeDetailModal} postId={detailPost} />
     </Modal>
-  </ScrollView>
+  </View>
 );
 };
 
 const styles = StyleSheet.create({
   postScrapContainer: {
-    flex: 1,
   },
   postScrapListContainer: {
   },
   scrapImageBox: {
-    flex: 1,
-    margin: 4,
+    margin: SCREEN_WIDTH * 0.005,
     borderRadius: 8,
     resizeMode: "center",
   },
   scrapImage: {
-    width: "100%", 
-    height: "100%",
+    width: SCREEN_WIDTH * 0.32, 
+    resizeMode: "cover",
   },
   indicatorView: {
     width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 0.3,
     justifyContent: "center",
     alignItems: "center",
   }

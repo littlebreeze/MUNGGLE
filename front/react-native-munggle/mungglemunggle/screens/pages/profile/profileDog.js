@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { View, ScrollView, Text, Image, StyleSheet, Dimensions } from "react-native";
 
+import { format, formatDistanceToNow } from "date-fns";
+import { ko } from "date-fns/locale";
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 export default function ProfileDog (props) {
   const dogList = props.dogList;
+
+  const formatDate = (date) => {
+    const day = new Date(date);
+
+    return format(day, "yyyy-MM-dd", {locale: ko});
+  }
 
   const dogs = () => {
     return (
@@ -15,7 +24,7 @@ export default function ProfileDog (props) {
               <View style={styles.profileDogImageView}>
                 <Image 
                   style={styles.profileDogImage}
-                  src={dog.image}
+                  src={dog.image ? dog.image : dog.user.backgroundImgUrl}
                 />
               </View>
               <View style={styles.profileDogNameView}>
@@ -23,11 +32,11 @@ export default function ProfileDog (props) {
               </View>
               <View style={styles.profileDogViewBottomView}>
                 <View style={styles.profileDogViewBottomViewLeftView}>
-                  <Text style={styles.profileDogViewBottomText}>생일 : {dog.birthDate}</Text>
+                  <Text style={styles.profileDogViewBottomText}>생일 : {formatDate(dog.birthDate)}</Text>
                   <Text style={styles.profileDogViewBottomText}>성별 : {dog.gender}</Text>
                 </View>
                 <View style={styles.profileDogViewBottomViewRightView}>
-                  <Text style={styles.profileDogViewBottomText}>견종 : {dog.kindId}</Text>
+                  <Text style={styles.profileDogViewBottomText}>견종 : {dog.kindNm}</Text>
                   <Text style={styles.profileDogViewBottomText}>무게 : {dog.weight} kg</Text>
                 </View>
               </View>
@@ -59,6 +68,7 @@ const styles = StyleSheet.create({
     padding: 20,
     alignItems: "center",
     marginVertical: 20,
+    borderRadius: 20,
     backgroundColor: "white",
   },
   profileDogImageView: {

@@ -427,7 +427,7 @@ export default function Search(props) {
               >
 
                 {idx === 0 && 
-                    postContent()
+                  postContent()
                 }
                 <Modal
                   animationType="fade"

@@ -5,25 +5,6 @@ import { View, Text, Button,
   StyleSheet, Dimensions,
   ActivityIndicator,
 } from "react-native";
-// import { Modal } from "react-native-modal";
-
-import imgProfile1 from "../../assets/sample/profile1.jpg";
-import imgProfile2 from "../../assets/sample/profile2.jpg";
-import imgProfile3 from "../../assets/sample/profile3.jpg";
-import imgProfile4 from "../../assets/sample/profile4.jpg";
-import imgProfile5 from "../../assets/sample/profile5.jpg";
-import imgProfile6 from "../../assets/sample/profile6.jpg";
-
-import imgPost1 from "../../assets/sample/dog1.jpg";
-import imgPost2 from "../../assets/sample/dog2.jpg";
-import imgPost3 from "../../assets/sample/dog3.jpg";
-import imgPost4 from "../../assets/sample/dog4.jpg";
-import imgPost5 from "../../assets/sample/dog5.jpg";
-import imgPost6 from "../../assets/sample/dog6.jpg";
-import imgPost7 from "../../assets/sample/dog7.jpg";
-import imgPost8 from "../../assets/sample/dog8.jpg";
-import imgPost9 from "../../assets/sample/dog9.jpg";
-import imgPost10 from "../../assets/sample/dog10.jpg";
 
 import ProfileCircle from "../../components/profileCircle";
 import FollowButton from "../../components/followButton";
@@ -41,7 +22,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 import { format, formatDistanceToNow } from "date-fns";
-// import {ko} from "data-fns/locale";
+import { ko } from "date-fns/locale";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -62,11 +43,9 @@ export default function PostScreen () {
     if (diff < 60 * 1) {
       return "방금 전";
     } else if (diff < 60 * 60 * 24 * 3) {
-      return formatDistanceToNow(day, {addSuffix: true});
-      // return formatDistanceToNow(day, {addSuffix: true, locale: ko});
+      return formatDistanceToNow(day, {addSuffix: true, locale: ko});
     } else {
-      return format(day, "ppp EEE p");
-      // return format(day, "ppp EEE p", {locale: ko});
+      return format(day, "yyyy-MM-dd  HH:mm", {locale: ko});
     }
   }
 
@@ -224,10 +203,19 @@ export default function PostScreen () {
                     style={styles.postListImageView}
                     onPress={() => openDetailModal(post.postId)}
                   >
-                    <Image 
-                      style={styles.postListImage}
-                      src={post.imageURLs[0]} 
-                    />
+                    <ScrollView
+                      horizontal={true}
+                    >
+                      {post.imageURLs.map((imageURL, index) => {
+                        return (
+                          <Image 
+                            key={index}
+                            style={styles.postListImage}
+                            src={imageURL} 
+                          />
+                        );
+                      })}
+                    </ScrollView>
                   </TouchableOpacity>
   
                   <View style={styles.postListBottomView}>

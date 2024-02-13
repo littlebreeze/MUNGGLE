@@ -1,4 +1,4 @@
-import React, { useEffect, useId, useState } from "react";
+import React, { useEffect, useId, useState, useRef } from "react";
 import { View, Text, Button, Image, 
   ScrollView, StyleSheet, Dimensions, 
   TouchableOpacity, Modal, TextInput,
@@ -16,24 +16,7 @@ import iconDog from "../../assets/icons/profileDog.png";
 import iconPost from "../../assets/icons/profilePost.png";
 import iconScrap from "../../assets/icons/profileScrap.png";
 import iconDirectMessage from "../../assets/icons/directMessage.png";
-
-import imgProfile1 from "../../assets/sample/profile1.jpg";
-import imgProfile2 from "../../assets/sample/profile2.jpg";
-import imgProfile3 from "../../assets/sample/profile3.jpg";
-import imgProfile4 from "../../assets/sample/profile4.jpg";
-import imgProfile5 from "../../assets/sample/profile5.jpg";
-import imgProfile6 from "../../assets/sample/profile6.jpg";
-
-import imgPost1 from "../../assets/sample/dog1.jpg";
-import imgPost2 from "../../assets/sample/dog2.jpg";
-import imgPost3 from "../../assets/sample/dog3.jpg";
-import imgPost4 from "../../assets/sample/dog4.jpg";
-import imgPost5 from "../../assets/sample/dog5.jpg";
-import imgPost6 from "../../assets/sample/dog6.jpg";
-import imgPost7 from "../../assets/sample/dog7.jpg";
-import imgPost8 from "../../assets/sample/dog8.jpg";
-import imgPost9 from "../../assets/sample/dog9.jpg";
-import imgPost10 from "../../assets/sample/dog10.jpg";
+import iconCreate from "../../assets/icons/create.png";
 
 import iconEdit from "../../assets/icons/infoEdit.png";
 
@@ -46,6 +29,8 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AntDesign } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+
+import CreateDog from "../../components/modal/createDog";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -69,6 +54,17 @@ export default function ProfileScreen () {
   const [nickname, setNickname] = useState(profile.nickname);
   const [description, setDescription] = useState(profile.description);
 
+  const iconList = [iconDog, iconPost, iconScrap];
+
+  const [activeTab, setActiveTab] = useState(0);
+
+  const scrollViewRef = useRef(null);
+
+  const [isCreateDogModalOpen, setIsCreateDogModalOpen] = useState(false);
+
+  const openCreateDogModal = () => { setIsCreateDogModalOpen(true) }; 
+  const closeCreateDogModal = () => { setIsCreateDogModalOpen(false) }; 
+
   const getMyProfile = async () => {
     if (!authToken) {
       setAuthToken(await AsyncStorage.getItem("accessToken"));
@@ -82,8 +78,6 @@ export default function ProfileScreen () {
         }}
       ).then((res) => {
         setProfile(res.data);
-        console.log("mydata=================");
-        console.log(res.data);
       }) .catch((err) => {
         console.log(err);
       })
@@ -103,6 +97,7 @@ export default function ProfileScreen () {
         }}
       ).then((res) => {
         setDogList(res.data);
+        console.log(res.data);
       }).catch((err) => {
         console.log(err);
       })
@@ -141,8 +136,6 @@ export default function ProfileScreen () {
         }}
       ).then((res) => {
         setScrapList(res.data);
-        console.log("scrap list====================");
-        console.log(res.data);
       }) .catch((err) => {
         console.log(err);
       })
@@ -493,287 +486,156 @@ export default function ProfileScreen () {
     };
   };
   
-  // const userProfile = {
-  //   backGroundImg: imgPost1,
-  //   profileImg: imgProfile1,
-  //   name: "행복이아빠",
-  //   isFollow: false,
-  //   description: "소소하게 자주 즐겁게 행복하기. 행복이 행복이 행복이 행복이 행복이 행복이 행복이 행복이",
-  //   follower: 2,
-  //   following: 3,
-  //   dogs: [
-  //     {
-  //       img: imgPost1,
-  //       name: "김행복",
-  //       kind: "웰시코기",
-  //       weight: 2.8,
-  //       birthDate: "22.02.08",
-  //       gender: "남자",
-  //     },
-  //     {
-  //       img: imgPost2,
-  //       name: "댕댕이",
-  //       kind: "리트리버",
-  //       weight: 12.3,
-  //       birthDate: "22.02.08",
-  //       gender: "여자",
-  //     },
-  //   ]
-  // } 
+  const handleTabPress = async (index) => {
+    setActiveTab(index);
+    scrollViewRef.current.scrollTo({ x: SCREEN_WIDTH * index, animated: true });
+  };
 
-  // const postList = [
-  //   {
-  //     id: 1,
-  //     user : {
-  //       imgProfile: imgProfile1,
-  //       name: 'user1',
-  //       isFollow: false,
-  //     },
-  //     imgPost: imgPost1,
-  //     title: "산책하는 댕댕이",
-  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-  //     createdAt: "2024-01-17",
-  //     tagList: [
-  //       "산책", "코기", "신났네",
-  //     ],
-  //   },
-  //   {
-  //     id: 2,
-  //     user : {
-  //       imgProfile: imgProfile2,
-  //       name: 'user2',
-  //       isFollow: false,
-  //     },
-  //     imgPost: imgPost2,
-  //     title: "애기랑 오랜만에 공원",
-  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-  //     createdAt: "2024-01-17",
-  //     tagList: [
-  //       "산책", "아구", "힘들어?",
-  //     ],
-  //   },
-  //   {
-  //     id: 3,
-  //     user : {
-  //       imgProfile: imgProfile3,
-  //       name: 'user3',
-  //       isFollow: false,
-  //     },
-  //     imgPost: imgPost3,
-  //     title: "귀여워라",
-  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-  //     createdAt: "2024-01-17",
-  //     tagList: [
-  //       "신남", "댕글댕글",
-  //     ],
-  //   },
-  //   {
-  //     id: 4,
-  //     user : {
-  //       imgProfile: imgProfile4,
-  //       name: 'user4',
-  //       isFollow: false,
-  //     },
-  //     imgPost: imgPost4,
-  //     title: "산책하는 댕댕이",
-  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-  //     createdAt: "2024-01-17",
-  //     tagList: [
-  //       "산책", "댕댕이", "신났네",
-  //     ],
-  //   },
-  //   {
-  //     id: 5,
-  //     user : {
-  //       imgProfile: imgProfile5,
-  //       name: 'user5',
-  //       isFollow: false,
-  //     },
-  //     imgPost: imgPost5,
-  //     title: "산책하는 댕댕이",
-  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-  //     createdAt: "2024-01-17",
-  //     tagList: [
-  //       "산책", "댕댕이", "신났네",
-  //     ],
-  //   },
-  //   {
-  //     id: 6,
-  //     user : {
-  //       imgProfile: imgProfile6,
-  //       name: 'user6',
-  //       isFollow: false,
-  //     },
-  //     imgPost: imgPost6,
-  //     title: "산책하는 댕댕이",
-  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-  //     createdAt: "2024-01-17",
-  //     tagList: [
-  //       "산책", "댕댕이", "신났네",
-  //     ],
-  //   },
-  //   {
-  //     id: 7,
-  //     user : {
-  //       imgProfile: imgProfile1,
-  //       name: 'user7',
-  //       isFollow: false,
-  //     },
-  //     imgPost: imgPost7,
-  //     title: "산책하는 댕댕이",
-  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-  //     createdAt: "2024-01-17",
-  //     tagList: [
-  //       "산책", "댕댕이", "신났네",
-  //     ],
-  //   },
-  //   {
-  //     id: 8,
-  //     user : {
-  //       imgProfile: imgProfile2,
-  //       name: 'user8',
-  //       isFollow: false,
-  //     },
-  //     imgPost: imgPost8,
-  //     title: "산책하는 댕댕이",
-  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-  //     createdAt: "2024-01-17",
-  //     tagList: [
-  //       "산책", "댕댕이", "신났네",
-  //     ],
-  //   },
-  //   {
-  //     id: 9,
-  //     user : {
-  //       imgProfile: imgProfile3,
-  //       name: 'user9',
-  //       isFollow: false,
-  //     },
-  //     imgPost: imgPost9,
-  //     title: "산책하는 댕댕이",
-  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-  //     createdAt: "2024-01-17",
-  //     tagList: [
-  //       "산책", "댕댕이", "신났네",
-  //     ],
-  //   },
-  //   {
-  //     id: 10,
-  //     user : {
-  //       imgProfile: imgProfile4,
-  //       name: 'user10',
-  //       isFollow: false,
-  //     },
-  //     imgPost: imgPost10,
-  //     title: "산책하는 댕댕이",
-  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-  //     createdAt: "2024-01-17",
-  //     tagList: [
-  //       "산책", "댕댕이", "신났네",
-  //     ],
-  //   },
-  // ]
-  
-  return (
-    <ScrollView style={styles.profileContainer}>
-      {myProfile()}
-      <View style={styles.profileBottomView}>
-        <Tab.Navigator
-          initialRouteName="Dog"
-          screenOptions={{
-            tabBarShowLabel: false,
-            tabBarStyle: {
-              height: SCREEN_HEIGHT * 0.06,
-            },
-            tabBarItemStyle: {
-              height: SCREEN_HEIGHT * 0.06,
-            },
-          }}
-        >
-          <Tab.Screen 
-            name="Dog" 
-            children={() => {
-              if (dogList) {
-                return <ProfileDog  dogList={dogList} />;
-              } else {
-                return (
-                  <View style={styles.indicatorView}>
-                    <ActivityIndicator 
-                      size={100}
-                    />
-                  </View>
-                );
-              }
-            }}
-            options={{
-              tabBarIcon: () => (
-                <Image
-                  style={styles.profileTabBarIcon}
-                  source={iconDog}
-                />
-              ),
-            }}
-          />
-          <Tab.Screen 
-            name="Post" 
-            children={() => {
-              if (postList) {
-                return <ProfilePost  postList={postList} />;
-              } else {
-                return (
-                  <View style={styles.indicatorView}>
-                    <ActivityIndicator 
-                      size={100}
-                    />
-                  </View>
-                );
-              }
-            }}
-            options={{
-              tabBarIcon: () => (
-                <Image
-                  style={styles.profileTabBarIcon}
-                  source={iconPost}
-                />
-              ),
-            }}
-          />
-          <Tab.Screen 
-            name="Scrap" 
-            children={() => {
-              if (scrapList) {
-                return <ProfileScrap  scrapList={scrapList} />;
-              } else {
-                return (
-                  <View style={styles.indicatorView}>
-                    <ActivityIndicator 
-                      size={100}
-                    />
-                  </View>
-                );
-              }
-            }}
-            options={{
-              tabBarIcon: () => (
-                <Image
-                  style={styles.profileTabBarIcon}
-                  source={iconScrap}
-                />
-              ),
-            }}
-          />
-        </Tab.Navigator>
+  const tabView = () => {
+    return (
+      <View style={styles.profileMiddleView}>
+        {iconList.map((icon, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[
+              styles.tabButton,
+              activeTab === index && styles.activeTabButton,
+              index != 2 && {borderRightWidth: 1, borderRightColor: "gray"},
+            ]}
+            onPress={() => handleTabPress(index)}>
+            <Image
+              style={styles.profileTabBarIcon}
+              source={icon}
+            />
+          </TouchableOpacity>
+        ))}
       </View>
+    );
+  };
 
-    </ScrollView>
+  const profileDog = () => {
+    if (dogList) {
+      return (
+        <View style={styles.profileBottomView}>
+          <ProfileDog  dogList={dogList} />
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.indicatorView}>
+          <ActivityIndicator 
+            size={100}
+          />
+        </View>
+      );
+    }
+  };
+
+  const profilePost = () => {
+    if (postList) {
+      return (
+        <View style={styles.profileBottomView}>
+          <ProfilePost  postList={postList} />
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.indicatorView}>
+          <ActivityIndicator 
+            size={100}
+          />
+        </View>
+      );
+    }
+  };
+
+  const profileScrap = () => {
+    if (scrapList) {
+      return (
+        <View style={styles.profileBottomView}>
+          <ProfileScrap  scrapList={scrapList} />
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.indicatorView}>
+          <ActivityIndicator 
+            size={100}
+          />
+        </View>
+      );
+    }
+  };
+
+  const contentView = () => {
+    if (activeTab === 0) {
+      return (
+        <View style={styles.tabView}>
+          {profileDog()}
+        </View>
+      );
+    } else if (activeTab === 1) {
+      return (
+        <View style={styles.tabView}>
+          {profilePost()}
+        </View>
+      );
+    } else if (activeTab === 2) {
+      return (
+        <View style={styles.tabView}>
+          {profileScrap()}
+        </View>
+      );
+    }
+  };
+
+  return (
+    <View style={styles.profileContainer}>
+      <ScrollView style={styles.profileScrollView}>
+        {myProfile()}
+
+        {tabView()}
+
+        <ScrollView
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          ref={scrollViewRef}
+        >
+          {contentView()}
+        </ScrollView>
+      </ScrollView>
+      { activeTab === 0 &&
+        <TouchableOpacity 
+          onPress={() => openCreateDogModal()}
+          style={styles.createDogView}
+        >
+          <Image 
+            style={styles.createDogImage}
+            source={iconCreate}
+          />
+        </TouchableOpacity>
+      }
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isCreateDogModalOpen}
+        onRequestClose={() => closeCreateDogModal()}>
+        <CreateDog closeCreateDogModal={closeCreateDogModal} />
+      </Modal>
+      
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   profileContainer: {
     width: SCREEN_WIDTH,
-    flex: 1,
-    height: SCREEN_HEIGHT * 0.82,
+    backgroundColor: "rgb(206, 207, 184)",
+    position: "relative",
+  },
+  profileScrollView: {
+    width: SCREEN_WIDTH,
   },
   profileTopView: {
     width: SCREEN_WIDTH,
@@ -782,13 +644,10 @@ const styles = StyleSheet.create({
   },
   profileBottomView: {
     width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 3,
   },
   profileTabBarIcon: {
-    width: SCREEN_HEIGHT * 0.04,
-    height: SCREEN_HEIGHT * 0.04,
-    marginTop: -5,
-    marginLeft: -5,
+    width: SCREEN_HEIGHT * 0.05,
+    height: SCREEN_HEIGHT * 0.05,
   },
   profileTopViewTopView: {
     width: SCREEN_WIDTH,
@@ -937,26 +796,45 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 5,
   },
-  // textDescription: {
-  // },
-  // textDescription: {
-  // },
-  // textDescription: {
-  // },
-  // textDescription: {
-  // },
-  // textDescription: {
-  // },
-  // textDescription: {
-  // },
-  // textDescription: {
-  // },
-  // textDescription: {
-  // },
+  
+  profileMiddleView: {
+    flexDirection: "row",
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT * 0.06,
+    justifyContent: "space-between",
+  },
+  tabButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: SCREEN_WIDTH * 0.33,
+    height: SCREEN_HEIGHT * 0.06,
+    backgroundColor: "rgb(249, 250, 208)",
+  },
+  activeTabButton: {
+    backgroundColor: "rgb(235, 233, 152)",
+  },
+
+  tabView: {
+    width: SCREEN_WIDTH,
+  },
+
   indicatorView: {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT * 0.3,
     justifyContent: "center",
     alignItems: "center",
-  }
+  },
+
+  createDogView: {
+    width: SCREEN_WIDTH * 0.19,
+    height: SCREEN_WIDTH * 0.19,
+    position: "absolute",
+    bottom: SCREEN_WIDTH * 0.05,
+    right: SCREEN_WIDTH * 0.05,
+  },
+  createDogImage: {
+    width: SCREEN_WIDTH * 0.19,
+    height: SCREEN_WIDTH * 0.19,
+  },
+
 });
