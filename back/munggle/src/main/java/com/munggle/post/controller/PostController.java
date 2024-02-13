@@ -88,7 +88,7 @@ public class PostController {
     @PutMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public Long updatePost(@PathVariable(value = "postId") Long postId,
-                           @RequestPart(value = "dto") @Valid PostUpdateDto postUpdateDto) {
+                           @RequestBody @Valid PostUpdateDto postUpdateDto) {
 
         postUpdateDto.setPostId(postId);
         return postService.updatePost(postUpdateDto);
