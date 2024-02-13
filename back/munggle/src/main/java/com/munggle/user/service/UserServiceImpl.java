@@ -67,7 +67,8 @@ public class UserServiceImpl implements UserService {
     private final FileS3UploadService fileS3UploadService;
     private final EmailVerificationRepository emailVerificationRepository;
 
-    private User findMemberById(Long id) {
+    @Override
+    public User findMemberById(Long id) {
         return userRepository.findByIdAndIsEnabledTrue(id)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
     }
