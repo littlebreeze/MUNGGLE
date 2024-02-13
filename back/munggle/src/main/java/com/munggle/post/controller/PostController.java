@@ -74,21 +74,6 @@ public class PostController {
         return postService.insertPost(postCreateDto);
     }
 
-    // === 게시글 이미지 등록 === //
-    @PostMapping("/{postId}/images")
-    @ResponseStatus(HttpStatus.OK)
-    public void savePostImages(@AuthenticationPrincipal User principal,
-                              @PathVariable(value = "postId") Long postId,
-                              @RequestPart(value = "file", required = false) List<MultipartFile> files) {
-
-        if (files.isEmpty()) {
-            log.info("파일이 비어있습니다.");
-        } else if (files == null) {
-            log.info("files == null");
-        }
-        postService.savePostImages(files, postId, principal.getId());
-    }
-
     // === 이미지 하나만 등록 === //
     @PostMapping("/{postId}/image")
     @ResponseStatus(HttpStatus.OK)
@@ -102,13 +87,11 @@ public class PostController {
     // === 게시글 수정 === //
     @PutMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updatePost(@PathVariable(value = "postId") Long postId,
-                           @RequestPart(value = "dto") @Valid PostUpdateDto postUpdateDto,
-                           @RequestPart(value = "file", required = false) List<MultipartFile> files) {
+    public Long updatePost(@PathVariable(value = "postId") Long postId,
+                           @RequestPart(value = "dto") @Valid PostUpdateDto postUpdateDto) {
 
-        postUpdateDto.setImages(files);
         postUpdateDto.setPostId(postId);
-        postService.updatePost(postUpdateDto);
+        return postService.updatePost(postUpdateDto);
     }
 
     // === 게시글 삭제 === //

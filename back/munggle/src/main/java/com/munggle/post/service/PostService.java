@@ -13,7 +13,7 @@ public interface PostService {
 
     void savePostImages(List<MultipartFile> images, Long postId, Long userId);
 
-    void updatePost(PostUpdateDto postUpdateDto);
+    Long updatePost(PostUpdateDto postUpdateDto);
 
     void deletePost(Long postId);
 

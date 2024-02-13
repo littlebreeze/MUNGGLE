@@ -175,7 +175,7 @@ public class PostServiceImpl implements PostService {
      */
     @Override
     @Transactional
-    public void updatePost(PostUpdateDto postUpdateDto) {
+    public Long updatePost(PostUpdateDto postUpdateDto) {
 
         String newTitle = postUpdateDto.getPostTitle();
         String newContent = postUpdateDto.getPostContent();
@@ -183,7 +183,6 @@ public class PostServiceImpl implements PostService {
 
         Post updatePost = postRepository.findByIdAndIsDeletedFalse(postUpdateDto.getPostId())
                 .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
-
         updatePost.updatePost(newTitle, newContent, newIsPrivate);
 
         // 기존 post image 삭제
@@ -192,17 +191,6 @@ public class PostServiceImpl implements PostService {
         fileS3UploadService.removeFolderFiles(uploadPath); // s3 저장소에 올라간 기존 파일 삭제
 
         postImageRepository.deleteByPostId(updatePost.getId()); // db에서 데이터 삭제
-
-        // 업데이트 된 post image 등록
-        if (postUpdateDto.getImages() != null) {
-            List<MultipartFile> files = postUpdateDto.getImages();
-            List<FileInfoDto> fileInfoDtos = fileS3UploadService.uploadFlieList(uploadPath, files); //s3 저장소에 업로드
-
-            for (FileInfoDto fileInfo : fileInfoDtos) { // db에 이미지 파일 정보 저장
-                PostImage newImage = PostMapper.toPostImageEntity(fileInfo, updatePost);
-                postImageRepository.save(newImage);
-            }
-        }
 
         // 기존 해시태그 삭제
         List<PostTag> deleteTags = postTagRepository.findAllByPost(updatePost);  // db에서 isDeleted true로 변경
@@ -225,9 +213,12 @@ public class PostServiceImpl implements PostService {
 
             postListService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
         }
-
         postTagRepository.saveAll(postTags); // 영속화
 
+        Long postId = postRepository.save(updatePost).getId(); //게시글 영속화
+        
+        // postId 반환
+        return postId;
     }
 
     /**
