@@ -15,7 +15,7 @@ import com.munggle.post.dto.response.PostDetailDto;
 import com.munggle.post.dto.request.PostUpdateDto;
 import com.munggle.post.mapper.PostMapper;
 import com.munggle.post.repository.*;
-import com.munggle.user.repository.UserRepository;
+import com.munggle.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,6 @@ public class PostServiceImpl implements PostService {
 
     private final FileS3UploadService fileS3UploadService;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final PostImageRepository postImageRepository;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
@@ -45,6 +44,7 @@ public class PostServiceImpl implements PostService {
     private final FollowService followService;
     private final FollowRepository followRepository;
     private final AlarmService alarmService;
+    private final UserService userService;
     private final CommentRepository commentRepository;
 
     // === 게시글 상세보기 === //
@@ -126,8 +126,7 @@ public class PostServiceImpl implements PostService {
 
         Post newPost = PostMapper.toEntity(postCreateDto);
         Long userId = postCreateDto.getUserId();
-        User user = userRepository.findByIdAndIsEnabledTrue(userId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        User user = userService.findMemberById(userId);
         newPost.addUserToPost(user);
 
         // 게시글 영속화
@@ -215,8 +214,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void postLike(Long userId, Long postId) {
         PostLikeId postLikeId = PostMapper.toPostLikedIdEntity(userId, postId);
-        User user = userRepository.findByIdAndIsEnabledTrue(userId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        User user = userService.findMemberById(userId);
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
 
@@ -246,8 +244,7 @@ public class PostServiceImpl implements PostService {
     public void postScrap(Long userId, Long postId) {
         ScrapId scrapId = PostMapper.toScrapIdEntity(userId, postId);
 
-        User user = userRepository.findByIdAndIsEnabledTrue(userId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        User user = userService.findMemberById(userId);
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
 

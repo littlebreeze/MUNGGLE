@@ -11,6 +11,7 @@ import com.munggle.domain.model.entity.Dog;
 import com.munggle.domain.model.entity.Post;
 import com.munggle.domain.model.entity.User;
 import com.munggle.post.repository.ScrapRepository;
+import com.munggle.user.service.UserService;
 import com.munggle.userpage.dto.UserPostListDto;
 import com.munggle.post.repository.PostRepository;
 import com.munggle.user.repository.UserRepository;
@@ -31,10 +32,10 @@ import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
 @RequiredArgsConstructor
 public class UserpageServiceImpl implements UserpageService {
 
-    private final UserRepository userRepository;
     private final PostRepository postRepository;
     private final ScrapRepository scrapRepository;
     private final DogRepository dogRepository;
+    private final UserService userService;
 
     /**
      * 유저페이지에서 해당 유저의 모든 게시글을 불러오는 메소드
@@ -48,8 +49,7 @@ public class UserpageServiceImpl implements UserpageService {
         List<Post> userPostList;
 
         // 존재하지 않은 유저의 페이지를 찾을 경우 에러 반환
-        userRepository.findByIdAndIsEnabledTrue(findUserId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        userService.findMemberById(findUserId);
 
         if (findUserId.equals(userId)) {
             userPostList = postRepository.findByUserIdAndIsDeletedFalse(findUserId);
@@ -75,8 +75,7 @@ public class UserpageServiceImpl implements UserpageService {
         List<Post> userScrapList;
 
         // 존재하지 않은 유저의 페이지를 찾을 경우 에러 반환
-        userRepository.findByIdAndIsEnabledTrue(findUserId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        userService.findMemberById(findUserId);
 
         if (findUserId.equals(userId)) {
             userScrapList = scrapRepository.findPostsByUserIdAndIsDeletedFalse(findUserId);
@@ -99,8 +98,7 @@ public class UserpageServiceImpl implements UserpageService {
     public List<DogDetailDto> getDogList(Long userId) {
 
         // 넘겨 받은 사용자가 있는지 확인
-        User user = userRepository.findByIdAndIsEnabledTrue(userId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        userService.findMemberById(userId);
 
         List<Dog> list = dogRepository.findAllByUserIdAndIsDeletedIsFalse(userId)
                 .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
