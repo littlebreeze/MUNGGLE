@@ -51,4 +51,10 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             Pageable pageable
     );
 
+    @Query("select p from Post p " +
+            "where p.user.id = :userId " +
+            "and MONTH(p.createdAt) = :month " +
+            "and YEAR(p.createdAt) = :year " +
+            "order by p.createdAt")
+    List<Post> findByUserIdAndIsDeletedFalseAndCreatedAt(Long userId, Integer year, Integer month);
 }

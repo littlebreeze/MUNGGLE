@@ -5,6 +5,7 @@ import com.munggle.dog.dto.DogDetailDto;
 import com.munggle.domain.model.entity.User;
 import com.munggle.user.dto.UserProfileDto;
 import com.munggle.user.service.UserService;
+import com.munggle.userpage.dto.UserCalendarDto;
 import com.munggle.userpage.dto.UserPostListDto;
 import com.munggle.userpage.dto.UserScrapListDto;
 import com.munggle.userpage.service.UserpageService;
@@ -54,11 +55,9 @@ public class UserpageController {
 
     @GetMapping("/calendar")
     @ResponseStatus(HttpStatus.OK)
-    public List<String> getUserCalendar(@AuthenticationPrincipal User principal,
-                                        @RequestParam(value = "year") Integer year,
-                                        @RequestParam(value = "month") Integer month) {
-
-        
+    public List<UserCalendarDto> getUserCalendar(@AuthenticationPrincipal User principal,
+                                                 @RequestParam(value = "year") Integer year,
+                                                 @RequestParam(value = "month") Integer month) {
 
 
         return null;

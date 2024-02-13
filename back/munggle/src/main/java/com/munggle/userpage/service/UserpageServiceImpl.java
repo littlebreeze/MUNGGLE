@@ -12,6 +12,7 @@ import com.munggle.domain.model.entity.Post;
 import com.munggle.domain.model.entity.User;
 import com.munggle.post.repository.ScrapRepository;
 import com.munggle.user.service.UserService;
+import com.munggle.userpage.dto.UserCalendarDto;
 import com.munggle.userpage.dto.UserPostListDto;
 import com.munggle.post.repository.PostRepository;
 import com.munggle.user.repository.UserRepository;
@@ -103,6 +104,14 @@ public class UserpageServiceImpl implements UserpageService {
         List<Dog> list = dogRepository.findAllByUserIdAndIsDeletedIsFalse(userId)
                 .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
         return list.stream().map(dog -> DogMapper.toDetailDto(dog)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<UserCalendarDto> getUserCalendar(Long userId, Integer year, Integer month) {
+
+        List<Post> posts = postRepository.findByUserIdAndIsDeletedFalseAndCreatedAt(userId, year, month);
+
+        return null;
     }
 
 }
