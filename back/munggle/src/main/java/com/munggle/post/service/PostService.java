@@ -5,17 +5,14 @@ import com.munggle.post.dto.response.PostDetailDto;
 import com.munggle.post.dto.request.PostUpdateDto;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
-
 public interface PostService {
     Long insertPost(PostCreateDto postCreateDto);
 
-    void savePostImages(List<MultipartFile> images, Long postId, Long userId);
+    Long updatePost(PostUpdateDto postUpdateDto);
 
-    void updatePost(PostUpdateDto postUpdateDto);
+    void savePostImage(MultipartFile image, Long postId, Long userId);
 
-    void deletePost(Long postId);
+    void deletePost(Long postId, Long userId);
 
     PostDetailDto getDetailPost(Long postId, Long userId);
 
@@ -23,5 +20,4 @@ public interface PostService {
 
     void postScrap(Long userId, Long postId);
 
-    void savePostImage(MultipartFile image, Long postId, Long userId);
 }

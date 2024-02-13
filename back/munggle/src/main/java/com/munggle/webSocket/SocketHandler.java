@@ -2,12 +2,14 @@ package com.munggle.webSocket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.munggle.alarm.service.AlarmService;
 import com.munggle.dm.dto.DMDto;
 import com.munggle.dm.service.ChatMessageService;
 import com.munggle.dm.service.DMRoomService;
 import com.munggle.domain.model.entity.User;
 import com.munggle.jwt.InvalidTokenException;
 import com.munggle.jwt.JwtProvider;
+import com.munggle.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -32,6 +34,8 @@ public class SocketHandler extends TextWebSocketHandler {
     private Map<String, Queue<TextMessage>> messages = new HashMap<>();
     private final ObjectMapper objectMapper;
     private final ChatMessageService chatMessageService;
+    private final AlarmService alarmService;
+    private final UserService userService;
     private final JwtProvider jwtProvider;
 
     @Override
@@ -123,6 +127,12 @@ public class SocketHandler extends TextWebSocketHandler {
             try {
                 session.sendMessage(message);
                 chatMessageService.saveMessage(dmDto);
+
+                User sender = userService.findMemberById(dmDto.getSenderId());
+                User receiver = userService.findMemberById(dmDto.getReceiver());
+
+                // dm 알림 생성
+                alarmService.insertAlarm("DM", sender, receiver, dmDto.getRoomId());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

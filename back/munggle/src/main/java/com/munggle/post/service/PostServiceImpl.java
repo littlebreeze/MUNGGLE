@@ -1,6 +1,8 @@
 package com.munggle.post.service;
 
 import com.munggle.alarm.service.AlarmService;
+import com.munggle.comment.repository.CommentRepository;
+import com.munggle.domain.exception.NotYourPostException;
 import com.munggle.domain.exception.PostNotFoundException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.*;
@@ -13,7 +15,7 @@ import com.munggle.post.dto.response.PostDetailDto;
 import com.munggle.post.dto.request.PostUpdateDto;
 import com.munggle.post.mapper.PostMapper;
 import com.munggle.post.repository.*;
-import com.munggle.user.repository.UserRepository;
+import com.munggle.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,8 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.munggle.domain.exception.ExceptionMessage.POST_NOT_FOUND;
-import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
+import static com.munggle.domain.exception.ExceptionMessage.*;
 
 @Service @Slf4j
 @RequiredArgsConstructor
@@ -34,7 +35,6 @@ public class PostServiceImpl implements PostService {
 
     private final FileS3UploadService fileS3UploadService;
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
     private final PostImageRepository postImageRepository;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
@@ -44,14 +44,10 @@ public class PostServiceImpl implements PostService {
     private final FollowService followService;
     private final FollowRepository followRepository;
     private final AlarmService alarmService;
+    private final UserService userService;
+    private final CommentRepository commentRepository;
 
-    /**
-     * 게시글 상세보기 메소드
-     *
-     * @param postId
-     * @param userId
-     * @return
-     */
+    // === 게시글 상세보기 === //
     @Override
     public PostDetailDto getDetailPost(Long postId, Long userId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
@@ -84,74 +80,7 @@ public class PostServiceImpl implements PostService {
         return PostMapper.toPostDetailDto(post, hashtags, isMine, isLiked, isScraped, isFollowed);
     }
 
-    /**
-     * 게시글 생성 메소드
-     *
-     * @param postCreateDto
-     */
-    @Override
-    @Transactional
-    public Long insertPost(PostCreateDto postCreateDto) {
-
-        Post newPost = PostMapper.toEntity(postCreateDto);
-        Long userId = postCreateDto.getUserId();
-        User user = userRepository.findByIdAndIsEnabledTrue(userId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-        newPost.addUserToPost(user);
-
-        // 게시글 영속화
-        Long postId = postRepository.save(newPost).getId();
-
-        // 해시태그 저장
-        List<String> hashtags = postCreateDto.getHashtags();
-        List<PostTag> postTags = new ArrayList<>();
-        for (String hashtag : hashtags) {
-            Tag tag = tagRepository.findByTagNm(hashtag)
-                    .orElseGet(() -> tagRepository.save(PostMapper.toTagEntity(hashtag)));
-
-            PostTagId newPostTagId = PostMapper.toPostTagIdEntity(postId, tag.getId());
-            PostTag newPostTag = PostMapper.toPostTagEntity(newPostTagId, newPost, tag);
-            newPostTag.markAsDeleted(false);
-            postTags.add(newPostTag);
-
-            postListService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
-        }
-
-        postTagRepository.saveAll(postTags); // 영속화
-
-        List<User> followedUsers = followRepository.findByFollowToIdAndIsFollowedTrue(userId)
-                .stream()
-                .map(Follow::getFollowFrom)
-                .collect(Collectors.toList());
-        for (User follow : followedUsers) {
-            alarmService.insertAlarm("POST", user, follow, postId);
-        }
-
-        return postId; //게시글 번호 반환
-    }
-
-    @Override
-    @Transactional
-    public void savePostImages(List<MultipartFile> images, Long postId, Long userId) {
-        Post newPost = postRepository.findByIdAndIsDeletedFalse(postId)
-                .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
-
-        // 이미지 저장
-        if (images != null) {
-            List<MultipartFile> files = images;
-            String uploadPath = userId + "/" + postId + "/";
-            List<FileInfoDto> fileInfoDtos = fileS3UploadService.uploadFlieList(uploadPath, files); //s3 저장소에 업로드
-
-            for (FileInfoDto fileInfo : fileInfoDtos) { // db에 이미지 파일 정보 저장
-                PostImage newImage = PostMapper.toPostImageEntity(fileInfo, newPost);
-                postImageRepository.save(newImage);
-            }
-        } else {
-            log.info("images : null");
-        }
-    }
-
-
+    // === 이미지 저장 === //
     @Override
     @Transactional
     public void savePostImage(MultipartFile image, Long postId, Long userId) {
@@ -167,15 +96,61 @@ public class PostServiceImpl implements PostService {
         postImageRepository.save(newImage);
     }
 
-    /**
-     * 게시글 수정 메소드
-     *
-     * 수정 가능 필드: title / content / isPrivate / image / hashtag
-     * @param postUpdateDto
-     */
+    // === 게시글 태그 저장 === //
+    @Transactional
+    public void saveTags(List<String> hashtags, Long userId, Post newPost) {
+
+        List<PostTag> postTags = new ArrayList<>();
+        for (String hashtag : hashtags) {
+            Tag tag = tagRepository.findByTagNm(hashtag)
+                    .orElseGet(() -> tagRepository.save(PostMapper.toTagEntity(hashtag)));
+
+            PostTagId findId = PostMapper.toPostTagIdEntity(newPost.getId(), tag.getId());
+            PostTag newPostTag = postTagRepository.findById(findId)
+                    .orElse(PostMapper.toPostTagEntity(findId, newPost, tag));
+
+            newPostTag.markAsDeleted(false);
+            postTags.add(newPostTag);
+
+            postListService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
+        }
+
+        postTagRepository.saveAll(postTags); // 영속화
+    }
+
+
+    // === 게시글 생성 === //
     @Override
     @Transactional
-    public void updatePost(PostUpdateDto postUpdateDto) {
+    public Long insertPost(PostCreateDto postCreateDto) {
+
+        Post newPost = PostMapper.toEntity(postCreateDto);
+        Long userId = postCreateDto.getUserId();
+        User user = userService.findMemberById(userId);
+        newPost.addUserToPost(user);
+
+        // 게시글 영속화
+        Long postId = postRepository.save(newPost).getId();
+
+        // 해시태그 저장
+        saveTags(postCreateDto.getHashtags(), userId, newPost);
+
+        // 게시글 알림 생성
+        List<User> followedUsers = followRepository.findByFollowToIdAndIsFollowedTrue(userId)
+                .stream()
+                .map(Follow::getFollowFrom)
+                .collect(Collectors.toList());
+        for (User follow : followedUsers) {
+            alarmService.insertAlarm("POST", user, follow, postId);
+        }
+
+        return postId; //게시글 번호 반환
+    }
+
+    // === 게시글 수정 === //
+    @Override
+    @Transactional
+    public Long updatePost(PostUpdateDto postUpdateDto) {
 
         String newTitle = postUpdateDto.getPostTitle();
         String newContent = postUpdateDto.getPostContent();
@@ -183,7 +158,6 @@ public class PostServiceImpl implements PostService {
 
         Post updatePost = postRepository.findByIdAndIsDeletedFalse(postUpdateDto.getPostId())
                 .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
-
         updatePost.updatePost(newTitle, newContent, newIsPrivate);
 
         // 기존 post image 삭제
@@ -193,17 +167,6 @@ public class PostServiceImpl implements PostService {
 
         postImageRepository.deleteByPostId(updatePost.getId()); // db에서 데이터 삭제
 
-        // 업데이트 된 post image 등록
-        if (postUpdateDto.getImages() != null) {
-            List<MultipartFile> files = postUpdateDto.getImages();
-            List<FileInfoDto> fileInfoDtos = fileS3UploadService.uploadFlieList(uploadPath, files); //s3 저장소에 업로드
-
-            for (FileInfoDto fileInfo : fileInfoDtos) { // db에 이미지 파일 정보 저장
-                PostImage newImage = PostMapper.toPostImageEntity(fileInfo, updatePost);
-                postImageRepository.save(newImage);
-            }
-        }
-
         // 기존 해시태그 삭제
         List<PostTag> deleteTags = postTagRepository.findAllByPost(updatePost);  // db에서 isDeleted true로 변경
         for (PostTag deleteTag : deleteTags) {
@@ -211,48 +174,39 @@ public class PostServiceImpl implements PostService {
         }
 
         // 업데이트 된 해시태그 저장
-        List<String> hashtags = postUpdateDto.getHashtags();
-        List<PostTag> postTags = new ArrayList<>();
-        for (String hashtag : hashtags) {
-            Tag tag = tagRepository.findByTagNm(hashtag)
-                    .orElseGet(() -> tagRepository.save(PostMapper.toTagEntity(hashtag)));
-
-            PostTagId findId = PostMapper.toPostTagIdEntity(updatePost.getId(), tag.getId());
-            PostTag updatePostTag = postTagRepository.findById(findId)
-                    .orElse(PostMapper.toPostTagEntity(findId, updatePost, tag));
-            updatePostTag.markAsDeleted(false); // isDeleted false로 변경
-            postTags.add(updatePostTag);
-
-            postListService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
-        }
-
-        postTagRepository.saveAll(postTags); // 영속화
-
+        saveTags(postUpdateDto.getHashtags(), userId, updatePost);
+        
+        // postId 반환
+        return updatePost.getId();
     }
 
-    /**
-     * 게시글 삭제 메소드
-     *
-     * @param postId
-     */
+    // === 게시글 삭제 === //
     @Override
     @Transactional
-    public void deletePost(Long postId) {
+    public void deletePost(Long postId, Long userId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
+        if (post.getUser().getId() != userId) {
+            throw new NotYourPostException(NOT_YOUR_POST);
+        }
+        
+        // post 삭제
         post.markAsDeleted();
 
         // post image 삭제
-        List<PostImage> deleteImages = postImageRepository.findAllByPost(post);  // db에서 isDeleted true로 변경
-        for (PostImage deleteImage : deleteImages) {
-            deleteImage.markAsDeleted();
-        }
+        postImageRepository.findAllByPost(post).forEach(PostImage::markAsDeleted);
 
         // post tag 삭제
-        List<PostTag> deleteTags = postTagRepository.findAllByPost(post);  // db에서 isDeleted true로 변경
-        for (PostTag deleteTag : deleteTags) {
-            deleteTag.markAsDeleted(true);
-        }
+        postTagRepository.findAllByPost(post).forEach(tag -> tag.markAsDeleted(true));
+
+        // post comment 삭제
+        commentRepository.findAllByPostIdAndIsDeletedFalse(postId).ifPresent(comments -> comments.forEach(Comment::deleteComment));
+
+        // post 좋아요 삭제
+        postLikeRespository.findByPostAndIsDeletedFalse(post).forEach(like -> like.markAsDeleted(true));
+
+        // post 스크랩 삭제
+        scrapRepository.findByPostAndIsDeletedFalse(post).forEach(scrap -> scrap.markAsDeleted(true));
     }
 
 
@@ -260,8 +214,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public void postLike(Long userId, Long postId) {
         PostLikeId postLikeId = PostMapper.toPostLikedIdEntity(userId, postId);
-        User user = userRepository.findByIdAndIsEnabledTrue(userId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        User user = userService.findMemberById(userId);
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
 
@@ -283,7 +236,6 @@ public class PostServiceImpl implements PostService {
             // 최초 1회 좋아요만 알림 생성
             alarmService.insertAlarm("LIKE", user, post.getUser(), postId);
         }
-
     }
 
 
@@ -292,8 +244,7 @@ public class PostServiceImpl implements PostService {
     public void postScrap(Long userId, Long postId) {
         ScrapId scrapId = PostMapper.toScrapIdEntity(userId, postId);
 
-        User user = userRepository.findByIdAndIsEnabledTrue(userId)
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        User user = userService.findMemberById(userId);
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
 
@@ -306,8 +257,6 @@ public class PostServiceImpl implements PostService {
         } else {
             scrapRepository.save(PostMapper.toScrapEntity(scrapId, user, post));
         }
-
     }
-
 
 }

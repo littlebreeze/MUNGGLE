@@ -29,7 +29,7 @@ public class SearchController {
     public SearchPagePostDto searchPost(@AuthenticationPrincipal User principal,
                                         @RequestParam(value = "type", required = false) String type,
                                         @RequestParam(value = "word", required = false) String word,
-                                        @PageableDefault(size = 3, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
+                                        @PageableDefault(size = 10, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Long userId = principal.getId();
         return searchService.searchPagePost(userId, type, word, pageable);
