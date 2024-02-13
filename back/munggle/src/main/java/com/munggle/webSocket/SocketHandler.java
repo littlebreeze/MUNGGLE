@@ -18,10 +18,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 
 import static com.munggle.domain.exception.ExceptionMessage.TOKEN_NOT_AVAILABLE;
 
@@ -45,7 +42,8 @@ public class SocketHandler extends TextWebSocketHandler {
         Long roomId = chatMessageService.findRoomByUsers(dmDto.getSenderId(), dmDto.getReceiver());
         log.info("여기까지 왔다");
         if (chatMessageService.getDMListInRoom(roomId).isEmpty()) {
-            TextMessage roomIdMessage = new TextMessage("roomId: " + roomId.toString());
+            String json = objectMapper.writeValueAsString(Collections.singletonMap("roomId", roomId));
+            TextMessage roomIdMessage = new TextMessage(json);
             log.info("roomId: " + roomIdMessage);
             session.sendMessage(roomIdMessage);
         }
