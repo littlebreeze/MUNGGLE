@@ -32,6 +32,7 @@ public class DogMapper {
         return DogDetailDto.builder()
                 .dogId(dog.getDogId())
                 .kindId(dog.getKind().getKindId())
+                .kindNm(dog.getKind().getKindNm())
                 .birthDate(dog.getBirthDate())
                 .size(dog.getSize())
                 .weight(dog.getWeight())

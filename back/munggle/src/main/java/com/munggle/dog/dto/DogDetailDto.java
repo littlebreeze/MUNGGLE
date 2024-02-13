@@ -18,6 +18,7 @@ public class DogDetailDto {
 
     private Long dogId;
     private Long kindId;
+    private String kindNm;
     @DateTimeFormat(pattern = "yyyy-MM-dd`T`HH:mm:ss")
     private LocalDateTime birthDate;
     private String size;
