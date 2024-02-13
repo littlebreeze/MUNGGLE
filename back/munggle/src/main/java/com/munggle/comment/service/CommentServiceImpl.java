@@ -1,19 +1,15 @@
 package com.munggle.comment.service;
 
+import com.munggle.alarm.service.AlarmService;
 import com.munggle.comment.dto.CommentCreateDto;
 import com.munggle.comment.dto.CommentDetailDto;
 import com.munggle.comment.dto.CommentUpdateDto;
 import com.munggle.comment.mapper.CommentMapper;
 import com.munggle.comment.repository.CommentLikeRepository;
 import com.munggle.comment.repository.CommentRepository;
-import com.munggle.domain.exception.CommentNotFoundException;
-import com.munggle.domain.exception.ExceptionMessage;
-import com.munggle.domain.exception.NotYourCommentException;
-import com.munggle.domain.exception.UserNotFoundException;
-import com.munggle.domain.model.entity.Comment;
-import com.munggle.domain.model.entity.CommentLikeId;
-import com.munggle.domain.model.entity.CommentLike;
-import com.munggle.domain.model.entity.User;
+import com.munggle.domain.exception.*;
+import com.munggle.domain.model.entity.*;
+import com.munggle.post.repository.PostRepository;
 import com.munggle.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +19,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static com.munggle.domain.exception.ExceptionMessage.POST_NOT_FOUND;
+import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
+
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
@@ -30,6 +29,8 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final CommentLikeRepository commentLikeRepository;
     private final UserRepository userRepository;
+    private final AlarmService alarmService;
+    private final PostRepository postRepository;
 
     // 본인이 작성한 댓글인지 확인
     public void IsItYourComment(Long commentsUserId, Long loginUserId){
@@ -38,10 +39,18 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional
     public void insertComment(CommentCreateDto commentCreateDto) {
+        Post post = postRepository.findByIdAndIsDeletedFalse(commentCreateDto.getPostId())
+                .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
+        User user = userRepository.findByIdAndIsEnabledTrue(commentCreateDto.getUserId())
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        Comment comment = CommentMapper.toEntity(commentCreateDto.getContents(), post, user);
 
-        Comment comment = CommentMapper.toEntity(commentCreateDto);
-
+        // 댓글 알림 생성
+        if (!comment.getUser().equals(comment.getPost().getUser())) {
+            alarmService.insertAlarm("COMMENT", user, post.getUser(), post.getId());
+        }
         commentRepository.save(comment);
     }
 
