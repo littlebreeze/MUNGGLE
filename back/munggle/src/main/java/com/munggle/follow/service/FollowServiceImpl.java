@@ -1,5 +1,6 @@
 package com.munggle.follow.service;
 
+import com.munggle.alarm.service.AlarmService;
 import com.munggle.domain.exception.FollowNotFoundException;
 import com.munggle.domain.exception.SelfInteractionException;
 import com.munggle.domain.exception.UserNotFoundException;
@@ -28,6 +29,7 @@ public class FollowServiceImpl implements FollowService {
 
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
+    private final AlarmService alarmService;
 
     @Override
     public List<UserListDto> getFollowerList(Long userId) {
@@ -85,6 +87,8 @@ public class FollowServiceImpl implements FollowService {
                                 .build()
                 ));
 
+        // 팔로우 알림 생성
+        alarmService.insertAlarm("FOLLOW", fromUser, targetUser, fromUserId);
         follow.follow();
     }
 
