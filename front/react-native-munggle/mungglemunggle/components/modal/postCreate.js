@@ -24,7 +24,9 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 export default function PostCreate (props) {
   const apiUrl = "http://i10a410.p.ssafy.io:8080";
 
-  const [token, setToken] = useState("");
+  const [authToken, setAuthToken] = useState("");
+
+  const [postId, setPostId] = useState(false);
 
   const [images, setImages] = useState([]);
   const [title, setTitle] = useState("");
@@ -34,17 +36,11 @@ export default function PostCreate (props) {
 
   const [isPrivate, setIsPrivate] = useState(false);
 
-
-  const getToken = async () => {
-    await AsyncStorage.getItem("accessToken")
-    .then((accessToken) => setToken(accessToken));
-  }
-
-  useEffect(() => {
-    getToken();
-  }, []);
-
   const createPostData = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
     const payLoad = {
       postTitle: title, 
       postContent: content, 
@@ -52,72 +48,61 @@ export default function PostCreate (props) {
       hashtags: tags,
     };
 
-    const postId = await axios.post(
+    console.log(payLoad)
+
+    await axios.post(
       `${apiUrl}/posts`,
       payLoad,
       {headers: {
-        "Authorization": token,
+        "Authorization": authToken,
         "Content-Type": "application/json",
       }}
-    );
-    console.log(postId.data);
+    ).then((res) => {
+      setPostId(res.data);
+      console.log(res.data);
+    }).catch((err) => {
+      console.log(err);
+    });
+  };
 
-    const formData = new FormData();
+  const createPostImages = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
 
-    images.forEach((image) => {
+    images.forEach(async (image) => {
+      const formData = new FormData();
       const localUri = image.uri;
       const fileName = localUri.split('/').pop();
       const match = /\.(\w+)$/.exec(fileName ?? '');
       const type = match ? `image/${match[1]}` : `image`;
 
-      formData.append('files', { uri: localUri, name: fileName, type});
-    })
-
-    await axios.post(
-      `${apiUrl}/posts/${postId.data}/images`,
-      formData,
-      {headers: {
-        "Authorization": token,
-        "Content-type": "multipart/form-data; charset=UTF-8",
-      }}
-    ).then((res) => {
-      console.log(res.status);
-    }).catch((err) => {
-      console.log(err)
+      formData.append("file", { uri: localUri, name: fileName, type});
+      console.log(postId);
+      await axios.post(
+        `${apiUrl}/posts/${postId}/image`,
+        formData,
+        {headers: {
+          "Authorization": authToken,
+          "Content-type": "multipart/form-data",
+        }}
+      ).then((res) => {
+        console.log(res.status);
+      }).then(() => {
+        props.openDetailModal(postId);
+      }).catch((err) => {
+        console.log(err)
+      })
     })
   };
-
-  // const createPostImages = async () => {
-
-  //   const formData = new FormData();
-
-  //   images.forEach((image) => {
-  //     const localUri = image.uri;
-  //     const fileName = localUri.split('/').pop();
-  //     const match = /\.(\w+)$/.exec(fileName ?? '');
-  //     const type = match ? `image/${match[1]}` : `image`;
-
-  //     formData.append('files', { uri: localUri, name: fileName, type});
-  //   })
-
-  //   await axios.post(
-  //     `${apiUrl}/posts/${postId}/images`,
-  //     formData,
-  //     {headers: {
-  //       "Authorization": token,
-  //       "Content-Type": "multipart/form-data",
-  //     }}
-  //   ).then((res) => {
-  //     console.log(res.status);
-  //   }).catch((err) => {
-  //     console.log(err)
-  //   })
-  // };
 
   const createPost = async () => {
     await createPostData();
-    // await createPostImages();
   };
+
+  useEffect(() => {
+    createPostImages();
+  }, [postId]);
 
   const pickImage = async () => {
     const response = await ImagePicker.launchImageLibraryAsync({

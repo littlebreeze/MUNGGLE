@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, StyleSheet,
   ScrollView, TouchableOpacity, Button,
-  Dimensions,
+  Dimensions, ActivityIndicator,
   TextInput, 
 } from "react-native";
 
@@ -10,55 +10,206 @@ import iconBornWhite from "../../assets/icons/bornWhite.png";
 import iconBornBlack from "../../assets/icons/bornBlack.png";
 import iconScrap from "../../assets/icons/scrap.png";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { combineTransition } from "react-native-reanimated";
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 export default function PostDetail (props) {
-  const post = props.post;
+  const apiUrl = "http://i10a410.p.ssafy.io:8080";
 
-  const comments = [
-    {
-      username: "형우",
-      content: "사진이 너무 귀여워요!",
-    },
-    {
-      username: "윤지",
-      content: "강아지 납치합니다",
-    },
-    {
-      username: "태현",
-      content: "멍멍! 왈왈!",
-    },
-    {
-      username: "정식",
-      content: "행복아 산책가자",
-    },
-    {
-      username: "지원",
-      content: "참 쉽조?",
-    },
-    {
-      username: "평섭",
-      content: "멍글멍글~",
-    },
-  ];
+  const [authToken, setAuthToken] = useState("");
 
-  const commentList = () => {
-    return (
-      <View style={styles.postDetailCommentList}>
-        {comments && comments.map((comment, index) => {
-          return (
-          <View key={index} style={styles.postDetailComment}>
-            <View style={styles.postDetailCommentUsernameView}>
-              <Text style={styles.postDetailCommentUsername}>{comment.username}</Text>
+  const [post, setPost] = useState(false);
+  const [commentList, setCommentList] = useState(false);
+
+  const [commentText, setCommentText] = useState("");
+
+  const getPostData = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+    if (!post) {
+      await axios.get(
+        `${apiUrl}/posts/${props.postId}`,
+        {headers: {
+          "Authorization": authToken ,
+        }}
+      ).then((res) => {
+        setPost(res.data);
+      }).catch((err) => {
+        console.log(err);
+      })
+    }
+  };
+
+  const getCommentData = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+    await axios.get(
+      `${apiUrl}/comments/${props.postId}?page=${0}`,
+      {headers: {
+        "Authorization": authToken ,
+      }}
+    ).then((res) => {
+      setCommentList(res.data.comments);
+      console.log(res.data);
+    }).catch((err) => {
+      console.log(err);
+    })
+  };
+
+  const createComment = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+    const payLoad = { contents: commentText };
+
+    console.log(commentText);
+    console.log(props.postId);
+
+    await axios.post(
+      `${apiUrl}/comments/${props.postId}`,
+      payLoad,
+      {headers: {
+        "Authorization": authToken ,
+        "Content-Type": "application/json",
+      }}
+    ).then((res) => {
+      console.log(res.status);
+    }).then(async () => {
+      await getCommentData();
+    }).catch((err) => {
+      console.log(err);
+    })
+    
+  }
+
+  const postScrap = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+    await axios.post(
+      `${apiUrl}/posts/${props.postId}/scrap`,
+      {headers: {
+        "Authorization": authToken ,
+      }}
+    ).then((res) => {
+      console.log(res.status);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
+  useEffect(() => {
+    console.log(props.postId);
+
+    if (!post) {
+      getPostData();
+    }
+    if (!commentList) {
+      getCommentData();
+    }
+  }, []);
+
+  const postDetail = () => {
+    if (post) {
+      return (
+        <View>
+          <View style={styles.postDetailTopView}>
+            <Image 
+              style={styles.postDetailImage}
+              src={post.images[0]}
+            />
+          </View>
+  
+          <View style={styles.postDetailMiddleView}>
+            <View style={styles.postDetailMiddleLeftView}>
+              <Text style={styles.postDetailTitle}>{post.postTitle}</Text>
+              <Text style={styles.postDetailDate}>{post.createdAt}</Text>
             </View>
-            <View style={styles.postDetailCommentContentView}>
-              <Text style={styles.postDetailCommentContent}>{comment.content}</Text>
+  
+            <View style={styles.postDetailMiddleRightView}>
+              <Text style={styles.postDetailLikeCount}>{post.likeCnt}</Text>
+              <TouchableOpacity>
+                <Image 
+                  style={styles.postDetailLikeIcon}
+                  source={iconBornWhite}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => postScrap()}
+              >
+                <Image 
+                  style={styles.postDetailScrapIcon}
+                  source={iconScrap}
+                />
+              </TouchableOpacity>
             </View>
           </View>
-          );
-        })}
-      </View>
-    );
+  
+          <View style={styles.postDetailContentView}>
+            <View style={styles.postDetailContentInView}>
+              <Text style={styles.postDetailContent}>{post.postContent}</Text>
+            </View>
+          </View>
+  
+          <View style={styles.postDetailTagListView}>
+            {post.hashtags && post.hashtags.map((tag, index) => {
+              return (
+                <View style={styles.postDetailTagView} key={index}>
+                  <Text style={styles.postDetailTagText}># {tag}</Text>
+                </View>
+              );
+            })}
+          </View>
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.indicatorView}>
+          <ActivityIndicator size={100} />
+        </View>
+      );
+    }
+  }
+
+  const comments = () => {
+    console.log(commentList);
+    if (commentList) {
+      return (
+        <View style={styles.postDetailCommentList}>
+          {commentList.map((comment, index) => {
+            return (
+            <View key={index} style={styles.postDetailComment}>
+              <View style={styles.postDetailCommentUsernameView}>
+                <Text style={styles.postDetailCommentUsername}>{comment.user.nickname}</Text>
+              </View>
+              <View style={styles.postDetailCommentContentView}>
+                <Text style={styles.postDetailCommentContent}>{comment.contents}</Text>
+              </View>
+              <View style={styles.postDetailCommentCreateAtView}>
+                <Text style={styles.postDetailCommentCreateAt}>{comment.createdAt}</Text>
+              </View>
+            </View>
+            );
+          })}
+        </View>
+      );
+    } else {
+      return (
+        <View style={styles.indicatorView}>
+          <ActivityIndicator size={100} />
+        </View>
+      );
+    }
   }
 
   return (
@@ -75,53 +226,8 @@ export default function PostDetail (props) {
             />
           </TouchableOpacity>
 
-          <View style={styles.postDetailTopView}>
-            <Image 
-              style={styles.postDetailImage}
-              source={post.imgPost}
-            />
-          </View>
+          {postDetail()}
 
-          <View style={styles.postDetailMiddleView}>
-            <View style={styles.postDetailMiddleLeftView}>
-              <Text style={styles.postDetailTitle}>{post.title}</Text>
-              <Text style={styles.postDetailDate}>{post.createdAt}</Text>
-            </View>
-
-            <View style={styles.postDetailMiddleRightView}>
-              <Text style={styles.postDetailLikeCount}>1234</Text>
-              <TouchableOpacity>
-                <Image 
-                  style={styles.postDetailLikeIcon}
-                  source={iconBornWhite}
-                />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <Image 
-                  style={styles.postDetailScrapIcon}
-                  source={iconScrap}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          <View style={styles.postDetailContentView}>
-            <View style={styles.postDetailContentInView}>
-              <Text style={styles.postDetailContent}>{post.content}</Text>
-            </View>
-          </View>
-
-          <View style={styles.postDetailTagListView}>
-            {post.tagList && post.tagList.map((tag, index) => {
-              return (
-                <View style={styles.postDetailTagView} key={index}>
-                  <Text style={styles.postDetailTagText}># {tag}</Text>
-                </View>
-              );
-            })}
-          </View>
-
-          
           <View style={styles.postDetailCommentView}>
             <View style={styles.postDetailCommentTopView}>
               <Text style={styles.postDetailCommentTitle}>댓글</Text>
@@ -129,18 +235,25 @@ export default function PostDetail (props) {
             </View>
 
             <View style={styles.postDetailCommentMiddleView}>
-              {commentList()}
+              {comments()}
             </View>
 
             <View style={styles.postDetailCommentBottomView}>
-              {/* 키보드 디테일 동작 설정 필요 */}
               <TextInput
                 style={styles.postDetailCommentTextInput}
                 placeholder="내용을 입력해주세요."
                 placeholderTextColor="gray"
                 keyboardAppearance="dark"
                 keyboardType="web-search"
+                onChangeText={(e) => setCommentText(e)}
+                value={commentText}
               />
+              <TouchableOpacity
+                style={styles.postDetailCommentSubmitView}
+                onPress={() => createComment()}
+              >
+                <Text style={styles.postDetailCommentSubmitText}>등록</Text>
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
@@ -160,9 +273,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.83,
+    height: SCREEN_HEIGHT * 0.82,
     backgroundColor: "white",
     marginBottom: SCREEN_HEIGHT * 0.045,
+    paddingTop: SCREEN_HEIGHT * 0.02,
     borderRadius: 30,
     position: "relative",
   },
@@ -317,17 +431,49 @@ const styles = StyleSheet.create({
   postDetailCommentContent: {
     fontSize: 15,
   },
+  postDetailCommentCreateAtView: {
+
+  },
+  postDetailCommentCreateAt: {
+
+  },
+
   postDetailCommentBottomView: {
     width: SCREEN_WIDTH * 0.9,
     alignItems: "center",
-    marginVertical: SCREEN_HEIGHT * 0.02
+    marginVertical: SCREEN_HEIGHT * 0.02,
+    position: "relative",
   },
   postDetailCommentTextInput: {
     width: SCREEN_WIDTH * 0.8,
-    height: SCREEN_HEIGHT * 0.05,
+    height: SCREEN_HEIGHT * 0.06,
     borderWidth: 1,
     borderColor: "gray",
+    borderRadius: 15,
     paddingLeft: SCREEN_WIDTH * 0.02,
-    fontSize: 15,
+    fontSize: 17,
   },
+  postDetailCommentSubmitView: {
+    width: SCREEN_WIDTH * 0.15,
+    height: SCREEN_HEIGHT * 0.05,
+    backgroundColor: "rgb(253, 245, 169)",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    borderWidth: 1,
+    borderRadius: 15,
+    right: SCREEN_WIDTH * 0.07,
+    top: SCREEN_HEIGHT * 0.005,
+  },
+  postDetailCommentSubmitText: {
+    fontSize: 18,
+    fontWeight: "500",
+  },
+
+  indicatorView: {
+    width: SCREEN_WIDTH * 0.8,
+    height: SCREEN_HEIGHT * 0.3,
+    justifyContent: "center",
+    alignItems: "center",
+  }
 });

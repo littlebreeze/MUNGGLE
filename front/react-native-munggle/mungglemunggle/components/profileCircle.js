@@ -40,7 +40,7 @@ const styles = StyleSheet.create ({
     alignItems: "center",
   },
   profileCircleName: {
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "500",
   },
 }); 

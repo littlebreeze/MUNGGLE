@@ -15,7 +15,7 @@ export default function ProfileDog (props) {
               <View style={styles.profileDogImageView}>
                 <Image 
                   style={styles.profileDogImage}
-                  source={dog.img}
+                  src={dog.image}
                 />
               </View>
               <View style={styles.profileDogNameView}>
@@ -27,7 +27,7 @@ export default function ProfileDog (props) {
                   <Text style={styles.profileDogViewBottomText}>성별 : {dog.gender}</Text>
                 </View>
                 <View style={styles.profileDogViewBottomViewRightView}>
-                  <Text style={styles.profileDogViewBottomText}>견종 : {dog.kind}</Text>
+                  <Text style={styles.profileDogViewBottomText}>견종 : {dog.kindId}</Text>
                   <Text style={styles.profileDogViewBottomText}>무게 : {dog.weight} kg</Text>
                 </View>
               </View>

@@ -87,96 +87,103 @@ const userData = [{
   "description": "안녕하세요 멍4 입니다.",
   },
 ]
-//테스트 post 데이터(추후 삭제)
-const postData = [
-  {
-    "postId": 1,
-    "postTitle": "멋진 내 강아지",
-    "imageURLs": [
-      "https://live.staticflickr.com/7669/17268903144_b5e9d79c4e_z.jpg",
-    ],
-    "userId": 1,
-    "profileImage": "https://images.mypetlife.co.kr/content/uploads/2023/11/17133418/61fbb115-3845-4427-b72d-76c5e650cd3c.jpeg",
-    "nickname": "멍멍123",
-    "likeCnt": 123,
-    "isLiked": true,
-    "createdAt": "2024-01-29T15:18:38.236335"
-  },
-  {
-    "postId": 2,
-    "postTitle": "강아지와 산책",
-    "imageURLs": [
-        "https://cdn.imweb.me/thumbnail/20221027/f76c4c81b7bde.jpg",
-    ],
-    "userId": 1,
-    "profileImage": "http://www.evermodel.com/uploaded/model/414/d3d415e8cad046393ac6aa22f0bfd5980_slide.jpg",
-    "nickname": "멍12",
-    "likeCnt": 23,
-    "isLiked": false,
-    "createdAt": "2024-01-25T15:18:38.236335"
-  },
-  {
-    "postId": 3,
-    "postTitle": "강아지 생일",
-    "imageURLs": [
-        "https://blancs.co.kr/web/product/big/201906/1e94a6b1b4be68347b0cd84a79b482ba.jpg",
-    ],
-    "userId": 1,
-    "profileImage": "http://www.evermodel.com/uploaded/model/414/d3d415e8cad046393ac6aa22f0bfd5983_slide.jpg",
-    "nickname": "멍글34",
-    "likeCnt": 3,
-    "isLiked": true,
-    "createdAt": "2024-01-22T15:18:38.236335"
-  },
-  {
-    "postId": 4,
-    "postTitle": "멋진 강아지와 나",
-    "imageURLs": [
-        "https://live.staticflickr.com/7669/17268903144_b5e9d79c4e_z.jpg",
-    ],
-    "userId": 1,
-    "profileImage": "https://images.mypetlife.co.kr/content/uploads/2023/11/17133418/61fbb115-3845-4427-b72d-76c5e650cd3c.jpeg",
-    "nickname": "멍12멍",
-    "likeCnt": 13,
-    "isLiked": false,
-    "createdAt": "2024-01-28T15:18:38.236335"
-  },
-];
 
 export default function Search(props) {
   const apiUrl = "http://i10a410.p.ssafy.io:8080";
   const [authToken, setAuthToken] = useState("");
 
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("제목");
   const [activeTab, setActiveTab] = useState(0);
-  const [contentData, setContentData] = useState([postData, userData, tagData]);
-  // const [tagData, setTagData] = useState([]);
-  // const [userData, setUserData] = useState([]);
-  // const [postData, setPostData] = useState([]);
 
   const scrollViewRef = useRef(null);
 
-  const [tagSearchPosts, setTagSearchPosts] = useState([]);
+  const [searchPosts, setSearchPosts] = useState(false);
+  const [searchUsers, setSearchUsers] = useState(false);
+  const [searchTags, setSearchTags] = useState(false);
+  const [tagSearchPosts, setTagSearchPosts] = useState(false);
 
-  const getTagSearchData = async (tagName) => {
+  const [detailPost, setDetailPost] = useState(false);
+
+  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
+          
+  const changeDetailPost = (postId) => {
+    setDetailPost(postId);
+  }
+
+  const openDetailModal = (postId) => { 
+    changeDetailPost(postId); 
+    setIsDetailModalOpen(true);
+  };
+
+  const closeDetailModal = () => { setIsDetailModalOpen(false) };
+  
+
+  const getPostSearchData = async (searchWord) => {
     if (!authToken) {
       setAuthToken(await AsyncStorage.getItem("accessToken"));
     };
 
-    const payLoad = {
-      type: "tag",
-      word: tagName,
-    };
-
     await axios.get(
-      `${apiUrl}/search/post?page=${0}`,
-      payLoad,
+      `${apiUrl}/search/post?type=title&word=${searchWord}&page=${0}`,
       {headers: {
         "Authorization": authToken ,
       }}
     ).then((res) => {
       console.log(res.data);
-      console.log(res.status);
+      setSearchPosts(res.data);
+    }).catch((err) => {
+      console.log(err);
+    })
+  };
+  
+  const getUserSearchData = async (searchWord) => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+  
+    await axios.get(
+      `${apiUrl}/search/user/${searchWord}`,
+      {headers: {
+        "Authorization": authToken ,
+      }}
+    ).then((res) => {
+      console.log(res.data);
+      setSearchUsers(res.data);
+    }).catch((err) => {
+      console.log(err);
+    })
+  };
+  
+  const getTagSearchData = async (searchWord) => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+  
+    await axios.get(
+      `${apiUrl}/search/tag/${searchWord}`,
+      {headers: {
+        "Authorization": authToken ,
+      }}
+    ).then((res) => {
+      console.log(res.data);
+      setSearchTags(res.data);
+    }).catch((err) => {
+      console.log(err);
+    })
+  };
+
+  const getTagPostSearchData = async (tagName) => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+    await axios.get(
+      `${apiUrl}/search/post?type=tag&word=${tagName}&page=${0}`,
+      {headers: {
+        "Authorization": authToken ,
+      }}
+    ).then((res) => {
+      console.log(res.data);
       setTagSearchPosts(res.data);
     }).catch((err) => {
       console.log(err);
@@ -207,9 +214,12 @@ export default function Search(props) {
   };
 
   //검색버튼 눌렀을때 contentData 변경
-  const handleSearch = (type) => {
+  const handleSearch = async () => {
     //api를 통해 tagDada, userData, postData 또는 modalData 변경
     //GET : /search/post에서 type(title, tag)에 따른 데이터를 받는다
+    await getPostSearchData(searchText);
+    await getUserSearchData(searchText);
+    await getTagSearchData(searchText);
   };
 
   const searchView = () => {
@@ -223,7 +233,7 @@ export default function Search(props) {
         />
         <TouchableOpacity 
           style={styles.searchIconView}
-          onPress={handleSearch}
+          onPress={() => handleSearch()}
         >
           <Image
             style={styles.searchIcon}
@@ -256,69 +266,64 @@ export default function Search(props) {
   };
 
  const postContent = () => {
-  return (
-    <View style={styles.searchPostBottomView}>
-      {postData && postData.map((post, index) => {
-        const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-        
-        const openDetailModal = () => { setIsDetailModalOpen(true) };
-
-        const closeDetailModal = () => { setIsDetailModalOpen(false) };
-
-        return(
-          <View key={index} style={styles.searchPostListView}>
-            <View style={styles.searchPostListViewLeftView}>
-              <ProfileCircle 
-                imageProfile={post.profileImage}
-                nameProfile={post.nickname}
-              />
-              <View style={styles.searchPostListProfileButtonView}>
-                <FollowButton />
-                <DirectMessageButton />
-              </View>
-            </View>
-            
-            <View style={styles.searchPostListViewRightView}>
-              <TouchableOpacity 
-                style={styles.searchPostListImageView}
-                onPress={() => openDetailModal()}
-              >
-                <Image 
-                  style={styles.searchPostListImage}
-                  src={post.imageURLs[0]} 
+  if (searchPosts) {
+    return (
+      <View style={styles.searchPostBottomView}>
+        {searchPosts && searchPosts.map((post, index) => {  
+          return(
+            <View key={index} style={styles.searchPostListView}>
+              <View style={styles.searchPostListViewLeftView}>
+                <ProfileCircle 
+                  imageProfile={post.profileImage}
+                  nameProfile={post.nickname}
                 />
-              </TouchableOpacity>
-
-              <View style={styles.searchPostListBottomView}>
-                <View style={styles.searchPostListTextView}>
-                  <Text style={styles.searchPostListTitle}>{post.postTitle}</Text>
-                  <Text style={styles.searchPostListDate}>{post.createdAt}</Text>
+                <View style={styles.searchPostListProfileButtonView}>
+                  <FollowButton />
+                  <DirectMessageButton />
                 </View>
-                <View style={styles.searchPostListIconView}>
-                  <View style={styles.searchPostLikeCountView}>
-                    <Text style={styles.searchPostLikeCountText}>12</Text>
+              </View>
+              
+              <View style={styles.searchPostListViewRightView}>
+                <TouchableOpacity 
+                  style={styles.searchPostListImageView}
+                  onPress={() => openDetailModal(post.postId)}
+                >
+                  <Image 
+                    style={styles.searchPostListImage}
+                    src={post.imageURLs[0]} 
+                  />
+                </TouchableOpacity>
+  
+                <View style={styles.searchPostListBottomView}>
+                  <View style={styles.searchPostListTextView}>
+                    <Text style={styles.searchPostListTitle}>{post.postTitle}</Text>
+                    <Text style={styles.searchPostListDate}>{post.createdAt}</Text>
                   </View>
-                  <TouchableOpacity style={styles.searchPostLikeIcon}>
-                    <Image 
-                      style={styles.searchPostLikeIcon}
-                      source={iconBornWhite}
-                    />
-                  </TouchableOpacity>
+                  <View style={styles.searchPostListIconView}>
+                    <View style={styles.searchPostLikeCountView}>
+                      <Text style={styles.searchPostLikeCountText}>12</Text>
+                    </View>
+                    <TouchableOpacity style={styles.searchPostLikeIcon}>
+                      <Image 
+                        style={styles.searchPostLikeIcon}
+                        source={iconBornWhite}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </View>
-            <Modal
-              animationType="fade"
-              transparent={true}
-              visible={isDetailModalOpen}
-              onRequestClose={() => closeDetailModal()}>
-              <PostDetail closeDetailModal={closeDetailModal} post={post} />
-            </Modal>
-          </View>
-        );
-      })}
-    </View>
-  );
+          );
+        })}
+      </View>
+    );
+  } else {
+    return (
+      <View>
+        <Text>검색어를 입력하세요.</Text>
+      </View>
+    );
+  }
  };
 
  const userContent = () => {
@@ -363,7 +368,7 @@ export default function Search(props) {
           };
 
           const handleTagPress = async (tagName) => {
-            await getTagSearchData(tagName);
+            await getTagPostSearchData(tagName);
             openTagSearchModal();
           };
         return (
@@ -423,7 +428,14 @@ export default function Search(props) {
 
                 {idx === 0 && 
                     postContent()
-                  }
+                }
+                <Modal
+                  animationType="fade"
+                  transparent={true}
+                  visible={isDetailModalOpen}
+                  onRequestClose={() => closeDetailModal()}>
+                  <PostDetail closeDetailModal={closeDetailModal} postId={detailPost} />
+                </Modal>
 
                 {/*이용자 결과 컨테이너 구조*/}
                 {idx === 1 && (

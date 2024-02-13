@@ -1,7 +1,8 @@
 import React, { useEffect, useId, useState } from "react";
 import { View, Text, Button, Image, 
   ScrollView, StyleSheet, Dimensions, 
-  TouchableOpacity, Modal, TextInput
+  TouchableOpacity, Modal, TextInput,
+  ActivityIndicator,
 } from "react-native";
 
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -53,90 +54,111 @@ const Tab = createMaterialTopTabNavigator();
 export default function ProfileScreen () {
   const apiUrl = "http://i10a410.p.ssafy.io:8080";
 
-  const [profile, setProfile] = useState({});
+  const [profile, setProfile] = useState(false);
 
   const [authToken, setAuthToken] = useState("");
 
-  const [dogList, setDogList] = useState([]);
-  const [testPostList, setTestPostList] = useState([]);
-  const [scrapList, setScrapList] = useState([]);
+  const [dogList, setDogList] = useState(false);
+  const [postList, setPostList] = useState(false);
+  const [scrapList, setScrapList] = useState(false);
   
   const [isEdit, setIsEdit] = useState(false);
 
   const [backgroundImgUrl, setBackgroundImgUrl] = useState("");
   const [profileImgUrl, setProfileImgUrl] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [description, setDescription] = useState("");
+  const [nickname, setNickname] = useState(profile.nickname);
+  const [description, setDescription] = useState(profile.description);
 
-  // useEffect(() => { 
-  //   // get token
-  //   AsyncStorage.getItem("accessToken")
-  //   .then((token) => {
-  //     setAuthToken(token);
-  //   })
-  //   // get user Id
-  //   .then(
-  //     axios.get(
-  //       `${apiUrl}/users/mypage`,
-  //         {headers: {
-  //           "Authorization": authToken ,
-  //         }}
-  //       ).then(async (res) =>{
-  //         await setProfile(res.data);
-  //       }).then(() => {
-  //         console.log(profile.id);
-  //       })
-  //         // get Dog List
-  //         .then(
-  //           axios.get(
-  //           `${apiUrl}/userpages/${profile.id}/dog`,
-  //             {headers: {
-  //               "Authorization": authToken ,
-  //             }}
-  //           ).then((dog) => {
-  //             setDogList(dog.data); 
-  //             console.log("dog====================");
-  //             console.log(dog.data); 
-  //             console.log("dog====================");
-  //           })
-  //           .catch((err) => console.log(err))
-  //         )
-  //         // get Post List
-  //         .then(
-  //           axios.get(
-  //           `${apiUrl}/userpages/${profile.id}/post`,
-  //             {headers: {
-  //               "Authorization": authToken ,
-  //             }}
-  //           ).then((post) => {
-  //             setTestPostList(post.data);
-  //             console.log("post====================");
-  //             console.log(post.data);
-  //             console.log("post====================");
-  //           })
-  //           .catch((err) => console.log(err))
-  //         )
-  //         // // get Scrap List
-  //         // .then(
-  //         //   axios.get(
-  //         //     `${apiUrl}/userpages/${profile.id}/scrap`,
-  //         //       {headers: {
-  //         //         "Authorization": authToken ,
-  //         //       }}
-  //         //     ).then((scrap) => {
-  //         //       console.log("scrap===================="); 
-  //         //       setScrapList(scrap.data);
-  //         //       console.log(scrap.data);
-  //         //       console.log("scrap====================");
-  //         //     })
-  //         //     .catch((err) => console.log(err))
-  //         // ) 
-  //         .catch((err) => console.log(err))
-  //       .catch((err) => {
-  //         console.log(err);
-  //       })
-  //   ) 
-  // }, []);
+  const getMyProfile = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+    if (!profile) {
+      await axios.get(
+        `${apiUrl}/users/mypage`,
+        {headers: {
+          "Authorization": authToken ,
+        }}
+      ).then((res) => {
+        setProfile(res.data);
+        console.log("mydata=================");
+        console.log(res.data);
+      }) .catch((err) => {
+        console.log(err);
+      })
+    }
+  }
+
+  const getMyDogList = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+    if (!dogList && profile) {
+      await axios.get(
+        `${apiUrl}/userpages/${profile.id}/dog`,
+        {headers: {
+          "Authorization": authToken ,
+        }}
+      ).then((res) => {
+        setDogList(res.data);
+      }).catch((err) => {
+        console.log(err);
+      })
+    }
+  }
+
+  const getMyPostList = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+    if (!postList && profile) {
+      await axios.get(
+        `${apiUrl}/userpages/${profile.id}/post`,
+        {headers: {
+          "Authorization": authToken ,
+        }}
+      ).then((res) => {
+        setPostList(res.data);
+      }) .catch((err) => {
+        console.log(err);
+      })
+    }
+  }
+
+  const getMyScrapList = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+    if (!scrapList && profile) {
+      await axios.get(
+        `${apiUrl}/userpages/${profile.id}/scrap`,
+        {headers: {
+          "Authorization": authToken ,
+        }}
+      ).then((res) => {
+        setScrapList(res.data);
+        console.log("scrap list====================");
+        console.log(res.data);
+      }) .catch((err) => {
+        console.log(err);
+      })
+    }
+  }
+
+
+  useEffect(() => { 
+    getMyProfile();
+  }, []);
+
+  useEffect(() => {
+    getMyDogList();
+    getMyPostList();
+    getMyScrapList();
+  }, [profile]);
 
   const changeBackgroundImg = async () => {
     const response = await ImagePicker.launchImageLibraryAsync({
@@ -259,11 +281,18 @@ export default function ProfileScreen () {
       await editProfileData();
     }
     
+    if (profile.backgroundImgUrl != backgroundImgUrl ||
+        profile.profileImgUrl != profileImgUrl ||
+        profile.nickname != nickname ||
+        profile.description != description
+      ) {
+        await getMyProfile();
+      }
     setIsEdit(false);
   };
 
   const myProfileImg = () => {
-    if (!profileImgUrl && !profile.profileImgUrl) {
+    if (!profile.profileImgUrl) {
       return (
         <View style={styles.profileDefaultTopView}>
           <View style={styles.profileDefaultImageView}>
@@ -303,14 +332,24 @@ export default function ProfileScreen () {
       return (
         <View style={styles.profileTopViewMiddleView}>
           <View style={styles.profileImageView}>
-            <Image 
-              style={{
-                ...styles.profileImage, 
-                opacity: 0.8,
-              }}
-              source={
-                profileImgUrl ? profileImgUrl : profile.profileImgUrl}
-            />
+            {profileImgUrl && 
+              <Image 
+                style={{
+                  ...styles.profileImage, 
+                  opacity: 0.8,
+                }}
+                source={profileImgUrl}
+              />
+            }
+            {!profileImgUrl && 
+              <Image 
+                style={{
+                  ...styles.profileImage, 
+                  opacity: 0.8,
+                }}
+                src={profile.profileImgUrl}
+              />
+            }
             <TouchableOpacity 
               style={styles.profileEditProfileImgButtonView}
               onPress={changeProfileImg}
@@ -344,18 +383,30 @@ export default function ProfileScreen () {
       return (
         <View style={styles.profileTopView}>
           <View style={styles.profileTopViewTopView}>
-            <Image 
-              style={{
-                ...styles.profileTopViewTopView, 
-                opacity:0.6, 
-                backgroundColor: "rgb(249, 250, 208)"
-              }}
-              source={
-                backgroundImgUrl 
-                ? backgroundImgUrl 
-                : profile.backgroundImgUrl
-              }
+            {backgroundImgUrl && 
+              <Image 
+                style={{
+                  ...styles.profileTopViewTopView, 
+                  opacity:0.6, 
+                  backgroundColor: "rgb(249, 250, 208)"
+                }}
+                source={
+                  backgroundImgUrl 
+                }
               />
+            }
+            {!backgroundImgUrl && 
+              <Image 
+                style={{
+                  ...styles.profileTopViewTopView, 
+                  opacity:0.6, 
+                  backgroundColor: "rgb(249, 250, 208)"
+                }}
+                src={
+                  profile.backgroundImgUrl
+                }
+              />
+            }
             <TouchableOpacity 
               style={styles.profileEditBackgroundImgButtonView}
               onPress={changeBackgroundImg}
@@ -373,7 +424,7 @@ export default function ProfileScreen () {
             <View style={styles.profileTopViewBottomViewTopView}>
               <View style={styles.profileEditTopView}></View>
               <TextInput 
-                placeholder={userProfile.name}
+                placeholder={profile.nickname}
                 style={styles.profileEditUsername}
                 value={nickname}
                 onChangeText={(e) => setNickname(e)}
@@ -384,11 +435,11 @@ export default function ProfileScreen () {
               </View>
             </View>
             <View style={styles.profileTopViewBottomViewBottomView}>
-              <Text style={styles.textFollow}>팔로워 {userProfile.follower}</Text>
-              <Text style={{...styles.textFollow, marginLeft:SCREEN_HEIGHT * 0.02}}>팔로잉 {userProfile.following}</Text>
+              <Text style={styles.textFollow}>팔로워 {profile.followerCount}</Text>
+              <Text style={{...styles.textFollow, marginLeft:SCREEN_HEIGHT * 0.02}}>팔로잉 {profile.followingCount}</Text>
             </View>
             <TextInput 
-              placeholder={userProfile.description}
+              placeholder={profile.description}
               value={description}
               style={{...styles.textDescription, height: SCREEN_HEIGHT * 0.05, paddingBottom: SCREEN_HEIGHT * 0.005,}}
               multiline
@@ -403,14 +454,14 @@ export default function ProfileScreen () {
           <View style={styles.profileTopViewTopView}>
             <Image 
               style={styles.profileTopViewTopView}
-              source={imgPost1}
+              src={profile.backgroundImgUrl}
             />
           </View>
           <View style={styles.profileTopViewMiddleView}>
             <View style={styles.profileImageView}>
               <Image 
                 style={styles.profileImage}
-                source={imgProfile1}
+                src={profile.profileImgUrl}
               />
               <TouchableOpacity 
                 style={styles.profileEditButtonView}
@@ -425,207 +476,203 @@ export default function ProfileScreen () {
           </View>
           <View style={styles.profileTopViewBottomView}>
             <View style={styles.profileTopViewBottomViewTopView}>
-              <Text style={styles.profileTopViewBottomViewName}>{ userProfile.name }</Text>
+              <Text style={styles.profileTopViewBottomViewName}>{ profile.nickname }</Text>
               <View style={styles.profileTopViewBottomViewButtonView}>
                 <FollowButton />
                 <DirectMessageButton />
               </View>
             </View>
             <View style={styles.profileTopViewBottomViewBottomView}>
-              <Text style={styles.textFollow}>팔로워 {userProfile.follower}</Text>
-              <Text style={{...styles.textFollow, marginLeft:SCREEN_HEIGHT * 0.02}}>팔로잉 {userProfile.following}</Text>
+              <Text style={styles.textFollow}>팔로워 {profile.followerCount}</Text>
+              <Text style={{...styles.textFollow, marginLeft:SCREEN_HEIGHT * 0.02}}>팔로잉 {profile.followingCount}</Text>
             </View>
-            <Text style={styles.textDescription}>{userProfile.description}</Text>
+            <Text style={styles.textDescription}>{profile.description}</Text>
           </View>
         </View>
       );
     };
   };
   
-  console.log(dogList);
-  console.log(testPostList);
-  console.log(scrapList);
+  // const userProfile = {
+  //   backGroundImg: imgPost1,
+  //   profileImg: imgProfile1,
+  //   name: "행복이아빠",
+  //   isFollow: false,
+  //   description: "소소하게 자주 즐겁게 행복하기. 행복이 행복이 행복이 행복이 행복이 행복이 행복이 행복이",
+  //   follower: 2,
+  //   following: 3,
+  //   dogs: [
+  //     {
+  //       img: imgPost1,
+  //       name: "김행복",
+  //       kind: "웰시코기",
+  //       weight: 2.8,
+  //       birthDate: "22.02.08",
+  //       gender: "남자",
+  //     },
+  //     {
+  //       img: imgPost2,
+  //       name: "댕댕이",
+  //       kind: "리트리버",
+  //       weight: 12.3,
+  //       birthDate: "22.02.08",
+  //       gender: "여자",
+  //     },
+  //   ]
+  // } 
 
-  const userProfile = {
-    backGroundImg: imgPost1,
-    profileImg: imgProfile1,
-    name: "행복이아빠",
-    isFollow: false,
-    description: "소소하게 자주 즐겁게 행복하기. 행복이 행복이 행복이 행복이 행복이 행복이 행복이 행복이",
-    follower: 2,
-    following: 3,
-    dogs: [
-      {
-        img: imgPost1,
-        name: "김행복",
-        kind: "웰시코기",
-        weight: 2.8,
-        birthDate: "22.02.08",
-        gender: "남자",
-      },
-      {
-        img: imgPost2,
-        name: "댕댕이",
-        kind: "리트리버",
-        weight: 12.3,
-        birthDate: "22.02.08",
-        gender: "여자",
-      },
-    ]
-  } 
-
-  const postList = [
-    {
-      id: 1,
-      user : {
-        imgProfile: imgProfile1,
-        name: 'user1',
-        isFollow: false,
-      },
-      imgPost: imgPost1,
-      title: "산책하는 댕댕이",
-      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-      createdAt: "2024-01-17",
-      tagList: [
-        "산책", "코기", "신났네",
-      ],
-    },
-    {
-      id: 2,
-      user : {
-        imgProfile: imgProfile2,
-        name: 'user2',
-        isFollow: false,
-      },
-      imgPost: imgPost2,
-      title: "애기랑 오랜만에 공원",
-      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-      createdAt: "2024-01-17",
-      tagList: [
-        "산책", "아구", "힘들어?",
-      ],
-    },
-    {
-      id: 3,
-      user : {
-        imgProfile: imgProfile3,
-        name: 'user3',
-        isFollow: false,
-      },
-      imgPost: imgPost3,
-      title: "귀여워라",
-      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-      createdAt: "2024-01-17",
-      tagList: [
-        "신남", "댕글댕글",
-      ],
-    },
-    {
-      id: 4,
-      user : {
-        imgProfile: imgProfile4,
-        name: 'user4',
-        isFollow: false,
-      },
-      imgPost: imgPost4,
-      title: "산책하는 댕댕이",
-      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-      createdAt: "2024-01-17",
-      tagList: [
-        "산책", "댕댕이", "신났네",
-      ],
-    },
-    {
-      id: 5,
-      user : {
-        imgProfile: imgProfile5,
-        name: 'user5',
-        isFollow: false,
-      },
-      imgPost: imgPost5,
-      title: "산책하는 댕댕이",
-      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-      createdAt: "2024-01-17",
-      tagList: [
-        "산책", "댕댕이", "신났네",
-      ],
-    },
-    {
-      id: 6,
-      user : {
-        imgProfile: imgProfile6,
-        name: 'user6',
-        isFollow: false,
-      },
-      imgPost: imgPost6,
-      title: "산책하는 댕댕이",
-      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-      createdAt: "2024-01-17",
-      tagList: [
-        "산책", "댕댕이", "신났네",
-      ],
-    },
-    {
-      id: 7,
-      user : {
-        imgProfile: imgProfile1,
-        name: 'user7',
-        isFollow: false,
-      },
-      imgPost: imgPost7,
-      title: "산책하는 댕댕이",
-      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-      createdAt: "2024-01-17",
-      tagList: [
-        "산책", "댕댕이", "신났네",
-      ],
-    },
-    {
-      id: 8,
-      user : {
-        imgProfile: imgProfile2,
-        name: 'user8',
-        isFollow: false,
-      },
-      imgPost: imgPost8,
-      title: "산책하는 댕댕이",
-      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-      createdAt: "2024-01-17",
-      tagList: [
-        "산책", "댕댕이", "신났네",
-      ],
-    },
-    {
-      id: 9,
-      user : {
-        imgProfile: imgProfile3,
-        name: 'user9',
-        isFollow: false,
-      },
-      imgPost: imgPost9,
-      title: "산책하는 댕댕이",
-      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-      createdAt: "2024-01-17",
-      tagList: [
-        "산책", "댕댕이", "신났네",
-      ],
-    },
-    {
-      id: 10,
-      user : {
-        imgProfile: imgProfile4,
-        name: 'user10',
-        isFollow: false,
-      },
-      imgPost: imgPost10,
-      title: "산책하는 댕댕이",
-      content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
-      createdAt: "2024-01-17",
-      tagList: [
-        "산책", "댕댕이", "신났네",
-      ],
-    },
-  ]
+  // const postList = [
+  //   {
+  //     id: 1,
+  //     user : {
+  //       imgProfile: imgProfile1,
+  //       name: 'user1',
+  //       isFollow: false,
+  //     },
+  //     imgPost: imgPost1,
+  //     title: "산책하는 댕댕이",
+  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+  //     createdAt: "2024-01-17",
+  //     tagList: [
+  //       "산책", "코기", "신났네",
+  //     ],
+  //   },
+  //   {
+  //     id: 2,
+  //     user : {
+  //       imgProfile: imgProfile2,
+  //       name: 'user2',
+  //       isFollow: false,
+  //     },
+  //     imgPost: imgPost2,
+  //     title: "애기랑 오랜만에 공원",
+  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+  //     createdAt: "2024-01-17",
+  //     tagList: [
+  //       "산책", "아구", "힘들어?",
+  //     ],
+  //   },
+  //   {
+  //     id: 3,
+  //     user : {
+  //       imgProfile: imgProfile3,
+  //       name: 'user3',
+  //       isFollow: false,
+  //     },
+  //     imgPost: imgPost3,
+  //     title: "귀여워라",
+  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+  //     createdAt: "2024-01-17",
+  //     tagList: [
+  //       "신남", "댕글댕글",
+  //     ],
+  //   },
+  //   {
+  //     id: 4,
+  //     user : {
+  //       imgProfile: imgProfile4,
+  //       name: 'user4',
+  //       isFollow: false,
+  //     },
+  //     imgPost: imgPost4,
+  //     title: "산책하는 댕댕이",
+  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+  //     createdAt: "2024-01-17",
+  //     tagList: [
+  //       "산책", "댕댕이", "신났네",
+  //     ],
+  //   },
+  //   {
+  //     id: 5,
+  //     user : {
+  //       imgProfile: imgProfile5,
+  //       name: 'user5',
+  //       isFollow: false,
+  //     },
+  //     imgPost: imgPost5,
+  //     title: "산책하는 댕댕이",
+  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+  //     createdAt: "2024-01-17",
+  //     tagList: [
+  //       "산책", "댕댕이", "신났네",
+  //     ],
+  //   },
+  //   {
+  //     id: 6,
+  //     user : {
+  //       imgProfile: imgProfile6,
+  //       name: 'user6',
+  //       isFollow: false,
+  //     },
+  //     imgPost: imgPost6,
+  //     title: "산책하는 댕댕이",
+  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+  //     createdAt: "2024-01-17",
+  //     tagList: [
+  //       "산책", "댕댕이", "신났네",
+  //     ],
+  //   },
+  //   {
+  //     id: 7,
+  //     user : {
+  //       imgProfile: imgProfile1,
+  //       name: 'user7',
+  //       isFollow: false,
+  //     },
+  //     imgPost: imgPost7,
+  //     title: "산책하는 댕댕이",
+  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+  //     createdAt: "2024-01-17",
+  //     tagList: [
+  //       "산책", "댕댕이", "신났네",
+  //     ],
+  //   },
+  //   {
+  //     id: 8,
+  //     user : {
+  //       imgProfile: imgProfile2,
+  //       name: 'user8',
+  //       isFollow: false,
+  //     },
+  //     imgPost: imgPost8,
+  //     title: "산책하는 댕댕이",
+  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+  //     createdAt: "2024-01-17",
+  //     tagList: [
+  //       "산책", "댕댕이", "신났네",
+  //     ],
+  //   },
+  //   {
+  //     id: 9,
+  //     user : {
+  //       imgProfile: imgProfile3,
+  //       name: 'user9',
+  //       isFollow: false,
+  //     },
+  //     imgPost: imgPost9,
+  //     title: "산책하는 댕댕이",
+  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+  //     createdAt: "2024-01-17",
+  //     tagList: [
+  //       "산책", "댕댕이", "신났네",
+  //     ],
+  //   },
+  //   {
+  //     id: 10,
+  //     user : {
+  //       imgProfile: imgProfile4,
+  //       name: 'user10',
+  //       isFollow: false,
+  //     },
+  //     imgPost: imgPost10,
+  //     title: "산책하는 댕댕이",
+  //     content: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries,",
+  //     createdAt: "2024-01-17",
+  //     tagList: [
+  //       "산책", "댕댕이", "신났네",
+  //     ],
+  //   },
+  // ]
   
   return (
     <ScrollView style={styles.profileContainer}>
@@ -645,7 +692,19 @@ export default function ProfileScreen () {
         >
           <Tab.Screen 
             name="Dog" 
-            children={() => <ProfileDog  dogList={userProfile.dogs} />}
+            children={() => {
+              if (dogList) {
+                return <ProfileDog  dogList={dogList} />;
+              } else {
+                return (
+                  <View style={styles.indicatorView}>
+                    <ActivityIndicator 
+                      size={100}
+                    />
+                  </View>
+                );
+              }
+            }}
             options={{
               tabBarIcon: () => (
                 <Image
@@ -657,7 +716,19 @@ export default function ProfileScreen () {
           />
           <Tab.Screen 
             name="Post" 
-            children={() => <ProfilePost  postList={postList} />} 
+            children={() => {
+              if (postList) {
+                return <ProfilePost  postList={postList} />;
+              } else {
+                return (
+                  <View style={styles.indicatorView}>
+                    <ActivityIndicator 
+                      size={100}
+                    />
+                  </View>
+                );
+              }
+            }}
             options={{
               tabBarIcon: () => (
                 <Image
@@ -669,7 +740,19 @@ export default function ProfileScreen () {
           />
           <Tab.Screen 
             name="Scrap" 
-            children={() => <ProfileScrap  postList={postList} />} 
+            children={() => {
+              if (scrapList) {
+                return <ProfileScrap  scrapList={scrapList} />;
+              } else {
+                return (
+                  <View style={styles.indicatorView}>
+                    <ActivityIndicator 
+                      size={100}
+                    />
+                  </View>
+                );
+              }
+            }}
             options={{
               tabBarIcon: () => (
                 <Image
@@ -699,7 +782,7 @@ const styles = StyleSheet.create({
   },
   profileBottomView: {
     width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 2,
+    height: SCREEN_HEIGHT * 3,
   },
   profileTabBarIcon: {
     width: SCREEN_HEIGHT * 0.04,
@@ -870,4 +953,10 @@ const styles = StyleSheet.create({
   // },
   // textDescription: {
   // },
+  indicatorView: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT * 0.3,
+    justifyContent: "center",
+    alignItems: "center",
+  }
 });
