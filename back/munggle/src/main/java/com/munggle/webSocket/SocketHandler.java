@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.munggle.dm.dto.DMDto;
 import com.munggle.dm.service.ChatMessageService;
+import com.munggle.dm.service.DMRoomService;
 import com.munggle.domain.model.entity.User;
 import com.munggle.jwt.InvalidTokenException;
 import com.munggle.jwt.JwtProvider;
@@ -29,6 +30,7 @@ import static com.munggle.domain.exception.ExceptionMessage.TOKEN_NOT_AVAILABLE;
 @RequiredArgsConstructor
 public class SocketHandler extends TextWebSocketHandler {
 
+    private final DMRoomService dmRoomService;
     private Map<String, WebSocketSession> sessions = new HashMap<>();
     private Map<String, Queue<TextMessage>> messages = new HashMap<>();
     private final ObjectMapper objectMapper;
@@ -41,6 +43,12 @@ public class SocketHandler extends TextWebSocketHandler {
         log.info("payload: " + payload);
         DMDto dmDto = objectMapper.readValue(payload, DMDto.class);
         Long roomId = chatMessageService.findRoomByUsers(dmDto.getSenderId(), dmDto.getReceiver());
+        log.info("여기까지 왔다");
+        if (chatMessageService.getDMListInRoom(roomId).isEmpty()) {
+            TextMessage roomIdMessage = new TextMessage("roomId: " + roomId.toString());
+            log.info("roomId: " + roomIdMessage);
+            session.sendMessage(roomIdMessage);
+        }
         dmDto.setRoomId(roomId);
         // 특정 세션에 메시지를 보내는 로직을 추가
         sendMessageToUser(dmDto, message);

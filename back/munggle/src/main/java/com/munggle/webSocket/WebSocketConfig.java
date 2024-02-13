@@ -16,6 +16,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(socketHandler, "/dm")
-                .setAllowedOrigins("http://i10a410.p.ssafy.io:8080");
+                .setAllowedOrigins("http://localthost:8080");
     }
 }
