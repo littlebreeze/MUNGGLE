@@ -29,6 +29,7 @@ public enum ExceptionMessage {
     TAG_NOT_FOUND("해당 태그를 찾을 수 없습니다."),
     COMMENT_NOT_FOUND("댓글을 찾을 수 없습니다."),
     NOT_YOUR_COMMENT("당신이 작성한 댓글이 아닙니다."),
+    NOT_YOUR_POST("당신이 작성한 게시글이 아닙니다."),
     ALARM_NOT_FOUND("알림을 찾을 수 없습니다."),
     ALARM_TYPE_ILLEGAL("지원하지 않는 알림 타입입니다."),
     SEARCH_TYPE_ILLEGAL("지원하지 않는 검색 기능입니다."),
