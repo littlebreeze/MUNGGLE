@@ -5,6 +5,7 @@ import com.munggle.alarm.mapper.AlarmMapper;
 import com.munggle.alarm.repository.AlarmRepository;
 import com.munggle.domain.exception.AlarmNotFoundException;
 import com.munggle.domain.exception.IllegalAlarmTypeException;
+import com.munggle.domain.exception.NotYourAlarmException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.Alarm;
 import com.munggle.domain.model.entity.User;
@@ -85,9 +86,12 @@ public class AlarmServiceImpl implements AlarmService{
 
     @Override
     @Transactional
-    public void deleteAlarm(Long alarmId) {
+    public void deleteAlarm(Long alarmId, Long userId) {
         Alarm alarm = alarmRepository.findById(alarmId)
                 .orElseThrow(() -> new AlarmNotFoundException(ALARM_NOT_FOUND));
+        if (alarm.getToUser().getId() != userId) {
+            throw new NotYourAlarmException(NOT_YOUR_ALARM);
+        }
 
         alarmRepository.delete(alarm);
     }

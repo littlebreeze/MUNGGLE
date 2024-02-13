@@ -11,6 +11,6 @@ public interface AlarmService {
 
     void insertAlarm(String type, User fromUser, User toUser, Long target);
 
-    void deleteAlarm(Long alarmId);
+    void deleteAlarm(Long alarmId, Long userId);
 
 }
