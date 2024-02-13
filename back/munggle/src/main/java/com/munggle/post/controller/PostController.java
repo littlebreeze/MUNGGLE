@@ -35,7 +35,7 @@ public class PostController {
     @GetMapping("/following")
     @ResponseStatus(HttpStatus.OK)
     public PagePostDto getFollowingPostList(@AuthenticationPrincipal User principal,
-                                            @PageableDefault(size = 3, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+                                            @PageableDefault(size = 30, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
         Long userId = principal.getId();
         PagePostDto pagePost = postListService.getFollowingPost(userId, pageable);
