@@ -27,9 +27,6 @@ public class PostCreateDto {
     @JsonProperty("postContent")
     private String postContent;
 
-    // 포스트 이미지
-    private List<MultipartFile> images;
-
     // 해시태그
     @Builder.Default
     @JsonProperty("hashtags")

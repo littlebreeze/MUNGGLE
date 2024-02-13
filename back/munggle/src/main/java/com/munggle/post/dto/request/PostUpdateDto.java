@@ -27,10 +27,6 @@ public class PostUpdateDto {
     @Size(max = 500)
     private String postContent;
 
-    // 포스트 이미지
-    @Builder.Default
-    private List<MultipartFile> images = new ArrayList<>();
-
     // 해시태그
     @Builder.Default
     private List<String> hashtags = new ArrayList<>();
