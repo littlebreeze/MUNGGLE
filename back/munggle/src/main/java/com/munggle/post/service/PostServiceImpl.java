@@ -2,6 +2,7 @@ package com.munggle.post.service;
 
 import com.munggle.alarm.service.AlarmService;
 import com.munggle.comment.repository.CommentRepository;
+import com.munggle.domain.exception.NotYourPostException;
 import com.munggle.domain.exception.PostNotFoundException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.*;
@@ -26,8 +27,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static com.munggle.domain.exception.ExceptionMessage.POST_NOT_FOUND;
-import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
+import static com.munggle.domain.exception.ExceptionMessage.*;
 
 @Service @Slf4j
 @RequiredArgsConstructor
@@ -202,42 +202,30 @@ public class PostServiceImpl implements PostService {
     // === 게시글 삭제 === //
     @Override
     @Transactional
-    public void deletePost(Long postId) {
+    public void deletePost(Long postId, Long userId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
                 .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
+        if (post.getUser().getId() != userId) {
+            throw new NotYourPostException(NOT_YOUR_POST);
+        }
+        
+        // post 삭제
         post.markAsDeleted();
 
         // post image 삭제
-        List<PostImage> deleteImages = postImageRepository.findAllByPost(post);  // db에서 isDeleted true로 변경
-        for (PostImage deleteImage : deleteImages) {
-            deleteImage.markAsDeleted();
-        }
+        postImageRepository.findAllByPost(post).forEach(PostImage::markAsDeleted);
 
         // post tag 삭제
-        List<PostTag> deleteTags = postTagRepository.findAllByPost(post);  // db에서 isDeleted true로 변경
-        for (PostTag deleteTag : deleteTags) {
-            deleteTag.markAsDeleted(true);
-        }
+        postTagRepository.findAllByPost(post).forEach(tag -> tag.markAsDeleted(true));
 
         // post comment 삭제
-        Optional<List<Comment>> deleteComments = commentRepository.findAllByPostIdAndIsDeletedFalse(postId);
-        if (deleteComments.isPresent()) {
-            for (Comment deleteComment : deleteComments.get()) {
-                deleteComment.deleteComment();
-            }
-        }
+        commentRepository.findAllByPostIdAndIsDeletedFalse(postId).ifPresent(comments -> comments.forEach(Comment::deleteComment));
 
         // post 좋아요 삭제
-        List<PostLike> deleteLikes = postLikeRespository.findByPostAndIsDeletedFalse(post);
-        for (PostLike deleteLike : deleteLikes) {
-            deleteLike.markAsDeleted(true);
-        }
+        postLikeRespository.findByPostAndIsDeletedFalse(post).forEach(like -> like.markAsDeleted(true));
 
         // post 스크랩 삭제
-        List<Scrap> deleteScraps = scrapRepository.findByPostAndIsDeletedFalse(post);
-        for (Scrap deleteScrap : deleteScraps) {
-            deleteScrap.markAsDeleted(true);
-        }
+        scrapRepository.findByPostAndIsDeletedFalse(post).forEach(scrap -> scrap.markAsDeleted(true));
     }
 
 

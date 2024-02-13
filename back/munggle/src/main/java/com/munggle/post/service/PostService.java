@@ -12,7 +12,7 @@ public interface PostService {
 
     void savePostImage(MultipartFile image, Long postId, Long userId);
 
-    void deletePost(Long postId);
+    void deletePost(Long postId, Long userId);
 
     PostDetailDto getDetailPost(Long postId, Long userId);
 

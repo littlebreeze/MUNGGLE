@@ -97,8 +97,11 @@ public class PostController {
     // === 게시글 삭제 === //
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deletePost(@PathVariable(value = "postId") Long postId) {
-        postService.deletePost(postId);
+    public void deletePost(@AuthenticationPrincipal User principal,
+                           @PathVariable(value = "postId") Long postId) {
+
+        Long userId = principal.getId();
+        postService.deletePost(postId, userId);
     }
 
     // === 좋아요 등록 / 삭제 === //
