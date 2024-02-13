@@ -200,7 +200,7 @@ public class PostServiceImpl implements PostService {
         postTagRepository.findAllByPost(post).forEach(tag -> tag.markAsDeleted(true));
 
         // post comment 삭제
-        commentRepository.findAllByPostIdAndIsDeletedFalse(postId).ifPresent(comments -> comments.forEach(Comment::deleteComment));
+        commentRepository.findByPostIdAndIsDeletedFalse(postId).ifPresent(comments -> comments.forEach(Comment::deleteComment));
 
         // post 좋아요 삭제
         postLikeRespository.findByPostAndIsDeletedFalse(post).forEach(like -> like.markAsDeleted(true));
