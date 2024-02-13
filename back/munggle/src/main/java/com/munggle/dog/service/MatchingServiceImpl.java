@@ -3,8 +3,6 @@ package com.munggle.dog.service;
 import com.munggle.dog.dto.DogCharDto;
 import com.munggle.dog.dto.DogDetailDto;
 import com.munggle.dog.dto.SelectionRequestDto;
-import com.munggle.dog.mapper.DogMapper;
-import com.munggle.dog.mapper.MatchingSelectionMapper;
 import com.munggle.dog.repository.DogRepository;
 import com.munggle.dog.repository.MatchingQueryRepository;
 import com.munggle.dog.repository.MatchingRepository;
