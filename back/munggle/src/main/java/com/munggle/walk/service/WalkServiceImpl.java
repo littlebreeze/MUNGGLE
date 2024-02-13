@@ -10,10 +10,7 @@ import com.munggle.domain.model.entity.Location;
 import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.Walk;
 import com.munggle.user.repository.UserRepository;
-import com.munggle.walk.dto.LocationDto;
-import com.munggle.walk.dto.WalkCreateDto;
-import com.munggle.walk.dto.WalkDto;
-import com.munggle.walk.dto.WalkUpdateDto;
+import com.munggle.walk.dto.*;
 import com.munggle.walk.mapper.WalkMapper;
 import com.munggle.walk.repository.LocationRepository;
 import com.munggle.walk.repository.WalkRepository;
@@ -21,6 +18,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -58,13 +56,28 @@ public class WalkServiceImpl implements WalkService{
     }
 
     @Override
-    public List<WalkDto> readMyWalks(Long userId) {
+    public WalkCalendarDto readMyWalks(Long userId, Integer year, Integer month) {
 
-        List<WalkDto> result = walkRepository.findAllByIsDeletedFalseAndIsPrivatedFalse()
+        Integer cnt = 0;
+        Float distance = 0f;
+        Integer duration = 0;
+
+        // 요청 월에 대한 기간 설정
+        YearMonth yearMonth = YearMonth.of(year, month);
+
+        LocalDateTime start = LocalDateTime.of(year, month,1 ,0,0);
+        LocalDateTime end = LocalDateTime.of(year, month, yearMonth.atEndOfMonth().getDayOfMonth(),0,0);
+
+        List<WalkDto> result = walkRepository.findAllByCreatedAtBetween(start, end)
                 .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND))
                 .stream().map(walk -> WalkMapper.toDto(walk)).collect(Collectors.toList());
 
-        return result;
+        return WalkCalendarDto.builder()
+                .walkList(result)
+                .totalCnt(cnt)
+                .totalDistance(distance)
+                .totalDuration(duration)
+                .build();
     }
 
     @Override
