@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, Button, ScrollView, StyleSheet, Dimensions, TouchableOpacity, Alert, Platform, KeyboardAvoidingView, TextInput } from "react-native";
+import { View, Text, Button, ScrollView, StyleSheet, Dimensions, TouchableOpacity, Alert, Platform, KeyboardAvoidingView, TextInput, Image } from "react-native";
 import { FontAwesome } from '@expo/vector-icons';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
-export default function WalkCreate (props) {
-  const { duration } = props.duration;
-  const { locations } = props.locations;
-  const { distance } = props.distance;
+export default function WalkCreate ({ duration, locations, distance, image }) {
+  console.log(image);
+  console.log(duration);
+  console.log(locations);
   const apiUrl = "http://i10a410.p.ssafy.io:8080";
 
   const [title, setTitle] = useState("");
@@ -30,7 +30,7 @@ export default function WalkCreate (props) {
     };
   
     return (
-      <View style={styles.container}>
+      <View style={styles.walkCreateRating}>
         {[1, 2, 3, 4, 5].map((star) => (
           <TouchableOpacity
             key={star}
@@ -84,67 +84,55 @@ export default function WalkCreate (props) {
       keyboardVerticalOffset={100}
       style={styles.createModalBackGround}
     >
+      <View style={styles.createModalBackGround}>
+        <View style={styles.createModalContainer}>
+          <ScrollView style={styles.createModalScrollView}>
+            <View style={styles.walkCreateTitle}>
+              <Text style={styles.walkCreateTitleText}>오늘의 산책 기록</Text>
+            </View>
 
-    <View style={styles.container}>
-      <Text style={styles.text}>별점을 선택하세요: {rating}</Text>
-      {StarRating({ rating, onRatingChange: handleRatingChange })}
-    </View>
+            <View style={styles.walkCreateImageContainer}>
+              {image && <Image source={{ uri: image }} style={styles.walkCreateImage} />}
+            </View>
 
-    <View style={styles.createModalBackGround}>
-      <View style={styles.createModalContainer}>
-        <ScrollView style={styles.createModalScrollView}>
-          <TouchableOpacity
-            style={styles.closeView}
-            onPress={props.closeCreateModal}
-            >
-          </TouchableOpacity>
+            <View style={styles.walkCreateRatingContainer}>
+              {StarRating({ rating, onRatingChange: handleRatingChange })}
+            </View>
 
-          <View style={styles.postCreateTopView}>
-          </View>
+            <View style={styles.postCreateBottomView}>
+              <View style={styles.postCreateTextInputView}>
+                <TextInput
+                  placeholder="제목을 입력하세요"
+                  value={title}
+                  onChangeText={(e) => setTitle(e)}
+                  style={styles.postCreateTextInput}
+                />
+              </View>
 
-          <View style={styles.postCreateMiddleView}>
-            <View style={styles.buttonContainer}>
+              <View style={styles.postCreateTextAreaView}>
+                <TextInput
+                  placeholder="리뷰를 입력하세요"
+                  textAlignVertical="top"
+                  value={content}
+                  onChangeText={(e) => setContent(e)}
+                  style={styles.postCreateTextArea}
+                  multiline
+                />
+              </View>
+            </View>
+
+            <View style={styles.postCreateSubmitView}>
               <TouchableOpacity
-                style={styles.cameraButtonView}
+              style={styles.postCreateSubmitTouchView}
+              onPress={createWalk}
               >
+                <Text style={styles.postCreateSubmitText}>기록</Text>
               </TouchableOpacity>
             </View>
-          </View>
 
-          <View style={styles.postCreateBottomView}>
-            <View style={styles.postCreateTextInputView}>
-              <TextInput
-                placeholder="제목을 입력하세요"
-                value={title}
-                onChangeText={(e) => setTitle(e)}
-                style={styles.postCreateTextInput}
-              />
-            </View>
-
-            <View style={styles.postCreateTextAreaView}>
-              <TextInput
-                placeholder="리뷰를 입력하세요"
-                textAlignVertical="top"
-                value={content}
-                onChangeText={(e) => setContent(e)}
-                style={styles.postCreateTextArea}
-                multiline
-              />
-            </View>
-          </View>
-
-          <View style={styles.postCreateSubmitView}>
-            <TouchableOpacity
-             style={styles.postCreateSubmitTouchView}
-             onPress={createWalk}
-            >
-              <Text style={styles.postCreateSubmitText}>제출</Text>
-            </TouchableOpacity>
-          </View>
-
-        </ScrollView>
+          </ScrollView>
+        </View>
       </View>
-    </View>
     </KeyboardAvoidingView>
   );
 }
@@ -162,11 +150,10 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.8,
     borderRadius: 30,
-    backgroundColor: "white",
-    marginBottom: SCREEN_HEIGHT * 0.03,
     position: "relative",
   },
   createModalScrollView: {
+    
   },
 
   closeView: {
@@ -178,13 +165,11 @@ const styles = StyleSheet.create({
   },
 
   postCreateTopView: {
-    marginTop: SCREEN_HEIGHT * 0.03,
-    width: SCREEN_WIDTH * 0.8,
-    height: SCREEN_HEIGHT * 0.25,
+    width: SCREEN_WIDTH * 1.3,
+    height: SCREEN_HEIGHT * 0.28,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "gray",
-    marginLeft: SCREEN_WIDTH * 0.05,
+    marginBottom: 10,
   },
   postCreateMiddleView: {
     marginVertical: SCREEN_HEIGHT * 0.01,
@@ -198,22 +183,10 @@ const styles = StyleSheet.create({
     flexDirection: "row", 
     justifyContent: "center", 
   },
-  cameraButtonView: {
-    width: SCREEN_WIDTH * 0.3,
-    height: SCREEN_WIDTH * 0.12,
-    borderWidth: 1,
-    borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  cameraButton: {
-    width: SCREEN_WIDTH * 0.1,
-    height: SCREEN_WIDTH * 0.1,
-  },
   
   postCreateBottomView: {
     width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.35,
+    height: SCREEN_HEIGHT * 0.3,
     alignItems: "center",
   },
   postCreateTextInputView: {
@@ -228,60 +201,6 @@ const styles = StyleSheet.create({
     borderWidth: 1, 
     paddingLeft: SCREEN_WIDTH * 0.02,
     fontSize: 16,
-  },
-  
-  postCreateTagInputView: {
-    width: SCREEN_WIDTH * 0.85,
-    height: SCREEN_HEIGHT * 0.07,
-    flexDirection: "row",
-    position: "relative",
-  },
-  postCreateTagListView: {
-    width: SCREEN_WIDTH * 0.43,
-    height: SCREEN_HEIGHT * 0.06,
-    borderWidth: 1,
-    borderColor: "gray",
-    borderRadius: 10,
-  },
-  tagListScroll: {
-    height: SCREEN_HEIGHT * 0.06,
-  },
-  tagListView: {
-    backgroundColor: "rgb(180, 180, 180)",
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    height: SCREEN_HEIGHT * 0.036,
-    paddingHorizontal: SCREEN_WIDTH * 0.025,
-    paddingVertical: SCREEN_HEIGHT * 0.0015,
-    marginTop: SCREEN_HEIGHT * 0.012,
-    marginLeft: SCREEN_WIDTH * 0.01,
-  },
-  tagListText: {
-    color: "white",
-    fontSize: 17,
-  },
-  postCreateTagCreateView: {
-    width: SCREEN_WIDTH * 0.40,
-    height: SCREEN_HEIGHT * 0.06,
-    position: "absolute",
-    right: 0,
-    flexDirection: "row"
-  },
-  postCreateTagInput: {
-    width: SCREEN_WIDTH * 0.3,
-    height: SCREEN_HEIGHT * 0.06,
-    paddingLeft: SCREEN_WIDTH * 0.02,
-    fontSize: 16,
-    borderRadius: 10, 
-    borderColor: 'gray',
-    borderWidth: 1, 
-  },
-  postCreateTagSubmitView: {
-    width: SCREEN_WIDTH * 0.10,
-    height: SCREEN_HEIGHT * 0.06,
-    justifyContent: "center",
-    alignItems: "center",
   },
   postCreateTextAreaView: {
     width: SCREEN_WIDTH * 0.85,
@@ -317,14 +236,51 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 20,
   },
-
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  walkCreateImageContainer: {
+    zIndex: 6,
+    width: SCREEN_WIDTH * 0.9,
+    height: SCREEN_HEIGHT * 0.41,
+    backgroundColor: "rgb(253, 245, 169)",
+    borderRadius: 15,
   },
-  text: {
+  walkCreateImage: {
+    zIndex: 6,
+    width: SCREEN_WIDTH * 0.89,
+    height: SCREEN_HEIGHT * 0.40,
+    marginTop: 3,
+    marginLeft: 2,
+    borderRadius: 15,
+  },
+  walkCreateTitle: {
+    zIndex: 8,
+    width: SCREEN_WIDTH * 0.9,
+    height: 30,
+  },
+  walkCreateTitleText: {
+    zIndex: 8,
     fontSize: 20,
-    marginBottom: 20,
+    color: "black",
+    width: SCREEN_WIDTH * 0.9,
+    height: SCREEN_HEIGHT * 0.1,
+    fontWeight: "bold",
+    textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  walkCreateRatingContainer: {
+    width: SCREEN_WIDTH * 0.9,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
+  },
+  walkCreateRating: {
+    flexDirection: 'row',
+    width: SCREEN_WIDTH * 0.9,
+    height: 30,
+    // borderWidth: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
   },
 });

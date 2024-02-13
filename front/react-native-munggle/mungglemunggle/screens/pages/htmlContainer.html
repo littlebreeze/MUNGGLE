@@ -27,6 +27,7 @@
         left: 50%;
         display: none;
         transform: translate(-50%, -50%);
+        box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.2);
       }
       #startText {
         display: flex;
@@ -48,6 +49,7 @@
         left: 50%;
         display: none;
         transform: translate(-50%, -50%);
+        box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.2);
       }
       #pauseText {
         display: flex;
@@ -58,9 +60,9 @@
         font-weight: bold;
       }
       #stopButton {
-        width: 100px;
-        height: 100px;
-        background-color: rgb(255, 230, 0);
+        width: 80px;
+        height: 80px;
+        background-color: rgb(255, 0, 0);
         border: none;
         border-radius: 100%;
         z-index: 5;
@@ -69,6 +71,7 @@
         left: 70%;
         display: none;
         transform: translate(-50%, -50%);
+        box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.2);
       }
       #stopText {
         display: flex;
@@ -90,6 +93,7 @@
         left: 50%;
         display: none;
         transform: translate(-50%, -50%);
+        box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.2);
       }
       #changeText {
         display: flex;
@@ -101,9 +105,9 @@
       }
 
       #backButton {
-        width: 100px;
-        height: 100px;
-        background-color: rgb(255, 230, 0);
+        width: 80px;
+        height: 80px;
+        background-color: rgb(200, 230, 0);
         border: none;
         border-radius: 100%;
         z-index: 5;
@@ -112,6 +116,7 @@
         left: 20%;
         display: none;
         transform: translate(-50%, -50%);
+        box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.2);
       }
       #backText {
         display: flex;
@@ -125,11 +130,13 @@
         display: flex;
         font-size: 30px;
         position: absolute;
-        top: 45%;
+        top: 50%;
         text-align: center;
         justify-content: center;
         align-items: center;
-        left: 15%;
+        left: 50%;
+        font-weight: bold;
+        transform: translate(-50%, -50%);
       }
   
       #timer {
@@ -143,14 +150,13 @@
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* 텍스트 그림자 효과 */
       }
 
-      #startButton.show, #stopButton.show, #changeButton.show, #backButton.show {
-        opacity: 0; /* 초기에는 버튼을 투명하게 설정합니다 */
-        transition: opacity 0.5s ease; /* 투명도가 변경될 때 0.5초 동안 부드럽게 변경되도록 설정합니다 */
-    }
-
-      #startButton.show, #stopButton.show, #changeButton.show, #backButton.show {
-        opacity: 1; /* show 클래스가 적용되면 버튼이 나타나도록 설정합니다 */
-    }
+      #startButton:active,
+      #pauseButton:active,
+      #stopButton:active,
+      #changeButton:active,
+      #backButton:active {
+          opacity: 0.5; /* 버튼 투명도를 줄임 */
+      }
     </style>
     <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=c688164e37f35d82c0237627a526de76&libraries=services,clusterer,drawing"></script> 
   </head>
@@ -182,7 +188,7 @@
       </div>
     </button>
     <div id="mapIsNullMessage">
-      맵을 불러오고 있습니다.
+      Loading...
     </div>
     <h1 id="timer">00 : 00 : 00</h1>
     <script>
@@ -220,10 +226,6 @@
           type: "timer", 
           data: seconds,
         }));
-        seconds = 0;
-        hours = 0;
-        minutes = 0;
-        secs = 0;
       }
 
       function updateTimer() {
@@ -252,6 +254,11 @@
         stopButton.style.display = 'block';
         changeButton.style.display = 'none';
         backButton.style.display = 'block';
+        window.ReactNativeWebView.postMessage(JSON.stringify({
+          type: "change", 
+          data: '',
+        }));
+        
       }
 
       function back() {
@@ -261,14 +268,13 @@
         backButton.style.display = 'none';
         timer.style.display = 'none';
         stopDrawing();
-        // 지도 위에 선이 표시되고 있다면 지도에서 제거합니다
         deleteClickLine();
-        
-        // 지도 위에 커스텀오버레이가 표시되고 있다면 지도에서 제거합니다
         deleteDistnce();
-
-        // 지도 위에 선을 그리기 위해 클릭한 지점과 해당 지점의 거리정보가 표시되고 있다면 지도에서 제거합니다
         deleteCircleDot();
+        window.ReactNativeWebView.postMessage(JSON.stringify({
+          type: "back", 
+          data: '',
+        }));
       }
 
       function pauseTimer() {
@@ -312,7 +318,6 @@
           createMap(currentLocation.latitude, -currentLocation.longitude);  
           mapIsNullMessage.style.display = 'none';
           changeButton.style.display = 'block';
-          alert('맵생성완료');
         } else {
           // alert('이미맵이생성됨')
           if (drawingFlag) {
@@ -356,29 +361,11 @@
       }
       
       stopButton.onclick = function() {
-        screenShot();
         startButton.style.display = 'block';
         pauseButton.style.display = 'none';
         stopDrawing();
         backButton.style.display = 'block';
-      }
-
-      function screenShot(lat, lng) {
-        var staticMapContainer  = document.getElementById('staticMap') // 이미지 지도를 표시할 div  
-        var staticMapOption = { 
-          center: new kakao.maps.LatLng(lat, lng), // 이미지 지도의 중심좌표
-          level: 5 // 이미지 지도의 확대 레벨
-          };
-        staticMap = new kakao.maps.StaticMap(staticMapContainer, staticMapOption);
-
-        // 이미지를 base64로 변환
-        var imageBase64 = staticMap.getBase64();
-      
-        // 웹뷰로 이미지 데이터 전송
-        window.ReactNativeWebView.postMessage(JSON.stringify({
-          type: 'staticMap',
-          data: imageBase64
-        }));
+        
       }
 
       function panTo(lat, lng) {
@@ -406,6 +393,7 @@
       // 지도에 클릭 이벤트를 등록합니다
       // 지도를 클릭하면 선 그리기가 시작됩니다 그려진 선이 있으면 지우고 다시 그립니다
       function startDrawing(lat, lng) {
+        map.setLevel(3);
         panTo(lat, lng);
 
         // 지도 클릭이벤트가 발생했는데 선을 그리고있는 상태가 아니면
@@ -492,8 +480,13 @@
             }
 
             var distance = Math.round(clickLine.getLength()), // 선의 총 거리를 계산합니다
-                content = getTimeHTML(distance); // 커스텀오버레이에 추가될 내용입니다
-                
+                content = getTimeHTML(distance, seconds); // 커스텀오버레이에 추가될 내용입니다
+            
+            window.ReactNativeWebView.postMessage(JSON.stringify({
+              type: "distance", 
+              data: distance,
+            }));
+
             // 그려진 선의 거리정보를 지도에 표시합니다
             showDistance(content, path[path.length-1]);  
               
@@ -508,7 +501,12 @@
           }
           
           // 상태를 false로, 그리지 않고 있는 상태로 변경합니다
-          drawingFlag = false;          
+          map.setLevel(4);
+          drawingFlag = false;   
+          seconds = 0;
+          hours = 0;
+          minutes = 0;
+          secs = 0;       
         }  
       };   
       
@@ -604,21 +602,21 @@
       // 마우스 우클릭 하여 선 그리기가 종료됐을 때 호출하여 
       // 그려진 선의 총거리 정보와 거리에 대한 도보, 자전거 시간을 계산하여
       // HTML Content를 만들어 리턴하는 함수입니다
-      function getTimeHTML(distance) {
+      function getTimeHTML(distance, seconds) {
+        hours = Math.floor(seconds / 3600);
+        minutes = Math.floor((seconds % 3600) / 60);
+        secs = seconds % 60;
     
-        // 도보의 시속은 평균 4km/h 이고 도보의 분속은 67m/min입니다
-        var walkkTime = distance / 67 | 0;
-        var walkHour = '', walkMin = '';
-    
-        // 계산한 도보 시간이 60분 보다 크면 시간으로 표시합니다
-        if (walkkTime > 60) {
-            walkHour = '<span class="number">' + Math.floor(walkkTime / 60) + '</span>시간 '
-        }
-        walkMin = '<span class="number">' + walkkTime % 60 + '</span>분'
+        var totalHour = '<span class="number">' + hours + '</span>시간 '
+        var totalMin = '<span class="number">' + minutes + '</span>분'
+        var totalSecs = '<span class="number">' + secs + '</span>초'
     
         var content = '<ul class="dotOverlay distanceInfo">';
         content += '    <li>';
         content += '        <span class="label">총거리</span><span class="number">' + distance + '</span>m';
+        content += '    </li>';
+        content += '    <li>';
+        content += '        <span class="label">총시간</span>' + totalHour + totalMin + totalSecs;
         content += '    </li>';
         content += '</ul>'
     
