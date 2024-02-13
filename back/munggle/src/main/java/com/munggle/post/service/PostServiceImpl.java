@@ -80,6 +80,7 @@ public class PostServiceImpl implements PostService {
         return PostMapper.toPostDetailDto(post, hashtags, isMine, isLiked, isScraped, isFollowed);
     }
 
+    // === 이미지 저장 === //
     @Override
     @Transactional
     public void savePostImage(MultipartFile image, Long postId, Long userId) {
@@ -95,6 +96,7 @@ public class PostServiceImpl implements PostService {
         postImageRepository.save(newImage);
     }
 
+    // === 게시글 태그 저장 === //
     @Transactional
     public void saveTags(List<String> hashtags, Long userId, Post newPost) {
 
@@ -117,11 +119,7 @@ public class PostServiceImpl implements PostService {
     }
 
 
-    /**
-     * 게시글 생성 메소드
-     *
-     * @param postCreateDto
-     */
+    // === 게시글 생성 === //
     @Override
     @Transactional
     public Long insertPost(PostCreateDto postCreateDto) {
@@ -150,12 +148,7 @@ public class PostServiceImpl implements PostService {
         return postId; //게시글 번호 반환
     }
 
-    /**
-     * 게시글 수정 메소드
-     *
-     * 수정 가능 필드: title / content / isPrivate / image / hashtag
-     * @param postUpdateDto
-     */
+    // === 게시글 수정 === //
     @Override
     @Transactional
     public Long updatePost(PostUpdateDto postUpdateDto) {
