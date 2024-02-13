@@ -199,11 +199,7 @@ public class PostServiceImpl implements PostService {
         return updatePost.getId();
     }
 
-    /**
-     * 게시글 삭제 메소드
-     *
-     * @param postId
-     */
+    // === 게시글 삭제 === //
     @Override
     @Transactional
     public void deletePost(Long postId) {
@@ -231,6 +227,17 @@ public class PostServiceImpl implements PostService {
             }
         }
 
+        // post 좋아요 삭제
+        List<PostLike> deleteLikes = postLikeRespository.findByPostAndIsDeletedFalse(post);
+        for (PostLike deleteLike : deleteLikes) {
+            deleteLike.markAsDeleted(true);
+        }
+
+        // post 스크랩 삭제
+        List<Scrap> deleteScraps = scrapRepository.findByPostAndIsDeletedFalse(post);
+        for (Scrap deleteScrap : deleteScraps) {
+            deleteScrap.markAsDeleted(true);
+        }
     }
 
 
