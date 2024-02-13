@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface UserService extends UserDetailsService, OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
+    String getNicknameById(Long id);
     UserMyPageDto getUserMypage(Long id);
 
     UserProfileDto getUserProfile(Long id);
