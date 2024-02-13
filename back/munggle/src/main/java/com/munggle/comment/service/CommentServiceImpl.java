@@ -87,9 +87,12 @@ public class CommentServiceImpl implements CommentService {
                 })
                 .collect(Collectors.toList());
 
+        Integer totalCnt = commentRepository.countByPostIdAndIsDeletedFalse(postId);
+
         return PageCommentDto.builder()
                 .last(pageComment.isLast())
                 .comments(comments)
+                .totalCnt(totalCnt)
                 .build();
     }
 
