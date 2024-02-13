@@ -1,21 +1,3 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Button, View, Text, Modal, StyleSheet, Dimensions, TouchableOpacity, Alert } from "react-native";
-import { WebView } from "react-native-webview";
-import * as Location from "expo-location";
-import { KAKAOMAP_API_KEY } from '@env';
-import WalkCreate from "./walkOthers/walkCreate";
-import WalkCalendar from "./walkOthers/walkCalendar";
-import { Calendar } from "react-native-calendars";
-import axios from "axios";
-
-import htht from "./htht.html"
-
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
-
-const apiKey = KAKAOMAP_API_KEY
-
-const htmlContainer = `
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -76,9 +58,9 @@ const htmlContainer = `
         font-weight: bold;
       }
       #stopButton {
-        width: 80px;
-        height: 80px;
-        background-color: rgb(255, 0, 0);
+        width: 100px;
+        height: 100px;
+        background-color: rgb(255, 230, 0);
         border: none;
         border-radius: 100%;
         z-index: 5;
@@ -119,9 +101,9 @@ const htmlContainer = `
       }
 
       #backButton {
-        width: 80px;
-        height: 80px;
-        background-color: rgb(200, 230, 0);
+        width: 100px;
+        height: 100px;
+        background-color: rgb(255, 230, 0);
         border: none;
         border-radius: 100%;
         z-index: 5;
@@ -143,13 +125,11 @@ const htmlContainer = `
         display: flex;
         font-size: 30px;
         position: absolute;
-        top: 50%;
+        top: 45%;
         text-align: center;
         justify-content: center;
         align-items: center;
-        left: 50%;
-        font-weight: bold;
-        transform: translate(-50%, -50%);
+        left: 15%;
       }
   
       #timer {
@@ -172,7 +152,7 @@ const htmlContainer = `
         opacity: 1; /* show 클래스가 적용되면 버튼이 나타나도록 설정합니다 */
     }
     </style>
-    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&libraries=services,clusterer,drawing"></script> 
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=c688164e37f35d82c0237627a526de76&libraries=services,clusterer,drawing"></script> 
   </head>
   <body>
     <div id="map"></div>
@@ -202,7 +182,7 @@ const htmlContainer = `
       </div>
     </button>
     <div id="mapIsNullMessage">
-      Loading...
+      맵을 불러오고 있습니다.
     </div>
     <h1 id="timer">00 : 00 : 00</h1>
     <script>
@@ -376,10 +356,29 @@ const htmlContainer = `
       }
       
       stopButton.onclick = function() {
+        screenShot();
         startButton.style.display = 'block';
         pauseButton.style.display = 'none';
         stopDrawing();
         backButton.style.display = 'block';
+      }
+
+      function screenShot(lat, lng) {
+        var staticMapContainer  = document.getElementById('staticMap') // 이미지 지도를 표시할 div  
+        var staticMapOption = { 
+          center: new kakao.maps.LatLng(lat, lng), // 이미지 지도의 중심좌표
+          level: 5 // 이미지 지도의 확대 레벨
+          };
+        staticMap = new kakao.maps.StaticMap(staticMapContainer, staticMapOption);
+
+        // 이미지를 base64로 변환
+        var imageBase64 = staticMap.getBase64();
+      
+        // 웹뷰로 이미지 데이터 전송
+        window.ReactNativeWebView.postMessage(JSON.stringify({
+          type: 'staticMap',
+          data: imageBase64
+        }));
       }
 
       function panTo(lat, lng) {
@@ -494,12 +493,7 @@ const htmlContainer = `
 
             var distance = Math.round(clickLine.getLength()), // 선의 총 거리를 계산합니다
                 content = getTimeHTML(distance); // 커스텀오버레이에 추가될 내용입니다
-            
-            window.ReactNativeWebView.postMessage(JSON.stringify({
-              type: "distance", 
-              data: distance,
-            }));
-
+                
             // 그려진 선의 거리정보를 지도에 표시합니다
             showDistance(content, path[path.length-1]);  
               
@@ -634,234 +628,3 @@ const htmlContainer = `
     </script>    
   </body>
 </html>
-`;
-
-
-export default function WalkScreen ({ navigation }) {
-  const apiUrl = "http://i10a410.p.ssafy.io:8080";
-  const [location, setLocation] = useState(null);
-  const [pause, setPause] = useState(false);
-  const webViewRef = useRef(null);
-
-  const [modalDuration, setModalDuration] = useState(null);
-  const [modalImage, setModalImage] = useState(null);
-  const [modalLocations, setModalLocations] = useState(null);
-  const [modalDistance, setModalDistance] = useState(null);
-
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isMyModalOpen, setIsMyModalOpen] = useState(false);
-
-
-  const openModalWithData = () => {
-    setIsCreateModalOpen(true);
-  };
-  
-  const openModalWithMy = () => {
-    setIsMyModalOpen(true);
-  }
-
-  const closeModal = () => {
-    setIsCreateModalOpen(false);
-  };
-
-  const closeMyModal = () => {
-    setIsMyModalOpen(false);
-  };
-
-  useEffect(() => {
-    (async () => {
-      
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-
-      webViewRef.current.postMessage(JSON.stringify({
-        type: 'location',
-        data: location.coords
-      }));
-      console.log(1, JSON.parse(JSON.stringify(location.coords)));
-    })();
-  }, []);
-
-  useEffect(() => {
-    const timer = setInterval(async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('현재 위치를 받아올 수 없습니다!');
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    }, 2000);
-
-    return () => clearInterval(timer);
-  }, [location]);
-
-  useEffect(() => {
-    if (location && !pause) {
-      webViewRef.current.postMessage(JSON.stringify({
-        type: 'location',
-        data: location.coords
-      }));
-      console.log(2, JSON.parse(JSON.stringify(location.coords)));
-    }
-  }, [location]);
-
-
-  const onMessage = (event) => {
-    const { type, data } = JSON.parse(event.nativeEvent.data);
-    if (type === "locations") {
-      console.log(data);
-      setModalLocations(data);
-    } else if (type === "timer") {
-      console.log(data);
-      setModalDuration(data);
-    } else if (type === "start") {
-      setPause(false);
-      console.log(pause);
-    } else if (type === 'pause') {
-      setPause(true);
-      console.log(pause);
-    } else if (type === 'distance') {
-      setModalDistance(data);
-      console.log(data);
-    }
-  }
-
-  return (
-    <View style={styles.walkMainContainer}>
-      {location ? (
-        <WebView
-          ref={webViewRef}
-          style={styles.walkMainMap}
-          source={{ html: htmlContainer }}
-          onMessage={onMessage}
-        />
-      ) : (
-        <View style={styles.walkMainLoading}>
-          <Text style={styles.walkMainLoadingText}>Loading...</Text>
-        </View>
-      )}
-
-      {modalDuration ? (
-        <TouchableOpacity onPress={() => openModalWithData()}>
-          <View style={styles.walkMainRecord}>
-            <Text style={styles.walkMainRecordText}>Record</Text>
-          </View>
-        </TouchableOpacity>
-      ) : null}
-
-      {modalDuration && modalLocations && (
-        <Modal
-          visible={isCreateModalOpen}
-          animationType="slide"
-          onRequestClose={closeModal}
-        >
-          <WalkCreate 
-            duration={modalDuration}
-            locations={modalLocations}
-            distance={modalDistance}
-            closeModal={closeModal} />
-        </Modal>
-      )}
-      
-      <Button title="My" onPress={() => openModalWithMy()}>
-        <View style={styles.walkMainMy}>
-          <Text style={styles.walkMainMyText}>My</Text>
-        </View>
-      </Button>
-      
-      <Modal
-        visible={isMyModalOpen}
-        animationType="slide"
-        onRequestClose={closeMyModal}
-      >
-        <WalkCalendar 
-          closeModal={closeMyModal} />
-      </Modal>
-
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  walkMainContainer: {
-    flex: 1,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 0.82,
-  },
-  walkMainMap: {
-    flex: 0,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 0.82,
-  },
-  walkMainStart: {
-    width: 100,
-    height: 100,
-    position: "absolute",
-    borderWidth: 1,
-    borderColor: "black",
-    borderRadius: 100,
-    bottom: 50,
-    left: 150,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "yellow",
-  },
-  walkMainStartText: {
-    fontSize: 20,
-  },
-  walkMainLoading: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  walkMainLoadingText: {
-    fontSize: 30,
-    fontWeight: "bold",
-    textAlign: "center",
-    justifyContent: "center",
-  },
-  walkMainCalendar: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-  },
-  walkMainRecord: {
-    width: 60,
-    height: 60,
-    position: "absolute",
-    borderColor: "black",
-    borderRadius: 100,
-    bottom: 10,
-    left: 215,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "yellow",
-    zIndex: 6,
-  },
-  walkMainRecordText: {
-    fontSize: 15,
-  },
-  walkMainMy: {
-    width: 60,
-    height: 60,
-    position: "absolute",
-    borderColor: "black",
-    borderRadius: 100,
-    top: 100,
-    left: 100,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "yellow",
-    zIndex: 7,
-  },
-  walkMainMyText: {
-    fontSize: 15,
-  },
-})
