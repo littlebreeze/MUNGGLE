@@ -1,6 +1,7 @@
 package com.munggle.post.service;
 
 import com.munggle.alarm.service.AlarmService;
+import com.munggle.comment.repository.CommentRepository;
 import com.munggle.domain.exception.PostNotFoundException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.*;
@@ -44,6 +45,7 @@ public class PostServiceImpl implements PostService {
     private final FollowService followService;
     private final FollowRepository followRepository;
     private final AlarmService alarmService;
+    private final CommentRepository commentRepository;
 
     /**
      * 게시글 상세보기 메소드
@@ -192,11 +194,9 @@ public class PostServiceImpl implements PostService {
             postListService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
         }
         postTagRepository.saveAll(postTags); // 영속화
-
-        Long postId = postRepository.save(updatePost).getId(); //게시글 영속화
         
         // postId 반환
-        return postId;
+        return updatePost.getId();
     }
 
     /**
@@ -222,6 +222,15 @@ public class PostServiceImpl implements PostService {
         for (PostTag deleteTag : deleteTags) {
             deleteTag.markAsDeleted(true);
         }
+
+        // post comment 삭제
+        Optional<List<Comment>> deleteComments = commentRepository.findAllByPostIdAndIsDeletedFalse(postId);
+        if (deleteComments.isPresent()) {
+            for (Comment deleteComment : deleteComments.get()) {
+                deleteComment.deleteComment();
+            }
+        }
+
     }
 
 
@@ -252,7 +261,6 @@ public class PostServiceImpl implements PostService {
             // 최초 1회 좋아요만 알림 생성
             alarmService.insertAlarm("LIKE", user, post.getUser(), postId);
         }
-
     }
 
 
@@ -275,8 +283,6 @@ public class PostServiceImpl implements PostService {
         } else {
             scrapRepository.save(PostMapper.toScrapEntity(scrapId, user, post));
         }
-
     }
-
 
 }
