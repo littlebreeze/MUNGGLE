@@ -52,4 +52,16 @@ public class UserpageController {
         return userpageService.getDogList(userId);
     }
 
+    @GetMapping("/calendar")
+    @ResponseStatus(HttpStatus.OK)
+    public List<String> getUserCalendar(@AuthenticationPrincipal User principal,
+                                        @RequestParam(value = "year") Integer year,
+                                        @RequestParam(value = "month") Integer month) {
+
+        
+
+
+        return null;
+    }
+
 }
