@@ -1,16 +1,32 @@
 package com.munggle.domain.model.entity;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Table(name = "chat_message")
 public class ChatMessage {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long dmId;
+    @ManyToOne
+    private DMRoom dmId;
 
-    private Long fromUserId;
+    @ManyToOne
+    private User sendUser;
 
-    private Long content;
+    private String content;
 
     private LocalDateTime createAt;
 

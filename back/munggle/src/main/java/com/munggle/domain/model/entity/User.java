@@ -1,5 +1,6 @@
 package com.munggle.domain.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.munggle.domain.exception.IllegalNicknameException;
 import com.munggle.domain.exception.IllegalPasswordException;
 import com.munggle.domain.model.entity.converter.PasswordConverter;
@@ -151,6 +152,8 @@ public class User implements UserDetails, OAuth2User, OidcUser {
         this.followIncreaseCount--;
     }
 
+
+    @JsonIgnore
     @Override
     public Map<String, Object> getAttributes() {
         return Map.of("email", this.username);
