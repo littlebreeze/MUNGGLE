@@ -3,10 +3,14 @@ package com.munggle.comment.controller;
 import com.munggle.comment.dto.CommentCreateDto;
 import com.munggle.comment.dto.CommentDetailDto;
 import com.munggle.comment.dto.CommentUpdateDto;
+import com.munggle.comment.dto.PageCommentDto;
 import com.munggle.comment.service.CommentService;
 import com.munggle.domain.model.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,10 +45,13 @@ public class CommentController {
 
     // 게시글 댓글 목록
     @GetMapping("/{postId}")
-    public List<CommentDetailDto> readCommentList(@AuthenticationPrincipal User principal,
-                                                  @PathVariable Long postId){
+    public PageCommentDto readCommentList(@AuthenticationPrincipal User principal,
+                                                  @PathVariable Long postId,
+                                                  @PageableDefault(size = 15, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable){
 
-        return commentService.getCommentList(principal, postId);
+        PageCommentDto pageCommentDto = commentService.getCommentList(principal, postId, pageable);
+
+        return pageCommentDto;
     }
 
     // 댓글 상세

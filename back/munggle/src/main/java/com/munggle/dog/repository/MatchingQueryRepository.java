@@ -44,7 +44,7 @@ public class MatchingQueryRepository {
             query+="%' OR ";
         }
 
-        query += "%' )";
+        query += "%' ) ";
 
         TypedQuery<Dog> queryResult = em.createQuery(query, Dog.class);
 
@@ -52,6 +52,9 @@ public class MatchingQueryRepository {
         if(!selectionList.isEmpty())
             queryResult.setParameter("list", selectionList);
         queryResult.setParameter("isNeutering", isNeutering.booleanValue());
+
+        // 20마리만 리턴
+        queryResult.setMaxResults(20);
 
         List<DogDetailDto> result = queryResult.getResultList().stream().map(item -> DogMapper.toDetailDto(item)).collect(Collectors.toList());
 

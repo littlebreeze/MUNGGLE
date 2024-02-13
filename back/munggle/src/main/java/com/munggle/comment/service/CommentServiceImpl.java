@@ -4,6 +4,7 @@ import com.munggle.alarm.service.AlarmService;
 import com.munggle.comment.dto.CommentCreateDto;
 import com.munggle.comment.dto.CommentDetailDto;
 import com.munggle.comment.dto.CommentUpdateDto;
+import com.munggle.comment.dto.PageCommentDto;
 import com.munggle.comment.mapper.CommentMapper;
 import com.munggle.comment.repository.CommentLikeRepository;
 import com.munggle.comment.repository.CommentRepository;
@@ -13,6 +14,8 @@ import com.munggle.post.repository.PostRepository;
 import com.munggle.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -69,9 +72,10 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentDetailDto> getCommentList(User principal, Long postId) {
-        return commentRepository.findAllByPostIdAndIsDeletedFalse(postId)
-                .orElseThrow(()->new CommentNotFoundException(ExceptionMessage.COMMENT_NOT_FOUND))
+    public PageCommentDto getCommentList(User principal, Long postId, Pageable pageable) {
+        Page<Comment> pageComment = commentRepository.findAllByPostIdAndIsDeletedFalse(postId, pageable);
+
+        List<CommentDetailDto> comments = commentRepository.findAllByPostIdAndIsDeletedFalse(postId, pageable)
                 .stream().map(comment -> {
                     Boolean haveLiked = false;
 
@@ -82,6 +86,11 @@ public class CommentServiceImpl implements CommentService {
                     return CommentMapper.toDto(comment, haveLiked);
                 })
                 .collect(Collectors.toList());
+
+        return PageCommentDto.builder()
+                .last(pageComment.isLast())
+                .comments(comments)
+                .build();
     }
 
     @Override
