@@ -1,6 +1,8 @@
 package com.munggle.dog.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.munggle.domain.model.entity.type.Gender;
+import com.munggle.domain.model.entity.type.SizeType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +24,7 @@ public class DogUpdateDto {
     private LocalDateTime birthDate;
     private String size;
     private Float weight;
-    //private String gender;
+    private String gender;
     private Boolean isNeutering;    // 중성화 여부
     private String name;
     private String description;
