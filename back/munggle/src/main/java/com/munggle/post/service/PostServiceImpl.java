@@ -47,13 +47,7 @@ public class PostServiceImpl implements PostService {
     private final AlarmService alarmService;
     private final CommentRepository commentRepository;
 
-    /**
-     * 게시글 상세보기 메소드
-     *
-     * @param postId
-     * @param userId
-     * @return
-     */
+    // === 게시글 상세보기 === //
     @Override
     public PostDetailDto getDetailPost(Long postId, Long userId) {
         Post post = postRepository.findByIdAndIsDeletedFalse(postId)
@@ -86,6 +80,43 @@ public class PostServiceImpl implements PostService {
         return PostMapper.toPostDetailDto(post, hashtags, isMine, isLiked, isScraped, isFollowed);
     }
 
+    @Override
+    @Transactional
+    public void savePostImage(MultipartFile image, Long postId, Long userId) {
+        Post newPost = postRepository.findByIdAndIsDeletedFalse(postId)
+                .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
+
+        // 이미지 저장
+        String uploadPath = userId + "/" + postId + "/";
+        FileInfoDto fileInfo = fileS3UploadService.uploadFile(uploadPath, image); //s3 저장소에 업로드
+
+        // db에 이미지 파일 정보 저장
+        PostImage newImage = PostMapper.toPostImageEntity(fileInfo, newPost);
+        postImageRepository.save(newImage);
+    }
+
+    @Transactional
+    public void saveTags(List<String> hashtags, Long userId, Post newPost) {
+
+        List<PostTag> postTags = new ArrayList<>();
+        for (String hashtag : hashtags) {
+            Tag tag = tagRepository.findByTagNm(hashtag)
+                    .orElseGet(() -> tagRepository.save(PostMapper.toTagEntity(hashtag)));
+
+            PostTagId findId = PostMapper.toPostTagIdEntity(newPost.getId(), tag.getId());
+            PostTag newPostTag = postTagRepository.findById(findId)
+                    .orElse(PostMapper.toPostTagEntity(findId, newPost, tag));
+
+            newPostTag.markAsDeleted(false);
+            postTags.add(newPostTag);
+
+            postListService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
+        }
+
+        postTagRepository.saveAll(postTags); // 영속화
+    }
+
+
     /**
      * 게시글 생성 메소드
      *
@@ -105,22 +136,9 @@ public class PostServiceImpl implements PostService {
         Long postId = postRepository.save(newPost).getId();
 
         // 해시태그 저장
-        List<String> hashtags = postCreateDto.getHashtags();
-        List<PostTag> postTags = new ArrayList<>();
-        for (String hashtag : hashtags) {
-            Tag tag = tagRepository.findByTagNm(hashtag)
-                    .orElseGet(() -> tagRepository.save(PostMapper.toTagEntity(hashtag)));
+        saveTags(postCreateDto.getHashtags(), userId, newPost);
 
-            PostTagId newPostTagId = PostMapper.toPostTagIdEntity(postId, tag.getId());
-            PostTag newPostTag = PostMapper.toPostTagEntity(newPostTagId, newPost, tag);
-            newPostTag.markAsDeleted(false);
-            postTags.add(newPostTag);
-
-            postListService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
-        }
-
-        postTagRepository.saveAll(postTags); // 영속화
-
+        // 게시글 알림 생성
         List<User> followedUsers = followRepository.findByFollowToIdAndIsFollowedTrue(userId)
                 .stream()
                 .map(Follow::getFollowFrom)
@@ -130,21 +148,6 @@ public class PostServiceImpl implements PostService {
         }
 
         return postId; //게시글 번호 반환
-    }
-
-    @Override
-    @Transactional
-    public void savePostImage(MultipartFile image, Long postId, Long userId) {
-        Post newPost = postRepository.findByIdAndIsDeletedFalse(postId)
-                .orElseThrow(() -> new PostNotFoundException(POST_NOT_FOUND));
-
-        // 이미지 저장
-        String uploadPath = userId + "/" + postId + "/";
-        FileInfoDto fileInfo = fileS3UploadService.uploadFile(uploadPath, image); //s3 저장소에 업로드
-
-        // db에 이미지 파일 정보 저장
-        PostImage newImage = PostMapper.toPostImageEntity(fileInfo, newPost);
-        postImageRepository.save(newImage);
     }
 
     /**
@@ -179,21 +182,7 @@ public class PostServiceImpl implements PostService {
         }
 
         // 업데이트 된 해시태그 저장
-        List<String> hashtags = postUpdateDto.getHashtags();
-        List<PostTag> postTags = new ArrayList<>();
-        for (String hashtag : hashtags) {
-            Tag tag = tagRepository.findByTagNm(hashtag)
-                    .orElseGet(() -> tagRepository.save(PostMapper.toTagEntity(hashtag)));
-
-            PostTagId findId = PostMapper.toPostTagIdEntity(updatePost.getId(), tag.getId());
-            PostTag updatePostTag = postTagRepository.findById(findId)
-                    .orElse(PostMapper.toPostTagEntity(findId, updatePost, tag));
-            updatePostTag.markAsDeleted(false); // isDeleted false로 변경
-            postTags.add(updatePostTag);
-
-            postListService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
-        }
-        postTagRepository.saveAll(postTags); // 영속화
+        saveTags(postUpdateDto.getHashtags(), userId, updatePost);
         
         // postId 반환
         return updatePost.getId();
