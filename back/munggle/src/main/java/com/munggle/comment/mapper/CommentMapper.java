@@ -13,13 +13,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommentMapper {
 
-    public static Comment toEntity(CommentCreateDto commentCreateDto){
+    public static Comment toEntity(String content, Post post, User user){
         return Comment.builder()
-                .post(Post.builder()
-                        .id(commentCreateDto.getPostId()).build())
-                .user(User.builder()
-                        .id(commentCreateDto.getUserId()).build())
-                .contents(commentCreateDto.getContents())
+                .post(post)
+                .user(user)
+                .contents(content)
                 .build();
     }
 

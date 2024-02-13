@@ -12,12 +12,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommentCreateDto {
 
-    private Long commentId;
     private Long userId;
     private Long postId;
 
     @NotBlank
-    //@Size(max = )
     private String contents;
 
     public void setPostId(Long postId) {
