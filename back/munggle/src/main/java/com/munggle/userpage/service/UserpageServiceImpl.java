@@ -6,16 +6,13 @@ import com.munggle.dog.repository.DogRepository;
 import com.munggle.domain.exception.DogNotFoundException;
 import com.munggle.domain.exception.ExceptionMessage;
 import com.munggle.domain.exception.NotAllowAccessPageException;
-import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.Dog;
 import com.munggle.domain.model.entity.Post;
-import com.munggle.domain.model.entity.User;
 import com.munggle.post.repository.ScrapRepository;
 import com.munggle.user.service.UserService;
 import com.munggle.userpage.dto.UserCalendarDto;
 import com.munggle.userpage.dto.UserPostListDto;
 import com.munggle.post.repository.PostRepository;
-import com.munggle.user.repository.UserRepository;
 import com.munggle.userpage.dto.UserScrapListDto;
 import com.munggle.userpage.mapper.UserpageMapper;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.munggle.domain.exception.ExceptionMessage.NOT_ALLOW_PAGE;
-import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
 
 @Service
 @Slf4j
@@ -109,9 +105,11 @@ public class UserpageServiceImpl implements UserpageService {
     @Override
     public List<UserCalendarDto> getUserCalendar(Long userId, Integer year, Integer month) {
 
-        List<Post> posts = postRepository.findByUserIdAndIsDeletedFalseAndCreatedAt(userId, year, month);
+        List<Post> posts = postRepository.findLatestPostByUserIdAndYearAndMonth(userId, year, month);
 
-        return null;
+        return posts.stream()
+                .map(UserpageMapper::toUserCalendar)
+                .collect(Collectors.toList());
     }
 
 }

@@ -58,9 +58,8 @@ public class UserpageController {
     public List<UserCalendarDto> getUserCalendar(@AuthenticationPrincipal User principal,
                                                  @RequestParam(value = "year") Integer year,
                                                  @RequestParam(value = "month") Integer month) {
-
-
-        return null;
+        Long userId = principal.getId();
+        return userpageService.getUserCalendar(userId, year, month);
     }
 
 }

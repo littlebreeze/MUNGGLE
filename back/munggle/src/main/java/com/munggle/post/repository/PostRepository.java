@@ -30,12 +30,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "where pt.tag.tagNm in :tags and pt.isDeleted = false " +
             "and p.isDeleted = false and p.user.id <> :userId " +
             "order by p.likeCnt desc")
-    List<Post> findByTagsAndNotMineOrderByLikeCntDesc(@Param("tags") List<String> tags, @Param("userId") Long userId, Pageable pageable);
+    List<Post> findByTagsAndNotMineOrderByLikeCntDesc(@Param("tags") List<String> tags,
+                                                      @Param("userId") Long userId, Pageable pageable);
 
     @Query("select p from Post p where p.postTitle like concat('%', :word, '%') " +
             "and p.isDeleted = false and p.isPrivate = false")
     Page<Post> searchByPostTitlePage(@Param("word") String word, Pageable pageable);
-
 
     @Query("select distinct p from Post p join fetch p.postTagList pt " +
             "where pt.tag.tagNm = :word and pt.isDeleted = false " +
@@ -53,8 +53,14 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     @Query("select p from Post p " +
             "where p.user.id = :userId " +
-            "and MONTH(p.createdAt) = :month " +
-            "and YEAR(p.createdAt) = :year " +
+            "and p.createdAt in (" +
+            "    select MAX(p2.createdAt) from Post p2 " +
+            "    where p2.user.id = :userId " +
+            "    and MONTH(p2.createdAt) = :month " +
+            "    and YEAR(p2.createdAt) = :year " +
+            "    group by DAY(p2.createdAt)) " +
             "order by p.createdAt")
-    List<Post> findByUserIdAndIsDeletedFalseAndCreatedAt(Long userId, Integer year, Integer month);
+    List<Post> findLatestPostByUserIdAndYearAndMonth(@Param("userId") Long userId,
+                                                     @Param("year") Integer year,
+                                                     @Param("month") Integer month);
 }

@@ -1,6 +1,7 @@
 package com.munggle.userpage.mapper;
 
 import com.munggle.domain.model.entity.Post;
+import com.munggle.userpage.dto.UserCalendarDto;
 import com.munggle.userpage.dto.UserPostListDto;
 import com.munggle.userpage.dto.UserScrapListDto;
 import lombok.AccessLevel;
@@ -31,4 +32,13 @@ public class UserpageMapper {
                 .build();
     }
 
+    public static UserCalendarDto toUserCalendar(Post post) {
+        return UserCalendarDto.builder()
+                .day(post.getCreatedAt().getDayOfMonth())
+                .postId(post.getId())
+                .imageURL(Optional.ofNullable(post.getPostImageList())
+                        .map(imageList -> imageList.isEmpty() ? null : imageList.get(0).getImageURL())
+                        .orElse(null))
+                .build();
+    }
 }
