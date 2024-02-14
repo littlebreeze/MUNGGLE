@@ -1,5 +1,6 @@
 package com.munggle.domain.model.entity;
 
+import com.munggle.image.dto.FileInfoDto;
 import com.munggle.walk.dto.LocationDto;
 import com.munggle.walk.dto.WalkUpdateDto;
 import jakarta.persistence.*;
@@ -46,6 +47,9 @@ public class Walk extends BaseTimeEntity {
     private Integer distance;
     private Float rating;
 
+    private String imageName;
+    private String imageUrl;
+
     @Column(columnDefinition = "boolean default false")
     private boolean isDeleted;
 
@@ -67,6 +71,11 @@ public class Walk extends BaseTimeEntity {
         this.walkName = walkUpdateDto.getWalkName();
         this.description = walkUpdateDto.getDescription();
         this.rating = walkUpdateDto.getRating();
+    }
+
+    public void updateImage(FileInfoDto fileInfoDto){
+        this.imageName = fileInfoDto.getFileName();
+        this.imageUrl = fileInfoDto.getFileURL();
     }
 
     public void setDeleted(){

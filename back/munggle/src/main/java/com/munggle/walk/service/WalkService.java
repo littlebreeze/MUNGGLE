@@ -1,5 +1,6 @@
 package com.munggle.walk.service;
 
+import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.Walk;
 import com.munggle.walk.dto.WalkCalendarDto;
 import com.munggle.walk.dto.WalkCreateDto;
@@ -28,7 +29,7 @@ public interface WalkService {
     WalkDto detailWalk(Long walkId);
 
     // 산책 종료 후 후기 등록, 산책 수정
-    WalkDto updateWalk(WalkUpdateDto walkUpdateDto);
+    WalkDto updateWalk(WalkUpdateDto walkUpdateDto, Long userId);
 
     // 산책 공개여부 변경
     void toggleVisibility(Long walkId);

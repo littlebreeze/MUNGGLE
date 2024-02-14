@@ -26,7 +26,8 @@ public class WalkDto {
     private Integer duration;
     private Integer distance;
     private Float rating;
-    private boolean isDeleted;
+    private Boolean isDeleted;
+    private String image;
 
     private UserProfileDto user;
 
