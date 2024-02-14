@@ -47,7 +47,7 @@ public class WalkServiceImpl implements WalkService{
 
     @Override
     @Transactional
-    public void createWalk(WalkCreateDto walkCreateDto) {
+    public Long createWalk(WalkCreateDto walkCreateDto) {
 
         Walk walk = WalkMapper.toEntity(walkCreateDto);
 
@@ -68,16 +68,27 @@ public class WalkServiceImpl implements WalkService{
         // DB에 저장
         Long walkId = walkRepository.save(walk).getWalkId();
 
-        // 전달받은 이미지 저장
-        if(walkCreateDto.getImage() != null && !walkCreateDto.getImage().isEmpty()) {
-
-            walk.updateImage(uploadWalkImage(walkId, walkCreateDto.getImage()));
-        }
-
         AtomicReference<Long> order = new AtomicReference<>(1l);
         // 산책 경로 좌표들 저장
         locationRepository.saveAll(walk.getLocation().stream()
                 .map(location -> location.setIdAndOrder(walkId, order.getAndSet(order.get() + 1))).collect(Collectors.toList()));
+
+        return walkId;
+    }
+
+    @Override
+    @Transactional
+    public void updateWalkImage(Long walkId, MultipartFile file) {
+
+        Walk walk = walkRepository.findByWalkIdAndIsDeletedFalse(walkId)
+                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
+
+        // 전달받은 이미지 저장
+        if(file != null && !file.isEmpty()) {
+
+            walk.updateImage(uploadWalkImage(walkId, file));
+        }
+
     }
 
     @Override

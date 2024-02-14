@@ -51,7 +51,7 @@ public class Walk extends BaseTimeEntity {
     private String imageUrl;
 
     @Column(columnDefinition = "boolean default false")
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     @Column(columnDefinition = "boolean default false")
     private Boolean isPrivated;
