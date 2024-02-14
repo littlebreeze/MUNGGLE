@@ -32,6 +32,12 @@
 
 ## 기능 소개
 
+|구분|기능|기능 설명|
+|----|--------|------------|
+|`필수선택1`|:white_large_square:1. 요구사항 분석|SSAFY 생활SSAFY GIT 실습https://lab.ssafy.com/{교육생NameSpace}/self-project/-/tree/master/con20/rep01|
+---
+
+
 ## 아키텍처
 
 ![구조](/assets/구조.png)
