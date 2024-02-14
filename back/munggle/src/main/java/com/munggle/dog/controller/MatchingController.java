@@ -59,7 +59,7 @@ public class MatchingController {
     // 내 특성 - 수정 시 필요
     @GetMapping ("/my/{dogId}")
     @ResponseStatus(HttpStatus.OK)
-    public DogCharDto myCharacter(@RequestBody Long dogId){
+    public DogCharDto myCharacter(@PathVariable Long dogId){
 
         return matchingService.myCharacterList(dogId);
     }
