@@ -2,27 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { Button, View, Text, Modal, StyleSheet, Dimensions, TouchableOpacity, Alert } from "react-native";
 import { WebView } from "react-native-webview";
 import * as Location from "expo-location";
-<<<<<<< HEAD
-import { KAKAOMAP_API_KEY } from '@env';
-import WalkCreate from "./walkOthers/walkCreate";
-import WalkCalendar from "./walkOthers/walkCalendar";
-=======
-// import { KAKAOMAP_API_KEY } from '@env';
 import WalkCreate from "./walk/walkCreate";
 import WalkCalendar from "./walk/walkCalendar";
->>>>>>> 45a7767d65217873baa953da4fbde852108a1975
 import axios, { Axios } from "axios";
 import ViewShot from 'react-native-view-shot';
 import * as MediaLibrary from 'expo-media-library';
 import RenderHtml from 'react-native-render-html';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
-
-<<<<<<< HEAD
-const apiKey = KAKAOMAP_API_KEY
-=======
-// const apiKey = KAKAOMAP_API_KEY;
->>>>>>> 45a7767d65217873baa953da4fbde852108a1975
 
 const htmlContainer = `
 <html>
