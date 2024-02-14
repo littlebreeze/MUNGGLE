@@ -2,6 +2,7 @@ package com.munggle.walk.controller;
 
 import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.Walk;
+import com.munggle.walk.dto.WalkCalendarDto;
 import com.munggle.walk.dto.WalkCreateDto;
 import com.munggle.walk.dto.WalkDto;
 import com.munggle.walk.dto.WalkUpdateDto;
@@ -28,9 +29,10 @@ public class WalkController {
         walkService.createWalk(walkDto);
     }
 
-    @GetMapping
-    public List<WalkDto> myWalkList(@AuthenticationPrincipal User principal){
-        return walkService.readMyWalks(principal.getId());
+    @GetMapping("/{year}/{month}")
+    public WalkCalendarDto myWalkList(@AuthenticationPrincipal User principal,
+                                      @PathVariable("year") Integer year, @PathVariable("month") Integer month){
+        return walkService.readMyWalks(principal.getId(), year, month);
     }
 
     @GetMapping("/list")

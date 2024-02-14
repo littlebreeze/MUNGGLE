@@ -112,6 +112,10 @@ public class MatchingServiceImpl implements MatchingService {
 
         Dog dog = dogRepository.findById(dogId)
                 .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
+
+        if(dog.getCharacterId() == null)
+            throw new MatchingCharacterNotFoundException(ExceptionMessage.MATCHING_CHARACTER_NOT_FOUND);
+
         Matching matching = Matching.builder()
                 .isNeutering(dog.getIsNeutering())
                 .characterId(dog.getCharacterId())

@@ -17,6 +17,8 @@ public class PageCommentDto {
     @Builder.Default
     private List<CommentDetailDto> comments = new ArrayList<>();
 
+    private Integer totalCnt;
+
     private Boolean last;
 
 }

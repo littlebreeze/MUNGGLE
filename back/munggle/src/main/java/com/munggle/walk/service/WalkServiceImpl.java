@@ -2,18 +2,13 @@ package com.munggle.walk.service;
 
 import com.munggle.dog.repository.DogRepository;
 import com.munggle.domain.exception.ExceptionMessage;
-import com.munggle.domain.exception.LocationsNotFoundException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.exception.WalkNotFoundException;
 import com.munggle.domain.model.entity.Dog;
-import com.munggle.domain.model.entity.Location;
 import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.Walk;
 import com.munggle.user.repository.UserRepository;
-import com.munggle.walk.dto.LocationDto;
-import com.munggle.walk.dto.WalkCreateDto;
-import com.munggle.walk.dto.WalkDto;
-import com.munggle.walk.dto.WalkUpdateDto;
+import com.munggle.walk.dto.*;
 import com.munggle.walk.mapper.WalkMapper;
 import com.munggle.walk.repository.LocationRepository;
 import com.munggle.walk.repository.WalkRepository;
@@ -21,9 +16,9 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.time.*;
 import java.util.List;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
@@ -58,13 +53,31 @@ public class WalkServiceImpl implements WalkService{
     }
 
     @Override
-    public List<WalkDto> readMyWalks(Long userId) {
+    public WalkCalendarDto readMyWalks(Long userId, Integer year, Integer month) {
 
-        List<WalkDto> result = walkRepository.findAllByIsDeletedFalseAndIsPrivatedFalse()
+        AtomicReference<Float> distance = new AtomicReference<>(0f);
+        AtomicReference<Integer> duration = new AtomicReference<>(0);
+
+        // 요청 월에 대한 기간 설정
+        YearMonth yearMonth = YearMonth.of(year, month);
+
+        LocalDateTime start = LocalDateTime.of(year, month,1 ,0,0);
+        LocalDateTime end = LocalDateTime.of(year, month, yearMonth.atEndOfMonth().getDayOfMonth(),0,0);
+
+        List<WalkDto> result = walkRepository.findAllByCreatedAtBetween(start, end)
                 .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND))
-                .stream().map(walk -> WalkMapper.toDto(walk)).collect(Collectors.toList());
+                .stream().map(walk -> {
+                    distance.updateAndGet(v -> v + walk.getDistance());
+                    duration.updateAndGet(v -> v + walk.getDuration());
+                    return WalkMapper.toDto(walk);
+                }).collect(Collectors.toList());
 
-        return result;
+        return WalkCalendarDto.builder()
+                .walkList(result)
+                .totalCnt(result.size())
+                .totalDistance(distance.get())
+                .totalDuration(duration.get())
+                .build();
     }
 
     @Override

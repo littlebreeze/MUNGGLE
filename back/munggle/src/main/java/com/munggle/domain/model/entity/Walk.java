@@ -20,7 +20,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Walk {
+public class Walk extends BaseTimeEntity {
 
     // 처음에는 유저번호, 산책 반려견만 채워진 채로 객체 생성
     @Id
