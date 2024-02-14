@@ -45,12 +45,6 @@ public class SocketHandler extends TextWebSocketHandler {
         DMDto dmDto = objectMapper.readValue(payload, DMDto.class);
         Long roomId = chatMessageService.findRoomByUsers(dmDto.getSenderId(), dmDto.getReceiver());
         log.info("여기까지 왔다");
-        if (chatMessageService.getDMListInRoom(roomId).isEmpty()) {
-            String json = objectMapper.writeValueAsString(Collections.singletonMap("roomId", roomId));
-            TextMessage roomIdMessage = new TextMessage(json);
-            log.info("roomId: " + roomIdMessage);
-            session.sendMessage(roomIdMessage);
-        }
         dmDto.setRoomId(roomId);
         // 특정 세션에 메시지를 보내는 로직을 추가
         sendMessageToUser(dmDto, message);
