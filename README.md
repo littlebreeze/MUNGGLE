@@ -1,4 +1,5 @@
-![logo](/assets/logo.png)
+
+<img src="/assets/logo.png"  width="400px" height="200px">
 
 # 🐶 멍글멍글
 > 🐾참쉽조 (서울 4반 10조)
@@ -58,10 +59,10 @@
 ![ERD](/assets/ERD.png)
 
 ## 🎨 와이어프레임
-![와이어프레임](/assets/와이어프레임.png)
+<img src="/assets/와이어프레임.png"  width="400px" height="600px">
 
 ## 🐕 주요 기능
-
+캡쳐나 gif 붙히기
 
 ## ⚙️ 전체 기능 소개
 
