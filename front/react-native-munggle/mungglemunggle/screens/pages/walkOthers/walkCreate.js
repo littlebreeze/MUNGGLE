@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { View, Text, Button, ScrollView, StyleSheet, Dimensions, TouchableOpacity, Alert, Platform, KeyboardAvoidingView, TextInput, Image } from "react-native";
 import { FontAwesome } from '@expo/vector-icons';
+import Checkbox from "expo-checkbox";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -16,6 +17,31 @@ export default function WalkCreate ({ duration, locations, distance, image }) {
   const [isPrivate, setIsPrivate] = useState(false);
 
   const [rating, setRating] = useState(0);
+
+  const example = [
+    {
+      "walkName": "강아지 와의 산책",
+      "dogId": 1,
+      "duration": 11,
+      "distance": 11,
+      "rating": 4,
+      "isPrivate": isPrivate,
+      "description": "2222좋아요",
+      "location": [{
+          "lat": 1.123,
+          "lng": 2.222,
+        },
+        {
+          "lat": 1.133,
+          "lng": 2.232,
+        },
+        {
+          "lat": 1.143,
+          "lng": 2.242,
+        }
+      ]
+    }
+  ]
 
   const handleRatingChange = (selectedRating) => {
     setRating(selectedRating);
@@ -92,41 +118,56 @@ export default function WalkCreate ({ duration, locations, distance, image }) {
             </View>
 
             <View style={styles.walkCreateImageContainer}>
-              {image && <Image source={{ uri: image }} style={styles.walkCreateImage} />}
+              {image && <Image src={ image } style={styles.walkCreateImage} />}
             </View>
 
             <View style={styles.walkCreateRatingContainer}>
               {StarRating({ rating, onRatingChange: handleRatingChange })}
             </View>
 
-            <View style={styles.postCreateBottomView}>
-              <View style={styles.postCreateTextInputView}>
+            <View style={styles.walkCreateNumbers}>
+              <Text style={styles.walkCreateRatingText}>평점: {rating}</Text>
+              <Text style={styles.walkCreateDurationText}>시간: {duration}초</Text>
+              <Text style={styles.walkCreateDistanceText}>거리: {distance}m</Text>
+            </View>
+
+            <View style={styles.walkCreateBottomView}>
+              <View style={styles.walkCreateTextInputView}>
                 <TextInput
                   placeholder="제목을 입력하세요"
                   value={title}
                   onChangeText={(e) => setTitle(e)}
-                  style={styles.postCreateTextInput}
+                  style={styles.walkCreateTextInput}
                 />
               </View>
 
-              <View style={styles.postCreateTextAreaView}>
+              <View style={styles.walkCreateTextAreaView}>
                 <TextInput
                   placeholder="리뷰를 입력하세요"
                   textAlignVertical="top"
                   value={content}
                   onChangeText={(e) => setContent(e)}
-                  style={styles.postCreateTextArea}
+                  style={styles.walkCreateTextArea}
                   multiline
                 />
               </View>
+              <View style={styles.checkBoxContainer}>
+                <Checkbox
+                  style={styles.checkBox}
+                  value={isPrivate}
+                  onValueChange={setIsPrivate}
+                  color={isPrivate ? '#4630EB' : undefined}
+                />
+                <Text>비공개</Text>
+              </View>
             </View>
 
-            <View style={styles.postCreateSubmitView}>
+            <View style={styles.walkCreateSubmitView}>
               <TouchableOpacity
-              style={styles.postCreateSubmitTouchView}
+              style={styles.walkCreateSubmitTouchView}
               onPress={createWalk}
               >
-                <Text style={styles.postCreateSubmitText}>기록</Text>
+                <Text style={styles.walkCreateSubmitText}>기록</Text>
               </TouchableOpacity>
             </View>
 
@@ -151,6 +192,10 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT * 0.8,
     borderRadius: 30,
     position: "relative",
+    backgroundColor: "white",
+    borderWidth: 1,
+    paddingBottom: 6,
+    paddingTop: 17,
   },
   createModalScrollView: {
     
@@ -184,16 +229,16 @@ const styles = StyleSheet.create({
     justifyContent: "center", 
   },
   
-  postCreateBottomView: {
+  walkCreateBottomView: {
     width: SCREEN_WIDTH * 0.9,
-    height: SCREEN_HEIGHT * 0.3,
+    height: SCREEN_HEIGHT * 0.31,
     alignItems: "center",
   },
-  postCreateTextInputView: {
+  walkCreateTextInputView: {
     width: SCREEN_WIDTH * 0.85,
     height: SCREEN_HEIGHT * 0.07,
   },
-  postCreateTextInput: {
+  walkCreateTextInput: {
     width: SCREEN_WIDTH * 0.85,
     height: SCREEN_HEIGHT * 0.06,
     borderRadius: 10, 
@@ -202,11 +247,11 @@ const styles = StyleSheet.create({
     paddingLeft: SCREEN_WIDTH * 0.02,
     fontSize: 16,
   },
-  postCreateTextAreaView: {
+  walkCreateTextAreaView: {
     width: SCREEN_WIDTH * 0.85,
     height: SCREEN_HEIGHT * 0.2,
   },
-  postCreateTextArea: {
+  walkCreateTextArea: {
     width: SCREEN_WIDTH * 0.85,
     height: SCREEN_HEIGHT * 0.2,
     paddingTop: SCREEN_HEIGHT * 0.01,
@@ -217,12 +262,13 @@ const styles = StyleSheet.create({
     borderWidth: 1, 
   },
   
-  postCreateSubmitView: {
+  walkCreateSubmitView: {
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.05,
     alignItems: "center",
+    marginBottom: 10,
   },
-  postCreateSubmitTouchView: {
+  walkCreateSubmitTouchView: {
     width: SCREEN_WIDTH * 0.6,
     height: SCREEN_HEIGHT * 0.05,
     backgroundColor: "rgb(13, 110, 253)",
@@ -232,7 +278,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  postCreateSubmitText: {
+  walkCreateSubmitText: {
     color: "white",
     fontSize: 20,
   },
@@ -240,16 +286,17 @@ const styles = StyleSheet.create({
     zIndex: 6,
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.41,
-    backgroundColor: "rgb(253, 245, 169)",
+    // backgroundColor: "rgb(253, 245, 169)",
     borderRadius: 15,
   },
   walkCreateImage: {
     zIndex: 6,
-    width: SCREEN_WIDTH * 0.89,
+    width: SCREEN_WIDTH * 0.88,
     height: SCREEN_HEIGHT * 0.40,
     marginTop: 3,
     marginLeft: 2,
     borderRadius: 15,
+    borderWidth: 1,
   },
   walkCreateTitle: {
     zIndex: 8,
@@ -269,10 +316,12 @@ const styles = StyleSheet.create({
   },
   walkCreateRatingContainer: {
     width: SCREEN_WIDTH * 0.9,
-    height: 40,
+    height: 30,
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
+    // borderWidth: 1,
+    marginTop: 5,
   },
   walkCreateRating: {
     flexDirection: 'row',
@@ -282,5 +331,36 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
+  },
+  walkCreateNumbers: {
+    // flexDirection: "row",
+    width: SCREEN_WIDTH * 0.85,
+    paddingTop: SCREEN_HEIGHT * 0.01,
+    paddingLeft: SCREEN_WIDTH * 0.02,
+    paddingBottom: SCREEN_HEIGHT * 0.01,
+    fontSize: 16,    
+    borderRadius: 10,
+    borderColor: 'gray', 
+    borderWidth: 1, 
+    marginLeft: 10,
+    marginBottom: 10,
+    marginTop: 10,
+  },
+  walkCreateRatingText: {
+    flex: 1,
+  },
+  walkCreateDurationText: {
+    flex: 1,
+  },
+  walkCreateDistanceText: {
+    flex: 1,
+  },
+  checkBoxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 5,
+  },
+  checkBox: {
   },
 });

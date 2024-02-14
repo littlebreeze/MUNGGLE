@@ -5,8 +5,7 @@ import * as Location from "expo-location";
 import { KAKAOMAP_API_KEY } from '@env';
 import WalkCreate from "./walkOthers/walkCreate";
 import WalkCalendar from "./walkOthers/walkCalendar";
-import axios from "axios";
-import { captureRef } from 'react-native-view-shot';
+import axios, { Axios } from "axios";
 import ViewShot from 'react-native-view-shot';
 import * as MediaLibrary from 'expo-media-library';
 import RenderHtml from 'react-native-render-html';
@@ -85,8 +84,8 @@ const htmlContainer = `
         border-radius: 100%;
         z-index: 5;
         position: absolute;
-        bottom: 0%;
-        left: 70%;
+        bottom: 3%;
+        right: 0%;
         display: none;
         transform: translate(-50%, -50%);
         box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.2);
@@ -121,7 +120,6 @@ const htmlContainer = `
         font-size: 20px;
         font-weight: bold;
       }
-
       #backButton {
         width: 80px;
         height: 80px;
@@ -130,7 +128,7 @@ const htmlContainer = `
         border-radius: 100%;
         z-index: 5;
         position: absolute;
-        bottom: 0%;
+        bottom: 3%;
         left: 20%;
         display: none;
         transform: translate(-50%, -50%);
@@ -142,8 +140,8 @@ const htmlContainer = `
         text-align: center;
         justify-content: center;
         font-size: 20px;
+        font-weight: bold;
       }
-
       #mapIsNullMessage {
         display: flex;
         font-size: 30px;
@@ -156,7 +154,6 @@ const htmlContainer = `
         font-weight: bold;
         transform: translate(-50%, -50%);
       }
-  
       #timer {
         display: none;
         position: absolute;
@@ -167,7 +164,6 @@ const htmlContainer = `
         font-size: 36px;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* 텍스트 그림자 효과 */
       }
-
       #startButton:active,
       #pauseButton:active,
       #stopButton:active,
@@ -176,7 +172,7 @@ const htmlContainer = `
           opacity: 0.5; /* 버튼 투명도를 줄임 */
       }
     </style>
-    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=${apiKey}&libraries=services,clusterer,drawing"></script> 
+    <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=c688164e37f35d82c0237627a526de76&libraries=services,clusterer,drawing"></script> 
   </head>
   <body>
     <div id="map"></div>
@@ -269,14 +265,12 @@ const htmlContainer = `
 
       function change() {
         startButton.style.display = 'block';
-        stopButton.style.display = 'block';
         changeButton.style.display = 'none';
         backButton.style.display = 'block';
         window.ReactNativeWebView.postMessage(JSON.stringify({
           type: "change", 
           data: '',
         }));
-        
       }
 
       function back() {
@@ -284,7 +278,9 @@ const htmlContainer = `
         stopButton.style.display = 'none';
         changeButton.style.display = 'block';
         backButton.style.display = 'none';
+        pauseButton.style.display = 'none';
         timer.style.display = 'none';
+        stopTimer();
         stopDrawing();
         deleteClickLine();
         deleteDistnce();
@@ -293,6 +289,8 @@ const htmlContainer = `
           type: "back", 
           data: '',
         }));
+
+        panTo(currentLocation.latitude, -currentLocation.longitude)
       }
 
       function pauseTimer() {
@@ -303,7 +301,6 @@ const htmlContainer = `
         clearInterval(intervalId);
         startButton.style.display = 'block';
         pauseButton.style.display = 'none';
-        
       }
 
       document.getElementById('changeButton').addEventListener('click', change);
@@ -336,10 +333,14 @@ const htmlContainer = `
           createMap(currentLocation.latitude, -currentLocation.longitude);  
           mapIsNullMessage.style.display = 'none';
           changeButton.style.display = 'block';
+          window.ReactNativeWebView.postMessage(JSON.stringify({
+            type: "map", 
+            data: '',
+          }));
         } else {
           // alert('이미맵이생성됨')
           if (drawingFlag) {
-            startDrawing(currentLocation.latitude, -currentLocation.longitude);
+            startDrawing(currentLocation.latitude, -currentLocation.longitude + 0.011);
           }
         }
       });
@@ -367,9 +368,9 @@ const htmlContainer = `
 
       startButton.onclick = function() {
         startButton.style.display = 'none';
+        stopButton.style.display = 'block';
         pauseButton.style.display = 'block';
         timer.style.display = 'block';
-        backButton.style.display = 'none';
         startDrawing(currentLocation.latitude, -currentLocation.longitude);
       }
 
@@ -383,7 +384,7 @@ const htmlContainer = `
         pauseButton.style.display = 'none';
         stopDrawing();
         backButton.style.display = 'block';
-        
+        stopButton.style.display = 'none';
       }
 
       function panTo(lat, lng) {
@@ -411,7 +412,6 @@ const htmlContainer = `
       // 지도에 클릭 이벤트를 등록합니다
       // 지도를 클릭하면 선 그리기가 시작됩니다 그려진 선이 있으면 지우고 다시 그립니다
       function startDrawing(lat, lng) {
-        map.setLevel(3);
         panTo(lat, lng);
 
         // 지도 클릭이벤트가 발생했는데 선을 그리고있는 상태가 아니면
@@ -490,7 +490,6 @@ const htmlContainer = `
 
           // 선을 구성하는 좌표의 개수가 2개 이상이면
           if (path.length > 1) {
-
             // 마지막 클릭 지점에 대한 거리 정보 커스텀 오버레이를 지웁니다
             if (dots[dots.length-1].distance) {
                 dots[dots.length-1].distance.setMap(null);
@@ -517,9 +516,17 @@ const htmlContainer = `
             deleteDistnce();
 
           }
+          let maxMa = Math.max(...path.map(item => item.Ma));
+          let minMa = Math.min(...path.map(item => item.Ma));
+          let maxLa = Math.max(...path.map(item => item.La));
+          let minLa = Math.min(...path.map(item => item.La));
+          let ma = (maxMa + minMa) / 2
+          let la = (maxLa + minLa) / 2
+          panTo(ma, la);
+          marker.setMap(null);
           
           // 상태를 false로, 그리지 않고 있는 상태로 변경합니다
-          map.setLevel(4);
+          map.setLevel(5);
           drawingFlag = false;   
           seconds = 0;
           hours = 0;
@@ -586,7 +593,7 @@ const htmlContainer = `
         if (distance > 0) {
             // 클릭한 지점까지의 그려진 선의 총 거리를 표시할 커스텀 오버레이를 생성합니다
             var distanceOverlay = new kakao.maps.CustomOverlay({
-                content: '<div class="dotOverlay">거리 <span class="number">' + distance + '</span>m</div>',
+                content: '',
                 position: position,
                 yAnchor: 1,
                 zIndex: 2
@@ -654,6 +661,7 @@ export default function WalkScreen ({ navigation }) {
   const ref = useRef(null);
 
   const [isRecord, setIsRecord] = useState(null);
+  const [isMap, setIsMap] = useState(false);
 
   const [modalDuration, setModalDuration] = useState('0');
   const [modalImage, setModalImage] = useState(null);
@@ -698,6 +706,7 @@ export default function WalkScreen ({ navigation }) {
   const handleCapture = async () => {
     try {
       const uri = await ref.current.capture();
+      // console.log(ref.current);
       setModalImage(uri);
       console.log(uri);
       // 웹뷰를 캡쳐하고 캡쳐된 이미지의 URI를 상태에 저장합니다.
@@ -787,61 +796,90 @@ export default function WalkScreen ({ navigation }) {
       setPause(true);
     } else if (type === 'distance') {
       setModalDistance(data);
+      console.log(data);
     } else if (type === "change") {
-
+      setIsMap(false);
     } else if (type === "back") {
       setIsRecord(false);
+      setIsMap(true);
+      setPause(false);
+    } else if (type === "map") {
+      setIsMap(true);
     }
   }
 
-  return (
-    <View style={styles.walkMainContainer}>
-      {location ? (
+  const mapView = () => {
+    if (location) {
+      return (
         <ViewShot ref={ref} options={{ fileName: "capTureImage", format: "jpg", quality: 0.9 }} style={styles.walkMainShot}>
           <WebView
             ref={webViewRef}
             style={styles.walkMainMap}
-            source={{ uri: "https://gongtong.netlify.app/" }}
+            // source={{ uri: "https://gongtong.netlify.app/" }}
+            source={{ html: htmlContainer }}
             onMessage={onMessage}
           />
         </ViewShot>
-      ) : (
+      );
+    } else {
+      return (
         <View style={styles.walkMainLoading}>
           <Text style={styles.walkMainLoadingText}>Loading...</Text>
         </View>
-      )}
+      );
+    }
+  }
 
-      {isRecord ? (
+  const recordView = () => {
+    if (isRecord) {
+      return (
         <TouchableOpacity onPress={() => openModalWithData()}>
           <View style={styles.walkMainRecord}>
             <Text style={styles.walkMainRecordText}>Record</Text>
           </View>
         </TouchableOpacity>
-      ) : null}
+      );
+    }
+  }
 
-      {modalDuration && modalLocations && (
-        <Modal
-          visible={isCreateModalOpen}
-          animationType="slide"
-          onRequestClose={closeModal}
-        >
-          <WalkCreate 
-            duration={modalDuration}
-            locations={modalLocations}
-            distance={modalDistance}
-            image={modalImage}
-            closeModal={closeModal} />
-        </Modal>
-      )}
-      
-      <TouchableOpacity onPress={() => openModalWithMy()} style={styles.walkMainMy}>
+  const myView = () => {
+    if (isMap) {
+      return (
+        <TouchableOpacity onPress={() => openModalWithMy()} style={styles.walkMainMy}>
           <Text style={styles.walkMainMyText}>My</Text>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      );
+    }
+  }
+
+  return (
+    <View style={styles.walkMainContainer}>
+      {mapView()}
+
+      {recordView()}
+
+      <Modal
+        visible={isCreateModalOpen}
+        animationType="slide"
+        onRequestClose={closeModal}
+        transparent={true}
+      >
+        <WalkCreate 
+          duration={modalDuration}
+          locations={modalLocations}
+          distance={modalDistance}
+          image={modalImage}
+          closeModal={closeModal} />
+      </Modal>
+  
+      
+      {myView()}
       
       <Modal
         visible={isMyModalOpen}
         animationType="slide"
         onRequestClose={closeMyModal}
+        transparent={true}
       >
         <WalkCalendar 
           closeModal={closeMyModal} />
@@ -895,26 +933,27 @@ const styles = StyleSheet.create({
     borderBottomColor: '#e0e0e0',
   },
   walkMainRecord: {
-    width: 60,
-    height: 60,
+    width: 80,
+    height: 80,
     position: "absolute",
     borderColor: "black",
     borderRadius: 100,
-    bottom: 10,
-    left: 215,
+    bottom: 60.5,
+    right: 39.5,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "yellow",
     zIndex: 6,
+    elevation: 6,
   },
   walkMainRecordText: {
-    fontSize: 15,
+    fontSize: 20,
+    fontWeight: "bold",
   },
   walkMainMy: {
-    width: 60,
-    height: 60,
+    width: 55,
+    height: 55,
     position: "absolute",
-    borderColor: "black",
     borderRadius: 100,
     top: 30,
     right: 30,
@@ -925,7 +964,8 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   walkMainMyText: {
-    fontSize: 15,
+    fontSize: 20,
+    fontWeight: "bold",
   },
   walkMainShot: {
     flex: 0,
