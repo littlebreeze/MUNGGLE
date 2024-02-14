@@ -7,6 +7,7 @@ import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.Date;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class LocationDto {
 
     private Long walkId;

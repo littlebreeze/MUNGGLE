@@ -23,13 +23,18 @@ public class WalkController {
     private final WalkService walkService;
 
     @PostMapping
-    public void createWalk(@AuthenticationPrincipal User principal,
-                           @RequestPart(value="dto") @Valid WalkCreateDto walkCreateDto,
-                           @RequestPart(value="file") MultipartFile file){
+    public Long createWalk(@AuthenticationPrincipal User principal,
+                           @RequestBody WalkCreateDto walkCreateDto){
 
         walkCreateDto.setUserId(principal.getId());
-        walkCreateDto.setImage(file);
-        walkService.createWalk(walkCreateDto);
+        return walkService.createWalk(walkCreateDto);
+    }
+
+    @PutMapping("/{walkId}/image")
+    public void updateImage(@AuthenticationPrincipal User principal,
+                           @PathVariable Long walkId, @RequestPart(value="file") MultipartFile file){
+
+        walkService.updateWalkImage(walkId, file);
     }
 
     @GetMapping("/{year}/{month}")

@@ -16,7 +16,7 @@ public class ExceptionAdvice {
 
     @ExceptionHandler({UserNotFoundException.class, FollowNotFoundException.class, BlockNotFoundException.class,
             WalkNotFoundException.class, LocationsNotFoundException.class, DogNotFoundException.class, MatchingCharacterNotFoundException.class,
-            CommentNotFoundException.class, RoomNotFoundException.class})
+            CommentNotFoundException.class, RoomNotFoundException.class, KindNotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNotFound(RuntimeException e) {
         return e.getMessage();

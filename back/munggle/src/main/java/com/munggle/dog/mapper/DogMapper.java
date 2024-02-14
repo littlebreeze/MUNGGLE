@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class DogMapper {
 
     // Dto -> Entity (Create할 때)
-    public static Dog toEntity(DogCreateDto dogCreateDto){
+    public static Dog toEntity(DogCreateDto dogCreateDto, Kind kind){
         Gender gender = Enum.valueOf(Gender.class, dogCreateDto.getGender());
 
         SizeType size = null;
@@ -21,7 +21,7 @@ public class DogMapper {
             size = Enum.valueOf(SizeType.class, dogCreateDto.getSize());
 
         return Dog.builder()
-                .kind(Kind.builder().kindId(dogCreateDto.getKindId()).kindNm("").build())
+                .kind(kind)
                 .birthDate(dogCreateDto.getBirthDate())
                 .size(size)
                 .weight(dogCreateDto.getWeight())

@@ -6,13 +6,16 @@ import com.munggle.walk.dto.WalkCalendarDto;
 import com.munggle.walk.dto.WalkCreateDto;
 import com.munggle.walk.dto.WalkDto;
 import com.munggle.walk.dto.WalkUpdateDto;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
 public interface WalkService {
 
     // 산책 생성
-    void createWalk(WalkCreateDto walkDto);
+    Long createWalk(WalkCreateDto walkDto);
+
+    void updateWalkImage(Long walkId, MultipartFile file);
 
     // 내 기록 목록
     WalkCalendarDto readMyWalks(Long userId, Integer year, Integer month);

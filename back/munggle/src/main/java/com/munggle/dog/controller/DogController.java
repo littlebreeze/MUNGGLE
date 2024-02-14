@@ -26,26 +26,30 @@ public class DogController {
     // 반려견 등록
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public void createDog(@AuthenticationPrincipal User principal,
-                          @RequestPart(value = "dto") @Valid DogCreateDto dogCreateDto,
-                          @RequestPart(value = "file", required = false) MultipartFile file){
+    public Long createDog(@AuthenticationPrincipal User principal,
+                          @RequestBody @Valid DogCreateDto dogCreateDto){
 
         dogCreateDto.setUserId(principal.getId());
-        dogCreateDto.setImage(file);
 
-        // 없는 kindId를 넣으면 InvalidDataAccessApiUsageException
-        dogService.insertDog(dogCreateDto);
+        return dogService.insertDog(dogCreateDto);
     }
 
     @PutMapping("/{dogId}")
     @ResponseStatus(HttpStatus.OK)
     public void updateDog(@AuthenticationPrincipal User principal,
                           @PathVariable Long dogId,
-                          @RequestPart(value = "dto") @Valid DogUpdateDto dogUpdateDto,
+                          @RequestBody @Valid DogUpdateDto dogUpdateDto){
+
+        dogService.updateDog(principal.getId(), dogId, dogUpdateDto);
+    }
+
+    @PutMapping("/{dogId}/image")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateImage(@AuthenticationPrincipal User principal,
+                          @PathVariable Long dogId,
                           @RequestPart(value = "file", required = false) MultipartFile file){
 
-        dogUpdateDto.setImage(file);
-        dogService.updateDog(principal.getId(), dogId, dogUpdateDto);
+        dogService.updateDogImage(principal.getId(), dogId, file);
     }
 
     @DeleteMapping("/{dogId}")
