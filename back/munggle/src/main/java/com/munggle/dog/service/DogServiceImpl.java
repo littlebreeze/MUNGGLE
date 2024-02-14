@@ -74,7 +74,7 @@ public class DogServiceImpl implements DogService {
         dog.updateDog(dogUpdateDto);
 
         // 로그인 사용자의 반려견이 아닌 경우 예외처리
-        if(userId != dog.getUser().getId()){
+        if(userId.longValue() != dog.getUser().getId().longValue()){
             throw new NotYourDogException(ExceptionMessage.NOT_YOUR_DOG);
         }
 
