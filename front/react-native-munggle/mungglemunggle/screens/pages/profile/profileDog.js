@@ -19,17 +19,19 @@ export default function ProfileDog (props) {
     return (
       <View style={styles.profileDogListView}>
         {dogList && dogList.map((dog, index) => {
+          console.log(dog);
           return (
             <View style={styles.profileDogView} key={index}>
               <View style={styles.profileDogImageView}>
                 <Image 
                   style={styles.profileDogImage}
                   src={dog.image ? dog.image : dog.user.backgroundImgUrl}
-                />
+                /> 
               </View>
               <View style={styles.profileDogNameView}>
                 <Text style={styles.profileDogName}>{dog.name}</Text>
               </View>
+
               <View style={styles.profileDogViewBottomView}>
                 <View style={styles.profileDogViewBottomViewLeftView}>
                   <Text style={styles.profileDogViewBottomText}>생일 : {formatDate(dog.birthDate)}</Text>
@@ -40,6 +42,10 @@ export default function ProfileDog (props) {
                   <Text style={styles.profileDogViewBottomText}>무게 : {dog.weight} kg</Text>
                 </View>
               </View>
+
+               <View style={styles.profileDogDescriptionView}>
+                <Text style={styles.profileDogDescriptionText}>{dog.description}</Text>
+               </View>
             </View>
           );
         })}
@@ -64,7 +70,7 @@ const styles = StyleSheet.create({
   },
   profileDogView: {
     width: SCREEN_WIDTH * 0.8,
-    height: SCREEN_HEIGHT * 0.38,
+    height: SCREEN_HEIGHT * 0.47,
     padding: 20,
     alignItems: "center",
     marginVertical: 20,
@@ -94,13 +100,13 @@ const styles = StyleSheet.create({
   profileDogViewBottomView: {
     marginTop: 5,
     width: SCREEN_WIDTH * 0.7,
-    height: SCREEN_HEIGHT * 0.1,
+    height: SCREEN_HEIGHT * 0.06,
     position: "relative",
     flexDirection: 'row',
   },
   profileDogViewBottomViewLeftView: {
     width: SCREEN_WIDTH * 0.31,
-    height: SCREEN_HEIGHT * 0.05,
+    height: SCREEN_HEIGHT * 0.06,
     justifyContent: "space-around",
     alignItems: "flex-start",
     marginLeft: 20,
@@ -109,7 +115,7 @@ const styles = StyleSheet.create({
   },
   profileDogViewBottomViewRightView: {
     width: SCREEN_WIDTH * 0.3,
-    height: SCREEN_HEIGHT * 0.05,
+    height: SCREEN_HEIGHT * 0.06,
     justifyContent: "space-around",
     alignItems: "flex-start",
     marginLeft: 20,
@@ -117,5 +123,19 @@ const styles = StyleSheet.create({
   },
   profileDogViewBottomText: {
 
+  },
+
+  profileDogDescriptionView: {
+    marginTop: SCREEN_HEIGHT * 0.01,
+    paddingTop: SCREEN_HEIGHT * 0.01,
+    borderTopColor: "gray",
+    borderTopWidth: 1,
+    width: SCREEN_WIDTH * 0.7,
+    height: SCREEN_HEIGHT * 0.08,
+    justifyContent: "center",
+    alignItems1: "flex-start",
+  },
+  profileDogDescriptionText: {
+    fontSize: 14,
   },
 });

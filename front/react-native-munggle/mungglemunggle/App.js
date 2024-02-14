@@ -13,6 +13,8 @@ import Search from './components/modal/search';
 import Notification from './components/modal/notification';
 import DirectMessage from './components/modal/directMessage';
 
+import PostCreate from './loginTest';
+
 // nav : 10 %
 // body : 82 %
 // footer : 8 %
@@ -112,6 +114,7 @@ export default function App() {
     );
   } else {
     return (
+      // <PostCreate logIn={logIn} setIsLogin={setIsLogin} />
       <LoginScreen logIn={logIn} setIsLogin={setIsLogin} />
     );
   }

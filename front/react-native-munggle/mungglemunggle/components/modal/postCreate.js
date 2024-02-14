@@ -16,7 +16,7 @@ import iconSend from "../../assets/icons/send.png";
 import { AntDesign } from '@expo/vector-icons';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import axios, { Axios } from "axios";
+import axios from "axios";
 import { Header } from "react-native/Libraries/NewAppScreen";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
@@ -145,7 +145,7 @@ export default function PostCreate (props) {
         })}
       </ScrollView>
     );
-  }
+  };
   
   const tagList = () => {
     return (

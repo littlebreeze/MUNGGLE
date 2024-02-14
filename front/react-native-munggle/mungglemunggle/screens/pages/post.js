@@ -58,8 +58,6 @@ export default function PostScreen () {
       setAuthToken(await AsyncStorage.getItem("accessToken"));
     };
 
-    console.log(postList);
-
     await axios.get(
       `${apiUrl}/posts/curating`,
       {headers: {
@@ -110,7 +108,6 @@ export default function PostScreen () {
           "Authorization": authToken ,
         }}
       ).then((res) => {
-        console.log(res.data);
         setRecommendUserList(res.data);
       }) .catch((err) => {
         console.log(err);
@@ -119,13 +116,19 @@ export default function PostScreen () {
   };
 
   useEffect(() => {
+    if (!authToken) {
+      setAuthToken(AsyncStorage.getItem("accessToken"));
+    };
+  }, [])
+  
+  useEffect(() => {
     getPost();
     // console.log(postList);
     getFollowingPost();
     // console.log(followingPostList);
     getRecommendUser();
-    console.log(recommendUserList);
-  }, [])
+    // console.log(recommendUserList);
+  }, [authToken]);
 
   const profiles = () => {
     if (recommendUserList) {

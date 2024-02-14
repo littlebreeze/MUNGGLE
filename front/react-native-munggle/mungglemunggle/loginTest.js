@@ -9,7 +9,7 @@ import { WebView } from "react-native-webview";
 
 // import ImagePicker from 'react-native-image-crop-picker';
 
-import iconClose from "../../assets/icons/close1.png";
+import iconClose from "./assets/icons/close1.png";
 
 import axios, { Axios } from "axios";
 

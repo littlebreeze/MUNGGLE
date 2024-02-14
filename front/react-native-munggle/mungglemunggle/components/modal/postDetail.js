@@ -31,7 +31,6 @@ export default function PostDetail (props) {
 
   const [commentText, setCommentText] = useState("");
 
-  
   const formatDate = (date) => {
     const day = new Date(date);
 
@@ -79,7 +78,6 @@ export default function PostDetail (props) {
       }}
     ).then((res) => {
       setCommentList(res.data.comments);
-      console.log(res.data);
     }).catch((err) => {
       console.log(err);
     })
@@ -110,13 +108,14 @@ export default function PostDetail (props) {
     }).catch((err) => {
       console.log(err);
     })
-    
   }
 
   const postScrap = async () => {
     if (!authToken) {
       setAuthToken(await AsyncStorage.getItem("accessToken"));
     };
+
+    console.log(props.postId);
 
     await axios.post(
       `${apiUrl}/posts/${props.postId}/scrap`,
@@ -131,15 +130,20 @@ export default function PostDetail (props) {
   }
 
   useEffect(() => {
-    console.log(props.postId);
+    if (!authToken) {
+      setAuthToken(AsyncStorage.getItem("accessToken"));
+    };
+  }, []);
 
+  useEffect(() => {
     if (!post) {
       getPostData();
-    }
+    };
+    
     if (!commentList) {
       getCommentData();
-    }
-  }, []);
+    };
+  }, [authToken]);
 
   const postDetail = () => {
     if (post) {

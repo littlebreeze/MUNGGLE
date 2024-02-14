@@ -70,6 +70,8 @@ export default function ProfileScreen () {
       setAuthToken(await AsyncStorage.getItem("accessToken"));
     };
 
+    console.log(authToken);
+
     if (!profile) {
       await axios.get(
         `${apiUrl}/users/mypage`,
@@ -97,11 +99,10 @@ export default function ProfileScreen () {
         }}
       ).then((res) => {
         setDogList(res.data);
-        console.log(res.data);
       }).catch((err) => {
         console.log(err);
       })
-    }
+    } 
   }
 
   const getMyPostList = async () => {
@@ -142,10 +143,15 @@ export default function ProfileScreen () {
     }
   }
 
-
   useEffect(() => { 
-    getMyProfile();
+    if (!authToken) {
+      setAuthToken(AsyncStorage.getItem("accessToken"));
+    };
   }, []);
+  
+  useEffect(() => {
+    getMyProfile();
+  }, [authToken]);
 
   useEffect(() => {
     getMyDogList();
@@ -517,7 +523,7 @@ export default function ProfileScreen () {
     if (dogList) {
       return (
         <View style={styles.profileBottomView}>
-          <ProfileDog  dogList={dogList} />
+          <ProfileDog dogList={dogList} />
         </View>
       );
     } else {
@@ -621,9 +627,9 @@ export default function ProfileScreen () {
         transparent={true}
         visible={isCreateDogModalOpen}
         onRequestClose={() => closeCreateDogModal()}>
-        <CreateDog closeCreateDogModal={closeCreateDogModal} />
+        <CreateDog getMyDogList={getMyDogList}closeCreateDogModal={closeCreateDogModal} />
       </Modal>
-      
+        
     </View>
   );
 };

@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import { View, Text, TextInput, Modal,
   Image, TouchableOpacity, Dimensions,
-  StyleSheet, 
+  StyleSheet, KeyboardAvoidingView, Platform
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as AuthSession from "expo-auth-session";
@@ -65,102 +65,114 @@ export default function LoginScreen (props) {
 
 
   return (
-    <View style={styles.loginContainer}>
-      <View style={styles.loginTopImageView}>
-        <Image 
-          style={styles.loginTopImage} 
-          source={imgLogo}
-        />
-      </View>
-      
-      <View style={styles.textInputView}>
-        <TextInput 
-          placeholder="아이디"
-          value={username}
-          onChangeText={(e) => setUsername(e)}
-          style={styles.usernameInput} 
-        />
-        
-        <TextInput
-          placeholder="비밀번호"
-          value={password}
-          onChangeText={(e) => setPassword(e)}
-          secureTextEntry={true} 
-          style={styles.passwordInput} 
-        />
-      </View>
-      
-      <TouchableOpacity 
-        style={styles.loginButtonView} 
-        onPress={handleLogin}
-      >
-        <Text style={styles.loginButtonText}>로그인</Text>
-      </TouchableOpacity>
-      
-      <View style={styles.signInButtonView}>
-        <TouchableOpacity 
-          style={styles.signInButtonTouch}
-          onPress={openSignUpModal}
-        >
-          <Text style={styles.signInButtonText}>회원가입</Text>
-        </TouchableOpacity>
-        <TouchableOpacity 
-          style={styles.signInButtonTouch}
-        >
-          <Text style={styles.signInButtonText}>아이디/비밀번호 찾기</Text>
-        </TouchableOpacity>
-      </View>
-      
-      <View style={styles.underLineView}>
-        <View style={styles.underLineSideView} />
-        <View style={styles.underLineCenterView}>
-          <Text style={styles.underLineText}>또는</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={100}
+      style={styles.keyboardAvoidingView}
+    >
+      <View style={styles.loginContainer}>
+        <View style={styles.loginTopImageView}>
+          <Image 
+            style={styles.loginTopImage} 
+            source={imgLogo}
+          />
         </View>
-        <View style={styles.underLineSideView} />
-      </View>
-      
-      <View style={styles.snsLoginView}>
-        <TouchableOpacity 
-          style={styles.googleLoginView}
-        >
-          <Image 
-            style={styles.googleLoginIcon}
-            source={iconGoogle}
+        
+        <View style={styles.textInputView}>
+          <TextInput 
+            placeholder="아이디"
+            value={username}
+            onChangeText={(e) => setUsername(e)}
+            style={styles.usernameInput} 
           />
-        </TouchableOpacity>
+          
+          <TextInput
+            placeholder="비밀번호"
+            value={password}
+            onChangeText={(e) => setPassword(e)}
+            secureTextEntry={true} 
+            style={styles.passwordInput} 
+          />
+        </View>
         
         <TouchableOpacity 
-          style={styles.kakaoLoginView}
+          style={styles.loginButtonView} 
+          onPress={handleLogin}
         >
-          <Image 
-            style={styles.kakaoLoginIcon}
-            source={iconKakao}
-          />
+          <Text style={styles.loginButtonText}>로그인</Text>
         </TouchableOpacity>
         
-        <TouchableOpacity 
-          style={styles.naverLoginView}
-        >
-          <Image 
-            style={styles.naverLoginIcon}
-            source={iconNaver}
-          />
-        </TouchableOpacity>
-      </View>
+        <View style={styles.signInButtonView}>
+          <TouchableOpacity 
+            style={styles.signInButtonTouch}
+            onPress={openSignUpModal}
+          >
+            <Text style={styles.signInButtonText}>회원가입</Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.signInButtonTouch}
+          >
+            <Text style={styles.signInButtonText}>아이디/비밀번호 찾기</Text>
+          </TouchableOpacity>
+        </View>
+        
+        <View style={styles.underLineView}>
+          <View style={styles.underLineSideView} />
+          <View style={styles.underLineCenterView}>
+            <Text style={styles.underLineText}>또는</Text>
+          </View>
+          <View style={styles.underLineSideView} />
+        </View>
+        
+        <View style={styles.snsLoginView}>
+          <TouchableOpacity 
+            style={styles.googleLoginView}
+          >
+            <Image 
+              style={styles.googleLoginIcon}
+              source={iconGoogle}
+            />
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.kakaoLoginView}
+          >
+            <Image 
+              style={styles.kakaoLoginIcon}
+              source={iconKakao}
+            />
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={styles.naverLoginView}
+          >
+            <Image 
+              style={styles.naverLoginIcon}
+              source={iconNaver}
+            />
+          </TouchableOpacity>
+        </View>
 
-      <Modal
-        animationType="slide"
-        apiUrl={apiUrl}
-        transparent={true}
-        visible={isSignUpModalOpen}
-        onRequestClose={() => closeSignUpModal()}>
-        <SignUp closeSignUpModal={closeSignUpModal} />
-      </Modal>
-    </View>
+        <Modal
+          animationType="slide"
+          apiUrl={apiUrl}
+          transparent={true}
+          visible={isSignUpModalOpen}
+          onRequestClose={() => closeSignUpModal()}>
+          <SignUp closeSignUpModal={closeSignUpModal} />
+        </Modal>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
+  keyboardAvoidingView: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT * 0.8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
   loginContainer: {
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT,

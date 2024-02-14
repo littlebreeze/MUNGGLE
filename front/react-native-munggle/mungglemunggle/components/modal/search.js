@@ -16,83 +16,16 @@ import ProfileCircle from '../profileCircle';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from "axios";
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
+import { format, formatDistanceToNow } from "date-fns";
+import { ko } from "date-fns/locale";
 
-//테스트 tag 데이터(추후 삭제)
-const tagData = [
-  {
-    "tagId": 1,
-    "tagNm": "강아지"
-  },
-  {
-    "tagId": 2,
-    "tagNm": "귀여워"
-  },
-  {
-    "tagId": 3,
-    "tagNm": "산책"
-  },
-  {
-    "tagId": 4,
-    "tagNm": "Apple"
-  },
-  {
-    "tagId": 5,
-    "tagNm": "Grape"
-  },
-  {
-    "tagId": 6,
-    "tagNm": "Train"
-  },
-  {
-    "tagId": 7,
-    "tagNm": "House"
-  },
-  {
-    "tagId": 8,
-    "tagNm": "Tree"
-  },
-  {
-    "tagId": 9,
-    "tagNm": "Home"
-  },
-  {
-    "tagId": 10,
-    "tagNm": "Tom"
-  }
-];
-//테스트 user 데이터(추후 삭제)
-const userData = [{
-  "id": 1,
-  "profileUrlImg": "https://s3-munggle-files.s3.ap-northeast-2.amazonaws.com/1/4/63a54005-926f-480f-a222-2dc6a718e7d7png",
-  "nickname": "멍1",
-  "description": "안녕하세요 멍1 입니다.",
-},
-{
-  "id": 2,
-  "profileUrlImg": "http://www.evermodel.com/uploaded/model/414/d3d415e8cad046393ac6aa22f0bfd5983_slide.jpg",
-  "nickname": "멍2",
-  "description": "안녕하세요 멍2 입니다.",
-},
-{
-  "id": 3,
-  "profileUrlImg": "https://images.mypetlife.co.kr/content/uploads/2023/11/17133418/61fbb115-3845-4427-b72d-76c5e650cd3c.jpeg",
-  "nickname": "멍3",
-  "description": "안녕하세요 멍3 입니다.",
-},
-{
-  "id": 4,
-  "profileUrlImg": "http://www.evermodel.com/uploaded/model/414/d3d415e8cad046393ac6aa22f0bfd5980_slide.jpg",
-  "nickname": "멍4",
-  "description": "안녕하세요 멍4 입니다.",
-  },
-]
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 export default function Search(props) {
   const apiUrl = "http://i10a410.p.ssafy.io:8080";
   const [authToken, setAuthToken] = useState("");
 
-  const [searchText, setSearchText] = useState("제목");
+  const [searchText, setSearchText] = useState("강아지");
   const [activeTab, setActiveTab] = useState(0);
 
   const scrollViewRef = useRef(null);
@@ -106,6 +39,23 @@ export default function Search(props) {
 
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
           
+  
+  const formatDate = (date) => {
+    const day = new Date(date);
+
+    const now = Date.now();
+
+    const diff = (now - day.getTime()) / 1000;
+
+    if (diff < 60 * 1) {
+      return "방금 전";
+    } else if (diff < 60 * 60 * 24 * 3) {
+      return formatDistanceToNow(day, {addSuffix: true, locale: ko});
+    } else {
+      return format(day, "yyyy-MM-dd  HH:mm", {locale: ko});
+    }
+  }
+
   const changeDetailPost = (postId) => {
     setDetailPost(postId);
   }
@@ -117,6 +67,11 @@ export default function Search(props) {
 
   const closeDetailModal = () => { setIsDetailModalOpen(false) };
   
+  useEffect(() => {
+    if (!authToken) {
+      setAuthToken(AsyncStorage.getItem("accessToken"));
+    };
+  }, []);
 
   const getPostSearchData = async (searchWord) => {
     if (!authToken) {
@@ -126,11 +81,11 @@ export default function Search(props) {
     await axios.get(
       `${apiUrl}/search/post?type=title&word=${searchWord}&page=${0}`,
       {headers: {
-        "Authorization": authToken ,
+        "Authorization": authToken._j,
       }}
     ).then((res) => {
       console.log(res.data);
-      setSearchPosts(res.data);
+      setSearchPosts(res.data.posts);
     }).catch((err) => {
       console.log(err);
     })
@@ -140,11 +95,11 @@ export default function Search(props) {
     if (!authToken) {
       setAuthToken(await AsyncStorage.getItem("accessToken"));
     };
-  
+    
     await axios.get(
-      `${apiUrl}/search/user/${searchWord}`,
+      `${apiUrl}/search/user?keyword=${searchWord}`,
       {headers: {
-        "Authorization": authToken ,
+        "Authorization": authToken._j ,
       }}
     ).then((res) => {
       console.log(res.data);
@@ -162,7 +117,7 @@ export default function Search(props) {
     await axios.get(
       `${apiUrl}/search/tag/${searchWord}`,
       {headers: {
-        "Authorization": authToken ,
+        "Authorization": authToken._j ,
       }}
     ).then((res) => {
       console.log(res.data);
@@ -177,14 +132,16 @@ export default function Search(props) {
       setAuthToken(await AsyncStorage.getItem("accessToken"));
     };
 
+    console.log(authToken._j)
+
     await axios.get(
       `${apiUrl}/search/post?type=tag&word=${tagName}&page=${0}`,
       {headers: {
-        "Authorization": authToken ,
+        "Authorization": authToken._j ,
       }}
     ).then((res) => {
       console.log(res.data);
-      setTagSearchPosts(res.data);
+      setTagSearchPosts(res.data.posts);
     }).catch((err) => {
       console.log(err);
     })
@@ -266,10 +223,16 @@ export default function Search(props) {
   };
 
  const postContent = () => {
-  if (searchPosts) {
+  if (searchPosts && searchPosts.length == 0) {
+    return (
+      <View style={{marginTop: SCREEN_HEIGHT * 0.05,}}>
+        <Text style={{fontSize: 20,}}>검색 결과가 없습니다.</Text>
+      </View>
+    );
+  } else if (searchPosts && searchText) {
     return (
       <View style={styles.searchPostBottomView}>
-        {searchPosts && searchPosts.map((post, index) => {  
+        {searchPosts.map((post, index) => {  
           return(
             <View key={index} style={styles.searchPostListView}>
               <View style={styles.searchPostListViewLeftView}>
@@ -297,7 +260,7 @@ export default function Search(props) {
                 <View style={styles.searchPostListBottomView}>
                   <View style={styles.searchPostListTextView}>
                     <Text style={styles.searchPostListTitle}>{post.postTitle}</Text>
-                    <Text style={styles.searchPostListDate}>{post.createdAt}</Text>
+                    <Text style={styles.searchPostListDate}>{formatDate(post.createdAt)}</Text>
                   </View>
                   <View style={styles.searchPostListIconView}>
                     <View style={styles.searchPostLikeCountView}>
@@ -317,86 +280,138 @@ export default function Search(props) {
         })}
       </View>
     );
-  } else {
+  } else if (!searchPosts && !searchText) {
     return (
-      <View>
-        <Text>검색어를 입력하세요.</Text>
+      <View style={{marginTop: SCREEN_HEIGHT * 0.05,}}>
+        <Text style={{fontSize: 20,}}>검색어를 입력하세요.</Text>
+      </View>
+    );
+  } else if (!searchPosts && searchText) {
+    return (
+      <View style={{marginTop: SCREEN_HEIGHT * 0.05,}}>
+        <Text style={{fontSize: 20,}}>검색 결과가 없습니다.</Text>
       </View>
     );
   }
  };
 
  const userContent = () => {
-  return (
-    userData.map((user, index) => (
-      <TouchableOpacity 
+  if (searchUsers && searchUsers.length == 0) {
+    return (
+      <View style={{marginTop: SCREEN_HEIGHT * 0.05,}}>
+        <Text style={{fontSize: 20,}}>검색 결과가 없습니다.</Text>
+      </View>
+    );
+  } else if (searchUsers) {
+    return (
+      searchUsers.map((user, index) => (
+        <TouchableOpacity 
         style={styles.userContentView} 
         onPress={handleUserPress} 
         key={index}
-      >
+        >
         <View style={styles.userContentImageView}>
           <Image 
             style={styles.userContentImage} 
             source={{ uri: user.profileUrlImg }} 
-          />
+            />
         </View>
 
-        <View style={styles.userContentNicknameView}>
-          <Text style={styles.userContentNickname}>{user.nickname}</Text>
-        </View>
+        <View style={styles.userContentRightView}>
+          <View style={styles.userContentDescriptionView}>
+            <Text style={styles.userContentDescription}>{user.description}</Text>
+          </View>
 
-        <View style={styles.userContentDescriptionView}>
-          <Text style={styles.userContentDescription}>{user.description}</Text>
+          <View style={styles.userContentNicknameView}>
+            <Text style={styles.userContentNickname}>{user.nickname}</Text>
+          </View>
         </View>
       </TouchableOpacity>
     ))
-  );
- };
+    );
+  } else if (!searchUsers && !searchText) {
+    return (
+      <View style={{marginTop: SCREEN_HEIGHT * 0.05,}}>
+        <Text style={{fontSize: 20,}}>검색어를 입력하세요.</Text>
+      </View>
+    );
+  } else if (!searchUsers && searchText) {
+    return (
+      <View style={{marginTop: SCREEN_HEIGHT * 0.05,}}>
+        <Text style={{fontSize: 20,}}>검색 결과가 없습니다.</Text>
+      </View>
+    );
+  };
+};
+
+  const [isTagSearchModal, setIsTagSearchModal] = useState(false);
+
+  const [searchTag, setSearchTag] = useState(false);
+
+  const openTagSearchModal = () => {
+    setIsTagSearchModal(true);
+  };
+
+  const closeTagSearchModal = () => {
+    setIsTagSearchModal(false);
+  };
+
+  const handleTagPress = async (tagName) => {
+    await getTagPostSearchData(tagName);
+    setSearchTag(tagName);
+    openTagSearchModal();
+  };
 
  const tagContent = () => {
-  return (
-    <View style={styles.tagContentContainer}>
-      {tagData && tagData.map((tag, index) => {
-          const [isTagSearchModal, setIsTagSearchModal] = useState(false);
-
-          const openTagSearchModal = () => {
-            setIsTagSearchModal(true);
-          };
-        
-          const closeTagSearchModal = () => {
-            setIsTagSearchModal(false);
-          };
-
-          const handleTagPress = async (tagName) => {
-            await getTagPostSearchData(tagName);
-            openTagSearchModal();
-          };
-        return (
-          <View>
-            <TouchableOpacity key={index} style={styles.tagContainer}
-              onPress={() => {
-                handleTagPress(tag.tagNm);
-              }}
-            >
-              <View style={styles.tagContent}>
-                <Text style={styles.tagName}># {tag.tagNm}</Text>
-              </View>
-            </TouchableOpacity>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={isTagSearchModal}
-              onRequestClose={closeTagSearchModal}
-            >
-              <SearchTagResult searchTag={tag.tagNm} closeTagSearchModal={closeTagSearchModal} />
-            </Modal>
-          </View>
-          );
-        }
-      )}
-    </View>
-  );
- };
+  if (searchTags && searchTags.length == 0) {
+    return (
+      <View style={{marginTop: SCREEN_HEIGHT * 0.05,}}>
+        <Text style={{fontSize: 20,}}>검색 결과가 없습니다.</Text>
+      </View>
+    );
+  } else if (searchTags) {
+    return (
+      <View style={styles.tagContentContainer}>
+        {searchTags.map((tag, index) => {
+          return (
+            <View>
+              <TouchableOpacity key={index} style={styles.tagContainer}
+                onPress={() => {
+                  handleTagPress(tag.tagNm);
+                }}
+              >
+                <View style={styles.tagContent}>
+                  <Text style={styles.tagName}># {tag.tagNm}</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+            );
+          }
+        )}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isTagSearchModal}
+          onRequestClose={closeTagSearchModal}
+        >
+          <SearchTagResult searchTag={searchTag} tagSearchPosts={tagSearchPosts} closeTagSearchModal={closeTagSearchModal} />
+        </Modal>
+      </View>
+    );
+  } else if (!searchTags && !searchText) {
+    return (
+      <View style={{marginTop: SCREEN_HEIGHT * 0.05,}}>
+        <Text style={{fontSize: 20,}}>검색어를 입력하세요.</Text>
+      </View>
+    );
+  } else if (!searchTags && searchText) {
+    return (
+      <View style={{marginTop: SCREEN_HEIGHT * 0.05,}}>
+        <Text style={{fontSize: 20,}}>검색 결과가 없습니다.</Text>
+      </View>
+    );
+  };
+};
 
   return (
     <View style={styles.searchModalBackGround}>
@@ -626,7 +641,6 @@ const styles = StyleSheet.create({
   searchPostLikeIcon: {
     width: SCREEN_WIDTH * 0.055,
     height: SCREEN_WIDTH * 0.055,
-    
   },
   searchPostLikeCountView: {
     width: SCREEN_WIDTH * 0.055,
@@ -645,6 +659,7 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.85,
     height: SCREEN_HEIGHT * 0.1,
     flexDirection: 'row',
+    justifyContent: "space-around",
     marginVertical: SCREEN_HEIGHT * 0.01,
   },
   userContentImageView: {
@@ -660,20 +675,23 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "lightgrey",
   },
-  userContentNicknameView: {
-    width: SCREEN_WIDTH * 0.2,
+  userContentRightView: {
+    width: SCREEN_WIDTH * 0.6,
     height: SCREEN_HEIGHT * 0.1,
-    justifyContent: "flex-end",
-    marginLeft: SCREEN_WIDTH * 0.005,
+  },
+  userContentNicknameView: {
+    width: SCREEN_WIDTH * 0.6,
+    height: SCREEN_HEIGHT * 0.035,
+    justifyContent: "center",
+    paddingLeft: SCREEN_WIDTH * 0.02,
   },
   userContentNickname: {
-    marginBottom: SCREEN_HEIGHT * 0.02,
-    fontSize: 18, 
+    fontSize: 17, 
     fontWeight: "500",
   },
   userContentDescriptionView: {
-    width: SCREEN_WIDTH * 0.44,
-    height: SCREEN_HEIGHT * 0.1,
+    width: SCREEN_WIDTH * 0.6,
+    height: SCREEN_HEIGHT * 0.065,
     justifyContent: "center",
     alignItems: "flex-start",
   },
