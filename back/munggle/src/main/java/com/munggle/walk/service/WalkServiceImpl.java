@@ -74,9 +74,10 @@ public class WalkServiceImpl implements WalkService{
             walk.updateImage(uploadWalkImage(walkId, walkCreateDto.getImage()));
         }
 
+        AtomicReference<Long> order = new AtomicReference<>(1l);
         // 산책 경로 좌표들 저장
         locationRepository.saveAll(walk.getLocation().stream()
-                .map(location -> location.setInsertId(walkId)).collect(Collectors.toList()));
+                .map(location -> location.setIdAndOrder(walkId, order.getAndSet(order.get() + 1))).collect(Collectors.toList()));
     }
 
     @Override

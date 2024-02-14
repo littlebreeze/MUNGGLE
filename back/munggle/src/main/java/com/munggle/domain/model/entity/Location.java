@@ -35,16 +35,19 @@ public class Location {
     @Temporal(TemporalType.TIMESTAMP)
     private LocalDateTime createdAt;   // String -> 날짜로 넣을 것임
 
+    private Long orderNo;
+
     // 외래키 컬럼이 자동 생성되므로 따로 적어주지 않아도 된다.
     @ManyToOne
     @JoinColumn(name = "walk_id")
     private Walk walk;
 
-    public Location setInsertId(Long walkId){
+    public Location setIdAndOrder(Long walkId, Long orderNo){
 
         // 외래키 설정을 위해 Walk에 Id값 세팅
         Walk walk = Walk.builder().walkId(walkId).build();
         this.walk = walk;
+        this.orderNo = orderNo;
 
         return this;
     }
@@ -56,6 +59,7 @@ public class Location {
                 .lat(location.getLat())
                 .lng(location.getLng())
                 .createdAt(location.getCreatedAt())
+                .orderNo(location.getOrderNo())
                 .build();
 
     }

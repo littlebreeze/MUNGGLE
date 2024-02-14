@@ -20,6 +20,7 @@ public class LocationDto {
     private Long walkId;
     private Float lat;
     private Float lng;
+    private Long orderNo;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd`T`HH:mm:ss")
     private LocalDateTime createdAt;
@@ -30,6 +31,7 @@ public class LocationDto {
                 .lat(locationDto.getLat())
                 .lng(locationDto.getLng())
                 .createdAt(locationDto.getCreatedAt())
+                .orderNo(locationDto.getOrderNo())
                 .build();
     }
 }
