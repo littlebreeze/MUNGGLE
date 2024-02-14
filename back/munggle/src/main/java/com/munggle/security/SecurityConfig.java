@@ -4,9 +4,11 @@ import com.munggle.jwt.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -31,13 +33,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 //        http
 //                .csrf().disable()
 //                .authorizeRequests()
-//                .requestMatchers(
-//                        request -> request.getServletPath()
-//                                .startsWith("/member/join")).permitAll()
 //                .anyRequest().authenticated();
 //
 //        return http.build();
@@ -45,10 +44,25 @@ public class SecurityConfig {
                 .cors()
                 .and()
                 .csrf().disable()
-                .authorizeRequests()
-                .anyRequest()
-                .permitAll()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
+                .authorizeRequests(
+                        registry -> registry.requestMatchers(HttpMethod.POST, "/users").permitAll()
+                                .requestMatchers("/users/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/userpages/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/alarms/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/blocks/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/comments/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/dogs/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/dog-match/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/dogs/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/follows/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/posts/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/search/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/walks/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/message/**").hasAnyRole("ADMIN", "MEMBER")
+                                .anyRequest().authenticated()
+                )
                 .formLogin(
                         configure -> configure.successHandler(new LoginAuthenticationSuccessHandler(jwtProvider))
                                 .failureHandler(new LoginAuthenticationFailureHandler()))
