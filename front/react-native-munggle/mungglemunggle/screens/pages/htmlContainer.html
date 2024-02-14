@@ -1,20 +1,3 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Button, View, Text, Modal, StyleSheet, Dimensions, TouchableOpacity, Alert } from "react-native";
-import { WebView } from "react-native-webview";
-import * as Location from "expo-location";
-// import { KAKAOMAP_API_KEY } from '@env';
-import WalkCreate from "./walk/walkCreate";
-import WalkCalendar from "./walk/walkCalendar";
-import axios, { Axios } from "axios";
-import ViewShot from 'react-native-view-shot';
-import * as MediaLibrary from 'expo-media-library';
-import RenderHtml from 'react-native-render-html';
-
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
-
-// const apiKey = KAKAOMAP_API_KEY;
-
-const htmlContainer = `
 <html>
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -84,8 +67,8 @@ const htmlContainer = `
         border-radius: 100%;
         z-index: 5;
         position: absolute;
-        bottom: 3%;
-        right: 0%;
+        bottom: 0%;
+        left: 70%;
         display: none;
         transform: translate(-50%, -50%);
         box-shadow: 0 0.25rem 1rem rgba(0, 0, 0, 0.2);
@@ -120,6 +103,7 @@ const htmlContainer = `
         font-size: 20px;
         font-weight: bold;
       }
+
       #backButton {
         width: 80px;
         height: 80px;
@@ -128,7 +112,7 @@ const htmlContainer = `
         border-radius: 100%;
         z-index: 5;
         position: absolute;
-        bottom: 3%;
+        bottom: 0%;
         left: 20%;
         display: none;
         transform: translate(-50%, -50%);
@@ -140,8 +124,8 @@ const htmlContainer = `
         text-align: center;
         justify-content: center;
         font-size: 20px;
-        font-weight: bold;
       }
+
       #mapIsNullMessage {
         display: flex;
         font-size: 30px;
@@ -154,6 +138,7 @@ const htmlContainer = `
         font-weight: bold;
         transform: translate(-50%, -50%);
       }
+  
       #timer {
         display: none;
         position: absolute;
@@ -164,6 +149,7 @@ const htmlContainer = `
         font-size: 36px;
         text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* 텍스트 그림자 효과 */
       }
+
       #startButton:active,
       #pauseButton:active,
       #stopButton:active,
@@ -265,12 +251,14 @@ const htmlContainer = `
 
       function change() {
         startButton.style.display = 'block';
+        stopButton.style.display = 'block';
         changeButton.style.display = 'none';
         backButton.style.display = 'block';
         window.ReactNativeWebView.postMessage(JSON.stringify({
           type: "change", 
           data: '',
         }));
+        
       }
 
       function back() {
@@ -278,9 +266,7 @@ const htmlContainer = `
         stopButton.style.display = 'none';
         changeButton.style.display = 'block';
         backButton.style.display = 'none';
-        pauseButton.style.display = 'none';
         timer.style.display = 'none';
-        stopTimer();
         stopDrawing();
         deleteClickLine();
         deleteDistnce();
@@ -289,8 +275,6 @@ const htmlContainer = `
           type: "back", 
           data: '',
         }));
-
-        panTo(currentLocation.latitude, -currentLocation.longitude)
       }
 
       function pauseTimer() {
@@ -301,6 +285,7 @@ const htmlContainer = `
         clearInterval(intervalId);
         startButton.style.display = 'block';
         pauseButton.style.display = 'none';
+        
       }
 
       document.getElementById('changeButton').addEventListener('click', change);
@@ -333,14 +318,10 @@ const htmlContainer = `
           createMap(currentLocation.latitude, -currentLocation.longitude);  
           mapIsNullMessage.style.display = 'none';
           changeButton.style.display = 'block';
-          window.ReactNativeWebView.postMessage(JSON.stringify({
-            type: "map", 
-            data: '',
-          }));
         } else {
           // alert('이미맵이생성됨')
           if (drawingFlag) {
-            startDrawing(currentLocation.latitude, -currentLocation.longitude + 0.011);
+            startDrawing(currentLocation.latitude, -currentLocation.longitude);
           }
         }
       });
@@ -368,9 +349,9 @@ const htmlContainer = `
 
       startButton.onclick = function() {
         startButton.style.display = 'none';
-        stopButton.style.display = 'block';
         pauseButton.style.display = 'block';
         timer.style.display = 'block';
+        backButton.style.display = 'none';
         startDrawing(currentLocation.latitude, -currentLocation.longitude);
       }
 
@@ -384,7 +365,7 @@ const htmlContainer = `
         pauseButton.style.display = 'none';
         stopDrawing();
         backButton.style.display = 'block';
-        stopButton.style.display = 'none';
+        
       }
 
       function panTo(lat, lng) {
@@ -412,6 +393,7 @@ const htmlContainer = `
       // 지도에 클릭 이벤트를 등록합니다
       // 지도를 클릭하면 선 그리기가 시작됩니다 그려진 선이 있으면 지우고 다시 그립니다
       function startDrawing(lat, lng) {
+        map.setLevel(3);
         panTo(lat, lng);
 
         // 지도 클릭이벤트가 발생했는데 선을 그리고있는 상태가 아니면
@@ -490,6 +472,7 @@ const htmlContainer = `
 
           // 선을 구성하는 좌표의 개수가 2개 이상이면
           if (path.length > 1) {
+
             // 마지막 클릭 지점에 대한 거리 정보 커스텀 오버레이를 지웁니다
             if (dots[dots.length-1].distance) {
                 dots[dots.length-1].distance.setMap(null);
@@ -516,17 +499,9 @@ const htmlContainer = `
             deleteDistnce();
 
           }
-          let maxMa = Math.max(...path.map(item => item.Ma));
-          let minMa = Math.min(...path.map(item => item.Ma));
-          let maxLa = Math.max(...path.map(item => item.La));
-          let minLa = Math.min(...path.map(item => item.La));
-          let ma = (maxMa + minMa) / 2
-          let la = (maxLa + minLa) / 2
-          panTo(ma, la);
-          marker.setMap(null);
           
           // 상태를 false로, 그리지 않고 있는 상태로 변경합니다
-          map.setLevel(5);
+          map.setLevel(4);
           drawingFlag = false;   
           seconds = 0;
           hours = 0;
@@ -593,7 +568,7 @@ const htmlContainer = `
         if (distance > 0) {
             // 클릭한 지점까지의 그려진 선의 총 거리를 표시할 커스텀 오버레이를 생성합니다
             var distanceOverlay = new kakao.maps.CustomOverlay({
-                content: '',
+                content: '<div class="dotOverlay">거리 <span class="number">' + distance + '</span>m</div>',
                 position: position,
                 yAnchor: 1,
                 zIndex: 2
@@ -651,325 +626,3 @@ const htmlContainer = `
     </script>    
   </body>
 </html>
-`;
-
-export default function WalkScreen ({ navigation }) {
-  const apiUrl = "http://i10a410.p.ssafy.io:8080";
-  const [location, setLocation] = useState(null);
-  const [pause, setPause] = useState(false);
-  const webViewRef = useRef(null);
-  const ref = useRef(null);
-
-  const [isRecord, setIsRecord] = useState(null);
-  const [isMap, setIsMap] = useState(false);
-
-  const [modalDuration, setModalDuration] = useState('0');
-  const [modalImage, setModalImage] = useState(null);
-  const [modalLocations, setModalLocations] = useState(null);
-  const [modalDistance, setModalDistance] = useState(null);
-
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [isMyModalOpen, setIsMyModalOpen] = useState(false);
-
-  // // Record 버튼 클릭 시 실행되는 함수
-  // const handleRecordButtonPress = async () => {
-  //   try {
-  //     // 웹뷰를 캡처하여 이미지로 저장
-  //     const uri = await captureWebView();
-  //     // 캡처된 이미지를 앨범에 저장
-  //     setModalImage(uri);
-  //     await saveCapturedImageToAlbum(uri);
-  //     // 또는 원하는 방식으로 캡처된 이미지를 처리
-  //   } catch (error) {
-  //     console.error('캡처 오류:', error);
-  //   }
-  // };
-
-  // // 웹뷰를 캡처하여 이미지로 반환하는 함수
-  // const captureWebView = async () => {
-  //   console.log(webViewRef.current);
-  //   return await captureRef(webViewRef.current, {
-  //     format: 'jpg',
-  //     quality: 0.8,
-  //   }).then(
-  //     (uri) => console.log("캡쳐성공", uri),
-  //     (error) => console.log("캡쳐실패", error),
-  //   );
-  // };
-
-  // // 캡처된 이미지를 앨범에 저장하는 함수
-  // const saveCapturedImageToAlbum = async (uri) => {
-  //   const asset = await MediaLibrary.createAssetAsync(uri);
-  //   await MediaLibrary.createAlbumAsync('MyAlbum', asset, false);
-  // };
-
-  const handleCapture = async () => {
-    try {
-      const uri = await ref.current.capture();
-      // console.log(ref.current);
-      setModalImage(uri);
-      console.log(uri);
-      // 웹뷰를 캡쳐하고 캡쳐된 이미지의 URI를 상태에 저장합니다.
-    } catch (error) {
-      console.error('캡처 오류:', error);
-    }
-  };
-  
-
-
-  const openModalWithData = () => {
-    handleCapture();
-    setIsCreateModalOpen(true);
-  };
-  
-  const openModalWithMy = () => {
-    setIsMyModalOpen(true);
-  }
-
-  const closeModal = () => {
-    setIsCreateModalOpen(false);
-  };
-
-  const closeMyModal = () => {
-    setIsMyModalOpen(false);
-  };
-
-  useEffect(() => {
-    (async () => {
-      
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-
-      webViewRef.current.postMessage(JSON.stringify({
-        type: 'location',
-        data: location.coords
-      }));
-      console.log(1, JSON.parse(JSON.stringify(location.coords)));
-    })();
-  }, []);
-
-  useEffect(() => {
-    const timer = setInterval(async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('현재 위치를 받아올 수 없습니다!');
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    }, 2000);
-
-    return () => clearInterval(timer);
-  }, [location]);
-
-  useEffect(() => {
-    if (location && !pause) {
-      webViewRef.current.postMessage(JSON.stringify({
-        type: 'location',
-        data: location.coords
-      }));
-      console.log(2, JSON.parse(JSON.stringify(location.coords)));
-    }
-  }, [location]);
-
-
-  const onMessage = (event) => {
-    const { type, data } = JSON.parse(event.nativeEvent.data);
-    if (type === "locations") {
-      console.log(data);
-      setModalLocations(data);
-      // handleRecordButtonPress();
-    } else if (type === "timer") {
-      setModalDuration(data);
-      setIsRecord(true);
-    } else if (type === "start") {
-      setPause(false);
-      setIsRecord(false);
-    } else if (type === 'pause') {
-      setPause(true);
-    } else if (type === 'distance') {
-      setModalDistance(data);
-      console.log(data);
-    } else if (type === "change") {
-      setIsMap(false);
-    } else if (type === "back") {
-      setIsRecord(false);
-      setIsMap(true);
-      setPause(false);
-    } else if (type === "map") {
-      setIsMap(true);
-    }
-  }
-
-  const mapView = () => {
-    if (location) {
-      return (
-        <ViewShot ref={ref} options={{ fileName: "capTureImage", format: "jpg", quality: 0.9 }} style={styles.walkMainShot}>
-          <WebView
-            ref={webViewRef}
-            style={styles.walkMainMap}
-            // source={{ uri: "https://gongtong.netlify.app/" }}
-            source={{ html: htmlContainer }}
-            onMessage={onMessage}
-          />
-        </ViewShot>
-      );
-    } else {
-      return (
-        <View style={styles.walkMainLoading}>
-          <Text style={styles.walkMainLoadingText}>Loading...</Text>
-        </View>
-      );
-    }
-  }
-
-  const recordView = () => {
-    if (isRecord) {
-      return (
-        <TouchableOpacity onPress={() => openModalWithData()}>
-          <View style={styles.walkMainRecord}>
-            <Text style={styles.walkMainRecordText}>Record</Text>
-          </View>
-        </TouchableOpacity>
-      );
-    }
-  }
-
-  const myView = () => {
-    if (isMap) {
-      return (
-        <TouchableOpacity onPress={() => openModalWithMy()} style={styles.walkMainMy}>
-          <Text style={styles.walkMainMyText}>My</Text>
-        </TouchableOpacity>
-      );
-    }
-  }
-
-  return (
-    <View style={styles.walkMainContainer}>
-      {mapView()}
-
-      {recordView()}
-
-      <Modal
-        visible={isCreateModalOpen}
-        animationType="slide"
-        onRequestClose={closeModal}
-        transparent={true}
-      >
-        <WalkCreate 
-          duration={modalDuration}
-          locations={modalLocations}
-          distance={modalDistance}
-          image={modalImage}
-          closeModal={closeModal} />
-      </Modal>
-  
-      
-      {myView()}
-      
-      <Modal
-        visible={isMyModalOpen}
-        animationType="slide"
-        onRequestClose={closeMyModal}
-        transparent={true}
-      >
-        <WalkCalendar 
-          closeModal={closeMyModal} />
-      </Modal>
-
-    </View>
-  );
-};
-
-const styles = StyleSheet.create({
-  walkMainContainer: {
-    flex: 1,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 0.82,
-    position: "relative",
-  },
-  walkMainMap: {
-    flex: 0,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 0.82,
-  },
-  walkMainStart: {
-    width: 100,
-    height: 100,
-    position: "absolute",
-    borderWidth: 1,
-    borderColor: "black",
-    borderRadius: 100,
-    bottom: 50,
-    left: 150,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "yellow",
-  },
-  walkMainStartText: {
-    fontSize: 20,
-  },
-  walkMainLoading: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  walkMainLoadingText: {
-    fontSize: 30,
-    fontWeight: "bold",
-    textAlign: "center",
-    justifyContent: "center",
-  },
-  walkMainCalendar: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
-  },
-  walkMainRecord: {
-    width: 80,
-    height: 80,
-    position: "absolute",
-    borderColor: "black",
-    borderRadius: 100,
-    bottom: 60.5,
-    right: 39.5,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "yellow",
-    zIndex: 6,
-    elevation: 6,
-  },
-  walkMainRecordText: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  walkMainMy: {
-    width: 55,
-    height: 55,
-    position: "absolute",
-    borderRadius: 100,
-    top: 30,
-    right: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "yellow",
-    zIndex: 7,
-    elevation: 10,
-  },
-  walkMainMyText: {
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  walkMainShot: {
-    flex: 0,
-    width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 0.82,
-  },
-})
