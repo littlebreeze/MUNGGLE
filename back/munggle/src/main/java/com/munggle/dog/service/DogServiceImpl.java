@@ -5,14 +5,13 @@ import com.munggle.dog.dto.DogDetailDto;
 import com.munggle.dog.dto.DogUpdateDto;
 import com.munggle.dog.mapper.DogMapper;
 import com.munggle.dog.repository.DogRepository;
-import com.munggle.domain.exception.DogNotFoundException;
-import com.munggle.domain.exception.ExceptionMessage;
-import com.munggle.domain.exception.NotYourDogException;
-import com.munggle.domain.exception.UserNotFoundException;
+import com.munggle.domain.exception.*;
 import com.munggle.domain.model.entity.Dog;
+import com.munggle.domain.model.entity.Kind;
 import com.munggle.domain.model.entity.User;
 import com.munggle.image.dto.FileInfoDto;
 import com.munggle.image.service.FileS3UploadService;
+import com.munggle.openAPI.repository.KindRepository;
 import com.munggle.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +22,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+import static com.munggle.domain.exception.ExceptionMessage.KIND_NOT_FOUND;
 import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
 
 @Service
@@ -33,6 +33,7 @@ public class DogServiceImpl implements DogService {
 
     private final DogRepository dogRepository;
     private final UserRepository userRepository;
+    private final KindRepository kindRepository;
 
     // 전달된 MultipartFile 이미지 업로드 경로 : dog/반려견ID/
 
@@ -48,8 +49,12 @@ public class DogServiceImpl implements DogService {
 
     @Override
     @Transactional
-    public void insertDog(DogCreateDto dogCreateDto) {
-        Dog dog = DogMapper.toEntity(dogCreateDto);
+    public Long insertDog(DogCreateDto dogCreateDto) {
+
+        Kind kind = kindRepository.findById(dogCreateDto.getKindId())
+                .orElseThrow(() -> new KindNotFoundException(KIND_NOT_FOUND));
+
+        Dog dog = DogMapper.toEntity(dogCreateDto, kind);
 
         // Dto로 넘어온 userId로 user 세팅
         User user = userRepository.findByIdAndIsEnabledTrue(dogCreateDto.getUserId())
@@ -64,6 +69,8 @@ public class DogServiceImpl implements DogService {
 
             dog.updateImage(uploadDogImage(dogId, dogCreateDto.getImage()));
         }
+
+        return dogId;
     }
 
     @Override
@@ -71,6 +78,7 @@ public class DogServiceImpl implements DogService {
     public void updateDog(Long userId, Long dogId, DogUpdateDto dogUpdateDto) {
         Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
                 .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
+
         dog.updateDog(dogUpdateDto);
 
         // 로그인 사용자의 반려견이 아닌 경우 예외처리
@@ -86,6 +94,28 @@ public class DogServiceImpl implements DogService {
             fileS3UploadService.removeFolderFiles(uploadPath);
 
             dog.updateImage(uploadDogImage(dogId, dogUpdateDto.getImage()));
+        }
+    }
+
+    @Override
+    @Transactional
+    public void updateDogImage(Long userId, Long dogId, MultipartFile file) {
+
+        Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(dogId)
+                .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
+
+        // 전달된 파일이 있는 경우에 기존 이미지 삭제 후 변경
+        if(file != null && !file.isEmpty()) {
+
+            // 이미 값이 있을 때는 update이므로 삭제 과정
+            if(dog.getImageUrl() != null) {
+                System.out.println("#########   삭제합니다   #########");
+                // 기존 파일 S3에서 삭제
+                String uploadPath = dogFilePath + dogId + "/";
+                fileS3UploadService.removeFolderFiles(uploadPath);
+            }
+
+            dog.updateImage(uploadDogImage(dogId, file));
         }
     }
 
