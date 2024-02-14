@@ -10,4 +10,8 @@ public class WalkUpdateDto {
     private String walkName;
     private Float rating;
     private String description;
+
+    public void setWalkId(Long walkId){
+        this.walkId = walkId;
+    }
 }

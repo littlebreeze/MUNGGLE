@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -23,10 +24,12 @@ public class WalkController {
 
     @PostMapping
     public void createWalk(@AuthenticationPrincipal User principal,
-                           @RequestBody @Valid WalkCreateDto walkDto){
+                           @RequestPart(value="dto") @Valid WalkCreateDto walkCreateDto,
+                           @RequestPart(value="file") MultipartFile file){
 
-        walkDto.setUserId(principal.getId());
-        walkService.createWalk(walkDto);
+        walkCreateDto.setUserId(principal.getId());
+        walkCreateDto.setImage(file);
+        walkService.createWalk(walkCreateDto);
     }
 
     @GetMapping("/{year}/{month}")
@@ -48,8 +51,10 @@ public class WalkController {
     }
 
     @PutMapping("/{walkId}")
-    public void walkUpdate(@PathVariable Long walkId, @RequestBody WalkUpdateDto walkUpdateDto){
-        walkService.updateWalk(walkUpdateDto);
+    public WalkDto walkUpdate(@AuthenticationPrincipal User principal,
+                           @PathVariable Long walkId, @RequestBody WalkUpdateDto walkUpdateDto){
+        walkUpdateDto.setWalkId(walkId);
+        return walkService.updateWalk(walkUpdateDto, principal.getId());
     }
 
     @DeleteMapping("/{walkId}")

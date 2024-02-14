@@ -46,6 +46,7 @@ public class WalkMapper {
                 .duration(walk.getDuration())
                 .distance(walk.getDistance())
                 .rating(walk.getRating())
+                .image(walk.getImageUrl())
                 .location(walk.getLocation().stream()
                         .map(Location::toDto)
                         .collect(Collectors.toList()))

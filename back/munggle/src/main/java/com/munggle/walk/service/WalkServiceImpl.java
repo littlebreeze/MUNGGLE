@@ -1,12 +1,12 @@
 package com.munggle.walk.service;
 
 import com.munggle.dog.repository.DogRepository;
-import com.munggle.domain.exception.ExceptionMessage;
-import com.munggle.domain.exception.UserNotFoundException;
-import com.munggle.domain.exception.WalkNotFoundException;
+import com.munggle.domain.exception.*;
 import com.munggle.domain.model.entity.Dog;
 import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.Walk;
+import com.munggle.image.dto.FileInfoDto;
+import com.munggle.image.service.FileS3UploadService;
 import com.munggle.user.repository.UserRepository;
 import com.munggle.walk.dto.*;
 import com.munggle.walk.mapper.WalkMapper;
@@ -15,6 +15,7 @@ import com.munggle.walk.repository.WalkRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.*;
 import java.util.List;
@@ -27,29 +28,56 @@ import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
 @RequiredArgsConstructor
 public class WalkServiceImpl implements WalkService{
 
+    private final FileS3UploadService fileS3UploadService;
+
     private final WalkRepository walkRepository;
     private final LocationRepository locationRepository;
     private final UserRepository userRepository;
     private final DogRepository dogRepository;
 
-    @Override
-    public void createWalk(WalkCreateDto walkDto) {
+    String walkFilePath = "walk/";
 
-        Walk walk = WalkMapper.toEntity(walkDto);
+    public FileInfoDto uploadWalkImage(Long walkId, MultipartFile file){
+        // 이미지 정보 저장
+        String uploadPath = walkFilePath + walkId + "/";
+        FileInfoDto fileInfoDto = fileS3UploadService.uploadFile(uploadPath, file);
+
+        return fileInfoDto;
+    }
+
+    @Override
+    @Transactional
+    public void createWalk(WalkCreateDto walkCreateDto) {
+
+        Walk walk = WalkMapper.toEntity(walkCreateDto);
 
         // Dto로 넘어온 userId로 user 세팅
-        User user = userRepository.findByIdAndIsEnabledTrue(walkDto.getUserId())
+        User user = userRepository.findByIdAndIsEnabledTrue(walkCreateDto.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
         walk.setUser(user);
 
-        Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(walkDto.getDogId())
-                .orElseThrow();//()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
+        Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(walkCreateDto.getDogId())
+                .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
         walk.setDog(dog);
 
-        Long insertID = walkRepository.save(walk).getWalkId();
-        // DB에 넣을 때, 방금 생성된 Walk의 id가 들어가야 하므로 값 셋팅된 객체로 다시 build
+        // 사용자의 반려견이 아니면 등록 불가
+        if(user.getId().longValue() != dog.getUser().getId().longValue()) {
+            throw new NotYourDogException(ExceptionMessage.NOT_YOUR_DOG);
+        }
+
+        // DB에 저장
+        Long walkId = walkRepository.save(walk).getWalkId();
+
+        // 전달받은 이미지 저장
+        if(walkCreateDto.getImage() != null && !walkCreateDto.getImage().isEmpty()) {
+
+            walk.updateImage(uploadWalkImage(walkId, walkCreateDto.getImage()));
+        }
+
+        AtomicReference<Long> order = new AtomicReference<>(1l);
+        // 산책 경로 좌표들 저장
         locationRepository.saveAll(walk.getLocation().stream()
-                .map(location -> location.setInsertId(insertID)).collect(Collectors.toList()));
+                .map(location -> location.setIdAndOrder(walkId, order.getAndSet(order.get() + 1))).collect(Collectors.toList()));
     }
 
     @Override
@@ -64,7 +92,7 @@ public class WalkServiceImpl implements WalkService{
         LocalDateTime start = LocalDateTime.of(year, month,1 ,0,0);
         LocalDateTime end = LocalDateTime.of(year, month, yearMonth.atEndOfMonth().getDayOfMonth(),0,0);
 
-        List<WalkDto> result = walkRepository.findAllByCreatedAtBetween(start, end)
+        List<WalkDto> result = walkRepository.findAllByIsDeletedFalseAndCreatedAtBetween(start, end)
                 .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND))
                 .stream().map(walk -> {
                     distance.updateAndGet(v -> v + walk.getDistance());
@@ -102,13 +130,18 @@ public class WalkServiceImpl implements WalkService{
 
     @Override
     @Transactional
-    public WalkDto updateWalk(WalkUpdateDto walkUpdateDto) {
+    public WalkDto updateWalk(WalkUpdateDto walkUpdateDto, Long userId) {
 
         Walk walk = walkRepository.findById(walkUpdateDto.getWalkId())
                 .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
+
+        if(userId.longValue() != walk.getUser().getId().longValue()) {
+            throw new NotYourWalkException(ExceptionMessage.NOT_YOUR_WALK);
+        }
+
         walk.updateWalk(walkUpdateDto);
 
-        return null;
+        return WalkMapper.toDto(walk);
     }
 
     @Override
