@@ -42,7 +42,7 @@ export default function CreateDog (props) {
   const todayDate = new Date();
 
   const [name, setName] = useState("");
-  const [birthDate, setBirthDate] = useState(". .");
+  const [birthDate, setBirthDate] = useState("2024-02-16");
   const [gender, setGender] = useState("수컷");
   const [weight, setWeight] = useState(0);
   const [kindId, setKindId] = useState("");
@@ -110,8 +110,9 @@ export default function CreateDog (props) {
     ).then((res) => {
       console.log(res.status);
     }).then(async() => {
-      await props.getMyDogList();
-    }).then(() => {
+      if (props.getMyDogList) {
+        await props.getMyDogList();
+      };
       props.closeCreateDogModal();
     }).catch((err) => {
       console.log(err)

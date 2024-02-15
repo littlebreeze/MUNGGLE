@@ -9,6 +9,7 @@ import iconClose from "../../assets/icons/close1.png";
 import iconBornWhite from "../../assets/icons/bornWhite.png";
 import iconBornBlack from "../../assets/icons/bornBlack.png";
 import iconScrap from "../../assets/icons/scrap.png";
+import iconScrapBlack from "../../assets/icons/scrapBlack.png";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -30,6 +31,9 @@ export default function PostDetail (props) {
   const [commentList, setCommentList] = useState(false);
 
   const [commentText, setCommentText] = useState("");
+  
+  const [isScraped, setIsScraped] = useState(post.isScraped);
+  const [isLiked, setIsLiked] = useState(post.isLiked);
 
   const formatDate = (date) => {
     const day = new Date(date);
@@ -124,6 +128,7 @@ export default function PostDetail (props) {
       }}
     ).then((res) => {
       console.log(res.status);
+      setIsScraped(!isScraped);
     }).catch((err) => {
       console.log(err);
     })
@@ -144,6 +149,24 @@ export default function PostDetail (props) {
       getCommentData();
     };
   }, [authToken]);
+
+  const handleLike = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+    await axios.post(
+      `${apiUrl}/posts/${props.postId}/like`,
+      {headers: {
+        "Authorization": authToken ,
+      }}
+    ).then((res) => {
+      console.log(res.status);
+      setIsLiked(!isLiked);
+    }) .catch((err) => {
+      console.log(err);
+    })
+  };
 
   const postDetail = () => {
     if (post) {
@@ -170,10 +193,12 @@ export default function PostDetail (props) {
   
             <View style={styles.postDetailMiddleRightView}>
               <Text style={styles.postDetailLikeCount}>{post.likeCnt}</Text>
-              <TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => handleLike()}
+              >
                 <Image 
                   style={styles.postDetailLikeIcon}
-                  source={iconBornWhite}
+                  source={isLiked ? iconBornBlack : iconBornWhite}
                 />
               </TouchableOpacity>
 
@@ -182,7 +207,7 @@ export default function PostDetail (props) {
               >
                 <Image 
                   style={styles.postDetailScrapIcon}
-                  source={iconScrap}
+                  source={isScraped ? iconScrapBlack : iconScrap}
                 />
               </TouchableOpacity>
             </View>

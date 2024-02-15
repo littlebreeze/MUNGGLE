@@ -19,6 +19,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { Header } from "react-native/Libraries/NewAppScreen";
 
+import * as ImageManipulator from 'expo-image-manipulator';
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 export default function PostCreate (props) {
@@ -65,14 +67,32 @@ export default function PostCreate (props) {
     });
   };
 
+  const resizeImage = async (imageUri) => {
+    try {
+        const resizedImage = await ImageManipulator.manipulateAsync(
+          imageUri, // 이미지 URI
+            [{ resize: { width: 400, height: 300 } }], // 조절 옵션 배열
+            { compress: 1, format: "jpeg" } // 압축 및 형식 설정
+        );
+
+        // 조절된 이미지 데이터를 얻습니다.
+        console.log('Resized image:', resizedImage.uri);
+        return resizedImage;
+    } catch (err) {
+        console.error('Failed to resize image:', err);
+    }
+  };
+
   const createPostImages = async () => {
     if (!authToken) {
       setAuthToken(await AsyncStorage.getItem("accessToken"));
     };
 
     images.forEach(async (image) => {
+      const resizedImageUrl = await resizeImage(image.uri);
+      
       const formData = new FormData();
-      const localUri = image.uri;
+      const localUri = resizedImageUrl.uri;
       const fileName = localUri.split('/').pop();
       const match = /\.(\w+)$/.exec(fileName ?? '');
       const type = match ? `image/${match[1]}` : `image`;
@@ -89,6 +109,7 @@ export default function PostCreate (props) {
       ).then((res) => {
         console.log(res.status);
       }).then(() => {
+        props.closeCreateModal();
         props.openDetailModal(postId);
       }).catch((err) => {
         console.log(err)

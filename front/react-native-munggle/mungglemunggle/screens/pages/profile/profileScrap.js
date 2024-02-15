@@ -67,7 +67,7 @@ export default function ProfileScrap (props) {
   }
 
 return (
-  <View style={styles.postScrapContainer}>
+  <View style={{height: scrapList.length < 6 ? SCREEN_HEIGHT * 0.8 : ""}}>
     {scraps()}
     <Modal
       animationType="fade"

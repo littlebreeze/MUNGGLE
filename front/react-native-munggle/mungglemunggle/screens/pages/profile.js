@@ -32,7 +32,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 import CreateDog from "../../components/modal/createDog";
 
-import ImageResizer from "react-native-image-resizer";
+import * as ImageManipulator from 'expo-image-manipulator';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -151,6 +151,22 @@ export default function ProfileScreen () {
     getMyPostList();
     getMyScrapList();
   }, [profile]);
+  
+  const resizeImage = async (imageUri) => {
+    try {
+        const resizedImage = await ImageManipulator.manipulateAsync(
+          imageUri, // 이미지 URI
+            [{ resize: { width: 400, height: 300 } }], // 조절 옵션 배열
+            { compress: 1, format: "jpeg" } // 압축 및 형식 설정
+        );
+
+        // 조절된 이미지 데이터를 얻습니다.
+        console.log('Resized image:', resizedImage.uri);
+        return resizedImage;
+    } catch (err) {
+        console.error('Failed to resize image:', err);
+    }
+  };
 
   const changeBackgroundImg = async () => {
     const response = await ImagePicker.launchImageLibraryAsync({
@@ -178,18 +194,11 @@ export default function ProfileScreen () {
     if (response.canceled) {
       return null;
     }
-
     setProfileImgUrl(response.assets[0]);
   };
   
   const editBackgroundImage = async () => {
-    const resizedImageUrl = await ImageResizer.createResizedImage(
-      backgroundImgUrl.uri,
-      800, // 리사이징할 이미지의 최대 너비
-      600, // 리사이징할 이미지의 최대 높이
-      'JPEG', // 리사이징된 이미지의 포맷
-      100 // 리사이징된 이미지의 품질 (0-100)
-    );
+    const resizedImageUrl = await resizeImage(backgroundImgUrl.uri);
 
     const localUri = resizedImageUrl.uri;
     const fileName = localUri.split('/').pop();
@@ -198,6 +207,7 @@ export default function ProfileScreen () {
     const formData = new FormData();
     formData.append('backgroundImage', { uri: localUri, name: fileName, type});
 
+    console.log(formData);
 
     await axios.put(
       `${apiUrl}/users/background`,
@@ -372,7 +382,7 @@ export default function ProfileScreen () {
       );
     };
   };
-
+  
   const myProfile = () => {
     if (isEdit) {
       return (
@@ -425,8 +435,8 @@ export default function ProfileScreen () {
                 onChangeText={(e) => setNickname(e)}
               />
               <View style={styles.profileTopViewBottomViewButtonView}>
-                <FollowButton />
-                <DirectMessageButton />
+                {/* <FollowButton authToken={authToken} isFollowed={profile.isFollowed} userId={profile.userId} /> */}
+                {/* <DirectMessageButton /> */}
               </View>
             </View>
             <View style={styles.profileTopViewBottomViewBottomView}>
@@ -473,8 +483,8 @@ export default function ProfileScreen () {
             <View style={styles.profileTopViewBottomViewTopView}>
               <Text style={styles.profileTopViewBottomViewName}>{ profile.nickname }</Text>
               <View style={styles.profileTopViewBottomViewButtonView}>
-                <FollowButton />
-                <DirectMessageButton />
+                {/* <FollowButton /> */}
+                {/* <DirectMessageButton /> */}
               </View>
             </View>
             <View style={styles.profileTopViewBottomViewBottomView}>
@@ -623,9 +633,8 @@ export default function ProfileScreen () {
         transparent={true}
         visible={isCreateDogModalOpen}
         onRequestClose={() => closeCreateDogModal()}>
-        <CreateDog getMyDogList={getMyDogList}closeCreateDogModal={closeCreateDogModal} />
+        <CreateDog getMyDogList={getMyDogList} closeCreateDogModal={closeCreateDogModal} />
       </Modal>
-        
     </View>
   );
 };

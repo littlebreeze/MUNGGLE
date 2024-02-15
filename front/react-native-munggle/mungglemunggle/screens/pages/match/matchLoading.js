@@ -35,7 +35,7 @@ export default function MatchLoading() {
   return (
     <View style={styles.container}>
       <View style={styles.topView}>
-        <Image source={dog} style={{ width: 200, height: 200 }} />
+        <Image source={dog} style={{ width: SCREEN_WIDTH * 0.7, height: SCREEN_WIDTH * 0.7, }} />
       </View>
       <View style={styles.middleView}>
         <Text style={styles.text}>{matchingText}</Text>
@@ -46,25 +46,25 @@ export default function MatchLoading() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT,
     alignItems: 'center',
-    // justifyContent: 'center',
+    justifyContent: 'center',
     backgroundColor: 'rgb(253, 245, 169)',
   },
   topView:{
     width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 0.15,
+    height: SCREEN_HEIGHT * 0.2,
     backgroundColor: "rgb(253, 245, 169)",
     alignItems: "center",
     justifyContent: "center",
-    marginTop: SCREEN_HEIGHT * 0.20,
-
   },
   middleView:{
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT * 0.10,
     alignItems: "center",
     justifyContent: "center",
+    marginBottom: SCREEN_HEIGHT * 0.18,
   },
   text:{
     fontSize:35

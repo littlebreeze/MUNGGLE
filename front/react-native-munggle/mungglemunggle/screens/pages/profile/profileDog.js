@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, ScrollView, Text, Image, StyleSheet, Dimensions } from "react-native";
+import { View, ScrollView, ActivityIndicator, Text, Image, StyleSheet, Dimensions } from "react-native";
 
 import { format, formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
@@ -16,40 +16,58 @@ export default function ProfileDog (props) {
   }
 
   const dogs = () => {
-    return (
-      <View style={styles.profileDogListView}>
-        {dogList && dogList.map((dog, index) => {
-          return (
-            <View style={styles.profileDogView} key={index}>
-              <View style={styles.profileDogImageView}>
-                <Image 
-                  style={styles.profileDogImage}
-                  src={dog.image ? dog.image : dog.user.backgroundImgUrl}
-                /> 
-              </View>
-              <View style={styles.profileDogNameView}>
-                <Text style={styles.profileDogName}>{dog.name}</Text>
-              </View>
-
-              <View style={styles.profileDogViewBottomView}>
-                <View style={styles.profileDogViewBottomViewLeftView}>
-                  <Text style={styles.profileDogViewBottomText}>생일 : {formatDate(dog.birthDate)}</Text>
-                  <Text style={styles.profileDogViewBottomText}>성별 : {dog.gender}</Text>
+    if (dogList){
+      if (dogList.length > 0) {
+        return (
+          <View style={styles.profileDogListView}>
+          {dogList.map((dog, index) => {
+            return (
+              <View style={styles.profileDogView} key={index}>
+                <View style={styles.profileDogImageView}>
+                  <Image 
+                    style={styles.profileDogImage}
+                    src={dog.image ? dog.image : dog.user.backgroundImgUrl}
+                    /> 
                 </View>
-                <View style={styles.profileDogViewBottomViewRightView}>
-                  <Text style={styles.profileDogViewBottomText}>견종 : {dog.kindNm}</Text>
-                  <Text style={styles.profileDogViewBottomText}>무게 : {dog.weight} kg</Text>
+                <View style={styles.profileDogNameView}>
+                  <Text style={styles.profileDogName}>{dog.name}</Text>
+                </View>
+
+                <View style={styles.profileDogViewBottomView}>
+                  <View style={styles.profileDogViewBottomViewLeftView}>
+                    <Text style={styles.profileDogViewBottomText}>생일 : {formatDate(dog.birthDate)}</Text>
+                    <Text style={styles.profileDogViewBottomText}>성별 : {dog.gender}</Text>
+                  </View>
+                  <View style={styles.profileDogViewBottomViewRightView}>
+                    <Text style={styles.profileDogViewBottomText}>견종 : {dog.kindNm}</Text>
+                    <Text style={styles.profileDogViewBottomText}>무게 : {dog.weight} kg</Text>
+                  </View>
+                </View>
+
+                <View style={styles.profileDogDescriptionView}>
+                  <Text style={styles.profileDogDescriptionText}>{dog.description}</Text>
                 </View>
               </View>
-
-               <View style={styles.profileDogDescriptionView}>
-                <Text style={styles.profileDogDescriptionText}>{dog.description}</Text>
-               </View>
-            </View>
-          );
-        })}
-      </View>
-    );
+            );
+          })}
+        </View>
+        );
+      } else {
+        return (
+          <View style={styles.indicatorView}>
+            <Text style={{fontSize: 20}}>등록된 강아지가 없습니다.</Text>
+          </View>
+        );
+      }
+    } else {
+      return (
+        <View style={styles.indicatorView}>
+          <ActivityIndicator 
+            size={100}
+          />
+        </View>
+      );
+    }
   };
 
   return (
@@ -62,6 +80,12 @@ export default function ProfileDog (props) {
 const styles = StyleSheet.create({
   profileDogContainer: {
     width: SCREEN_WIDTH,
+  },
+  indicatorView: {
+    width: SCREEN_WIDTH,
+    height: SCREEN_HEIGHT * 0.4,
+    justifyContent: "center",
+    alignItems: "center",
   },
   profileDogListView: {
     width: SCREEN_WIDTH,
