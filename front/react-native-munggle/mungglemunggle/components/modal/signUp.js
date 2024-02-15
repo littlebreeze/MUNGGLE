@@ -14,7 +14,7 @@ import axios, { Axios } from "axios";
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 export default function SignUp (props) {
-  const apiUrl = "https://i10a410.p.ssafy.io:443";
+  const apiUrl = "http://i10a410.p.ssafy.io:8080";
 
   const [email, setEmail] = useState("");
   const [nickname, setNickname] = useState("");
