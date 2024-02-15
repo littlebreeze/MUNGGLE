@@ -270,7 +270,7 @@ export default function MatchMain () {
                 justifyContent: "center", 
                 alignItems: "center",
               }} 
-              onPress={openMySetting}
+              onPress={openWantSetting}
             >              
             <Text style={styles.modalText}>원하는 강아지 설정 변경</Text>
             </TouchableOpacity>

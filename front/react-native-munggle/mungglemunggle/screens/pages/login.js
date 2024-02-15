@@ -84,6 +84,8 @@ export default function LoginScreen (props) {
             value={username}
             onChangeText={(e) => setUsername(e)}
             style={styles.usernameInput} 
+            keyboardType="email-address"
+            autoCapitalize="none"
           />
           
           <TextInput
@@ -91,7 +93,9 @@ export default function LoginScreen (props) {
             value={password}
             onChangeText={(e) => setPassword(e)}
             secureTextEntry={true} 
-            style={styles.passwordInput} 
+            style={styles.passwordInput}
+            autoCapitalize="none"
+            textContentType="password"
           />
         </View>
         
@@ -245,7 +249,7 @@ const styles = StyleSheet.create({
     marginVertical: SCREEN_HEIGHT * 0.005,
   },
   signInButtonTouch: {
-    width: SCREEN_WIDTH * 0.35,
+    width: SCREEN_WIDTH * 0.37,
     height: SCREEN_HEIGHT * 0.05,
     justifyContent: "center",
     alignItems: "center",

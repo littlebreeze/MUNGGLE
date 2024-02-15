@@ -8,8 +8,8 @@ export default function WalkDetail({ details }) {
     <View>
       {details.map((detail, index) => (
         <View key={index}>
-          <Text>Walk Name: {detail.walkName}</Text>
-          <Text>Description: {detail.description}</Text>
+          <Text>산책 거리: {detail.distance} km</Text>
+          <Text>산책 시간: {detail.duration} 분</Text>
           <Text> </Text>
         </View>
       ))}

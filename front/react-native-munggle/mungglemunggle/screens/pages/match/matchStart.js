@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Animated, View, StyleSheet, PanResponder, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { Animated, View, StyleSheet, PanResponder, Modal, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 
 import profile from "../../../assets/icons/profile.png";
 import end from "../../../assets/icons/end.png";
@@ -7,6 +7,8 @@ import back from '../../../assets/icons/back.png';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+
+import DirectMessageRoom from '../../../components/modal/directMessageRoom';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -36,18 +38,6 @@ const Users = [
       "description": "스윗 리를 도그"
   },
   {
-      "dogId": 53,
-      "kindId": 55,
-      "birthDate": "2023-07-07T23:25:22",
-      "size": "",
-      "weight": 0.0,
-      "gender": "",
-      "isNeutering": true,
-      "name": "삼성",
-      "image": "https://image.msscdn.net/images/goods_img/20231006/3610548/3610548_17017424897248_500.jpg",
-      "description": "스윗 리를 도그"
-  },
-  {
       "dogId": 59,
       "kindId": 77,
       "birthDate": "2023-07-07T23:25:22",
@@ -58,6 +48,18 @@ const Users = [
       "name": "루이",
       "image": "https://s3-munggle-files.s3.ap-northeast-2.amazonaws.com/dog/5/cd1a7945-43ff-40f8-a97b-0ddca58c09a3jpg",
       "description": "큩큩큩!"
+  },
+  {
+      "dogId": 53,
+      "kindId": 55,
+      "birthDate": "2023-07-07T23:25:22",
+      "size": "",
+      "weight": 0.0,
+      "gender": "",
+      "isNeutering": true,
+      "name": "삼성",
+      "image": "https://image.msscdn.net/images/goods_img/20231006/3610548/3610548_17017424897248_500.jpg",
+      "description": "스윗 리를 도그"
   }
 ];
 
@@ -81,14 +83,6 @@ const DraggableBox = ({ index, image, panResponder, pan, size, weight, gender,
       <Text style={styles.detailText}>{`성별: ${gender}`}</Text>
       <Text style={styles.detailText}>{`중성화 여부: ${isNeutering}`}</Text>
       <Text style={styles.detailText}>{`설명: ${description}`}</Text>
-      <View style={styles.heartBox}>
-      <TouchableOpacity onPress={onBrokenHeartPress}>
-          <Text style={styles.brokenHeartButton}>💔</Text>
-        </TouchableOpacity>
-      <TouchableOpacity onPress={onHeartPress}>
-          <Text style={styles.heartButton}>❤️</Text>
-        </TouchableOpacity>
-        </View>
     </View>
   </Animated.View>
 );
@@ -239,8 +233,16 @@ export default function MatchStart () {
     }
   }, [boxes.length]);
 
+  const [chatModalVisible, setChatModalVisible] = useState(false);
 
+  const openChatModal = () => {
+    setChatModalVisible(true);
+  }
 
+  const closeChatModal = () => {
+    setChatModalVisible(false);
+  }
+  
   return (
     <View style={styles.container}>
       {boxes && boxes.map((box, index) => (
@@ -286,6 +288,23 @@ export default function MatchStart () {
         </TouchableOpacity>
         </View>
       </View>
+      <View style={styles.heartBox}>
+        <TouchableOpacity style={{marginRight: SCREEN_WIDTH * 0.12, width: SCREEN_WIDTH*0.2, height: SCREEN_WIDTH*0.2, justifyContent: "center", alignItems: "center",}} onPress={onBrokenHeartPress}>
+            <Text style={styles.brokenHeartButton}>💔</Text>
+          </TouchableOpacity>
+        <TouchableOpacity style={{width: SCREEN_WIDTH*0.2, height: SCREEN_WIDTH*0.2, justifyContent: "center", alignItems: "center",}} onPress={() => openChatModal()}>
+            <Text style={styles.heartButton}>❤️</Text>
+        </TouchableOpacity>
+      </View>
+      {/* 방 모달 */}
+      <Modal
+        transparent={true}
+        visible={chatModalVisible}
+        onRequestClose={() => setChatModalVisible(!chatModalVisible)}
+      >
+        <DirectMessageRoom otherUserId={3} userNickname={"wndqhr"} roomId={4} closeChatModal={closeChatModal} />
+
+      </Modal>
     </View>
   );
 };
@@ -296,7 +315,8 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     backgroundColor: 'rgb(253, 245, 169)',
     alignItems: 'center',
-    justifyContent: 'flex-start'
+    justifyContent: 'flex-start',
+    position: "relative",
 
   },
   box: {
@@ -333,14 +353,15 @@ const styles = StyleSheet.create({
     height: SCREEN_WIDTH * 0.20,
     flexDirection: 'row',
     alignContent:'space-between',
-    marginTop: SCREEN_HEIGHT*0.02
+    marginTop: SCREEN_HEIGHT*0.02,
+    position: "absolute",
+    bottom: SCREEN_HEIGHT * 0.06,
   },
   heartButton:{
-    fontSize: SCREEN_WIDTH*0.12,
-    marginLeft: SCREEN_WIDTH*0.2,
+    fontSize: 40,
   },
   brokenHeartButton:{
-    fontSize: SCREEN_WIDTH*0.12,
+    fontSize: 40,
   },
   TopView:{
     height: SCREEN_HEIGHT*0.1,

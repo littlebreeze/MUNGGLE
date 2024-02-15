@@ -68,7 +68,7 @@ export default function MatchMySetting(props) {
   
   const [characters, setCharacters] = useState([]);
 
-  const checkCharacter = async () => {
+  const checkCharacter = () => {
     if (isChecked1) {
       setCharacters([...characters, character1])
     };
@@ -137,7 +137,7 @@ export default function MatchMySetting(props) {
 
     console.log(payLoad);
 
-    await axios.post(
+    await axios.put(
       `${apiUrl}/dog-match/my`,
       payLoad,
       {headers: {

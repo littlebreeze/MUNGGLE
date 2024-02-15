@@ -235,7 +235,14 @@ export default function PostDetail (props) {
   
           <View style={styles.postDetailMiddleView}>
             <View style={styles.postDetailMiddleLeftView}>
-              <Text style={styles.postDetailTitle}>{post.postTitle}</Text>
+              <Text 
+                style={{
+                  ...styles.postDetailTitle,
+                  fontSize: post.postTitle.length < 9 ? 21 : 17,
+                }}
+              >
+                {post.postTitle}
+              </Text>
               <Text style={styles.postDetailDate}>{formatDate(post.createdAt)}</Text>
             </View>
   
@@ -462,7 +469,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   postDetailTitle: {
-    fontSize: 23,
     fontWeight: "600",
   },
   postDetailDate: {

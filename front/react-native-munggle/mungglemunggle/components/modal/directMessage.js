@@ -4,15 +4,18 @@ import { View, Text, Image, StyleSheet,
   Modal, Switch, StatusBar, TextInput, KeyboardAvoidingView, Platform
 } from "react-native";
 import iconClose from "../../assets/icons/close1.png";
-import axios, { Axios } from "axios";
 import DirectMessageRoom from "./directMessageRoom";
 import WS from "react-native-websocket";
 import { AntDesign } from '@expo/vector-icons';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from "axios";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 export default function DirectMessage (props) {
+  const apiUrl = "http://i10a410.p.ssafy.io:8080";
+  const [authToken, setAuthToken] = useState("");
 
   const defaultImage = require("../../assets/icons/profile.png");
 
@@ -22,6 +25,7 @@ export default function DirectMessage (props) {
   const [userNickname, setUserNickname] = useState(null);
   const [otherUserId, setOtherUserId] = useState(null);
   const closeChatModal = (()=>{
+    getRoomData();
     setChatModalVisible(false);
   });
   const [chatRoom, setChatRoom] = useState([]);
@@ -42,44 +46,75 @@ export default function DirectMessage (props) {
     searchUserAPI(DMUser);
   }, [DMUser]);
 
-  useEffect(() => {
-    const fetchChatRoomData = async () => {
-      try {
-        // GET 요청 보내기
-        const response = await axios.get("http://i10a410.p.ssafy.io:8080/message");
-        console.log(response.data);
-        // 서버 응답에서 필요한 데이터 추출
-        const chatRoomData = response.data;
-
-        // chatRoom 상태 업데이트
-        setChatRoom(chatRoomData);
-      } catch (error) {
-        console.error("Error fetching chat room data:", error);
-      }
+  const getRoomData = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
     };
-    fetchChatRoomData();
+
+    console.log(authToken._j)
+
+    await axios.get(
+      `${apiUrl}/message`,
+      {headers: {
+        "Authorization": authToken._j,
+      }}
+    ).then((res) => {
+      console.log(res.data);
+      setChatRoom(res.data);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
+  useEffect(() => {
+    if (!authToken) {
+      setAuthToken(AsyncStorage.getItem("accessToken"));
+    };
   }, []);
 
+  useEffect(() => {
+    getRoomData();
+  }, [authToken]);
+
+
   //각각의 방 정보
-  const renderChatRoom = ({ item }) => {
-    const formattedDate = getTimeDifference(item.lastSendTime);
-    const message = item.lastContent;
-    return (
-      <TouchableOpacity onPress={() => {
-        setRoomId(item.roomId);
-        setUserNickname(item.userNickname);
-        setOtherUserId(item.otherUserId);
-        setChatModalVisible(true)}}>
-      <View style={{alignItems:"center", flexDirection: "row", marginVertical: 15, marginHorizontal: 10}}>
-        <Image source={item.profileImage ? { uri: item.profileImage } : defaultImage} style={{ width: SCREEN_WIDTH*0.12, height: SCREEN_WIDTH*0.12, borderRadius: 20, marginRight: SCREEN_WIDTH*0.03 }} />
-        <View style={{ flex: 1 }}>
-          <Text>{item.userNickname}</Text>
-          <Text style={{ color: "gray" }}>{message}</Text>
+  const renderChatRoom = () => {
+    if (chatRoom && chatRoom.length > 0) {
+      return (
+        <View>
+          {chatRoom.map((room, index) => {
+            const formattedDate = getTimeDifference(room.lastSendTime);
+            return (
+              <TouchableOpacity 
+                key={index}
+                onPress={() => {
+                  setRoomId(room.roomId);
+                  setUserNickname(room.userNickname);
+                  setOtherUserId(room.otherUserId);
+                  setChatModalVisible(true)
+                }}
+                style={styles.chatRoomContainer}
+              >
+                <View style={styles.chatRoomLeftView}>
+                  <Image src={room.profileImage} style={styles.chatRoomLeftImage} />
+                </View>
+                  
+                <View style={styles.chatRoomRightView}>
+                  <View style={styles.chatRoomRightTopView}>
+                    <Text style={{fontSize: 17, marginLeft: SCREEN_WIDTH * 0.02, marginTop: SCREEN_HEIGHT * 0.005,}}>{room.lastContent}</Text>
+                  </View>
+                  <View style={styles.chatRoomRightBottomView}>
+                    <Text style={{fontSize: 14, fontWeight: "500", marginLeft: SCREEN_WIDTH * 0.015}}>{room.userNickname}</Text>
+                    <Text style={{fontSize: 13, fontWeight: "500", marginLeft: SCREEN_WIDTH * 0.27, color: "lightgrey"}}>{formattedDate}</Text>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            );
+          })}
         </View>
-        <Text style={{ color: "gray" }}>{formattedDate}</Text>
-      </View>
-      </TouchableOpacity>
-    );
+      );
+    }
+
   };
 
   //각각의 검색 내용
@@ -136,23 +171,23 @@ export default function DirectMessage (props) {
           <TouchableOpacity style={styles.directMessageTopView}>
             <Text style={styles.directMessageTopText}>DM</Text>
             <TouchableOpacity
-            style={styles.closeView}
-            onPress={props.closeDirectMessageModal}
-            >
-            <Image 
-              style={styles.closeImage}
-              source={iconClose}
-            />
-          </TouchableOpacity>
+              style={styles.closeView}
+              onPress={props.closeDirectMessageModal}
+              >
+              <Image 
+                style={styles.closeImage}
+                source={iconClose}
+              />
+            </TouchableOpacity>
           </TouchableOpacity>
 
-          <View style={styles.directMessageMiddleView}>
-            <TouchableOpacity style={{ marginRight: SCREEN_WIDTH * 0.01, width: SCREEN_WIDTH * 0.2, height: SCREEN_WIDTH * 0.2}} onPress={() => setCreateModalVisible(true)}>
-                {/* <Image source={require("../../assets/icons/plus.png")} style={{ position:"absolute", width: 70, height: 70,
-              right: 20, bottom: 20 }} /> */}
-                <AntDesign name="pluscircleo" size={60} color="rgb(13, 110, 253)" style={{ position: "absolute", bottom: 0, right: 20 }} />
-            </TouchableOpacity>
-          </View>
+          {renderChatRoom()}
+
+          <TouchableOpacity style={{position: "absolute", bottom: 0, right: 10, marginRight: SCREEN_WIDTH * 0.01, width: SCREEN_WIDTH * 0.2, height: SCREEN_WIDTH * 0.2}} onPress={() => setCreateModalVisible(true)}>
+              {/* <Image source={require("../../assets/icons/plus.png")} style={{ position:"absolute", width: 70, height: 70,
+            right: 20, bottom: 20 }} /> */}
+              <AntDesign name="pluscircleo" size={60} color="rgb(13, 110, 253)" style={{  }} />
+          </TouchableOpacity>
 
         
           {/* 검색 모달 */}
@@ -287,5 +322,41 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.215,
     alignItems: "center",
+  },
+
+  chatRoomContainer: {
+    width: SCREEN_WIDTH * 0.8,
+    height: SCREEN_HEIGHT * 0.1,
+    flexDirection: "row",
+    marginTop: SCREEN_HEIGHT * 0.02,
+    borderWidth: 1,
+    borderColor: "gainsboro",
+    alignItems: "center",
+    elevation: 3,
+  },
+  chatRoomLeftView: {
+    width: SCREEN_WIDTH * 0.2,
+    height: SCREEN_HEIGHT * 0.08,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  chatRoomLeftImage: {
+    width: SCREEN_WIDTH * 0.15,
+    height: SCREEN_WIDTH * 0.15,
+    borderRadius: 100,
+  },
+  chatRoomRightView: {
+    width: SCREEN_WIDTH * 0.6,
+    height: SCREEN_HEIGHT * 0.08,
+    
+  },
+  chatRoomRightTopView: {
+    width: SCREEN_WIDTH * 0.6,
+    height: SCREEN_HEIGHT * 0.05,
+  },
+  chatRoomRightBottomView: {
+    flexDirection: "row",
+    width: SCREEN_WIDTH * 0.6,
+    height: SCREEN_HEIGHT * 0.03,
   },
 });

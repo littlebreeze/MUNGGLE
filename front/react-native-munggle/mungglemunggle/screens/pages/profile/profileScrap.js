@@ -92,9 +92,10 @@ const styles = StyleSheet.create({
     margin: SCREEN_WIDTH * 0.005,
     borderRadius: 8,
     resizeMode: "center",
+    width: SCREEN_WIDTH * 0.32, 
   },
   scrapImage: {
-    width: SCREEN_WIDTH * 0.32, 
+    width: "100%",
     resizeMode: "cover",
   },
   indicatorView: {

@@ -34,8 +34,8 @@ export default function WalkCalendar() {
       walkName: "산책222",
       dogId: 1,
       description: "2222좋아요",
-      duration: 11,
-      distance: 11,
+      duration: 31,
+      distance: 600,
       rating: 4,
       isPrivate: false,
       createdAt: "2024-02-08T23:23:22",
@@ -70,8 +70,8 @@ export default function WalkCalendar() {
       walkName: "산책444",
       dogId: 1,
       description: "좋아싫어좋아싫어",
-      duration: 11,
-      distance: 11,
+      duration: 45,
+      distance: 1200,
       rating: 4,
       isPrivate: false,
       createdAt: "2024-02-09T19:23:22",
@@ -103,8 +103,8 @@ export default function WalkCalendar() {
       walkName: "오늘은무슨날인가",
       dogId: 1,
       description: "산책하는 날이다",
-      duration: 11,
-      distance: 11,
+      duration: 20,
+      distance: 900,
       rating: 4,
       isPrivate: false,
       createdAt: "2024-02-10T03:23:22",
@@ -151,9 +151,9 @@ export default function WalkCalendar() {
         </View>
 
         <View style={styles.calendarModalStatistics}>
-          <Text style={{marginVertical: SCREEN_HEIGHT * 0.01, marginLeft: SCREEN_WIDTH * 0.2, fontSize: 20, fontWeight: "600",}}>산책      횟수:    3 회</Text>
-          <Text style={{marginVertical: SCREEN_HEIGHT * 0.01, marginLeft: SCREEN_WIDTH * 0.2, fontSize: 20, fontWeight: "600",}}>산책 총 거리:    3.2 km</Text>
-          <Text style={{marginVertical: SCREEN_HEIGHT * 0.01, marginLeft: SCREEN_WIDTH * 0.2, fontSize: 20, fontWeight: "600",}}>산책 총 시간:    1 시간 32 분</Text>
+          <Text style={{marginVertical: SCREEN_HEIGHT * 0.01, marginLeft: SCREEN_WIDTH * 0.2, fontSize: 20, fontWeight: "600",}}>산  책  횟  수 :    3 회</Text>
+          <Text style={{marginVertical: SCREEN_HEIGHT * 0.01, marginLeft: SCREEN_WIDTH * 0.2, fontSize: 20, fontWeight: "600",}}>산책 총 거리 :    3.2 km</Text>
+          <Text style={{marginVertical: SCREEN_HEIGHT * 0.01, marginLeft: SCREEN_WIDTH * 0.2, fontSize: 20, fontWeight: "600",}}>산책 총 시간 :    1 시간 32 분</Text>
         </View>
 
         <View style={styles.calendarModalCalendarContainer}>
@@ -177,7 +177,7 @@ export default function WalkCalendar() {
               <Text> </Text>
               <WalkDetail details={filteredDetails} />
               <TouchableOpacity onPress={() => setModalVisible(false)} style={styles.close}>
-                <Text style={styles.closeText}>Close</Text>
+                <Text style={styles.closeText}>닫기</Text>
               </TouchableOpacity>
             </View>
           </View>

@@ -25,7 +25,7 @@ export default function Search(props) {
   const apiUrl = "http://i10a410.p.ssafy.io:8080";
   const [authToken, setAuthToken] = useState("");
 
-  const [searchText, setSearchText] = useState("강아지");
+  const [searchText, setSearchText] = useState("");
   const [activeTab, setActiveTab] = useState(0);
 
   const scrollViewRef = useRef(null);
@@ -313,15 +313,11 @@ export default function Search(props) {
         <View style={styles.userContentImageView}>
           <Image 
             style={styles.userContentImage} 
-            source={{ uri: user.profileUrlImg }} 
+            src={user.profileImgUrl } 
             />
         </View>
 
         <View style={styles.userContentRightView}>
-          <View style={styles.userContentDescriptionView}>
-            <Text style={styles.userContentDescription}>{user.description}</Text>
-          </View>
-
           <View style={styles.userContentNicknameView}>
             <Text style={styles.userContentNickname}>{user.nickname}</Text>
           </View>
@@ -374,8 +370,8 @@ export default function Search(props) {
       <View style={styles.tagContentContainer}>
         {searchTags.map((tag, index) => {
           return (
-            <View>
-              <TouchableOpacity key={index} style={styles.tagContainer}
+            <View key={index}>
+              <TouchableOpacity style={styles.tagContainer}
                 onPress={() => {
                   handleTagPress(tag.tagNm);
                 }}
@@ -657,12 +653,16 @@ const styles = StyleSheet.create({
 
 //프로필 컨테이너 관련
   userContentView: {
-    backgroundColor: '#e0e0e0',
+    backgroundColor: 'white',
     width: SCREEN_WIDTH * 0.85,
     height: SCREEN_HEIGHT * 0.1,
     flexDirection: 'row',
     justifyContent: "space-around",
     marginVertical: SCREEN_HEIGHT * 0.01,
+    borderWidth: 1,
+    borderColor: "gainsboro",
+    elevation: 10,
+    borderRadius: 10,
   },
   userContentImageView: {
     width: SCREEN_WIDTH * 0.2,
@@ -680,26 +680,18 @@ const styles = StyleSheet.create({
   userContentRightView: {
     width: SCREEN_WIDTH * 0.6,
     height: SCREEN_HEIGHT * 0.1,
+    justifyContent: "center",
   },
   userContentNicknameView: {
     width: SCREEN_WIDTH * 0.6,
-    height: SCREEN_HEIGHT * 0.035,
+    height: SCREEN_HEIGHT * 0.05,
     justifyContent: "center",
-    paddingLeft: SCREEN_WIDTH * 0.02,
   },
   userContentNickname: {
-    fontSize: 17, 
-    fontWeight: "500",
+    fontSize: 18, 
+    fontWeight: "600",
   },
-  userContentDescriptionView: {
-    width: SCREEN_WIDTH * 0.6,
-    height: SCREEN_HEIGHT * 0.065,
-    justifyContent: "center",
-    alignItems: "flex-start",
-  },
-  userContentDescription: {
-    fontSize: 16,
-  },
+
 
   //태그 컨테이너 관련
   tagContentContainer : {
@@ -717,6 +709,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     flexDirection: 'row',
     marginVertical: SCREEN_HEIGHT * 0.01,
+    borderRadius: 25,
 
   },
   tagContent: {
@@ -725,7 +718,7 @@ const styles = StyleSheet.create({
     paddingLeft: SCREEN_WIDTH * 0.05,
   },
   tagName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
   },
 
