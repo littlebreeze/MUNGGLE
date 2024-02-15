@@ -73,7 +73,7 @@ public class MatchingController {
     }
 
     // 매칭 온오프
-    @PostMapping("/my")
+    @PostMapping("/my/dogId")
     @ResponseStatus(HttpStatus.OK)
     public void toggleMatching(@PathVariable Long dogId){
 
