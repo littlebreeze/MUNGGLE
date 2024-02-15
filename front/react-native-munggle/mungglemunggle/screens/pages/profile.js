@@ -637,7 +637,7 @@ export default function ProfileScreen () {
 const styles = StyleSheet.create({
   profileContainer: {
     width: SCREEN_WIDTH,
-    backgroundColor: "rgb(206, 207, 184)",
+    // backgroundColor: "rgb(206, 207, 184)",
     position: "relative",
   },
   profileScrollView: {
@@ -659,6 +659,8 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT * 0.2,
     position: "relative",
+    borderBottomWidth: 1,
+    borderBlockColor: "gainsboro",
   },
   profileTopViewTopImage: {
     width: SCREEN_WIDTH,
@@ -733,6 +735,8 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     height: SCREEN_HEIGHT * 0.15,
     paddingHorizontal: SCREEN_HEIGHT * 0.02,
+    backgroundColor: "white",
+    zIndex: -1,
   },
   profileTopViewBottomViewTopView: {
     marginVertical: SCREEN_HEIGHT * 0.01,
@@ -748,9 +752,9 @@ const styles = StyleSheet.create({
   profileTopViewBottomViewButtonView: {
     flexDirection: "row",
     width: SCREEN_WIDTH * 0.235,
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     position: "absolute",
-    right: SCREEN_WIDTH * 0.01,
+    right: SCREEN_WIDTH * 0.00,
     top: SCREEN_HEIGHT * 0.014,
   },
   profileTopViewBottomViewBottomView: {
@@ -806,8 +810,10 @@ const styles = StyleSheet.create({
   profileMiddleView: {
     flexDirection: "row",
     width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 0.06,
+    height: SCREEN_HEIGHT * 0.063,
     justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: "gainsboro",
   },
   tabButton: {
     alignItems: "center",
@@ -832,11 +838,13 @@ const styles = StyleSheet.create({
   },
 
   createDogView: {
-    width: SCREEN_WIDTH * 0.19,
-    height: SCREEN_WIDTH * 0.19,
+    width: SCREEN_WIDTH * 0.18,
+    height: SCREEN_WIDTH * 0.18,
     position: "absolute",
     bottom: SCREEN_WIDTH * 0.05,
     right: SCREEN_WIDTH * 0.05,
+    elevation: 5,
+    borderRadius: 100,
   },
   createDogImage: {
     width: SCREEN_WIDTH * 0.19,

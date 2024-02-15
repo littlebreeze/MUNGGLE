@@ -85,12 +85,12 @@ export default function SignUp (props) {
     };
     
   const checkNickname = () => {
-    console.log(email);
+    console.log(nickname);
     axios.get(
       `${apiUrl}/users/nickname?nickname=${nickname}`,
-      {headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      }}
+      // {headers: {
+      //   "Content-Type": "application/x-www-form-urlencoded",
+      // }}
     ).then((res) => {
       setIsConfirmNickname(true);
       console.log(res.status);

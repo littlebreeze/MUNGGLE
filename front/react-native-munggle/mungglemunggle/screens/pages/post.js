@@ -4,6 +4,8 @@ import { View, Text, Button,
   ScrollView, TouchableOpacity,
   StyleSheet, Dimensions,
   ActivityIndicator,
+  ImageBackground,
+  KeyboardAvoidingView,
 } from "react-native";
 
 import ProfileCircle from "../../components/profileCircle";
@@ -23,6 +25,8 @@ import axios from "axios";
 
 import { format, formatDistanceToNow } from "date-fns";
 import { ko } from "date-fns/locale";
+
+import imageBack from "../../assets/images/back4.jpg"
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -148,11 +152,11 @@ export default function PostScreen () {
                     style={styles.profileCircleImage}
                     src={userProfile.profileImgUrl}
                   />
-                </TouchableOpacity>
   
-                <View style={styles.profileCircleNameView}>
-                  <Text style={styles.profileCircleName}>{ userProfile.nickname }</Text>
-                </View>
+                  <View style={styles.profileCircleNameView}>
+                    <Text style={styles.profileCircleName}>{ userProfile.nickname }</Text>
+                  </View>
+                </TouchableOpacity>
               </View>
             );
           })}
@@ -222,10 +226,28 @@ export default function PostScreen () {
                   </TouchableOpacity>
   
                   <View style={styles.postListBottomView}>
-                    <View style={styles.postListTextView}>
-                      <Text style={styles.postListTitle}>{post.postTitle}</Text>
-                      <Text style={styles.postListDate}>{formatDate(post.createdAt)}</Text>
-                      <View style={styles.postListTagView}>
+                    <View style={styles.postListBottomTopView}>
+                      <View style={styles.postListTextView}>
+                        <Text style={styles.postListTitle}>{post.postTitle}</Text>
+                        <Text style={styles.postListDate}>{formatDate(post.createdAt)}</Text>
+                      </View>
+                      <View style={styles.postListIconView}>
+                        <View style={styles.postLikeCountView}>
+                          <Text style={styles.postLikeCountText}>{post.likeCnt}</Text>
+                        </View>
+                        <TouchableOpacity style={styles.postLikeIcon}>
+                          <Image 
+                            style={styles.postLikeIcon}
+                            source={iconBornWhite}
+                            />
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                    <View style={styles.postListBottomBottomView}>
+                      <ScrollView 
+                        style={styles.postListTagView}
+                        horizontal={true}
+                      >
                         {post.hashtags && post.hashtags.map((tag, index) => {
                           return (
                             <View style={styles.postTagView} key={index}>
@@ -233,18 +255,7 @@ export default function PostScreen () {
                             </View>
                           );
                         })}
-                      </View>
-                    </View>
-                    <View style={styles.postListIconView}>
-                      <View style={styles.postLikeCountView}>
-                        <Text style={styles.postLikeCountText}>{post.likeCnt}</Text>
-                      </View>
-                      <TouchableOpacity style={styles.postLikeIcon}>
-                        <Image 
-                          style={styles.postLikeIcon}
-                          source={iconBornWhite}
-                        />
-                      </TouchableOpacity>
+                      </ScrollView>
                     </View>
                   </View>
                 </View>
@@ -309,7 +320,7 @@ export default function PostScreen () {
           <View style={styles.postTopViewToggleButtonView}>
             <TouchableOpacity 
               style={{...styles.postToggleButtonLeft,
-                backgroundColor: chooseTab == 0 ? "rgb(255, 214, 139)" : "rgb(253, 245, 169)",
+                backgroundColor: chooseTab == 0 ? "rgb(235, 233, 152)" : "rgb(249, 250, 208)",
               }}
               onPress={() => setChooseTab(0)}
             >
@@ -317,7 +328,7 @@ export default function PostScreen () {
             </TouchableOpacity>
             <TouchableOpacity 
               style={{...styles.postToggleButtonRight,
-                backgroundColor: chooseTab == 0 ? "rgb(253, 245, 169)" : "rgb(255, 214, 139)",
+                backgroundColor: chooseTab == 0 ? "rgb(249, 250, 208)" : "rgb(235, 233, 152)",
               }}
               onPress={() => setChooseTab(1)}
             >
@@ -354,14 +365,19 @@ export default function PostScreen () {
 const styles = StyleSheet.create({
   postContainer: {
     width: SCREEN_WIDTH,
-    backgroundColor: "rgb(249, 250, 208)",
+    // backgroundColor: "rgb(249, 250, 208)",
+    // backgroundColor: "rgb(249, 250, 208)",
     position: "relative",
   },
   postScrollView: {
     width: SCREEN_WIDTH,
+    // backgroundColor: "white",
   },
   postTopView: {
     width: SCREEN_WIDTH,
+    backgroundColor: "white",
+    borderBottomWidth: 1,
+    borderBottomColor: "gainsboro",
   },
   
   // profile Toggle Button
@@ -371,6 +387,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
+    // borderBottomWidth: 1,
+    // borderColor: "gainsboro",
   },
   postToggleButtonLeft: {
     width: SCREEN_WIDTH * 0.17,
@@ -379,8 +397,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "gainsboro",
-    borderTopLeftRadius: 8,
-    borderBottomLeftRadius: 8,
+    borderTopLeftRadius: 5,
+    borderBottomLeftRadius: 5,
   },
   postToggleButtonLeftText: {
     fontSize: 17,
@@ -393,8 +411,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
     borderColor: "gainsboro",
-    borderTopRightRadius: 8,
-    borderBottomRightRadius: 8,
+    borderTopRightRadius: 5,
+    borderBottomRightRadius: 5,
   },
   postToggleButtonRightText: {
     fontSize: 17,
@@ -411,12 +429,15 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT * 0.13,
     justifyContent: "space-around",
     alignItems: "center",
-    marginHorizontal: SCREEN_WIDTH * 0.023,
+    marginHorizontal: SCREEN_WIDTH * 0.010,
+    backgroundColor: "white",
+    marginBottom: 13,
   },
   profileCircleImageView: {
     borderRadius: 100,
     width: SCREEN_WIDTH * 0.18,
     height: SCREEN_WIDTH * 0.18,
+    elevation: 5,
   },
   profileCircleImage: {
     borderRadius: 100,
@@ -425,11 +446,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: SCREEN_WIDTH * 0.18,
     height: SCREEN_WIDTH * 0.18,
+    marginLeft: 1,
+    marginBottom: 3,
   },
   profileCircleNameView: {
     width: SCREEN_WIDTH * 0.19,
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 5,
   },
   profileCircleName: {
     fontSize: 13,
@@ -441,6 +465,9 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH,
     alignItems: "center",
     paddingTop: 10,
+    // backgroundColor: "rgb(249, 250, 208)",
+    backgroundColor: "rgb(255, 255, 245)",
+    // backgroundColor: "gainsboro",
   },
   postListView: {
     marginVertical: 10,
@@ -456,27 +483,32 @@ const styles = StyleSheet.create({
     width: SCREEN_WIDTH * 0.25,
     height: SCREEN_HEIGHT * 0.2,
     backgroundColor: "white",
-    borderRadius: 7,
     alignItems: "center",
     justifyContent: "space-around",
+    elevation: 5,
+    marginLeft: 5,
+    marginTop: 10,
   },
   postListProfileButtonView: {
     flexDirection: "row",
     width: SCREEN_WIDTH * 0.235,
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
+    marginLeft: 5,
   },
   postListViewRightView: {
     width: SCREEN_WIDTH * 0.64,
     height: SCREEN_HEIGHT * 0.38,
     alignItems: "center",
     backgroundColor: "white",
-    borderRadius: 9,
     justifyContent: "space-around",
+    elevation: 5,
+    marginRight: 6,
+    borderWidth: 1,
+    borderColor: "lightgrey",
   },
   postListImageView: {
     width: SCREEN_WIDTH * 0.60,
     height: SCREEN_HEIGHT * 0.25,
-    
   },
   postListImage: {
     width: SCREEN_WIDTH * 0.60,
@@ -486,13 +518,23 @@ const styles = StyleSheet.create({
   postListBottomView: {
     width: SCREEN_WIDTH * 0.60,
     height: SCREEN_HEIGHT * 0.1,
+    alignItems: "flex-start",
+    marginLeft: 5,
+    justifyContent: "space-between",
+  },
+  postListBottomTopView: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "flex-start",
+    width: SCREEN_WIDTH * 0.55,
+    height: SCREEN_HEIGHT * 0.06,
+  },
+  postListBottomBottomView: {
+    width: SCREEN_WIDTH * 0.6,
+    height: SCREEN_HEIGHT * 0.04,
   },
   postListTextView: {
     width: SCREEN_WIDTH * 0.48,
-    height: SCREEN_HEIGHT * 0.09,
+    height: SCREEN_HEIGHT * 0.06,
     justifyContent: "space-between",
   },
   postListTitle: {
@@ -504,15 +546,18 @@ const styles = StyleSheet.create({
     color: "grey",
   },
   postListTagView: {
-    flexDirection: "row",
+    width: SCREEN_WIDTH * 0.59,
   },
   postTagView: {
     backgroundColor: "rgb(180, 180, 180)",
-    borderRadius: 10,
+    borderRadius: 15,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: SCREEN_WIDTH * 0.025,
+    paddingHorizontal: SCREEN_WIDTH * 0.020,
     paddingVertical: SCREEN_HEIGHT * 0.0015,
+    marginRight: 5,
+    height: SCREEN_HEIGHT * 0.027,
+    marginTop: 8,
   },
   postTagText: {
     color: "white",
@@ -526,9 +571,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   postLikeIcon: {
-    width: SCREEN_WIDTH * 0.055,
-    height: SCREEN_WIDTH * 0.055,
-    
+    width: SCREEN_WIDTH * 0.045,
+    height: SCREEN_WIDTH * 0.045,
+    marginTop: 1,
+    marginRight: 7,
   },
   postLikeCountView: {
     width: SCREEN_WIDTH * 0.055,
@@ -540,11 +586,13 @@ const styles = StyleSheet.create({
     color: "rgb(146, 146, 0)",
   },
   postCreateView: {
-    width: SCREEN_WIDTH * 0.19,
-    height: SCREEN_WIDTH * 0.19,
+    width: SCREEN_WIDTH * 0.18,
+    height: SCREEN_WIDTH * 0.18,
     position: "absolute",
     bottom: SCREEN_WIDTH * 0.05,
     right: SCREEN_WIDTH * 0.05,
+    elevation: 5,
+    borderRadius: 100,
   },
   postCreateImage: {
     width: SCREEN_WIDTH * 0.19,
