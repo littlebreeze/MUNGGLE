@@ -57,7 +57,7 @@ export default function DirectMessageRoom(props) {
         .then(() => {
           console.log("token");
           console.log(accessTokenRef.current);
-          ws.current = new WebSocket("ws://i10a410.p.ssafy.io:8080/dm",[],{
+          ws.current = new WebSocket("wss://i10a410.p.ssafy.io:8080/dm",[],{
             headers: {
               Authorization: accessTokenRef.current,
             },
