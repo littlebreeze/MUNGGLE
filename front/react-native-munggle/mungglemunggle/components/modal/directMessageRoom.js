@@ -43,7 +43,7 @@ export default function DirectMessageRoom(props) {
       const fetchChatRoomData = async () => {
         try {
           // GET 요청 보내기
-          const response = await axios.get(`http://i10a410.p.ssafy.io:8080/message/${props.roomId}`);
+          const response = await axios.get(`https://i10a410.p.ssafy.io:8080/message/${props.roomId}`);
           // console.log(response.data);
           setMessages(response.data);
         } catch (error) {

@@ -30,7 +30,7 @@ export default function DirectMessage (props) {
 
   const searchUserAPI = async (keyword) => {
     try {
-      const response = await fetch(`http://i10a410.p.ssafy.io:8080/search/user?keyword=${keyword}`);
+      const response = await fetch(`https://i10a410.p.ssafy.io:8080/search/user?keyword=${keyword}`);
       const data = await response.json();
       setSearchUser(data); // 검색 결과를 상태에 저장
     } catch (error) {
@@ -46,7 +46,7 @@ export default function DirectMessage (props) {
     const fetchChatRoomData = async () => {
       try {
         // GET 요청 보내기
-        const response = await axios.get("http://i10a410.p.ssafy.io:8080/message");
+        const response = await axios.get("https://i10a410.p.ssafy.io:8080/message");
         console.log(response.data);
         // 서버 응답에서 필요한 데이터 추출
         const chatRoomData = response.data;

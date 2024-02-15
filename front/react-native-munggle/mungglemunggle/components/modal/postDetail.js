@@ -23,7 +23,7 @@ import { ko } from "date-fns/locale";
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 export default function PostDetail (props) {
-  const apiUrl = "http://i10a410.p.ssafy.io:8080";
+  const apiUrl = "https://i10a410.p.ssafy.io:8080";
 
   const [authToken, setAuthToken] = useState("");
 
