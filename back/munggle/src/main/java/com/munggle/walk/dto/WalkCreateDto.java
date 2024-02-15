@@ -1,11 +1,9 @@
 package com.munggle.walk.dto;
 
-import com.munggle.domain.model.entity.Location;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -22,8 +20,8 @@ public class WalkCreateDto {
 
     private MultipartFile image;
 
-    private boolean isDeleted;
-    private List<LocationDto> location;
+    private Boolean isDeleted;
+    private List<LocationCreateDto> location;
 
     public void setUserId(Long userId){
         this.userId = userId;

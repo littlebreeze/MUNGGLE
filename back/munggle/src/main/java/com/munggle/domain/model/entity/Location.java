@@ -1,16 +1,14 @@
 package com.munggle.domain.model.entity;
 
-import com.munggle.walk.dto.LocationDto;
-import com.munggle.walk.dto.WalkDto;
+import com.munggle.walk.dto.LocationCreateDto;
+import com.munggle.walk.dto.LocationDetailDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "locations")
@@ -52,13 +50,11 @@ public class Location {
         return this;
     }
 
-    public static LocationDto toDto(Location location){
+    public static LocationDetailDto toDetailDto(Location location){
 
-        return LocationDto.builder()
-                .walkId(location.getWalk().getWalkId())
+        return LocationDetailDto.builder()
                 .lat(location.getLat())
                 .lng(location.getLng())
-                .createdAt(location.getCreatedAt())
                 .orderNo(location.getOrderNo())
                 .build();
 
