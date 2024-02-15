@@ -47,6 +47,7 @@ public class DogMapper {
                 .name(dog.getName())
                 .image(dog.getImageUrl())
                 .description(dog.getDescription())
+                .isMatching(dog.getIsMatching())
                 .user(UserMapper.toUserProfileDto(dog.getUser()))
                 .build();
     }

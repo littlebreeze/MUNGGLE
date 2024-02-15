@@ -30,6 +30,7 @@ public class DogDetailDto {
     private String name;
     private String image;   // Url
     private String description;
+    private Boolean isMatching;
 
     private UserProfileDto user;
 }
