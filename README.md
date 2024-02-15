@@ -49,7 +49,7 @@
 [![Spring Boot](https://img.shields.io/badge/Spring_Boot-3.2.1-green?style=flat&logo=spring)](https://spring.io/projects/spring-boot)
 [![Java](https://img.shields.io/badge/Java-17-orange?style=flat&logo=java)](https://www.oracle.com/java/)
 [![MariaDB](https://img.shields.io/badge/MariaDB-10.11.6-yellow?style=flat&logo=mariadb)](https://mariadb.org/)
-[![Redis](https://img.shields.io/badge/Redis-10.11.6-red?style=flat&logo=redis)](https://redis.io/)
+[![Redis](https://img.shields.io/badge/Redis-7.2.4-red?style=flat&logo=redis)](https://redis.io/)
 [![WebSocket](https://img.shields.io/badge/WebSocket-gray?style=flat&logo=websocket)](https://en.wikipedia.org/wiki/WebSocket)
 
 ### Cooperation
@@ -62,8 +62,8 @@
 
 ### Tools
 
-[![IntelliJ IDEA](https://img.shields.io/badge/IntelliJ_IDEA-2023.1.3-red?style=flat&logo=intellij-idea)](https://www.jetbrains.com/idea/)
-[![Android Studio](https://img.shields.io/badge/Android_Studio-2022.3.1.21-green?style=flat&logo=android-studio)](https://developer.android.com/studio)
+[![IntelliJ IDEA](https://img.shields.io/badge/IntelliJ_IDEA-2023.3.2-red?style=flat&logo=intellij-idea)](https://www.jetbrains.com/idea/)
+[![Android Studio](https://img.shields.io/badge/Android_Studio-2023.1.1-green?style=flat&logo=android-studio)](https://developer.android.com/studio)
 [![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-1.85.1-blue.svg?style=flat&logo=visual-studio-code)](https://code.visualstudio.com/)
 
 
@@ -71,9 +71,9 @@
 
 ### Infra
 
-[![AWS EC2](https://img.shields.io/badge/AWS_EC2-20.04.6-orange?style=flat&logo=amazon-aws)](https://aws.amazon.com/ec2/)
+[![AWS EC2](https://img.shields.io/badge/AWS_EC2-gray?style=flat&logo=amazon-aws)](https://aws.amazon.com/ec2/)
 [![Docker](https://img.shields.io/badge/Docker-24.0.7-blue?style=flat&logo=docker)](https://www.docker.com/)
-[![AWS S3](https://img.shields.io/badge/AWS_S3-24.24.24-orange?style=flat&logo=amazon-s3)](https://aws.amazon.com/s3/)
+[![AWS S3](https://img.shields.io/badge/AWS_S3-gray?style=flat&logo=amazon-s3)](https://aws.amazon.com/s3/)
 [![Ubuntu](https://img.shields.io/badge/Ubuntu-20.04.06-purple?style=flat&logo=ubuntu)](https://ubuntu.com/)
 
 ## 🏛️ 아키텍처
