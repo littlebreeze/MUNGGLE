@@ -1,10 +1,8 @@
 package com.munggle.domain.model.entity;
 
 import com.munggle.image.dto.FileInfoDto;
-import com.munggle.walk.dto.LocationDto;
 import com.munggle.walk.dto.WalkUpdateDto;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;

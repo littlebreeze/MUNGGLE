@@ -1,15 +1,10 @@
 package com.munggle.walk.dto;
 
-import com.munggle.domain.model.entity.Location;
 import com.munggle.user.dto.UserProfileDto;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.List;
 
@@ -27,10 +22,11 @@ public class WalkDto {
     private Integer distance;
     private Float rating;
     private Boolean isDeleted;
+    private Boolean isPrivated;
     private String image;
 
     private UserProfileDto user;
 
-    private List<LocationDto> location;
+    private List<LocationDetailDto> location;
 
 }
