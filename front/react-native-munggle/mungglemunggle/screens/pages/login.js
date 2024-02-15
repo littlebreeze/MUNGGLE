@@ -116,7 +116,7 @@ export default function LoginScreen (props) {
           </TouchableOpacity>
         </View>
         
-        <View style={styles.underLineView}>
+        {/* <View style={styles.underLineView}>
           <View style={styles.underLineSideView} />
           <View style={styles.underLineCenterView}>
             <Text style={styles.underLineText}>또는</Text>
@@ -151,7 +151,7 @@ export default function LoginScreen (props) {
               source={iconNaver}
             />
           </TouchableOpacity>
-        </View>
+        </View> */}
 
         <Modal
           animationType="slide"
@@ -182,7 +182,7 @@ const styles = StyleSheet.create({
   loginTopImageView: {
     width: SCREEN_WIDTH * 0.6, 
     height: SCREEN_HEIGHT * 0.15, 
-    marginTop: SCREEN_HEIGHT * 0.2,
+    marginTop: SCREEN_HEIGHT * 0.3,
     marginBottom: SCREEN_HEIGHT * 0.05,
   },
   loginTopImage: {

@@ -236,7 +236,7 @@ export default function PostScreen () {
                         <TouchableOpacity style={styles.postLikeIcon}>
                           <Image 
                             style={styles.postLikeIcon}
-                            source={iconBornWhite}
+                            source={post.isLiked ? iconBornBlack : iconBornWhite}
                             />
                         </TouchableOpacity>
                       </View>
@@ -254,19 +254,6 @@ export default function PostScreen () {
                           );
                         })}
                       </ScrollView>
-                    </View>
-                    <View style={styles.postListIconView}>
-                      <View style={styles.postLikeCountView}>
-                        <Text style={styles.postLikeCountText}>{post.likeCnt}</Text>
-                      </View>
-                      <TouchableOpacity 
-                        style={styles.postLikeIcon}
-                      >
-                        <Image 
-                          style={styles.postLikeIcon}
-                          source={post.isLiked ? iconBornBlack : iconBornWhite}
-                        />
-                      </TouchableOpacity>
                     </View>
                   </View>
                 </View>

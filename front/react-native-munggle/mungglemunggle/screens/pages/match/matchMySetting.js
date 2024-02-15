@@ -47,24 +47,41 @@ export default function MatchMySetting() {
     <View style={styles.matchContainer}>
       <View style={styles.TopView}>
         <View style={styles.TopViewTextBox}>
-        <Text style={styles.detailText}>내 강아지 설정 변경</Text>
+          <Text style={styles.detailText}>내 강아지 특징 등록</Text>
         </View>
+
         <View style={styles.TopViewEndButton}>
-        <TouchableOpacity style={styles.matchInfoEditIconViewCenter} onPress={() => {
-          navigation.navigate('MatchMain')
-        }}>
-          <Image 
-            style={styles.matchInfoEditIcon}
-            source={back}
-          />
-        </TouchableOpacity>
+          <TouchableOpacity 
+            style={styles.matchInfoEditIconViewCenter} 
+            onPress={() => {
+              navigation.navigate('MatchMain')
+            }}
+          >
+            <Image 
+              style={styles.matchInfoEditIcon}
+              source={back}
+            />
+          </TouchableOpacity>
         </View>
       </View>
-    
 
       <View style={styles.Box}>
-        <View style={{width : SCREEN_WIDTH * 0.7, flexDirection: 'row',
-      alignItems: 'center'}}>
+        <View style={{width : SCREEN_WIDTH * 0.7, flexDirection: 'row', alignItems: 'center'}}>
+          <Text style={styles.resultText}>중성화 여부 : </Text>
+          <Text style={styles.normalText} > {neutered=="true" ? "O" : "X"} </Text>
+        </View>
+        {/* 동그란 이미지 버튼 */}
+        <View style={{ flexDirection: 'row', marginLeft: SCREEN_WIDTH * 0.1}}>
+          <TouchableOpacity onPress={(()=>{
+            setNeuteredModalVisible(true);
+          })}>
+            <Image source={change} style={styles.buttonImage} />
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.Box}>
+        <View style={{width : SCREEN_WIDTH * 0.7, flexDirection: 'row', alignItems: 'center'}}>
         <Text style={styles.resultText}>성격 : </Text>
         <View style={styles.normalText}>
         <Text>{personality["말썽꾸러기"] ? " 말썽꾸러기 " : ""}</Text>
@@ -78,23 +95,6 @@ export default function MatchMySetting() {
         <View style={{ flexDirection: 'row', marginLeft: SCREEN_WIDTH * 0.1 }}>
           <TouchableOpacity onPress={(() => {
             setPersonalityModalVisible(true);
-          })}>
-            <Image source={change} style={styles.buttonImage} />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-
-      <View style={styles.Box}>
-        <View style={{width : SCREEN_WIDTH * 0.7, flexDirection: 'row',
-      alignItems: 'center'}}>
-        <Text style={styles.resultText}>중성화 여부 : </Text>
-        <Text style={styles.normalText} > {neutered=="true" ? "O" : "X"} </Text>
-        </View>
-        {/* 동그란 이미지 버튼 */}
-        <View style={{ flexDirection: 'row', marginLeft: SCREEN_WIDTH * 0.1}}>
-          <TouchableOpacity onPress={(()=>{
-            setNeuteredModalVisible(true);
           })}>
             <Image source={change} style={styles.buttonImage} />
           </TouchableOpacity>
@@ -190,10 +190,10 @@ const styles = StyleSheet.create({
   },
   matchTopView: {
     height: SCREEN_HEIGHT * 0.05,
-    backgroundColor: 'red'
   },
   TopView:{
-    height: SCREEN_HEIGHT*0.07,
+    marginVertical: SCREEN_HEIGHT * 0.1,
+    height: SCREEN_HEIGHT *  0.07,
     width: SCREEN_WIDTH,
     alignItems: 'center',
     zIndex: -1,
@@ -232,6 +232,8 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     color: 'black',
+    borderBottomColor: "gray",
+    borderBottomWidth: 2,
   },
 
   Box: {

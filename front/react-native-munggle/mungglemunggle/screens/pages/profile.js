@@ -226,7 +226,9 @@ export default function ProfileScreen () {
   };
 
   const editProfileImage = async () => {
-    const localUri = profileImgUrl.uri;
+    const resizedImageUrl = await resizeImage(profileImgUrl.uri);
+
+    const localUri = resizedImageUrl.uri;
     const fileName = localUri.split('/').pop();
     const match = /\.(\w+)$/.exec(fileName ?? '');
     const type = match ? `image/${match[1]}` : `image`;
@@ -301,13 +303,24 @@ export default function ProfileScreen () {
       return (
         <View style={styles.profileDefaultTopView}>
           <View style={styles.profileDefaultImageView}>
-            <Image 
-              style={{
-                ...styles.profileDefaultImage, 
-                opacity: 0.8,
-              }}
-              source={imgDefaultProfile}
-            /> 
+            {profileImgUrl && 
+              <Image 
+                style={{
+                  ...styles.profileDefaultImage, 
+                  opacity: 0.8,
+                }}
+                source={profileImgUrl}
+              /> 
+            }
+            {!profileImgUrl && 
+              <Image 
+                style={{
+                  ...styles.profileDefaultImage, 
+                  opacity: 0.8,
+                }}
+                source={imgDefaultProfile}
+              /> 
+            }
             <TouchableOpacity 
               style={styles.profileEditDefaultProfileImgButtonView}
               onPress={changeProfileImg}
@@ -343,7 +356,7 @@ export default function ProfileScreen () {
                   ...styles.profileImage, 
                   opacity: 0.8,
                 }}
-                source={profileImgUrl}
+                src={profileImgUrl}
               />
             }
             {!profileImgUrl && 
@@ -382,7 +395,7 @@ export default function ProfileScreen () {
       );
     };
   };
-  
+
   const myProfile = () => {
     if (isEdit) {
       return (
@@ -601,6 +614,22 @@ export default function ProfileScreen () {
     }
   };
 
+  // const deleteDog = () => {
+  //   axios.delete(
+  //     `${apiUrl}/dogs/1`,
+  //     {headers: {
+  //       "Authorization": authToken ,
+  //       "Content-Type": "application/json",
+  //     }}
+  //   ).then((res) => {
+  //     console.log("강아지 삭제==================");
+  //     console.log(res.status);
+  //   }).catch((err) => {
+  //     console.log("프로필 데이터 변경==================");
+  //     console.log(err);
+  //   })
+  // }
+
   return (
     <View style={styles.profileContainer}>
       <ScrollView style={styles.profileScrollView}>
@@ -665,7 +694,7 @@ const styles = StyleSheet.create({
     height: SCREEN_HEIGHT * 0.2,
     position: "relative",
     borderBottomWidth: 1,
-    borderBlockColor: "gainsboro",
+    borderColor: "gainsboro",
   },
   profileTopViewTopImage: {
     width: SCREEN_WIDTH,

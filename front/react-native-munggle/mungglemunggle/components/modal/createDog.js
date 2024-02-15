@@ -22,6 +22,8 @@ import { RadioButton } from "react-native-paper";
 
 import DogKindList from "./dogKindList";
 
+import * as ImageManipulator from 'expo-image-manipulator';
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 export default function CreateDog (props) {
@@ -39,6 +41,24 @@ export default function CreateDog (props) {
     return day.toISOString();
   }
 
+  
+  const resizeImage = async (imageUri) => {
+    try {
+        const resizedImage = await ImageManipulator.manipulateAsync(
+          imageUri, // 이미지 URI
+            [{ resize: { width: 400, height: 300 } }], // 조절 옵션 배열
+            { compress: 1, format: "jpeg" } // 압축 및 형식 설정
+        );
+
+        // 조절된 이미지 데이터를 얻습니다.
+        console.log('Resized image:', resizedImage.uri);
+        return resizedImage;
+    } catch (err) {
+        console.error('Failed to resize image:', err);
+    }
+  };
+
+
   const todayDate = new Date();
 
   const [name, setName] = useState("");
@@ -46,7 +66,7 @@ export default function CreateDog (props) {
   const [gender, setGender] = useState("수컷");
   const [weight, setWeight] = useState(0);
   const [kindId, setKindId] = useState("");
-  const [kindName, setKindName] = useState("푸들");
+  const [kindName, setKindName] = useState("");
   const [description, setDescription] = useState("");
 
   const [isKindListModalOpen, setIsKindListModalOpen] = useState(false);
@@ -90,8 +110,10 @@ export default function CreateDog (props) {
       setAuthToken(await AsyncStorage.getItem("accessToken"));
     };
 
+    const resizedImageUrl = await resizeImage(imageUrl.uri);
+    
     const formData = new FormData();
-    const localUri = imageUrl.uri;
+    const localUri = resizedImageUrl.uri;
     const fileName = localUri.split('/').pop();
     const match = /\.(\w+)$/.exec(fileName ?? '');
     const type = match ? `image/${match[1]}` : `image`;
