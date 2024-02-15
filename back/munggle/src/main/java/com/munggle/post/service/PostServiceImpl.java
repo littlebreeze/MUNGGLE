@@ -111,8 +111,6 @@ public class PostServiceImpl implements PostService {
 
             newPostTag.markAsDeleted(false);
             postTags.add(newPostTag);
-
-            postListService.saveRecentTag(userId, tag.getId()); // 큐레이팅을 위한 해시태그 수집
         }
 
         postTagRepository.saveAll(postTags); // 영속화
