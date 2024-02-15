@@ -46,6 +46,7 @@ public class SocketHandler extends TextWebSocketHandler {
         Long roomId = chatMessageService.findRoomByUsers(dmDto.getSenderId(), dmDto.getReceiver());
         log.info("여기까지 왔다");
         dmDto.setRoomId(roomId);
+        chatMessageService.saveMessage(dmDto);
         // 특정 세션에 메시지를 보내는 로직을 추가
         sendMessageToUser(dmDto, message);
     }
@@ -55,7 +56,6 @@ public class SocketHandler extends TextWebSocketHandler {
         if (receiverSession != null && receiverSession.isOpen()) {
             try {
                 receiverSession.sendMessage(message);
-                chatMessageService.saveMessage(dmDto);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -120,7 +120,6 @@ public class SocketHandler extends TextWebSocketHandler {
             DMDto dmDto = objectMapper.readValue(payload, DMDto.class);
             try {
                 session.sendMessage(message);
-                chatMessageService.saveMessage(dmDto);
 
                 User sender = userService.findMemberById(dmDto.getSenderId());
                 User receiver = userService.findMemberById(dmDto.getReceiver());
