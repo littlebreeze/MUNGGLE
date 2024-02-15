@@ -86,6 +86,7 @@ public class SecurityConfig {
                 .authorizeRequests(
                         registry -> registry.requestMatchers(HttpMethod.POST, "/users").permitAll()
                                 .requestMatchers("/users/emails/verification-requests").permitAll()
+                                .requestMatchers("/users/nickname").permitAll()
                                 .requestMatchers("/users/emails/verifications").permitAll()
                                 .requestMatchers("/users/**").hasAnyRole("ADMIN", "MEMBER")
                                 .requestMatchers("/userpages/**").hasAnyRole("ADMIN", "MEMBER")
@@ -100,7 +101,7 @@ public class SecurityConfig {
                                 .requestMatchers("/search/**").hasAnyRole("ADMIN", "MEMBER")
                                 .requestMatchers("/walks/**").hasAnyRole("ADMIN", "MEMBER")
                                 .requestMatchers("/message/**").hasAnyRole("ADMIN", "MEMBER")
-                                .anyRequest().authenticated()                )
+                                .anyRequest().authenticated())
                 .formLogin(
                         configure -> configure.successHandler(new LoginAuthenticationSuccessHandler(jwtProvider))
                                 .failureHandler(new LoginAuthenticationFailureHandler()))
@@ -129,14 +130,9 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
-        config.setAllowedHeaders(List.of(
-                "Authorization",
-                "Cache-Control",
-                "Content-Type",
-                "X-AUTH-TOKEN"
-        ));
+        config.setAllowedOrigins(List.of("*"));
+        config.setAllowedMethods(List.of("*"));
+        config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
