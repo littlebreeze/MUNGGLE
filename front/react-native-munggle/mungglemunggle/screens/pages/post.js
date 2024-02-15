@@ -24,7 +24,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
 import { format, formatDistanceToNow } from "date-fns";
-import { ko } from "date-fns/locale";
+import { el, ko } from "date-fns/locale";
 
 import imageBack from "../../assets/images/back4.jpg"
 
@@ -89,7 +89,6 @@ export default function PostScreen () {
           "Authorization": authToken ,
         }}
       ).then((res) => {
-        // console.log(res.data);
         setFollowingPostList(res.data);
         // console.log(followingPostList);
       }) .catch((err) => {
@@ -187,11 +186,10 @@ export default function PostScreen () {
   const closeDetailModal = () => { setIsDetailModalOpen(false) };
 
   const posts = (list) => {
-    if (list) {
+    if (list.length) {
       return (
         <View style={styles.postBottomView}>
-          {list && list.map((post, index) => {
-  
+          {list.map((post, index) => {
             return(
               <View key={index} style={styles.postListView}>
                 <View style={styles.postListViewLeftView}>
@@ -200,7 +198,7 @@ export default function PostScreen () {
                     nameProfile={post.nickname}
                   />
                   <View style={styles.postListProfileButtonView}>
-                    <FollowButton />
+                    <FollowButton authToken={authToken} isFollowed={post.isFollowed} userId={post.userId} />
                     <DirectMessageButton />
                   </View>
                 </View>
@@ -257,6 +255,19 @@ export default function PostScreen () {
                         })}
                       </ScrollView>
                     </View>
+                    <View style={styles.postListIconView}>
+                      <View style={styles.postLikeCountView}>
+                        <Text style={styles.postLikeCountText}>{post.likeCnt}</Text>
+                      </View>
+                      <TouchableOpacity 
+                        style={styles.postLikeIcon}
+                      >
+                        <Image 
+                          style={styles.postLikeIcon}
+                          source={post.isLiked ? iconBornBlack : iconBornWhite}
+                        />
+                      </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
               </View>
@@ -293,7 +304,15 @@ export default function PostScreen () {
       }
     } else {
       if (followingPostList) {
-        return posts(followingPostList.posts);
+        if (followingPostList.posts.length > 0) {
+          return posts(followingPostList.posts);
+        } else {
+          return (
+            <View style={styles.postIndicatorView}>
+              <Text style={{fontSize: 18,}}>팔로잉 하고 있는 사용자의 게시물이 없습니다.</Text>
+            </View>
+          );
+        }
       } else {
         return (
           <View style={styles.postIndicatorView}>
@@ -342,15 +361,17 @@ export default function PostScreen () {
         {postContent()}
 
       </ScrollView>
-      <TouchableOpacity 
+      {chooseTab === 0 &&
+        <TouchableOpacity 
         onPress={() => openCreateModal()}
         style={styles.postCreateView}
-      >
-        <Image 
-          style={styles.postCreateImage}
-          source={iconCreate}
-        />
-      </TouchableOpacity>
+        >
+          <Image 
+            style={styles.postCreateImage}
+            source={iconCreate}
+            />
+        </TouchableOpacity>
+      }
       <Modal
         animationType="fade"
         transparent={true}
@@ -601,7 +622,7 @@ const styles = StyleSheet.create({
 
   postIndicatorView: {
     width: SCREEN_WIDTH,
-    height: SCREEN_HEIGHT * 0.6,
+    height: SCREEN_HEIGHT * 0.78,
     justifyContent: "center",
     alignItems: "center",
   },

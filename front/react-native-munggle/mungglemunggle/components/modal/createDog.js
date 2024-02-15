@@ -33,13 +33,16 @@ export default function CreateDog (props) {
   
   const formatDate = (date) => {
     const day = new Date(date);
-    return format(day, "yyyy.MM.dd");
+
+    console.log(day);
+
+    return day.toISOString();
   }
 
   const todayDate = new Date();
 
   const [name, setName] = useState("");
-  const [birthDate, setBirthDate] = useState(todayDate);
+  const [birthDate, setBirthDate] = useState("2024-02-16");
   const [gender, setGender] = useState("수컷");
   const [weight, setWeight] = useState(0);
   const [kindId, setKindId] = useState("");
@@ -95,6 +98,7 @@ export default function CreateDog (props) {
 
     formData.append("file", { uri: localUri, name: fileName, type});
 
+    console.log(formData);
 
     await axios.put(
       `${apiUrl}/dogs/${dogId}/image`,
@@ -106,8 +110,9 @@ export default function CreateDog (props) {
     ).then((res) => {
       console.log(res.status);
     }).then(async() => {
-      await props.getMyDogList();
-    }).then(() => {
+      if (props.getMyDogList) {
+        await props.getMyDogList();
+      };
       props.closeCreateDogModal();
     }).catch((err) => {
       console.log(err)
@@ -123,7 +128,7 @@ export default function CreateDog (props) {
 
     const payLoad = {
       kindId: kindId,
-      birthDate: birthDate,
+      birthDate: formatDate(`${birthDate}`),
       weight: weight,
       gender: gender,
       name: name,
@@ -217,7 +222,7 @@ export default function CreateDog (props) {
                 textContentType="birthdate"
                 keyboardType="decimal-pad"
                 placeholder="강아지 생일"
-                value={formatDate(birthDate)}
+                value={birthDate}
                 onChangeText={(e) => setBirthDate(e)}
               />
             </View>

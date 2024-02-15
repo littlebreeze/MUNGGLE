@@ -55,7 +55,10 @@ export default function ProfilePost (props) {
   };
 
   return (
-    <View style={styles.profilePostContainer}>
+    <View style={{
+      ...styles.profilePostContainer,
+      height: postList.length > 6 ? "" : SCREEN_HEIGHT  
+    }}>
       {posts()}
       <Modal
         animationType="fade"

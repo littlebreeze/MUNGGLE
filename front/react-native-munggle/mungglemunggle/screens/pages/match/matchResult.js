@@ -130,7 +130,6 @@ const dogs =
 ]
 
 export default function MatchResult() {
-
   const navigation = useNavigation();
   const [showModal, setShowModal] = useState(false);
   const [modalIndex, setModalIndex] = useState(null); // 선택한 아이템의 인덱스
@@ -221,7 +220,6 @@ export default function MatchResult() {
       >
         <ModalComponent data={modalIndex} closeDirectMessageModal={closeDMModal} />
       </Modal>
-
     </ScrollView>
     </View>
   );

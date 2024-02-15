@@ -11,69 +11,81 @@ import iconInfoEdit from "../../../assets/icons/infoEdit.png";
 import { useNavigation } from "@react-navigation/native";
 import profile from "../../../assets/icons/profile.png";
 
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AntDesign } from '@expo/vector-icons';
+
+import CreateDog from "../../../components/modal/createDog";
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 export default function MatchMain () {
+  const apiUrl = "http://i10a410.p.ssafy.io:8080";
 
-  const Mydog = [
-    {
-        "dogId": 28,
-        "kindId": 55,
-        "birthDate": "2023-07-07T23:25:22",
-        "size": "",
-        "weight": 0.0,
-        "gender": "",
-        "isNeutering": true,
-        "name": "초롱",
-        "image": "https://flexible.img.hani.co.kr/flexible/normal/850/567/imgdb/original/2023/0111/20230111503366.jpg",
-        "description": "스윗 리를 도그"
-    },
-    {
-        "dogId": 43,
-        "kindId": 55,
-        "birthDate": "2023-07-07T23:25:22",
-        "size": "",
-        "weight": 0.0,
-        "gender": "",
-        "isNeutering": true,
-        "name": "푸푸",
-        "image": "https://flexible.img.hani.co.kr/flexible/normal/850/567/imgdb/original/2023/0111/20230111503366.jpg",
-        "description": "스윗 리를 도그"
-    },
-    {
-        "dogId": 53,
-        "kindId": 55,
-        "birthDate": "2023-07-07T23:25:22",
-        "size": "",
-        "weight": 0.0,
-        "gender": "",
-        "isNeutering": true,
-        "name": "삼성",
-        "image": "https://flexible.img.hani.co.kr/flexible/normal/850/567/imgdb/original/2023/0111/20230111503366.jpg",
-        "description": "스윗 리를 도그"
-    },
-    {
-        "dogId": 59,
-        "kindId": 77,
-        "birthDate": "2023-07-07T23:25:22",
-        "size": "",
-        "weight": 0.0,
-        "gender": "",
-        "isNeutering": true,
-        "name": "핑크",
-        "image": null,
-        "description": "큩큩큩!"
-    }
-  ];
+  const [profile, setProfile] = useState(false);
+
+  const [authToken, setAuthToken] = useState("");
+
+  const [dogList, setDogList] = useState(false);
+
+  const getMyProfile = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+    await axios.get(
+      `${apiUrl}/users/mypage`,
+      {headers: {
+        "Authorization": authToken ,
+      }}
+    ).then((res) => {
+      setProfile(res.data);
+      console.log(res.data);
+    }) .catch((err) => {
+      console.log(err);
+    })
+  }
+
+  const getMyDogList = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+    await axios.get(
+      `${apiUrl}/userpages/${profile.id}/dog`,
+      {headers: {
+        "Authorization": authToken ,
+      }}
+    ).then((res) => {
+      setDogList(res.data);
+      // console.log(res.data);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
+  useEffect(() => { 
+    if (!authToken) {
+      setAuthToken(AsyncStorage.getItem("accessToken"));
+    };
+  }, []);
+  
+  useEffect(() => {
+    getMyProfile();
+  }, [authToken]);
+
+  useEffect(() => {
+    getMyDogList();
+  }, [profile]);
+
 
   const navigation = useNavigation();
 
   //매칭하려고 선택한 강아지 PK
-  const [currentDogID, setCurrentDogID] = useState(0);
-  //강아지가 1마리 이상 있는지 여부
-  const [haveDog, setHaveDog] = useState(true);
-  //강아지 프로필 url
-  const [dogImage, setdogImage] = useState(null);
+  const [currentDogID, setCurrentDogID] = useState(0); 
+
+  // 산책할 강아지
+  const [chooseMyDog, setChooseMyDog] = useState(false);
 
   //매칭하고싶은지 여부
   const [isMatch, setIsMatch] = useState(false)
@@ -90,78 +102,91 @@ export default function MatchMain () {
     setIsMatch(!isMatch);}
   };
 
-  //강아지가 없는 경우, 등록한다고 하면 모달 띄우는 함수
-  const haveNoDog = () => {
-    if (haveDog === false) {
-      Alert.alert(
-        "강아지 등록 안내",
-        "매칭페이지를 이용하려면 강아지를 등록하세요",
-        [
-          {
-            text: "취소",
-            onPress: () => {
-              console.log("강아지 등록 x");
-            },
-            style: "cancel",
-          },
-          {
-            text: "등록",
-            onPress: () => {
-              console.log("강아지 등록 o");
-              //모달생성코드 미작성
-            },
-          },
-        ]
-      );
-    }
-  }
-
   //코 클릭
   const clickNose = () => {
-    haveNoDog();
-    if (haveDog == true && mySetting == true && wantSetting){
+    if (mySetting == true && wantSetting){
       navigation.navigate('MatchLoading')
     }
   }
 
   //편집버튼 누를때 나오는 모달
-  const [isEditModalVisible, setEditModalVisible] = useState(false);
+  const [isEditModalOpen, setEditModalOpen] = useState(false);
 
   //편집버튼 클릭
-  const clickEditModal = () => {
-    haveNoDog();
-    if (haveDog == true){
-    toggleEditModal();}
+  const openEditModal = () => {
+    setEditModalOpen(true);
   }
 
-  const toggleEditModal = () => {
-    setEditModalVisible(!isEditModalVisible);
+  const closeEditModal = () => {
+    setEditModalOpen(false);
   };
 
   const openMySetting = () => {
-    setEditModalVisible(!isEditModalVisible);
+    setEditModalOpen(!isEditModalOpen);
     navigation.navigate('MatchMySetting')
   }
 
   const openWantSetting = () => {
-    setEditModalVisible(!isEditModalVisible);
+    setEditModalOpen(!isEditModalOpen);
     navigation.navigate('MatchWantSetting')
   }
 
   //매칭 대상 강아지 변경 모달
-  const [isDogModalVisible, setDogModalVisible] = useState(false);
+  const [isDogModalOpen, setDogModalOpen] = useState(false);
 
-  const clickDogModal = () => {
-    haveNoDog();
-    if (haveDog == true){
-      toggleDogModal();
-    }
-  }
-
-  const toggleDogModal = () => {
-    setDogModalVisible(!isDogModalVisible);
+  const openDogModal = () => {
+    setDogModalOpen(true);
   };
 
+  const closeDogModal = () => {
+    setDogModalOpen(false);
+  };
+
+  const [isCreateDogModalOpen, setIsCreateDogModalOpen] = useState(false);
+
+  const openCreateDogModal = () => { setIsCreateDogModalOpen(true) }; 
+  const closeCreateDogModal = () => { setIsCreateDogModalOpen(false) }; 
+
+  const dogListView = () => {
+    if (dogList && dogList.length > 0) {
+      if (chooseMyDog) {
+          return (
+          <TouchableOpacity 
+            onPress={openDogModal} 
+            style={{
+              ...styles.imageButtonOpacity, 
+              backgroundColor:'white',
+              borderRadius: 100,
+            }}
+          >
+            <Image
+              src={chooseMyDog.image}
+              style={styles.imageButton}
+            />
+          </TouchableOpacity>
+        );
+      } else {
+        return (
+          <TouchableOpacity 
+            onPress={openDogModal} 
+            style={{...styles.imageButtonOpacity, backgroundColor:'white',}}
+          >
+            <Text style={{fontSize: 13,}}>강아지</Text>
+            <Text style={{fontSize: 13, marginRight: 3,}}>선택</Text>
+          </TouchableOpacity>
+        );
+      }
+    } else {
+      return (
+        <TouchableOpacity 
+          style={styles.imageButtonOpacity}
+          onPress={openCreateDogModal}
+        >
+          <AntDesign name="pluscircleo" size={50} color="black" />
+        </TouchableOpacity>
+      );
+    }
+  };
 
   return (
     <View style={styles.matchContainer}>
@@ -169,35 +194,8 @@ export default function MatchMain () {
       <View style={styles.matchTopView}>
         {/*프로필 사진, 토글 버튼*/}
         <View style={styles.matchTopViewTop}>
-          <TouchableOpacity onPress={clickDogModal} style={styles.imageButtonOpacity}>
-            <Image
-               source={dogImage ? { uri: dogImage } : profile} // 이미지 경로 지정
-              style={styles.imageButton}
-            />
-          </TouchableOpacity>
-          <ToggleSwitch
-            trackOnStyle={{
-              borderColor: "lightgrey",
-              borderWidth: 1
-            }}
-            trackOffStyle={{
-              borderColor: "lightgrey",
-              borderWidth: 1
-            }}
-            thumbOnStyle={{
-              borderColor: "lightgrey",
-              borderWidth: 1
-            }}
-            thumbOffStyle={{
-              borderColor: "lightgrey",
-              borderWidth: 1
-            }}
-            isOn={isMatch}
-            onColor="green"
-            offColor="lightgrey"
-            size="large"
-            onToggle={handleIsMatch}
-          /></View>
+          {dogListView()}
+        </View>
         {/*친구 찾기*/}
         <View style={styles.matchTopViewMiddle}>
           <Text style={styles.matchWinkText}>친구 찾기</Text>
@@ -221,34 +219,60 @@ export default function MatchMain () {
 
       {/*하얀 배경 부분*/}
       <View style={styles.matchBottomView}>
-        <View style={styles.matchBottomViewBottom}>
-          <TouchableOpacity style={styles.matchInfoEditIconView} onPress={clickEditModal}>
-            <Image 
-              style={styles.matchInfoEditIcon}
-              source={iconInfoEdit}
-            />
-          </TouchableOpacity>
-        </View>
+        <TouchableOpacity 
+          style={styles.matchInfoEditIconView} 
+          onPress={openEditModal}
+        >
+          <Image 
+            style={styles.matchInfoEditIcon}
+            source={iconInfoEdit}
+          />
+        </TouchableOpacity>
       </View>
 
       {/* 설정 변경 모달 */}
       <Modal
         transparent={true}
-        visible={isEditModalVisible}
-        onRequestClose={toggleEditModal}
+        visible={isEditModalOpen}
+        onRequestClose={() => closeEditModal}
       >
-        <View style={styles.modalContainer}>
+        <View style={{...styles.modalContainer}}>
           <StatusBar backgroundColor="rgba(0, 0, 0, 0.5)" barStyle="dark-content" />
-          <View style={styles.modalContent}>
+          <View 
+            style={{
+              ...styles.modalContent,
+              position: "relative",
+            }}
+          >
             {/* 모달 내용 */}
-            <TouchableOpacity onPress={toggleEditModal}>
-              <Text>X</Text>
+            <TouchableOpacity 
+              onPress={closeEditModal}
+              style={{position: "absolute", top: 10, right: 10,}}
+            >
+              <AntDesign name="close" size={30} color="black" />
             </TouchableOpacity>
-            <TouchableOpacity onPress={openMySetting}>
+            <TouchableOpacity 
+              style={{
+                width: SCREEN_WIDTH, 
+                height: SCREEN_HEIGHT * 0.05, 
+                justifyContent: "center", 
+                alignItems: "center",
+                marginTop: SCREEN_HEIGHT * 0.05,
+              }} 
+              onPress={openMySetting}
+            >
               <Text style={styles.modalText} >내 강아지 설정 변경</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={openWantSetting}>
-              <Text style={styles.modalText}>원하는 강아지 설정 변경</Text>
+            <TouchableOpacity 
+              style={{
+                width: SCREEN_WIDTH, 
+                height: SCREEN_HEIGHT * 0.06, 
+                justifyContent: "center", 
+                alignItems: "center",
+              }} 
+              onPress={openMySetting}
+            >              
+            <Text style={styles.modalText}>원하는 강아지 설정 변경</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -257,34 +281,55 @@ export default function MatchMain () {
       {/* 프로필 변경 모달 */}
       <Modal
         transparent={true}
-        visible={isDogModalVisible}
-        onRequestClose={toggleDogModal}
+        visible={isDogModalOpen}
+        onRequestClose={() => closeDogModal}
       >
         <View style={styles.modalContainer}>
           <StatusBar backgroundColor="rgba(0, 0, 0, 0.5)" barStyle="dark-content" />
-          <View style={styles.modalContent}>
-            <TouchableOpacity onPress={toggleDogModal}>
-              <Text>X</Text>
+          <View 
+            style={{
+              ...styles.modalContent,
+              position: "relative",
+            }}
+          >
+            <TouchableOpacity 
+              onPress={closeDogModal}
+              style={{position: "absolute", top: 10, right: 10,}}
+            >
+              <AntDesign name="close" size={30} color="black" />
             </TouchableOpacity>
+
             <FlatList
-            horizontal
-            data={Mydog}
-            keyExtractor={(item) => item.dogId.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity style={styles.imageContainer} onPress={() => {
-                setdogImage(item.image);
-                setCurrentDogID(item.dogId);
-                setDogModalVisible(!isDogModalVisible);
-              }}>
-                <Image source={item.image ? { uri: item.image } : profile} style={styles.image} />
-                <Text>{item.name}</Text>
-              </TouchableOpacity>
+              style={{
+                marginTop: SCREEN_HEIGHT * 0.05,
+              }}
+              horizontal
+              data={dogList}
+              keyExtractor={(item) => item.dogId.toString()}
+              renderItem={({ item }) => (
+                <TouchableOpacity 
+                  style={styles.imageContainer} 
+                  onPress={() => {
+                    setChooseMyDog(item);
+                    closeDogModal();
+                  }}
+                >
+                  <Image src={item.image} style={styles.image} />
+                  <Text>{item.name}</Text>
+                </TouchableOpacity>
             )}
           />
           </View>
         </View>
       </Modal>
-
+      
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isCreateDogModalOpen}
+        onRequestClose={() => closeCreateDogModal()}>
+        <CreateDog getMyDogList={getMyDogList} closeCreateDogModal={closeCreateDogModal} />
+      </Modal>
 
     </View>
   );
@@ -314,17 +359,19 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   imageButtonOpacity:{
-    width:60,
-    height: 60,
-    backgroundColor:'white',
+    width: SCREEN_WIDTH * 0.2,
+    height: SCREEN_WIDTH * 0.2,
     borderRadius: 10,
     alignItems:'center',
     justifyContent: 'center',
+    marginTop: SCREEN_HEIGHT * 0.02,
   },
   imageButton: {
-    width: 50,
-    height: 50,
-    borderRadius: 10
+    width: SCREEN_WIDTH * 0.2,
+    height: SCREEN_WIDTH * 0.2,
+    borderRadius: 100,
+    borderWidth: 2,
+    borderColor: "lightgrey",
   },
 
   //matchTopViewMiddle관련
@@ -355,15 +402,15 @@ const styles = StyleSheet.create({
 
   //코 버튼 관련
   matchNoseView: {
-    width: SCREEN_WIDTH * 0.7,
-    height: SCREEN_WIDTH * 0.7,
+    width: SCREEN_WIDTH * 0.65,
+    height: SCREEN_WIDTH * 0.65,
     backgroundColor: "white",
     borderColor: "gainsboro",
     borderWidth: 1,
     borderRadius: 200,
     position: "absolute",
-    left: SCREEN_WIDTH * 0.15,
-    bottom: SCREEN_WIDTH * 0.31,
+    left: SCREEN_WIDTH * 0.175,
+    bottom: SCREEN_WIDTH * 0.32,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -372,30 +419,23 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   matchNoseImage: {
-    width: SCREEN_WIDTH * 0.7,
-    height: SCREEN_WIDTH * 0.7,
+    width: SCREEN_WIDTH * 0.65,
+    height: SCREEN_WIDTH * 0.65,
     borderRadius: 200, 
   },
 
   matchBottomView:{
     width: SCREEN_WIDTH,
     height: SCREEN_WIDTH * 0.7,
-    alignItems:'center',
-    justifyContent: 'flex-end',
-  },
-
-  //matchBottomViewBottom 관련
-  matchBottomViewBottom:{
-    width: SCREEN_WIDTH,
-    height: SCREEN_WIDTH * 0.3,
     alignItems:'flex-end',
     justifyContent: 'flex-end',
   },
+
   matchInfoEditIconView: {
     width: SCREEN_WIDTH * 0.16,
     height: SCREEN_WIDTH * 0.16,
-    bottom: SCREEN_WIDTH * 0.08,
-    right: SCREEN_WIDTH * 0.07,
+    marginBottom: SCREEN_HEIGHT * 0.1,
+    marginRight: SCREEN_WIDTH * 0.1,
   },
   matchInfoEditIcon: {
     width: SCREEN_WIDTH * 0.16,
@@ -407,19 +447,22 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    marginTop: SCREEN_HEIGHT * 0.8,
-    height: SCREEN_HEIGHT * 0.2,
+    marginTop: SCREEN_HEIGHT * 0.75,
+    height: SCREEN_HEIGHT * 0.25,
+    width: SCREEN_WIDTH,
     backgroundColor: 'white',
     padding: 20,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    
+    alignItems: "center",
   },
 
   modalText:{
-    fontSize:20,
+    fontSize: 20,
     fontWeight:'bold',
-    marginVertical: 10
+    borderBottomWidth: 2,
+    borderBottomColor: "lightgrey",
+    paddingBottom: SCREEN_HEIGHT * 0.006,
   },
 
   imageContainer: {
