@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Dimensions, StyleSheet, View, Text, Image, TouchableOpacity, ScrollView } from 'react-native';
 import back from '../../../assets/icons/back.png';
 import change from '../../../assets/icons/change.png';
 import dm from '../../../assets/icons/directMessage.png';
 import { useNavigation } from '@react-navigation/native';
 import ModalComponent from '../../../components/modal/directMessage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -130,9 +132,42 @@ const dogs =
 ]
 
 export default function MatchResult() {
+  const apiUrl = "http://i10a410.p.ssafy.io:8080";
+
+  const [authToken, setAuthToken] = useState("");
+
   const navigation = useNavigation();
   const [showModal, setShowModal] = useState(false);
   const [modalIndex, setModalIndex] = useState(null); // 선택한 아이템의 인덱스
+
+  const getMatchResult = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+    await axios.get(
+      `${apiUrl}/dog-match/list`,
+      {headers: {
+        "Authorization": authToken ,
+        "Content-Type": "application/json"
+      }}
+    ).then((res) => {
+      console.log(res.data);
+    }).catch((err) => {
+      console.log(err);
+    })
+
+  };
+
+  useEffect(() => { 
+    if (!authToken) {
+      setAuthToken(AsyncStorage.getItem("accessToken"));
+    };
+  }, []);
+
+  useEffect(() => {
+    getMatchResult();
+  }, [authToken]);
 
   const openDMModal = (index) => {
     setModalIndex(index);

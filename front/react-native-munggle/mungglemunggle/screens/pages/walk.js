@@ -812,8 +812,8 @@ export default function WalkScreen ({ navigation }) {
           <WebView
             ref={webViewRef}
             style={styles.walkMainMap}
-            // source={{ uri: "https://gongtong.netlify.app/" }}
-            source={{ html: htmlContainer }}
+            source={{ uri: "https://gongtong.netlify.app/" }}
+            // source={{ html: htmlContainer }}
             onMessage={onMessage}
           />
         </ViewShot>

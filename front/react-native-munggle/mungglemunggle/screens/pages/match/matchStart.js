@@ -5,6 +5,8 @@ import profile from "../../../assets/icons/profile.png";
 import end from "../../../assets/icons/end.png";
 import back from '../../../assets/icons/back.png';
 import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -49,15 +51,18 @@ const Users = [
       "dogId": 59,
       "kindId": 77,
       "birthDate": "2023-07-07T23:25:22",
-      "size": "",
+      "size": "소형견",
       "weight": 0.0,
-      "gender": "",
-      "isNeutering": true,
-      "name": "핑크",
-      "image": null,
+      "gender": "여자",
+      "isNeutering": "O",
+      "name": "루이",
+      "image": "https://s3-munggle-files.s3.ap-northeast-2.amazonaws.com/dog/5/cd1a7945-43ff-40f8-a97b-0ddca58c09a3jpg",
       "description": "큩큩큩!"
   }
 ];
+
+
+
 
 const DraggableBox = ({ index, image, panResponder, pan, size, weight, gender,
    isNeutering, name, description, onHeartPress, onBrokenHeartPress }) => (
@@ -92,6 +97,51 @@ const DraggableBox = ({ index, image, panResponder, pan, size, weight, gender,
 const initialPositions = Users.map(() => ({ x: 0, y: 0 })); 
 
 export default function MatchStart () {
+  const apiUrl = "http://i10a410.p.ssafy.io:8080";
+
+  const [authToken, setAuthToken] = useState("");
+
+  const [matchDogList, setMatchDogList] = useState(false);
+
+  // const getMatchResult = async () => {
+  //   if (!authToken) {
+  //     setAuthToken(await AsyncStorage.getItem("accessToken"));
+  //   };
+
+  //   console.log(authToken)
+
+  //   await axios.get(
+  //     `${apiUrl}/dog-match/2/list`,
+  //     {headers: {
+  //       "Authorization": authToken ,
+  //       "Content-Type": "application/json"
+  //     }}
+  //   ).then((res) => {
+  //     console.log(res.data);
+  //     setMatchDogList(res.data);
+  //   }).catch((err) => {
+  //     console.log(err);
+  //   })
+
+  // };
+
+  // useEffect(() => { 
+  //   if (!authToken) {
+  //     setAuthToken(AsyncStorage.getItem("accessToken"));
+  //   };
+  // }, []);
+
+  // useEffect(() => {
+  //   getMatchResult();
+  // }, [authToken]);
+
+  // useEffect(() => {
+  //   if (matchDogList) {
+  //     setBoxes(matchDogList.map(() => ({ pan: useRef(new Animated.ValueXY()).current })));
+  //   }
+  // }, matchDogList);
+
+
   const length = Users.length;
   const [cur,setCur] = useState(1);
   const navigation = useNavigation();
@@ -193,7 +243,7 @@ export default function MatchStart () {
 
   return (
     <View style={styles.container}>
-      {boxes.map((box, index) => (
+      {boxes && boxes.map((box, index) => (
         <DraggableBox
         key={Users[index].dogId}
         image={Users[index].image}
@@ -225,7 +275,8 @@ export default function MatchStart () {
         <Text style={styles.detailText}>{cur} / {length}</Text>
         </View>
         <View style={styles.TopViewEndButton}>
-        <TouchableOpacity style={styles.matchInfoEditIconViewCenter} onPress={() => {
+        <TouchableOpacity style={styles.matchInfoEditIconViewCenter} 
+        onPress={() => {
           navigation.navigate('MatchResult')
         }}>
           <Image 
@@ -271,9 +322,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightblue',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: SCREEN_HEIGHT * 0.005,
   },
   detailText:{
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
     color: 'black',
   },

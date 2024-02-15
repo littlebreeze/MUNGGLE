@@ -147,19 +147,14 @@ export default function DirectMessage (props) {
           </TouchableOpacity>
 
           <View style={styles.directMessageMiddleView}>
-          <FlatList
-              data={chatRoom}
-              keyExtractor={(item, index) => index.toString()}
-              renderItem={renderChatRoom}
-            />
-            <TouchableOpacity onPress={() => setCreateModalVisible(true)}>
+            <TouchableOpacity style={{ marginRight: SCREEN_WIDTH * 0.01, width: SCREEN_WIDTH * 0.2, height: SCREEN_WIDTH * 0.2}} onPress={() => setCreateModalVisible(true)}>
                 {/* <Image source={require("../../assets/icons/plus.png")} style={{ position:"absolute", width: 70, height: 70,
               right: 20, bottom: 20 }} /> */}
                 <AntDesign name="pluscircleo" size={60} color="rgb(13, 110, 253)" style={{ position: "absolute", bottom: 0, right: 20 }} />
             </TouchableOpacity>
           </View>
 
-          
+        
           {/* 검색 모달 */}
           <Modal
         transparent={true}
@@ -282,8 +277,8 @@ const styles = StyleSheet.create({
     marginTop: SCREEN_HEIGHT * 0.01,
     width: SCREEN_WIDTH * 0.9,
     height: SCREEN_HEIGHT * 0.7,
-    justifyContent: "center",
-    // alignItems: "center",
+    justifyContent: "flex-end",
+    alignItems: "flex-end",
     flexDirection: "row",
   },
 

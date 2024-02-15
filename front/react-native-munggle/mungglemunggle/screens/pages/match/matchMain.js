@@ -58,7 +58,7 @@ export default function MatchMain () {
       }}
     ).then((res) => {
       setDogList(res.data);
-      // console.log(res.data);
+      console.log(res.data);
     }).catch((err) => {
       console.log(err);
     })
@@ -122,8 +122,8 @@ export default function MatchMain () {
   };
 
   const openMySetting = () => {
-    setEditModalOpen(!isEditModalOpen);
-    navigation.navigate('MatchMySetting')
+    closeEditModal();
+    navigation.navigate('MatchMySetting', { dog: chooseMyDog});
   }
 
   const openWantSetting = () => {
@@ -402,14 +402,14 @@ const styles = StyleSheet.create({
 
   //코 버튼 관련
   matchNoseView: {
-    width: SCREEN_WIDTH * 0.65,
-    height: SCREEN_WIDTH * 0.65,
+    width: SCREEN_WIDTH * 0.55,
+    height: SCREEN_WIDTH * 0.55,
     backgroundColor: "white",
     borderColor: "gainsboro",
     borderWidth: 1,
     borderRadius: 200,
     position: "absolute",
-    left: SCREEN_WIDTH * 0.175,
+    left: SCREEN_WIDTH * 0.23,
     bottom: SCREEN_WIDTH * 0.32,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 4 },
@@ -419,8 +419,8 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   matchNoseImage: {
-    width: SCREEN_WIDTH * 0.65,
-    height: SCREEN_WIDTH * 0.65,
+    width: SCREEN_WIDTH * 0.55,
+    height: SCREEN_WIDTH * 0.55,
     borderRadius: 200, 
   },
 

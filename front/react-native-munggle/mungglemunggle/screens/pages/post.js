@@ -153,7 +153,14 @@ export default function PostScreen () {
                   />
   
                   <View style={styles.profileCircleNameView}>
-                    <Text style={styles.profileCircleName}>{ userProfile.nickname }</Text>
+                    <Text 
+                      style={{
+                        ...styles.profileCircleName,
+                        fontSize: userProfile.nickname.length < 7 ? 13 : 10.5,
+                      }}
+                    >
+                      { userProfile.nickname }
+                    </Text>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -464,7 +471,6 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   profileCircleName: {
-    fontSize: 13,
     fontWeight: "500",
   },
 
@@ -546,7 +552,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   postListTitle: {
-    fontSize: 19,
+    fontSize: 14,
     fontWeight: "600",
   },
   postListDate: {

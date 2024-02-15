@@ -147,11 +147,13 @@ export default function WalkCalendar() {
       <View style={styles.calendarModalContainer}>
 
         <View style={styles.calendarModalTitleContainer}>
-          <Text style={styles.calendarModalTitle}>김도그의 산책 기록</Text>
+          <Text style={styles.calendarModalTitle}>김행복의 2월 산책 기록</Text>
         </View>
 
         <View style={styles.calendarModalStatistics}>
-          
+          <Text style={{marginVertical: SCREEN_HEIGHT * 0.01, marginLeft: SCREEN_WIDTH * 0.2, fontSize: 20, fontWeight: "600",}}>산책      횟수:    3 회</Text>
+          <Text style={{marginVertical: SCREEN_HEIGHT * 0.01, marginLeft: SCREEN_WIDTH * 0.2, fontSize: 20, fontWeight: "600",}}>산책 총 거리:    3.2 km</Text>
+          <Text style={{marginVertical: SCREEN_HEIGHT * 0.01, marginLeft: SCREEN_WIDTH * 0.2, fontSize: 20, fontWeight: "600",}}>산책 총 시간:    1 시간 32 분</Text>
         </View>
 
         <View style={styles.calendarModalCalendarContainer}>
@@ -209,6 +211,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     width: SCREEN_WIDTH * 0.895,
     height: SCREEN_HEIGHT * 0.3,
+    justifyContent: "center",
+    alignItems: "flex-start",
   },
   calendarModalCalendar: {
     borderBottomWidth: 1,
