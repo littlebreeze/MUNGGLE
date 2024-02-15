@@ -24,7 +24,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 export default function PostCreate (props) {
-  const apiUrl = "https://i10a410.p.ssafy.io:8080";
+  const apiUrl = "https://i10a410.p.ssafy.io:443";
 
   const [authToken, setAuthToken] = useState("");
 

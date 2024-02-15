@@ -8,7 +8,7 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 export default function FollowButton (props) {  
   const [isFollowed, setIsFollowed] = useState(props.isFollowed);
 
-  const apiUrl = "https://i10a410.p.ssafy.io:8080";
+  const apiUrl = "https://i10a410.p.ssafy.io:443";
   
   const getIsFollowed = async () => {
     await axios.get(
