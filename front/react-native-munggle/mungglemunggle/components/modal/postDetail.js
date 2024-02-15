@@ -194,15 +194,18 @@ export default function PostDetail (props) {
             </View>
           </View>
   
-          <View style={styles.postDetailTagListView}>
+          <ScrollView 
+            style={styles.postDetailTagListView}
+            horizontal={true}
+          >
             {post.hashtags && post.hashtags.map((tag, index) => {
-              return (
-                <View style={styles.postDetailTagView} key={index}>
+                return (
+                  <View style={styles.postDetailTagView} key={index}>
                   <Text style={styles.postDetailTagText}># {tag}</Text>
                 </View>
               );
             })}
-          </View>
+          </ScrollView>
         </View>
       );
     } else {

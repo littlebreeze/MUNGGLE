@@ -19,7 +19,6 @@ export default function ProfileDog (props) {
     return (
       <View style={styles.profileDogListView}>
         {dogList && dogList.map((dog, index) => {
-          console.log(dog);
           return (
             <View style={styles.profileDogView} key={index}>
               <View style={styles.profileDogImageView}>

@@ -85,7 +85,7 @@ export default function SignUp (props) {
     };
     
   const checkNickname = () => {
-    console.log(email);
+    console.log(nickname);
     axios.get(
       `${apiUrl}/users/nickname?nickname=${nickname}`,
       {headers: {
@@ -97,7 +97,7 @@ export default function SignUp (props) {
     }).catch((err) => {
       console.log(err);
     })
-  }
+  };
 
   const inputEmailView = () => {
     if (isCheckEmail) {

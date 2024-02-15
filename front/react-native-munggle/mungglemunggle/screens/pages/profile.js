@@ -32,6 +32,8 @@ import * as ImagePicker from 'expo-image-picker';
 
 import CreateDog from "../../components/modal/createDog";
 
+import ImageResizer from "react-native-image-resizer";
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 const Tab = createMaterialTopTabNavigator();
@@ -70,20 +72,17 @@ export default function ProfileScreen () {
       setAuthToken(await AsyncStorage.getItem("accessToken"));
     };
 
-    console.log(authToken);
 
-    if (!profile) {
-      await axios.get(
-        `${apiUrl}/users/mypage`,
-        {headers: {
-          "Authorization": authToken ,
-        }}
-      ).then((res) => {
-        setProfile(res.data);
-      }) .catch((err) => {
-        console.log(err);
-      })
-    }
+    await axios.get(
+      `${apiUrl}/users/mypage`,
+      {headers: {
+        "Authorization": authToken ,
+      }}
+    ).then((res) => {
+      setProfile(res.data);
+    }) .catch((err) => {
+      console.log(err);
+    })
   }
 
   const getMyDogList = async () => {
@@ -91,18 +90,16 @@ export default function ProfileScreen () {
       setAuthToken(await AsyncStorage.getItem("accessToken"));
     };
 
-    if (!dogList && profile) {
-      await axios.get(
-        `${apiUrl}/userpages/${profile.id}/dog`,
-        {headers: {
-          "Authorization": authToken ,
-        }}
-      ).then((res) => {
-        setDogList(res.data);
-      }).catch((err) => {
-        console.log(err);
-      })
-    } 
+    await axios.get(
+      `${apiUrl}/userpages/${profile.id}/dog`,
+      {headers: {
+        "Authorization": authToken ,
+      }}
+    ).then((res) => {
+      setDogList(res.data);
+    }).catch((err) => {
+      console.log(err);
+    })
   }
 
   const getMyPostList = async () => {
@@ -110,18 +107,16 @@ export default function ProfileScreen () {
       setAuthToken(await AsyncStorage.getItem("accessToken"));
     };
 
-    if (!postList && profile) {
-      await axios.get(
-        `${apiUrl}/userpages/${profile.id}/post`,
-        {headers: {
-          "Authorization": authToken ,
-        }}
-      ).then((res) => {
-        setPostList(res.data);
-      }) .catch((err) => {
-        console.log(err);
-      })
-    }
+    await axios.get(
+      `${apiUrl}/userpages/${profile.id}/post`,
+      {headers: {
+        "Authorization": authToken ,
+      }}
+    ).then((res) => {
+      setPostList(res.data);
+    }) .catch((err) => {
+      console.log(err);
+    })
   }
 
   const getMyScrapList = async () => {
@@ -129,18 +124,16 @@ export default function ProfileScreen () {
       setAuthToken(await AsyncStorage.getItem("accessToken"));
     };
 
-    if (!scrapList && profile) {
-      await axios.get(
-        `${apiUrl}/userpages/${profile.id}/scrap`,
-        {headers: {
-          "Authorization": authToken ,
-        }}
-      ).then((res) => {
-        setScrapList(res.data);
-      }) .catch((err) => {
-        console.log(err);
-      })
-    }
+    await axios.get(
+      `${apiUrl}/userpages/${profile.id}/scrap`,
+      {headers: {
+        "Authorization": authToken ,
+      }}
+    ).then((res) => {
+      setScrapList(res.data);
+    }) .catch((err) => {
+      console.log(err);
+    })
   }
 
   useEffect(() => { 
@@ -170,7 +163,6 @@ export default function ProfileScreen () {
     if (response.canceled) {
       return null;
     }
-    console.log(response.assets[0].uri);
 
     setBackgroundImgUrl(response.assets[0]);
   };
@@ -186,20 +178,26 @@ export default function ProfileScreen () {
     if (response.canceled) {
       return null;
     }
-    console.log(response.assets[0].uri);
 
     setProfileImgUrl(response.assets[0]);
   };
   
   const editBackgroundImage = async () => {
-    const localUri = backgroundImgUrl.uri;
+    const resizedImageUrl = await ImageResizer.createResizedImage(
+      backgroundImgUrl.uri,
+      800, // 리사이징할 이미지의 최대 너비
+      600, // 리사이징할 이미지의 최대 높이
+      'JPEG', // 리사이징된 이미지의 포맷
+      100 // 리사이징된 이미지의 품질 (0-100)
+    );
+
+    const localUri = resizedImageUrl.uri;
     const fileName = localUri.split('/').pop();
     const match = /\.(\w+)$/.exec(fileName ?? '');
     const type = match ? `image/${match[1]}` : `image`;
     const formData = new FormData();
     formData.append('backgroundImage', { uri: localUri, name: fileName, type});
 
-    console.log(formData);
 
     await axios.put(
       `${apiUrl}/users/background`,
@@ -226,7 +224,6 @@ export default function ProfileScreen () {
     const formData = new FormData();
     formData.append('profileImage', { uri: localUri, name: fileName, type});
 
-    console.log(formData);
 
     await axios.put(
       `${apiUrl}/users/profile-image`,
@@ -265,7 +262,6 @@ export default function ProfileScreen () {
       console.log(err);
     })
   };
-
 
   const editProfile = async () => {
     if (profile.backgroundImgUrl != backgroundImgUrl.uri) {
@@ -440,7 +436,7 @@ export default function ProfileScreen () {
             <TextInput 
               placeholder={profile.description}
               value={description}
-              style={{...styles.textDescription, height: SCREEN_HEIGHT * 0.05, paddingBottom: SCREEN_HEIGHT * 0.005,}}
+              style={{...styles.textDescription, height: SCREEN_HEIGHT * 0.04, paddingBottom: SCREEN_HEIGHT * 0.005, backgroundColor: "white"}}
               multiline
               onChangeText={(e) => setDescription(e)}
             />
@@ -708,6 +704,8 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     width: SCREEN_WIDTH * 0.26,
     height: SCREEN_WIDTH * 0.26,
+    borderWidth: 1,
+    borderColor: "lightgrey",
   },
   
   profileEditDefaultButtonView: {

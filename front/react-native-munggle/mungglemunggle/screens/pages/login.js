@@ -228,6 +228,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: SCREEN_HEIGHT * 0.02,
+    borderWidth: 1,
+    borderColor: "lightgrey",
   },
   loginButtonText: {
     color: "black", 

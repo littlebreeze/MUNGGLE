@@ -11,65 +11,76 @@ import iconInfoEdit from "../../../assets/icons/infoEdit.png";
 import { useNavigation } from "@react-navigation/native";
 import profile from "../../../assets/icons/profile.png";
 
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AntDesign } from '@expo/vector-icons';
+
+
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
 export default function MatchMain () {
+  const apiUrl = "http://i10a410.p.ssafy.io:8080";
 
-  const Mydog = [
-    {
-        "dogId": 28,
-        "kindId": 55,
-        "birthDate": "2023-07-07T23:25:22",
-        "size": "",
-        "weight": 0.0,
-        "gender": "",
-        "isNeutering": true,
-        "name": "초롱",
-        "image": "https://flexible.img.hani.co.kr/flexible/normal/850/567/imgdb/original/2023/0111/20230111503366.jpg",
-        "description": "스윗 리를 도그"
-    },
-    {
-        "dogId": 43,
-        "kindId": 55,
-        "birthDate": "2023-07-07T23:25:22",
-        "size": "",
-        "weight": 0.0,
-        "gender": "",
-        "isNeutering": true,
-        "name": "푸푸",
-        "image": "https://flexible.img.hani.co.kr/flexible/normal/850/567/imgdb/original/2023/0111/20230111503366.jpg",
-        "description": "스윗 리를 도그"
-    },
-    {
-        "dogId": 53,
-        "kindId": 55,
-        "birthDate": "2023-07-07T23:25:22",
-        "size": "",
-        "weight": 0.0,
-        "gender": "",
-        "isNeutering": true,
-        "name": "삼성",
-        "image": "https://flexible.img.hani.co.kr/flexible/normal/850/567/imgdb/original/2023/0111/20230111503366.jpg",
-        "description": "스윗 리를 도그"
-    },
-    {
-        "dogId": 59,
-        "kindId": 77,
-        "birthDate": "2023-07-07T23:25:22",
-        "size": "",
-        "weight": 0.0,
-        "gender": "",
-        "isNeutering": true,
-        "name": "핑크",
-        "image": null,
-        "description": "큩큩큩!"
-    }
-  ];
+  const [profile, setProfile] = useState(false);
+
+  const [authToken, setAuthToken] = useState("");
+
+  const [dogList, setDogList] = useState(false);
+
+  const getMyProfile = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+
+    await axios.get(
+      `${apiUrl}/users/mypage`,
+      {headers: {
+        "Authorization": authToken ,
+      }}
+    ).then((res) => {
+      setProfile(res.data);
+    }) .catch((err) => {
+      console.log(err);
+    })
+  }
+
+  const getMyDogList = async () => {
+    if (!authToken) {
+      setAuthToken(await AsyncStorage.getItem("accessToken"));
+    };
+
+    await axios.get(
+      `${apiUrl}/userpages/${profile.id}/dog`,
+      {headers: {
+        "Authorization": authToken ,
+      }}
+    ).then((res) => {
+      setDogList(res.data);
+    }).catch((err) => {
+      console.log(err);
+    })
+  }
+
+  useEffect(() => { 
+    if (!authToken) {
+      setAuthToken(AsyncStorage.getItem("accessToken"));
+    };
+  }, []);
+  
+  useEffect(() => {
+    getMyProfile();
+  }, [authToken]);
+
+  useEffect(() => {
+    getMyDogList();
+  }, [profile]);
+
 
   const navigation = useNavigation();
 
   //매칭하려고 선택한 강아지 PK
-  const [currentDogID, setCurrentDogID] = useState(0);
+  const [currentDogID, setCurrentDogID] = useState(0); 
   //강아지가 1마리 이상 있는지 여부
   const [haveDog, setHaveDog] = useState(true);
   //강아지 프로필 url
@@ -268,7 +279,7 @@ export default function MatchMain () {
             </TouchableOpacity>
             <FlatList
             horizontal
-            data={Mydog}
+            data={dogList}
             keyExtractor={(item) => item.dogId.toString()}
             renderItem={({ item }) => (
               <TouchableOpacity style={styles.imageContainer} onPress={() => {
@@ -355,15 +366,15 @@ const styles = StyleSheet.create({
 
   //코 버튼 관련
   matchNoseView: {
-    width: SCREEN_WIDTH * 0.7,
-    height: SCREEN_WIDTH * 0.7,
+    width: SCREEN_WIDTH * 0.65,
+    height: SCREEN_WIDTH * 0.65,
     backgroundColor: "white",
     borderColor: "gainsboro",
     borderWidth: 1,
     borderRadius: 200,
     position: "absolute",
-    left: SCREEN_WIDTH * 0.15,
-    bottom: SCREEN_WIDTH * 0.31,
+    left: SCREEN_WIDTH * 0.175,
+    bottom: SCREEN_WIDTH * 0.32,
     shadowColor: "black",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
@@ -372,8 +383,8 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   matchNoseImage: {
-    width: SCREEN_WIDTH * 0.7,
-    height: SCREEN_WIDTH * 0.7,
+    width: SCREEN_WIDTH * 0.65,
+    height: SCREEN_WIDTH * 0.65,
     borderRadius: 200, 
   },
 
