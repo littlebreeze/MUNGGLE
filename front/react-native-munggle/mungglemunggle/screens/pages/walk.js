@@ -8,6 +8,7 @@ import axios, { Axios } from "axios";
 import ViewShot from 'react-native-view-shot';
 import * as MediaLibrary from 'expo-media-library';
 import RenderHtml from 'react-native-render-html';
+import { ActivityIndicator } from "react-native-paper";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -821,7 +822,7 @@ export default function WalkScreen ({ navigation }) {
     } else {
       return (
         <View style={styles.walkMainLoading}>
-          <Text style={styles.walkMainLoadingText}>Loading...</Text>
+          <ActivityIndicator size={100} />
         </View>
       );
     }
