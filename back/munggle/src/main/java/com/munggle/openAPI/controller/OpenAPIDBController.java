@@ -123,14 +123,14 @@ public class OpenAPIDBController {
 
             // 중간에 totalCnt가 바뀔수도 있으니까 그때마다 갱신되어도 ok
             totalCnt = openAPIService.insertLostDog(result);
-            System.out.println("totalCnt : " + totalCnt);
+            //System.out.println("totalCnt : " + totalCnt);
 
             // totalCount에 따라서 요청을 반복
         } while (numOfRows * pageNo < totalCnt);
 
         long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
         long secDiffTime = (afterTime - beforeTime)/1000; //두 시간에 차 계산
-        System.out.println("시간차이(m) : "+secDiffTime);
+        //System.out.println("시간차이(m) : "+secDiffTime);
     }
 
 }
