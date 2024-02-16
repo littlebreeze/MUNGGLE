@@ -44,4 +44,4 @@ deploy: #JOB 이름
     - docker logout
     - echo [INFO] docker deploy end!
   only:
-    - develop/back
+    - release/back
