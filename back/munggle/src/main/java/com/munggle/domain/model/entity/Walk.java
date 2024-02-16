@@ -1,9 +1,8 @@
 package com.munggle.domain.model.entity;
 
-import com.munggle.walk.dto.LocationDto;
+import com.munggle.image.dto.FileInfoDto;
 import com.munggle.walk.dto.WalkUpdateDto;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -20,7 +19,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Walk {
+public class Walk extends BaseTimeEntity {
 
     // 처음에는 유저번호, 산책 반려견만 채워진 채로 객체 생성
     @Id
@@ -46,8 +45,11 @@ public class Walk {
     private Integer distance;
     private Float rating;
 
+    private String imageName;
+    private String imageUrl;
+
     @Column(columnDefinition = "boolean default false")
-    private boolean isDeleted;
+    private Boolean isDeleted;
 
     @Column(columnDefinition = "boolean default false")
     private Boolean isPrivated;
@@ -69,16 +71,17 @@ public class Walk {
         this.rating = walkUpdateDto.getRating();
     }
 
+    public void updateImage(FileInfoDto fileInfoDto){
+        this.imageName = fileInfoDto.getFileName();
+        this.imageUrl = fileInfoDto.getFileURL();
+    }
+
     public void setDeleted(){
         this.isDeleted = true;
     }
 
     public void togglePrivated(){
         this.isPrivated = !this.isPrivated;
-    }
-
-    public void setLocations(List<Location> locations){
-        this.location = locations;
     }
 
 }

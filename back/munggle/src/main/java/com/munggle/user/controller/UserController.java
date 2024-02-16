@@ -1,6 +1,7 @@
 package com.munggle.user.controller;
 
 import com.munggle.domain.model.entity.User;
+import com.munggle.follow.service.FollowService;
 import com.munggle.user.dto.*;
 import com.munggle.user.service.UserService;
 import jakarta.validation.Valid;
@@ -33,10 +34,10 @@ public class UserController {
         return userService.getUserProfile(userId);
     }
 
-    @GetMapping("/search")
+    @GetMapping("/nickname")
     @ResponseStatus(HttpStatus.OK)
-    public List<UserListDto> searchUserByNickname(@RequestParam("keyword") String keyword) {
-        return userService.getSearchPage(keyword);
+    public void checkDuplicatedNickname(@RequestParam("nickname") String nickname) {
+        userService.checkDuplicateNickname(nickname);
     }
 
     @PostMapping("/emails/verification-requests")
@@ -66,7 +67,7 @@ public class UserController {
         userService.changeBackgroundImage(id, file);
     }
 
-    @PutMapping("profile-image")
+    @PutMapping("/profile-image")
     @ResponseStatus(HttpStatus.OK)
     public void updateProfileImage(@AuthenticationPrincipal User principal,
                                    @RequestPart(value = "profileImage") MultipartFile file) {
@@ -109,5 +110,12 @@ public class UserController {
     public void deleteProfileImage(@AuthenticationPrincipal User principal) {
         Long id = principal.getId();
         userService.deleteProfileImage(id);
+    }
+
+    @GetMapping("/recommend")
+    @ResponseStatus(HttpStatus.OK)
+    public List<UserProfileDto> recommendUserList(@AuthenticationPrincipal User principal){
+        Long id = principal.getId();
+        return userService.recommendUserList(id);
     }
 }

@@ -2,6 +2,8 @@ package com.munggle.walk.controller;
 
 import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.Walk;
+import com.munggle.walk.dto.WalkCalendarDto;
+import com.munggle.walk.dto.WalkCreateDto;
 import com.munggle.walk.dto.WalkDto;
 import com.munggle.walk.dto.WalkUpdateDto;
 import com.munggle.walk.service.WalkService;
@@ -9,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,16 +23,24 @@ public class WalkController {
     private final WalkService walkService;
 
     @PostMapping
-    public void createWalk(@AuthenticationPrincipal User principal,
-                           @RequestBody @Valid WalkDto walkDto){
+    public Long createWalk(@AuthenticationPrincipal User principal,
+                           @RequestBody WalkCreateDto walkCreateDto){
 
-        walkDto.setUserId(principal.getId());
-        walkService.createWalk(walkDto);
+        walkCreateDto.setUserId(principal.getId());
+        return walkService.createWalk(walkCreateDto);
     }
 
-    @GetMapping
-    public List<WalkDto> myWalkList(@AuthenticationPrincipal User principal){
-        return walkService.readMyWalks(principal.getId());
+    @PutMapping("/{walkId}/image")
+    public void updateImage(@AuthenticationPrincipal User principal,
+                           @PathVariable Long walkId, @RequestPart(value="file") MultipartFile file){
+
+        walkService.updateWalkImage(walkId, file);
+    }
+
+    @GetMapping("/{year}/{month}")
+    public WalkCalendarDto myWalkList(@AuthenticationPrincipal User principal,
+                                      @PathVariable("year") Integer year, @PathVariable("month") Integer month){
+        return walkService.readMyWalks(principal.getId(), year, month);
     }
 
     @GetMapping("/list")
@@ -45,8 +56,10 @@ public class WalkController {
     }
 
     @PutMapping("/{walkId}")
-    public void walkUpdate(@PathVariable Long walkId, @RequestBody WalkUpdateDto walkUpdateDto){
-        walkService.updateWalk(walkUpdateDto);
+    public WalkDto walkUpdate(@AuthenticationPrincipal User principal,
+                           @PathVariable Long walkId, @RequestBody WalkUpdateDto walkUpdateDto){
+        walkUpdateDto.setWalkId(walkId);
+        return walkService.updateWalk(walkUpdateDto, principal.getId());
     }
 
     @DeleteMapping("/{walkId}")

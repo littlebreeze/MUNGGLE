@@ -71,4 +71,10 @@ public class Post extends BaseTimeEntity {
     public void markAsDeleted() {
         this.isDeleted = true;
     }
+
+    public void calcLikeCount(Boolean cnt) {
+        if (cnt) this.likeCnt++;
+        else this.likeCnt--;
+    }
+
 }

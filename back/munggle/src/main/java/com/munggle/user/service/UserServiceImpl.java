@@ -1,10 +1,13 @@
 package com.munggle.user.service;
 
+import com.munggle.domain.exception.DuplicateNickNameException;
 import com.munggle.domain.exception.EmailVerificationFailException;
 import com.munggle.domain.exception.PasswordNotConfirmException;
 import com.munggle.domain.exception.UserNotFoundException;
 import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.UserImage;
+import com.munggle.follow.retpository.FollowRepository;
+import com.munggle.follow.service.FollowService;
 import com.munggle.image.dto.FileInfoDto;
 import com.munggle.image.service.FileS3UploadService;
 import com.munggle.user.dto.*;
@@ -20,9 +23,19 @@ import com.munggle.user.repository.UserImageRepository;
 import com.munggle.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,10 +43,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 import java.util.Optional;
-import java.util.Optional;
-import java.util.Random;
+import java.util.stream.Collectors;
 
 import static com.munggle.domain.exception.ExceptionMessage.*;
 
@@ -43,17 +55,29 @@ import static com.munggle.domain.exception.ExceptionMessage.*;
 @Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
+    private String email;
+    private DefaultOAuth2UserService defaultOAuth2UserService = new DefaultOAuth2UserService();
+
     @Value("${spring.mail.auth-code-expiration-millis}")
     private long authCodeExpirationMillis;
     private final EmailService emailService;
     private final UserRepository userRepository;
     private final UserImageRepository userImageRepository;
+    private final FollowService followService;
+    private final FollowRepository followRepository;
     private final FileS3UploadService fileS3UploadService;
     private final EmailVerificationRepository emailVerificationRepository;
 
-    private User findMemberById(Long id) {
+    @Override
+    public User findMemberById(Long id) {
         return userRepository.findByIdAndIsEnabledTrue(id)
                 .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+    }
+
+    @Override
+    public String getNicknameById(Long id) {
+        User user = findMemberById(id);
+        return user.getNickname();
     }
 
     @Override
@@ -63,9 +87,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+        OAuth2User oauth2User = defaultOAuth2UserService.loadUser(userRequest);
+
+        if (userRequest.getClientRegistration().getRegistrationId().equals("naver")) {
+            Map<String, Object> response = (Map<String, Object>) oauth2User.getAttributes().get("response");
+            email = (String) response.get("email");
+        }
+
+        if (userRequest.getClientRegistration().getRegistrationId().equals("kakao")) {
+            Map<String, Object> kakaoAccount = (Map<String, Object>) oauth2User.getAttributes().get("kakao_account");
+            email = (String) kakaoAccount.get("email");
+        }
+        User user = (User) this.loadUserByUsername(email);
+
+        return user;
+    }
+
+
+    @Override
     public UserMyPageDto getUserMypage(Long id) {
         User user = findMemberById(id);
-        return UserMapper.toUserMyPageDto(user);
+        Integer followerCount = followService.getFollowerCount(id);
+        Integer followingCount = followService.getFollowingCount(id);
+        return UserMapper.toUserMyPageDto(user, followerCount, followingCount);
     }
 
     public UserProfileDto getUserProfile(Long id) {
@@ -78,6 +123,15 @@ public class UserServiceImpl implements UserService {
         List<User> userList = userRepository.findByNicknameContainingAndIsEnabledTrue(keyword);
         return UserMapper.fromUsers(userList);
     }
+
+    @Override
+    public void checkDuplicateNickname(String nickname) {
+        userRepository.findByNicknameAndIsEnabledTrue(nickname)
+                .ifPresent(user -> {
+                    throw new DuplicateNickNameException(DUPLICATED_NICKNAME);
+                });
+    }
+
 
     @Override
     @Transactional
@@ -248,5 +302,34 @@ public class UserServiceImpl implements UserService {
                     userRepository.save(user);  // User 객체 업데이트
                     userImageRepository.deleteByImageName(imageName);  // UserImage 테이블의 데이터 삭제
                 });
+    }
+
+    @Override
+    public List<UserProfileDto> recommendUserList(Long userId){
+
+        List<Long> followIdList = followRepository.findByFollowFromIdAndIsFollowedTrue(userId).stream().map(user -> user.getFollowTo().getId()).collect(Collectors.toList());
+
+        List<User> list = new ArrayList<>();
+
+        // 상위 20명만 리턴
+        int page = 0; // 첫 페이지
+        int size = 20; // 페이지 당 결과 수
+
+        if(followIdList.isEmpty())
+            list = userRepository.findAllAndNotMeOrderByFollowIncreaseCountDesc(userId, PageRequest.of(page, size));
+        else
+            list = userRepository.findAllAndNotMeNotFollowOrderByFollowIncreaseCountDesc(userId, followIdList, PageRequest.of(page, size));
+        return list
+                .stream().map(user->UserMapper.toUserProfileDto(user)).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    @Scheduled(cron = "* 59 23 * * *", zone = "Asia/Seoul")
+    public void resetFollowIncreaseCnt(){
+        List<User> userList = userRepository.findAll().stream().map(user-> {
+            user.resetFollowIncreaseCount();
+            return user;
+        }).collect(Collectors.toList());
     }
 }

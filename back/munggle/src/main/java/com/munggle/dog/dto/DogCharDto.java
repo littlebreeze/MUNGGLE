@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 public class DogCharDto {
 
+    private Long dogId;
     private List<String> characterId;
     private Boolean isNeutering;
 

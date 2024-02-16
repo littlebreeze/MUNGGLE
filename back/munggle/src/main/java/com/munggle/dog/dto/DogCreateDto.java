@@ -1,6 +1,8 @@
 package com.munggle.dog.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.munggle.domain.model.entity.type.Gender;
+import com.munggle.domain.model.entity.type.SizeType;
 import com.munggle.image.dto.FileInfoDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

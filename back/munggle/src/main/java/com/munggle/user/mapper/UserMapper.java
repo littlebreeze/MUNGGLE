@@ -10,6 +10,7 @@ import com.munggle.user.dto.UserProfileDto;
 import com.munggle.user.dto.UserListDto;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -28,8 +29,9 @@ public class UserMapper {
                 .build();
     }
 
-    public static UserMyPageDto toUserMyPageDto(User user) {
+    public static UserMyPageDto toUserMyPageDto(User user, Integer followerCount, Integer followingCount) {
         return UserMyPageDto.builder()
+                .Id(user.getId())
                 .backgroundImgUrl(Optional.ofNullable(user.getBackgroundImage())
                         .map(UserImage::getImageURL).orElse(null))
                 .profileImgUrl(Optional.ofNullable(user.getProfileImage())
@@ -37,7 +39,8 @@ public class UserMapper {
                 .username(user.getUsername())
                 .nickname(user.getNickname())
                 .description(user.getDescription())
-                .role(user.getRole() == Role.ADMIN ? "관리자" : "회원")
+                .followerCount(followerCount)
+                .followingCount(followingCount)
                 .build();
     }
 
@@ -58,6 +61,11 @@ public class UserMapper {
                 .map(UserListDto::toUserListDto)
                 .collect(Collectors.toList());
     }
+
+    public static Page<UserListDto> convertToUserListDtoPage(Page<User> userPage, Long id) {
+        return userPage.map(UserListDto::toUserListDto);
+    }
+
 
     public static UserImage toUserImage(FileInfoDto file, User user, String type) {
         return UserImage.builder()

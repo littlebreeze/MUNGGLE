@@ -36,4 +36,5 @@ public class PostImage {
     public void markAsDeleted() {
         this.isDeleted = true;
     }
+
 }

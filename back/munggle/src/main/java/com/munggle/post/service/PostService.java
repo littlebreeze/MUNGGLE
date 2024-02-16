@@ -3,15 +3,21 @@ package com.munggle.post.service;
 import com.munggle.post.dto.request.PostCreateDto;
 import com.munggle.post.dto.response.PostDetailDto;
 import com.munggle.post.dto.request.PostUpdateDto;
-import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-@Service
 public interface PostService {
-    void insertPost(PostCreateDto postCreateDto);
+    Long insertPost(PostCreateDto postCreateDto);
 
-    void updatePost(PostUpdateDto postUpdateDto);
+    Long updatePost(PostUpdateDto postUpdateDto);
 
-    void deletePost(Long postId);
+    void savePostImage(MultipartFile image, Long postId, Long userId);
+
+    void deletePost(Long postId, Long userId);
 
     PostDetailDto getDetailPost(Long postId, Long userId);
+
+    void postLike(Long userId, Long postId);
+
+    void postScrap(Long userId, Long postId);
+
 }

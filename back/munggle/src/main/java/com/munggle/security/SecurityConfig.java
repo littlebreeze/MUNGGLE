@@ -1,16 +1,15 @@
 package com.munggle.security;
 
-import com.munggle.jwt.JwtAccessDeniedHandler;
-import com.munggle.jwt.JwtAuthenticationEntryPoint;
-import com.munggle.jwt.JwtAuthenticationFilter;
-import com.munggle.jwt.JwtProvider;
+import com.munggle.jwt.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -35,33 +34,93 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        //체인 완성본
 //        http
-//                .csrf().disable()
-//                .authorizeRequests()
-//                .requestMatchers(
-//                        request -> request.getServletPath()
-//                                .startsWith("/member/join")).permitAll()
-//                .anyRequest().authenticated();
+//                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .sessionManagement(
+//                        sessionManagement -> sessionManagement
+//                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+//                .authorizeRequests(
+//                        registry -> registry.requestMatchers(HttpMethod.POST, "/users").permitAll()
+//                                .requestMatchers("/users/emails/verification-requests").permitAll()
+//                                .requestMatchers("/users/emails/verifications").permitAll()
+//                                .requestMatchers("/users/**").hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers("/userpages/**").hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers("/alarms/**").hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers("/blocks/**").hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers("/comments/**").hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers("/dogs/**").hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers("/dog-match/**").hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers("/dogs/**").hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers("/follows/**").hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers("/posts/**").hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers("/search/**").hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers("/walks/**").hasAnyRole("ADMIN", "MEMBER")
+//                                .requestMatchers("/message/**").hasAnyRole("ADMIN", "MEMBER")
+//                                .anyRequest().authenticated()
+//                )
+//                .formLogin(
+//                        configure -> configure.successHandler(new LoginAuthenticationSuccessHandler(jwtProvider))
+//                                .failureHandler(new LoginAuthenticationFailureHandler()))
+//                .exceptionHandling(
+//                        configurer -> configurer.accessDeniedHandler(new JwtAccessDeniedHandler())
+//                                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+//                )
+//                .oauth2Login(
+//                        configure -> configure.successHandler(new LoginAuthenticationSuccessHandler(jwtProvider))
+//                                .failureHandler(new LoginAuthenticationFailureHandler())
+//                )
 //
-//        return http.build();
+//                .exceptionHandling(
+//                        configurer -> configurer.accessDeniedHandler(new JwtAccessDeniedHandler())
+//                                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+//                )
+//                .addFilterBefore(new JwtAuthenticationFilter(jwtProvider),
+//                        UsernamePasswordAuthenticationFilter.class);
+
         http
-                .cors()
-                .and()
-                .csrf().disable()
-                .authorizeRequests()
-                .anyRequest()
-                .permitAll()
-                .and()
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeRequests(
+                        registry -> registry.requestMatchers(HttpMethod.POST, "/users").permitAll()
+                                .requestMatchers("/users/emails/verification-requests").permitAll()
+                                .requestMatchers("/users/nickname").permitAll()
+                                .requestMatchers("/users/emails/verifications").permitAll()
+                                .requestMatchers("/users/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/userpages/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/alarms/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/blocks/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/comments/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/dogs/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/dog-match/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/dogs/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/follows/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/posts/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/search/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/walks/**").hasAnyRole("ADMIN", "MEMBER")
+                                .requestMatchers("/message/**").hasAnyRole("ADMIN", "MEMBER")
+                                .anyRequest().authenticated())
                 .formLogin(
-                        cofigure -> cofigure.successHandler(new FormLoginAuthenticationSuccessHandler(jwtProvider))
-                                .failureHandler(new FormLoginAuthenticationFailureHandler()))
+                        configure -> configure.successHandler(new LoginAuthenticationSuccessHandler(jwtProvider))
+                                .failureHandler(new LoginAuthenticationFailureHandler()))
+                .exceptionHandling(
+                        configurer -> configurer.accessDeniedHandler(new JwtAccessDeniedHandler())
+                                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+                )
+                .oauth2Login(
+                        configure -> configure.successHandler(new LoginAuthenticationSuccessHandler(jwtProvider))
+                                .failureHandler(new LoginAuthenticationFailureHandler())
+                )
+
                 .exceptionHandling(
                         configurer -> configurer.accessDeniedHandler(new JwtAccessDeniedHandler())
                                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
                 )
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider),
                         UsernamePasswordAuthenticationFilter.class);
+
 
         return http.build();
     }
@@ -71,8 +130,8 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         config.setAllowCredentials(true);
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        config.setAllowedOrigins(List.of("*"));
+        config.setAllowedMethods(List.of("*"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("*"));
 
@@ -80,5 +139,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", config);
         return source;
     }
-
 }

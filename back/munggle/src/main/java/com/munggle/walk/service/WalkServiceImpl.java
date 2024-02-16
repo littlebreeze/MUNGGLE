@@ -1,28 +1,25 @@
 package com.munggle.walk.service;
 
 import com.munggle.dog.repository.DogRepository;
-import com.munggle.domain.exception.ExceptionMessage;
-import com.munggle.domain.exception.LocationsNotFoundException;
-import com.munggle.domain.exception.UserNotFoundException;
-import com.munggle.domain.exception.WalkNotFoundException;
+import com.munggle.domain.exception.*;
 import com.munggle.domain.model.entity.Dog;
-import com.munggle.domain.model.entity.Location;
 import com.munggle.domain.model.entity.User;
 import com.munggle.domain.model.entity.Walk;
+import com.munggle.image.dto.FileInfoDto;
+import com.munggle.image.service.FileS3UploadService;
 import com.munggle.user.repository.UserRepository;
-import com.munggle.walk.dto.LocationDto;
-import com.munggle.walk.dto.WalkDto;
-import com.munggle.walk.dto.WalkUpdateDto;
+import com.munggle.walk.dto.*;
 import com.munggle.walk.mapper.WalkMapper;
 import com.munggle.walk.repository.LocationRepository;
 import com.munggle.walk.repository.WalkRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
+import java.time.*;
 import java.util.List;
-import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
@@ -31,44 +28,95 @@ import static com.munggle.domain.exception.ExceptionMessage.USER_NOT_FOUND;
 @RequiredArgsConstructor
 public class WalkServiceImpl implements WalkService{
 
+    private final FileS3UploadService fileS3UploadService;
+
     private final WalkRepository walkRepository;
     private final LocationRepository locationRepository;
     private final UserRepository userRepository;
     private final DogRepository dogRepository;
 
-    @Override
-    public void createWalk(WalkDto walkDto) {
+    String walkFilePath = "walk/";
 
-        Walk walk = WalkMapper.toEntity(walkDto);
+    public FileInfoDto uploadWalkImage(Long walkId, MultipartFile file){
+        // 이미지 정보 저장
+        String uploadPath = walkFilePath + walkId + "/";
+        FileInfoDto fileInfoDto = fileS3UploadService.uploadFile(uploadPath, file);
 
-        // Dto로 넘어온 userId로 user 세팅
-        User user = userRepository.findByIdAndIsEnabledTrue(walkDto.getUserId())
-                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
-        walk.setUser(user);
-
-        Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(walkDto.getDogId())
-                .orElseThrow();//()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
-        walk.setDog(dog);
-
-        Long insertID = walkRepository.save(walk).getWalkId();
-        // DB에 넣을 때, 방금 생성된 Walk의 id가 들어가야 하므로 값 셋팅된 객체로 다시 build
-        locationRepository.saveAll(walk.getLocation().stream()
-                .map(location -> location.setInsertId(insertID)).collect(Collectors.toList()));
+        return fileInfoDto;
     }
 
     @Override
-    public List<WalkDto> readMyWalks(Long userId) {
+    @Transactional
+    public Long createWalk(WalkCreateDto walkCreateDto) {
 
-        List<Walk> result = walkRepository.findAllByUserIdAndIsDeletedFalse(userId)
-                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
-        List<WalkDto> list = new ArrayList<>();
-        for(Walk walk : result){
-            walk.setLocations(locationRepository.findAllByWalkWalkId(walk.getWalkId())
-                    .orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND)));
-            list.add(WalkMapper.toDto(walk));
+        Walk walk = WalkMapper.toEntity(walkCreateDto);
+
+        // Dto로 넘어온 userId로 user 세팅
+        User user = userRepository.findByIdAndIsEnabledTrue(walkCreateDto.getUserId())
+                .orElseThrow(() -> new UserNotFoundException(USER_NOT_FOUND));
+        walk.setUser(user);
+
+        Dog dog = dogRepository.findByDogIdAndIsDeletedIsFalse(walkCreateDto.getDogId())
+                .orElseThrow(()->new DogNotFoundException(ExceptionMessage.DOG_NOT_FOUND));
+        walk.setDog(dog);
+
+        // 사용자의 반려견이 아니면 등록 불가
+        if(user.getId().longValue() != dog.getUser().getId().longValue()) {
+            throw new NotYourDogException(ExceptionMessage.NOT_YOUR_DOG);
         }
 
-        return list;
+        // DB에 저장
+        Long walkId = walkRepository.save(walk).getWalkId();
+
+        AtomicReference<Long> order = new AtomicReference<>(1l);
+        // 산책 경로 좌표들 저장
+        locationRepository.saveAll(walk.getLocation().stream()
+                .map(location -> location.setIdAndOrder(walkId, order.getAndSet(order.get() + 1))).collect(Collectors.toList()));
+
+        return walkId;
+    }
+
+    @Override
+    @Transactional
+    public void updateWalkImage(Long walkId, MultipartFile file) {
+
+        Walk walk = walkRepository.findByWalkIdAndIsDeletedFalse(walkId)
+                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
+
+        // 전달받은 이미지 저장
+        if(file != null && !file.isEmpty()) {
+
+            walk.updateImage(uploadWalkImage(walkId, file));
+        }
+
+    }
+
+    @Override
+    public WalkCalendarDto readMyWalks(Long userId, Integer year, Integer month) {
+
+        AtomicReference<Float> distance = new AtomicReference<>(0f);
+        AtomicReference<Integer> duration = new AtomicReference<>(0);
+
+        // 요청 월에 대한 기간 설정
+        YearMonth yearMonth = YearMonth.of(year, month);
+
+        LocalDateTime start = LocalDateTime.of(year, month,1 ,0,0);
+        LocalDateTime end = LocalDateTime.of(year, month, yearMonth.atEndOfMonth().getDayOfMonth(),0,0);
+
+        List<WalkDto> result = walkRepository.findAllByIsDeletedFalseAndCreatedAtBetween(start, end)
+                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND))
+                .stream().map(walk -> {
+                    distance.updateAndGet(v -> v + walk.getDistance());
+                    duration.updateAndGet(v -> v + walk.getDuration());
+                    return WalkMapper.toDto(walk);
+                }).collect(Collectors.toList());
+
+        return WalkCalendarDto.builder()
+                .walkList(result)
+                .totalCnt(result.size())
+                .totalDistance(distance.get())
+                .totalDuration(duration.get())
+                .build();
     }
 
     @Override
@@ -76,35 +124,35 @@ public class WalkServiceImpl implements WalkService{
 
         // 공개 범위 설정한 사용자의 산책 기록만 보내주자~
         // 마커 찍는건 로그 첫번째로!
-        List<Walk> result = walkRepository.findAllByIsDeletedFalseAndIsPrivatedFalse()
-                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
-        List<WalkDto> list = new ArrayList<>();
-        for(Walk walk : result){
-            walk.setLocations(locationRepository.findAllByWalkWalkId(walk.getWalkId())
-                    .orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND)));
-            list.add(WalkMapper.toDto(walk));
-        }
-        return list;
+        List<WalkDto> result = walkRepository.findAllByIsDeletedFalseAndIsPrivatedFalse()
+                .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND))
+                .stream().map(walk -> WalkMapper.toDto(walk)).collect(Collectors.toList());
+
+        return result;
     }
 
     @Override
     public WalkDto detailWalk(Long walkId) {
         Walk walk = walkRepository.findByWalkIdAndIsDeletedFalse(walkId)
                 .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
-        walk.setLocations(locationRepository.findAllByWalkWalkId(walk.getWalkId())
-                .orElseThrow(()->new LocationsNotFoundException(ExceptionMessage.WALK_LOG_NOT_FOUND)));
+
         return WalkMapper.toDto(walk);
     }
 
     @Override
     @Transactional
-    public WalkDto updateWalk(WalkUpdateDto walkUpdateDto) {
+    public WalkDto updateWalk(WalkUpdateDto walkUpdateDto, Long userId) {
 
         Walk walk = walkRepository.findById(walkUpdateDto.getWalkId())
                 .orElseThrow(()->new WalkNotFoundException(ExceptionMessage.WALK_NOT_FOUND));
+
+        if(userId.longValue() != walk.getUser().getId().longValue()) {
+            throw new NotYourWalkException(ExceptionMessage.NOT_YOUR_WALK);
+        }
+
         walk.updateWalk(walkUpdateDto);
 
-        return null;
+        return WalkMapper.toDto(walk);
     }
 
     @Override

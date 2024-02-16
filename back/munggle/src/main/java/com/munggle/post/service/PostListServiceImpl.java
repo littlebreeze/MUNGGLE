@@ -2,13 +2,20 @@ package com.munggle.post.service;
 
 import com.munggle.domain.exception.TagNotFoundException;
 import com.munggle.domain.model.entity.*;
+import com.munggle.follow.retpository.FollowRepository;
+import com.munggle.follow.service.FollowService;
+import com.munggle.post.dto.response.PagePostDto;
 import com.munggle.post.dto.response.PostListDto;
 import com.munggle.post.mapper.PostMapper;
+import com.munggle.post.repository.PostLikeRespository;
 import com.munggle.post.repository.PostRepository;
 import com.munggle.post.repository.TagRepository;
 import com.munggle.post.repository.UserRecentTagCacheRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +27,14 @@ import static com.munggle.domain.exception.ExceptionMessage.TAG_NOT_FOUND;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CuratingServiceImpl implements CuratingService {
+public class PostListServiceImpl implements PostListService {
 
     private final UserRecentTagCacheRepository userRecentTagCacheRepository;
     private final PostRepository postRepository;
     private final TagRepository tagRepository;
+    private final FollowRepository followRepository;
+    private final PostLikeRespository postLikeRespository;
+    private final FollowService followService;
 
     /**
      * cache에서 tag를 가지고 와서 랜덤으로 5개 추출
@@ -81,18 +91,56 @@ public class CuratingServiceImpl implements CuratingService {
 
         List<String> tags = getTagList(userId);
         List<Post> getPost;
+
+        int page = 0; // 첫 페이지
+        int size = 30; // 페이지 당 결과 수
+
+        // 태그가 없는 경우
         if (tags.isEmpty()) { // 존재하는 tag가 없다면 추천순으로 게시글 정렬
-            log.info("isEmpty");
-            getPost = postRepository.findAllOrderByLikeCntDesc();
+            getPost = postRepository.findAllAndNotMineOrderByLikeCntDesc(userId, PageRequest.of(page, size));
         } else { // 있으면 태그가 존재하는 게시글 추천순으로 정렬
-            getPost = postRepository.findByTagsInOrderByLikeCntDesc(tags);
+            getPost = postRepository.findByTagsAndNotMineOrderByLikeCntDesc(tags, userId, PageRequest.of(page, size));
         }
 
         List<PostListDto> postList = getPost.stream()
-                .map(post -> PostMapper.toPostListDto(post))
+                .map(post -> {
+                    // 좋아요 여부 확인
+                    PostLikeId postLikeId = PostMapper.toPostLikedIdEntity(userId, post.getId());
+                    Boolean isLiked = postLikeRespository.existsByPostLikeIdAndIsDeletedFalse(postLikeId);
+                    Boolean isFollowed = followService.checkIsFollowed(userId, post.getUser().getId());
+
+                    return PostMapper.toPostListDto(post, isLiked, isFollowed);
+                })
                 .collect(Collectors.toList());
 
+
         return postList;
+    }
+
+    @Override
+    public PagePostDto getFollowingPost(Long userId, Pageable pageable) {
+
+        List<User> followedUsers = followRepository.findByFollowFromIdAndIsFollowedTrue(userId)
+                .stream()
+                .map(Follow::getFollowTo)
+                .collect(Collectors.toList());
+
+        Page<Post> postPage = postRepository.findLatestPostsByUsers(followedUsers, pageable);
+
+        List<PostListDto> posts = postPage.getContent().stream()
+                .map(post -> {
+                    // 좋아요 여부 확인
+                    PostLikeId postLikeId = PostMapper.toPostLikedIdEntity(userId, post.getId());
+                    Boolean isLiked = postLikeRespository.existsByPostLikeIdAndIsDeletedFalse(postLikeId);
+
+                    return PostMapper.toPostListDto(post, isLiked, true);
+                })
+                .collect(Collectors.toList());
+
+        return PagePostDto.builder()
+                .posts(posts)
+                .last(postPage.isLast())
+                .build();
     }
 }
 

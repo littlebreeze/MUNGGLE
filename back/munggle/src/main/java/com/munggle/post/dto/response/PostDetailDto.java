@@ -20,17 +20,26 @@ public class PostDetailDto {
 
     private List<String> hashtags;
 
+    private Long userId;
+
+    private String profileImage;
+
     private String nickname;
 
     private Integer likeCnt;
 
+    private Boolean isLiked;
+
+    private Boolean isScraped;
+
     private Boolean isMine;
+
+    private Boolean isFollowed;
 
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
 
     private Boolean isUpdated;
-
 
 }

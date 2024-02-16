@@ -10,6 +10,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class UserMyPageDto {
 
+    private final Long Id;
+
     private final String backgroundImgUrl;
 
     private final String profileImgUrl;
@@ -22,5 +24,7 @@ public class UserMyPageDto {
 
     private final String description;
 
-    private final String role;
+    private final Integer followerCount;
+
+    private final Integer followingCount;
 }

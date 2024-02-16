@@ -2,6 +2,8 @@ package com.munggle.domain.model.entity;
 
 import com.munggle.dog.dto.DogCharDto;
 import com.munggle.dog.dto.DogUpdateDto;
+import com.munggle.domain.model.entity.type.Gender;
+import com.munggle.domain.model.entity.type.SizeType;
 import com.munggle.image.dto.FileInfoDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -46,11 +48,14 @@ public class Dog extends BaseTimeEntity{
     @NotNull
     private LocalDateTime birthDate;
 
-    private String size;
+    @Enumerated(EnumType.STRING)
+    private SizeType size;
 
     private Float weight;
 
-    private String gender;
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private Gender gender;
 
     private Boolean isNeutering;    // 중성화 여부
 
@@ -62,8 +67,6 @@ public class Dog extends BaseTimeEntity{
     @Size(max=15)
     private String name;
 
-//    @Size(max=100)
-//    private String image;
     private String imageName;
     private String imageUrl;
 
@@ -76,10 +79,6 @@ public class Dog extends BaseTimeEntity{
     @Column(columnDefinition = "boolean default false")
     private Boolean isDeleted;
 
-//    public void setDogId(Long dogId){
-//        this.dogId = dogId;
-//    }
-
     public void setUser(User user){
         this.user = user;
     }
@@ -87,11 +86,12 @@ public class Dog extends BaseTimeEntity{
     // 반려견 정보 수정
     public void updateDog(DogUpdateDto dogUpdateDto){
         this.birthDate = dogUpdateDto.getBirthDate();
-        this.size = dogUpdateDto.getSize();
+        if(dogUpdateDto.getSize()!=null)
+            this.size = Enum.valueOf(SizeType.class, dogUpdateDto.getSize());
+        this.gender = Enum.valueOf(Gender.class, dogUpdateDto.getGender());
         this.weight = dogUpdateDto.getWeight();
         this.isNeutering = dogUpdateDto.getIsNeutering();
         this.name = dogUpdateDto.getName();
-        // this.image = dogUpdateDto.getImage();
         this.description = dogUpdateDto.getDescription();
     }
 

@@ -28,6 +28,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
 
+        if (request.getRequestURI().startsWith("/refresh")) {
+            successfulRefreshAuthentication(request, response);
+            return;
+        }
+
         filterChain.doFilter(request, response);
+    }
+
+    private void successfulRefreshAuthentication(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String refreshToken = jwtProvider.resolveToken(request);
+        try {
+            String newAccessToken = jwtProvider.refreshAccessToken(refreshToken);
+            response.setHeader("Access-token", "Bearer " + newAccessToken);
+        } catch (RuntimeException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write(e.getMessage());
+        }
     }
 }
