@@ -1,0 +1,128 @@
+.profile-container-div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-top-div{
+  width: 400px;
+  height: 260px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.profile-top-div-top-div{
+  width: 400px;
+  height: 120px;
+}
+
+.profile-top-div-top-img {
+  width: 400px;
+  z-index: 1;
+}
+
+.profile-top-div-middle-div {
+  position: absolute;
+  top: 34%;
+  bottom: 40%;
+  left: 10%;
+  z-index: 10;
+  width: 60px;
+  height: 60px;
+}
+
+.profile-top-div-bottom-div{
+  width: 400px;
+  height: 140px;
+  z-index: 10;
+  /* background-color: rgb(240, 240, 240); */
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-top-div-bottom-div-top-div{
+  width: 400px;
+  height: 60px;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.profile-top-div-bottom-div-middle-div{
+  width: 350px;
+  height: 50px;
+  
+}
+
+.profile-top-div-bottom-div-middle-span{
+  font-size: 15px;
+  word-break: keep-all;
+}
+
+.profile-top-div-bottom-div-bottom-div{
+  width: 400px;
+  height: 30px;
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+
+.profile-top-div-bottom-div-bottom-span {
+  font-size: 15px;
+}
+
+.profile-nav-div{
+  width: 400px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid lightgray;
+  border-bottom: 2px double lightgray;
+}
+
+.profile-nav-div-line-div {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-nav-div-line {
+  width: 40px;
+  height: 40px;
+}
+
+.profile-nav-div-img-div{
+  width: 80px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-nav-div-img{
+  width: 50px;
+  height: 50px;
+}
+
+.profile-bottom-div{
+  width: 400px;
+  background-image: url(../../assets/example/background.jpg);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-top-div-bottom-div-top-div-button {
+  height: 35px;
+  border: 0px;
+  background-color: rgb(252, 226, 1);
+  border-radius: 5px;
+  color: white;
+  margin-right: 10px;
+}

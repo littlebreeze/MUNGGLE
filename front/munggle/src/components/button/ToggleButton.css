@@ -1,0 +1,28 @@
+.toggle-button-container-div {
+  width: 200px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: lightgray;
+  border: 1px solid rgb(198, 198, 198);
+  border-radius: 20px;
+}
+
+.toggle-button-left-div {
+  width: 90px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
+}
+
+.toggle-button-right-div {
+  width: 90px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left: 1px solid black;
+}

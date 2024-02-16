@@ -1,0 +1,58 @@
+/*휴대폰*/
+.Phone{
+    width: 350px;
+    height: 700px;
+    background-color: gray;
+    display: flex;
+  justify-content: center;
+  margin-left: 100px;
+}
+
+/*헤더(멍글멍글)*/
+.header{
+    background-color: yellow;
+    margin-top: 25px;
+}
+
+/*푸터(버튼들)*/
+.footer{
+    background-color: yellow;
+}
+
+/*컨텐츠(헤더와 푸터 사이)*/
+.content{
+    width: 300px;
+    height: 600px;
+    background-color: lightgrey;
+}
+
+/*메인페이지의 산책하기 버튼*/
+.walk-button{
+    position: relative;
+    bottom: 10%;
+    left: 20%;
+    z-index: 1;
+}
+
+/*메인페이지의 캘린더 버튼*/
+.calender-button{
+    position: relative;
+    bottom: 90%;
+    left: 20%;
+    z-index: 1;
+}
+
+
+
+/*가상 위도 경도 컨트롤*/
+.control{
+    position: absolute;
+    bottom: 30%;
+    left: 50%;
+    z-index: 1;
+}
+
+/*타이머 보이는 부분*/
+.time-page{
+    font-size: 30px;
+}
