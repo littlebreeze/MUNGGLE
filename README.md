@@ -1,5 +1,5 @@
 
-<img src="/assets/logo.png"  width="400px" height="200px">
+<img src="/images/logo.png"  width="400px" height="200px">
 
 # 목차
 
@@ -77,41 +77,41 @@
 
 ## 🏛️ 아키텍처
 
-![구조](/assets/구조.png)
+![구조](/images/구조.png)
 
 ## 📊 ERD 다이어그램
 
-![ERD](/assets/ERD.png)
+![ERD](/images/ERD.png)
 
 ## 🎨 와이어프레임
-<img src="/assets/와이어프레임.png"  width="400px" height="600px">
+<img src="/images/와이어프레임.png"  width="400px" height="600px">
 
 ## 🐕 주요 기능
 
-<img src="/assets/로그인.png"  width="200px" height="400px">
+<img src="/images/로그인.png"  width="200px" height="400px">
 
 ### 로그인
 - 아이디와 비밀번호를 입력해 로그인합니다.
 - 이메일 인증을 통해 회원가입을 합니다.
 - 아이디, 비밀번호를 잊은 경우 아이디/비밀번호 찾기를 이용할 수 있습니다.
 
-<img src="./assets/detail.gif" alt="디테일"  width="200px" height="400px">
+<img src="./images/detail.gif" alt="디테일"  width="200px" height="400px">
 
-<img src="./assets/add.gif" alt="등록"  width="200px" height="400px">
+<img src="./images/add.gif" alt="등록"  width="200px" height="400px">
 
 ### 메인
 - 상단에서 팔로우 추천(해당일의 팔로우 증가수 기준)하는 계정들을 확인할 수 있습니다.
 - 유저가 검색 혹은 상세 확인한 게시물의 태그가 포함된 게시물들이 노출됩니다. 
 - 좋아요, 팔로우, DM메세지를 보낼 수 있습니다.
 
-![산책](./assets/walk.gif)
+![산책](./images/walk.gif)
 
 ### 산책
 - 산책 경로를 기록할 수 있습니다.
 - 경로와 산책 시간, 거리, 평점 등을 등록하고 다른 사람과 공유할 수 있습니다.
 - my 버튼을 눌러 내 산책 기록들을 날짜별로 확인할 수 있습니다.
 
-![매칭](./assets/matching.gif)
+![매칭](./images/matching.gif)
 
 ### 매칭
 - 토글 버튼을 눌러 매칭을 받고 싶은지 여부를 결정합니다.
@@ -119,29 +119,29 @@
 - 추천(입력한 특성에 하나라도 해당한 경우, 최대 20마리)받은 강아지 카드를 슬라이드하거나, 하트 혹은 깨진 하트 버튼을 눌러서 매칭 여부를 정합니다.
 - 매칭이 끝나면 매칭이 성공한 강아지의 주인에게 DM메세지를 보낼 수 있습니다.
 
-![프로필](./assets/profile.gif)
+![프로필](./images/profile.gif)
 
 ### 프로필
 - 편집 버튼을 누른 후 닉네임, 프로필 사진, 프로필 배경, 강아지 정보를 변경할 수 있습니다.
 - 유저의 강아지 정보, 게시물, 스크랩한 게시물을 확인할 수 있습니다.
 - 다른 사람의 프로필에서 팔로잉 버튼, DM메세지 버튼을 누를 수 있습니다.
 
-<img src="/assets/검색.png"  width="200px" height="400px">
+<img src="/images/검색.png"  width="200px" height="400px">
 
 ### 검색
 - 제목으로 게시물을 검색할 수 있습니다.
 - 닉네임으로 유저를 검색할 수 있습니다.
 - 검색한 태그가 포함된 게시물을 확인할 수 있습니다.
 
-<img src="/assets/알림.png"  width="200px" height="400px">
+<img src="/images/알림.png"  width="200px" height="400px">
 
 ### 알림
 - 팔로우, 좋아요, 댓글을 받은 경우 알림이 생깁니다
 - 알림을 읽은 경우 흐리게 표시됩니다.
 
-<img src="/assets/dm1.png"  width="200px" height="400px">
+<img src="/images/dm1.png"  width="200px" height="400px">
 
-<img src="/assets/dm2.png"  width="200px" height="400px">
+<img src="/images/dm2.png"  width="200px" height="400px">
 
 ### DM
 - DM방을 클릭하면 이전의 메세지가 표시되고, 이어서 대화할 수 있습니다.
