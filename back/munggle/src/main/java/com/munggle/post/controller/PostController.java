@@ -58,7 +58,7 @@ public class PostController {
     @GetMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public PostDetailDto viewPost(@AuthenticationPrincipal User principal,
-                                  @PathVariable(value = "postId") Long postId) {
+                                  @PathVariable Long postId) {
 
         Long userId = principal.getId();
         return postService.getDetailPost(postId, userId);
@@ -78,7 +78,7 @@ public class PostController {
     @PostMapping("/{postId}/image")
     @ResponseStatus(HttpStatus.OK)
     public void savePostImage(@AuthenticationPrincipal User principal,
-                              @PathVariable(value = "postId") Long postId,
+                              @PathVariable Long postId,
                               @RequestPart(value = "file") MultipartFile file) {
 
         postService.savePostImage(file, postId, principal.getId());
@@ -87,7 +87,7 @@ public class PostController {
     // === 게시글 수정 === //
     @PutMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
-    public Long updatePost(@PathVariable(value = "postId") Long postId,
+    public Long updatePost(@PathVariable Long postId,
                            @RequestBody @Valid PostUpdateDto postUpdateDto) {
 
         postUpdateDto.setPostId(postId);
@@ -98,7 +98,7 @@ public class PostController {
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.OK)
     public void deletePost(@AuthenticationPrincipal User principal,
-                           @PathVariable(value = "postId") Long postId) {
+                           @PathVariable Long postId) {
 
         Long userId = principal.getId();
         postService.deletePost(postId, userId);
@@ -108,7 +108,7 @@ public class PostController {
     @PostMapping("/{postId}/like")
     @ResponseStatus(HttpStatus.OK)
     public void insertPostLike(@AuthenticationPrincipal User principal,
-                            @PathVariable(value = "postId") Long postId) {
+                            @PathVariable Long postId) {
 
         Long userId = principal.getId();
         postService.postLike(userId, postId);
@@ -118,7 +118,7 @@ public class PostController {
     @PostMapping("/{postId}/scrap")
     @ResponseStatus(HttpStatus.OK)
     public void deletePostLike(@AuthenticationPrincipal User principal,
-                               @PathVariable(value = "postId") Long postId) {
+                               @PathVariable Long postId) {
 
         Long userId = principal.getId();
         postService.postScrap(userId, postId);
