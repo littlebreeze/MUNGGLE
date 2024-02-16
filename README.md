@@ -89,7 +89,7 @@
 
 ## 🐕 주요 기능
 
-<img src="/assets/로그인.png"  width="200px" height="300px">
+<img src="/assets/로그인.png"  width="200px" height="400px">
 
 ### 로그인
 - 아이디와 비밀번호를 입력해 로그인합니다.
@@ -127,14 +127,22 @@
 - 유저의 강아지 정보, 게시물, 스크랩한 게시물을 확인할 수 있습니다.
 - 다른 사람의 프로필에서 팔로잉 버튼, DM메세지 버튼을 누를 수 있습니다.
 
+<img src="/assets/검색.png"  width="200px" height="400px">
+
 ### 검색
 - 제목으로 게시물을 검색할 수 있습니다.
 - 닉네임으로 유저를 검색할 수 있습니다.
 - 검색한 태그가 포함된 게시물을 확인할 수 있습니다.
 
+<img src="/assets/알림.png"  width="200px" height="400px">
+
 ### 알림
 - 팔로우, 좋아요, 댓글을 받은 경우 알림이 생깁니다
 - 알림을 읽은 경우 흐리게 표시됩니다.
+
+<img src="/assets/dm1.png"  width="200px" height="400px">
+
+<img src="/assets/dm2.png"  width="200px" height="400px">
 
 ### DM
 - DM방을 클릭하면 이전의 메세지가 표시되고, 이어서 대화할 수 있습니다.
