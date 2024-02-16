@@ -37,7 +37,7 @@ public class SearchController {
 
     @GetMapping("/tag/{word}")
     @ResponseStatus(HttpStatus.OK)
-    public List<SearchTagDto> searchPostByTag(@PathVariable(value = "word", required = false) String word) {
+    public List<SearchTagDto> searchPostByTag(@PathVariable String word) {
         return searchService.searchByTag(word);
     }
 

@@ -28,27 +28,27 @@ public class UserpageController {
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public UserProfileDto getUserProfile(@AuthenticationPrincipal User principal,
-                                         @PathVariable(value = "userId") Long userId) {
+                                         @PathVariable Long userId) {
         return userService.getUserProfile(userId);
     }
 
     @GetMapping("/{userId}/post")
     @ResponseStatus(HttpStatus.OK)
     public List<UserPostListDto> getUserPostList(@AuthenticationPrincipal User principal,
-                                                 @PathVariable(value = "userId") Long userId) {
+                                                 @PathVariable Long userId) {
         return userpageService.getUserPost(userId, principal.getId());
     }
 
     @GetMapping("/{userId}/scrap")
     @ResponseStatus(HttpStatus.OK)
     public List<UserScrapListDto> getUserScrapList(@AuthenticationPrincipal User principal,
-                                                   @PathVariable(value = "userId") Long userId) {
+                                                   @PathVariable Long userId) {
         return userpageService.getUserScrap(userId, principal.getId());
     }
 
     @GetMapping("/{userId}/dog")
     @ResponseStatus(HttpStatus.OK)
-    public List<DogDetailDto> getUserDogs(@PathVariable(value = "userId") Long userId){
+    public List<DogDetailDto> getUserDogs(@PathVariable Long userId){
         return userpageService.getDogList(userId);
     }
 
