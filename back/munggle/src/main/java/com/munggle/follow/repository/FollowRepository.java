@@ -1,4 +1,4 @@
-package com.munggle.follow.retpository;
+package com.munggle.follow.repository;
 
 import com.munggle.domain.model.entity.Follow;
 import com.munggle.domain.model.entity.FollowId;

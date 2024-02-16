@@ -2,7 +2,7 @@ package com.munggle.post.service;
 
 import com.munggle.domain.exception.TagNotFoundException;
 import com.munggle.domain.model.entity.*;
-import com.munggle.follow.retpository.FollowRepository;
+import com.munggle.follow.repository.FollowRepository;
 import com.munggle.follow.service.FollowService;
 import com.munggle.post.dto.response.PagePostDto;
 import com.munggle.post.dto.response.PostListDto;
