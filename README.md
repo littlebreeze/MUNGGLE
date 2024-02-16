@@ -96,9 +96,9 @@
 - 이메일 인증을 통해 회원가입을 합니다.
 - 아이디, 비밀번호를 잊은 경우 아이디/비밀번호 찾기를 이용할 수 있습니다.
 
-![디테일](./assets/detail.gif)
+<img src="./assets/detail.gif" alt="디테일"  width="200px" height="400px">
 
-![등록](./assets/add.gif)
+<img src="./assets/add.gif" alt="등록"  width="200px" height="400px">
 
 ### 메인
 - 상단에서 팔로우 추천(해당일의 팔로우 증가수 기준)하는 계정들을 확인할 수 있습니다.
