@@ -5,7 +5,7 @@ import * as Location from "expo-location";
 import WalkCreate from "./walk/walkCreate";
 import WalkCalendar from "./walk/walkCalendar";
 import ViewShot from 'react-native-view-shot';
-
+import { ActivityIndicator } from "react-native-paper";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window")
 
@@ -126,7 +126,7 @@ export default function WalkScreen () {
     } else {
       return (
         <View style={styles.walkMainLoading}>
-          <Text style={styles.walkMainLoadingText}>Loading...</Text>
+          <ActivityIndicator size={100} />
         </View>
       );
     }
