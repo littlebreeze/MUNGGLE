@@ -109,7 +109,6 @@ public class DogServiceImpl implements DogService {
 
             // 이미 값이 있을 때는 update이므로 삭제 과정
             if(dog.getImageUrl() != null) {
-                System.out.println("#########   삭제합니다   #########");
                 // 기존 파일 S3에서 삭제
                 String uploadPath = dogFilePath + dogId + "/";
                 fileS3UploadService.removeFolderFiles(uploadPath);

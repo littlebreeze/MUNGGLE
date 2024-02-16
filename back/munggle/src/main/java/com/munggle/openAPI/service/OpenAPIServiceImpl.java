@@ -74,7 +74,6 @@ public class OpenAPIServiceImpl implements OpenAPIService {
         try {
             jsonObject = (JSONObject)jsonParser.parse(lostJSON);
         } catch (ParseException e) {
-            System.out.println(errorMessage(lostJSON));
             throw new OpenAPIErrorException(ExceptionMessage.OPEN_API_RESPONSE_ERROR, errorMessage(lostJSON));
         }
         JSONObject response = (JSONObject)jsonObject.get("response");
